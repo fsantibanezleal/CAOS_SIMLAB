@@ -89,6 +89,7 @@ class MonteCarloScenario(Scenario):
             ci_hi.append(round(m + half, 4))
 
         theory = erlang_c_mmc(lam, mu, c)
+        wq_th = theory["Wq"]  # None when the system is unstable (ρ ≥ 1): no steady-state Wq to compare to
         counts, edges = np.histogram(wqs, bins=18)
 
         tr = ChartTrace(self.id, self.title, self.method, int(seed), p)
@@ -97,15 +98,18 @@ class MonteCarloScenario(Scenario):
         tr.series = {"x": ks, "run_mean": run_mean, "ci_lo": ci_lo, "ci_hi": ci_hi}
         tr.lines = [{"key": "run_mean", "color": "var(--color-magenta)", "label_en": "running mean", "label_es": "media corriente"}]
         tr.band = {"lo": "ci_lo", "hi": "ci_hi", "color": "var(--color-accent)", "label_en": "95% CI", "label_es": "IC 95%"}
-        tr.ref_lines = [{"y": round(theory["Wq"], 4), "color": "var(--color-good)", "label_en": "Erlang-C theory", "label_es": "teoría Erlang-C"}]
+        tr.ref_lines = (
+            [{"y": round(wq_th, 4), "color": "var(--color-good)", "label_en": "Erlang-C theory", "label_es": "teoría Erlang-C"}]
+            if wq_th is not None else []
+        )
         tr.bars = {"edges": [round(float(e), 3) for e in edges], "counts": [int(x) for x in counts],
                    "color": "var(--color-fg-faint)", "label_en": "per-run Wq distribution", "label_es": "distribución de Wq por corrida"}
         final_half = round((ci_hi[-1] - ci_lo[-1]) / 2, 4)
         tr.kpis = {
             "final_mean": run_mean[-1],
             "ci_halfwidth": final_half,
-            "theory_Wq": round(theory["Wq"], 4),
-            "rel_error_pct": round(100 * abs(run_mean[-1] - theory["Wq"]) / theory["Wq"], 2) if theory["Wq"] else 0.0,
+            "theory_Wq": round(wq_th, 4) if wq_th is not None else None,
+            "rel_error_pct": round(100 * abs(run_mean[-1] - wq_th) / wq_th, 2) if wq_th else None,
             "n_reps": reps,
             "rho": theory["rho"],
         }

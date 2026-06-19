@@ -3,6 +3,15 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.11.002] - 2026-06-19
+### Fixed
+- **S10 live lane crashed on unstable regimes.** Tuning the Monte-Carlo sliders to ρ ≥ 1 (e.g. high λ /
+  few servers) made `erlang_c_mmc` return `Wq=None` (no steady-state), and `round(None, 4)` raised
+  `TypeError` — a live-only crash (committed variants are all stable, so it never surfaced offline). Now
+  the scenario drops the Erlang-C reference line and nulls the theory KPIs when unstable; the simulated
+  running mean + CI band still render (illustrating non-convergence). Committed traces unchanged
+  (byte-equality preserved); added a regression test for the ρ ≥ 1 case.
+
 ## [0.11.001] - 2026-06-19
 ### Fixed
 - **Dynamism parity across every viz** — the S01 queue's "temporal coloring" (event flash rings + counter

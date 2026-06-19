@@ -31,6 +31,17 @@ def test_montecarlo_reproducible_and_converges():
         assert k in a.series
 
 
+def test_montecarlo_unstable_regime_does_not_crash():
+    """The live lane lets users pick ρ ≥ 1 (no steady-state Wq): must not crash on round(None)."""
+    sc = MonteCarloScenario()
+    tr = sc.run({"lam": 9.0, "mu": 1.0, "c": 1, "n_customers": 200, "n_reps": 30}, seed=42)
+    assert tr.analytic["Wq"] is None  # unstable
+    assert tr.ref_lines == []  # no theory line to compare against
+    assert tr.kpis["theory_Wq"] is None and tr.kpis["rel_error_pct"] is None
+    assert tr.kpis["rho"] >= 1.0
+    json.loads(tr.to_json())  # serializes (nulls are valid JSON)
+
+
 def test_chart_pipeline_manifest(tmp_path):
     for sid in ("s05_beergame", "s10_montecarlo"):
         res = precompute(sid, seed=42, out_root=tmp_path)
