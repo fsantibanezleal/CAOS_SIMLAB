@@ -9,7 +9,7 @@ export interface Citation {
   doi?: string;
   url?: string;
   verified: boolean;
-  tags: Array<"queueing" | "des" | "abm" | "tools">;
+  tags: Array<"queueing" | "des" | "abm" | "tools" | "optimization">;
 }
 
 export const CITATIONS: Citation[] = [
@@ -42,6 +42,26 @@ export const CITATIONS: Citation[] = [
   { id: "monks2019", label: "Monks et al. 2019", citation: "Monks, T., Currie, C. S. M., Onggo, B. S., Robinson, S., Kunc, M., & Taylor, S. J. E. (2019). Strengthening the reporting of empirical simulation studies: Introducing the STRESS guidelines. Journal of Simulation 13(1), 55–67.", doi: "10.1080/17477778.2018.1442155", verified: true, tags: ["des"] },
   { id: "grimm2010", label: "Grimm et al. 2010", citation: "Grimm, V., Berger, U., DeAngelis, D. L., Polhill, J. G., Giske, J., & Railsback, S. F. (2010). The ODD protocol: A review and first update. Ecological Modelling 221(23), 2760–2768.", doi: "10.1016/j.ecolmodel.2010.08.019", verified: true, tags: ["abm"] },
   { id: "masad2015", label: "Masad & Kazil 2015", citation: "Masad, D., & Kazil, J. (2015). Mesa: An agent-based modeling framework. In Proceedings of the 14th Python in Science Conference (SciPy 2015), 51–58.", doi: "10.25080/Majora-7b98e3ed-009", verified: true, tags: ["tools", "abm"] },
+
+  // ── Optimization / Operations Research ──
+  { id: "dantzig1963", label: "Dantzig 1963", citation: "Dantzig, G. B. (1963). Linear Programming and Extensions. Princeton, NJ: Princeton University Press. ISBN 978-0-691-05913-6.", doi: "10.1515/9781400884179", verified: true, tags: ["optimization"] },
+  { id: "dantzig1959vrp", label: "Dantzig & Ramser 1959", citation: "Dantzig, G. B., & Ramser, J. H. (1959). The truck dispatching problem. Management Science 6(1), 80–91.", doi: "10.1287/mnsc.6.1.80", verified: true, tags: ["optimization"] },
+  { id: "karmarkar1984", label: "Karmarkar 1984", citation: "Karmarkar, N. (1984). A new polynomial-time algorithm for linear programming. Combinatorica 4(4), 373–395.", doi: "10.1007/BF02579150", verified: true, tags: ["optimization"] },
+  { id: "vonneumann1947", label: "von Neumann 1947", citation: "von Neumann, J. (1947). Discussion of a maximum problem (unpublished working paper, Institute for Advanced Study); reprinted in A. H. Taub (Ed.), John von Neumann: Collected Works, Vol. VI (1963), pp. 89–95. Oxford: Pergamon Press.", url: "https://search.worldcat.org/oclc/707021", verified: false, tags: ["optimization"] },
+  { id: "land1960", label: "Land & Doig 1960", citation: "Land, A. H., & Doig, A. G. (1960). An automatic method of solving discrete programming problems. Econometrica 28(3), 497–520.", doi: "10.2307/1910129", verified: true, tags: ["optimization"] },
+  { id: "gomory1958", label: "Gomory 1958", citation: "Gomory, R. E. (1958). Outline of an algorithm for integer solutions to linear programs. Bulletin of the American Mathematical Society 64(5), 275–278.", doi: "10.1090/S0002-9904-1958-10224-4", verified: true, tags: ["optimization"] },
+  { id: "dijkstra1959", label: "Dijkstra 1959", citation: "Dijkstra, E. W. (1959). A note on two problems in connexion with graphs. Numerische Mathematik 1(1), 269–271.", doi: "10.1007/BF01386390", verified: true, tags: ["optimization"] },
+  { id: "fisher1963", label: "Fisher & Thompson 1963", citation: "Fisher, H., & Thompson, G. L. (1963). Probabilistic learning combinations of local job-shop scheduling rules. In J. F. Muth & G. L. Thompson (Eds.), Industrial Scheduling (pp. 225–251). Englewood Cliffs, NJ: Prentice-Hall.", url: "https://search.worldcat.org/oclc/1041390", verified: false, tags: ["optimization"] },
+  { id: "rossit2019", label: "Rossit, Tohmé & Frutos 2019", citation: "Rossit, D. A., Tohmé, F., & Frutos, M. (2019). The non-permutation flow-shop scheduling problem: A literature review. Omega 77, 143–153 (job-shop disjunctive formulation review).", doi: "10.1016/j.omega.2017.05.010", verified: true, tags: ["optimization"] },
+  { id: "ohrimenko2009", label: "Ohrimenko, Stuckey & Codish 2009", citation: "Ohrimenko, O., Stuckey, P. J., & Codish, M. (2009). Propagation via lazy clause generation. Constraints 14(3), 357–391.", doi: "10.1007/s10601-008-9064-x", verified: true, tags: ["optimization"] },
+  { id: "rossi2006", label: "Rossi, van Beek & Walsh 2006", citation: "Rossi, F., van Beek, P., & Walsh, T. (Eds.) (2006). Handbook of Constraint Programming. Amsterdam: Elsevier. ISBN 978-0-444-52726-4.", url: "https://search.worldcat.org/oclc/162587579", verified: false, tags: ["optimization"] },
+  { id: "tothvigo2014", label: "Toth & Vigo 2014", citation: "Toth, P., & Vigo, D. (Eds.) (2014). Vehicle Routing: Problems, Methods, and Applications (2nd ed.). MOS-SIAM Series on Optimization. Philadelphia: SIAM.", doi: "10.1137/1.9781611973594", verified: true, tags: ["optimization"] },
+  { id: "applegate2006", label: "Applegate et al. 2006", citation: "Applegate, D. L., Bixby, R. E., Chvátal, V., & Cook, W. J. (2006). The Traveling Salesman Problem: A Computational Study. Princeton, NJ: Princeton University Press. ISBN 978-0-691-12993-8.", url: "https://search.worldcat.org/oclc/65799140", verified: false, tags: ["optimization"] },
+  { id: "voudouris1999", label: "Voudouris & Tsang 1999", citation: "Voudouris, C., & Tsang, E. (1999). Guided local search and its application to the traveling salesman problem. European Journal of Operational Research 113(2), 469–499.", doi: "10.1016/S0377-2217(98)00099-X", verified: true, tags: ["optimization"] },
+  { id: "papadimitriou1998", label: "Papadimitriou & Steiglitz 1998", citation: "Papadimitriou, C. H., & Steiglitz, K. (1998). Combinatorial Optimization: Algorithms and Complexity. Mineola, NY: Dover Publications. ISBN 978-0-486-40258-1.", url: "https://search.worldcat.org/oclc/38055966", verified: false, tags: ["optimization"] },
+  { id: "garey1979", label: "Garey & Johnson 1979", citation: "Garey, M. R., & Johnson, D. S. (1979). Computers and Intractability: A Guide to the Theory of NP-Completeness. San Francisco: W. H. Freeman. ISBN 978-0-7167-1045-5.", url: "https://search.worldcat.org/oclc/4195125", verified: false, tags: ["optimization"] },
+  { id: "morgan1968", label: "Morgan & Peterson 1968", citation: "Morgan, W. C., & Peterson, L. L. (1968). Determining shovel–truck productivity. Mining Engineering 20(12), 76–80 (origin of the match-factor ratio).", url: "https://search.worldcat.org/oclc/1758387", verified: false, tags: ["optimization"] },
+  { id: "burt2014", label: "Burt & Caccetta 2014", citation: "Burt, C. N., & Caccetta, L. (2014). Equipment selection for surface mining: A review. Interfaces 44(2), 143–162 (match factor and fleet-sizing review).", doi: "10.1287/inte.2013.0732", verified: true, tags: ["optimization"] },
 ];
 
 export const CITATIONS_BY_ID: Record<string, Citation> = Object.fromEntries(CITATIONS.map((c) => [c.id, c]));
