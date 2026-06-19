@@ -47,6 +47,32 @@ export interface VariantEntry {
   trace: string; // repo-relative path, forward slashes
 }
 
+// ── Grid ABM (Schelling, SIR) frame trace (simlab.gridtrace/v1) ──
+export interface GridFrame {
+  t: number;
+  cells: number[]; // row-major state codes
+}
+export interface LegendItem {
+  code: number;
+  label_en: string;
+  label_es: string;
+  color: string; // a CSS var() expression
+}
+export interface GridTrace {
+  schema: string;
+  scenario: string;
+  title: string;
+  method: string;
+  seed: number;
+  params: Record<string, number>;
+  grid: { w: number; h: number };
+  legend: LegendItem[];
+  kpis: Record<string, number>;
+  analytic: Record<string, unknown>;
+  series: Record<string, number[]>; // includes "x"
+  frames: GridFrame[];
+}
+
 export interface ScenarioManifest {
   schema: string;
   id: string;

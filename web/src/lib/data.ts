@@ -1,4 +1,4 @@
-import type { ScenarioManifest, Trace } from "./types";
+import type { GridTrace, ScenarioManifest, Trace } from "./types";
 
 const BASE = import.meta.env.BASE_URL; // "/" on the custom domain
 
@@ -8,9 +8,16 @@ export async function loadManifest(id: string): Promise<ScenarioManifest> {
   return (await res.json()) as ScenarioManifest;
 }
 
-/** Load a trace by its repo-relative path (as recorded in a variant entry). */
+/** Load a queue (event) trace by its repo-relative path (as recorded in a variant entry). */
 export async function loadTrace(path: string): Promise<Trace> {
   const res = await fetch(`${BASE}${path}`);
   if (!res.ok) throw new Error(`trace ${path}: HTTP ${res.status}`);
   return (await res.json()) as Trace;
+}
+
+/** Load a grid (frame) trace for an ABM scenario. */
+export async function loadGridTrace(path: string): Promise<GridTrace> {
+  const res = await fetch(`${BASE}${path}`);
+  if (!res.ok) throw new Error(`grid trace ${path}: HTTP ${res.status}`);
+  return (await res.json()) as GridTrace;
 }
