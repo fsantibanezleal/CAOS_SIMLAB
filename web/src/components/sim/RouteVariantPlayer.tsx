@@ -13,6 +13,7 @@ const KPI_MAP: Record<string, { en: string; es: string }> = {
   throughput_per_hr: { en: "Throughput /hr", es: "Rendimiento /hr" },
   mean_cycle_time: { en: "Mean cycle time", es: "Tiempo ciclo medio" },
   loader_wait_per_load: { en: "Loader wait / load", es: "Espera cargador / carga" },
+  switch_grade_est: { en: "Route-switch grade g*", es: "Pendiente de salto g*" },
   n_trucks: { en: "Trucks", es: "Camiones" },
   n_loaders: { en: "Loaders", es: "Cargadores" },
   // S08 VRP
@@ -34,6 +35,9 @@ const PARAM_MAP: Record<string, { en: string; es: string }> = {
   n_trucks: { en: "Trucks", es: "Camiones" },
   n_loaders: { en: "Loaders", es: "Cargadores" },
   grade: { en: "Grade penalty", es: "Penalización pendiente" },
+  pass_col: { en: "Pass column", es: "Columna del paso" },
+  lift_col: { en: "Load/dump column", es: "Columna carga/botadero" },
+  barrier: { en: "Wall on direct line", es: "Muro en línea directa" },
   horizon: { en: "Horizon", es: "Horizonte" },
   n_customers: { en: "Customers", es: "Clientes" },
   n_vehicles: { en: "Vehicles", es: "Vehículos" },

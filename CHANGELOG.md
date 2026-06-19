@@ -3,6 +3,30 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.12.000] - 2026-06-19
+### Changed
+- **S07 haul redesigned — the route now genuinely depends on the terrain (was degenerate).** The old grid
+  used a smooth monotone elevation ramp, so *every* load→dump path climbed the same total amount: the grade
+  weight only scaled a constant and never changed the optimal route — it was an invariant border path
+  across all variants. Replaced with a deterministic **Gaussian ridge + low pass** field (`_geo.py` gains
+  backward-compatible keyword-only `terrain`/`terrain_opts`/`blocked`; the `ramp` default reproduces S08/S09
+  byte-for-byte). Now the optimal haul route **switches direct↔pass at a critical grade g\* ≈ 3.4**
+  (Dijkstra-verified), moving the pass sends the detour the other way, and a **barrier** (true node removal)
+  reroutes it independent of grade. 13 variants spanning the route trade-off AND the loader-bottleneck
+  fleet-sizing story (no monotone clones). New `analytic.switch_grade_est` + `route_via`.
+- **S07 description rewritten + formalized** — grounds the model as a **closed finite-source (machine-
+  repair, M/M/1//N) queue** with the **match factor** MF = trucks·t_load ÷ (loaders·t_cycle), the graded
+  route cost, and what each variant shows (the old copy was too terse and skipped the formalization).
+- **RouteViz: elevation field render** — a paint-once normalized terrain heatmap behind the roads (ridge
+  warm, pass cool) so the route trade-off is visible; **barriers** drawn as impassable cells; the elev
+  colour ramp is now normalized to [0,1] (the ridge peak exceeds 1). `routetrace.py` gains an optional
+  `barriers` field (only serialized when present → S08/S09 stay byte-identical).
+- **Case order**: Monte-Carlo moved to the **S07** slot (right after S06) so the three geospatial routing
+  cases group together at the end (now S08 haul · S09 VRP · S10 ambulance). Display labels only — internal
+  `manifestId`s and tab ids are unchanged (deep-links preserved).
+- Tests: route-switch + tie-stability (±1e-9) + updated loader-saturation tests; S08/S09 byte-identity
+  regression. 35 tests.
+
 ## [0.11.002] - 2026-06-19
 ### Fixed
 - **S10 live lane crashed on unstable regimes.** Tuning the Monte-Carlo sliders to ρ ≥ 1 (e.g. high λ /
