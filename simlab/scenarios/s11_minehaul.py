@@ -42,7 +42,7 @@ class MineHaulScenario(Scenario):
     pure_python = False
     wheels = []
     param_specs = [
-        ParamSpec("grid", "Grid size", 8, 6, 10, 1, kind="int"),
+        ParamSpec("grid", "Grid size", 14, 12, 18, 1, kind="int"),
         ParamSpec("n_trucks", "Trucks", 6, 1, 16, 1, kind="int"),
         ParamSpec("plant_demand", "Plant demand (t)", 60.0, 10.0, 160.0, 5.0),
         ParamSpec("grade_target", "Plant grade target", 2.9, 1.5, 3.4, 0.1),
@@ -56,9 +56,9 @@ class MineHaulScenario(Scenario):
 
     def variants(self) -> list[Variant]:
         def v(vid, le, ls, *, nt=6, dem=60.0, gt=2.9, tol=0.15, ns=1, init=0.0, sg=3.0, bar=0, ne="", nse=""):
-            return Variant(vid, le, ls, {"grid": 8, "n_trucks": nt, "plant_demand": dem, "grade_target": gt,
+            return Variant(vid, le, ls, {"grid": 14, "n_trucks": nt, "plant_demand": dem, "grade_target": gt,
                                          "grade_tol": tol, "n_stocks": ns, "init_stock": init, "stock_grade": sg,
-                                         "barrier": bar, "horizon": 90.0}, ne, nse)
+                                         "barrier": bar, "horizon": 130.0}, ne, nse)
 
         return [
             v("base", "Matched fleet", "Flota equilibrada", nt=6,
@@ -102,18 +102,26 @@ class MineHaulScenario(Scenario):
         barrier = int(p["barrier"])
         horizon = float(p["horizon"])
 
-        ridge_row = (g - 1) / 2.0
-        # a wall on the high-grade phase's haul road (left side, lengthens its climb)
-        blocked = {int(round(ridge_row)) * g + 1} if barrier else set()
-        net = GridNetwork(g, g, spacing=1.0, terrain="ridge",
-                          terrain_opts={"passes": [g // 2], "ridge_row": ridge_row}, blocked=blocked)
+        # Places sit in the INTERIOR, spread out (fractions of the grid) so haul routes wind through the
+        # terrain instead of hugging the border. Index 0=low, 1=mid, 2=high to match PHASE_GRADES: low &
+        # mid sit NEAR the plant; the high-grade phase sits FAR across the map — an undersized fleet
+        # starves it and the blend slips.
+        def at(fx: float, fy: float) -> int:
+            return int(round(fy * (g - 1))) * g + int(round(fx * (g - 1)))
 
-        # nodes (index 0=low, 1=mid, 2=high to match PHASE_GRADES): low & mid sit NEAR the plant, the
-        # high-grade phase sits at the FAR corner — so an undersized fleet starves it and the blend slips.
-        phase_nodes = [g - 1, (g - 1) * g, 0]          # low@(g-1,0), mid@(0,g-1) near; high@(0,0) far
-        plant_node = (g - 1) * g + (g - 1)             # (g-1,g-1)
-        dump_node = g // 2                             # (g//2, 0)
-        stock_node = (g // 2) * g + (g // 2) if n_stocks else None  # centre — nearer than the far phase
+        plant_node = at(0.82, 0.80)
+        phase_nodes = [at(0.74, 0.26), at(0.26, 0.82), at(0.13, 0.13)]  # low (near), mid (near), high (FAR)
+        dump_node = at(0.50, 0.22)
+        stock_node = at(0.52, 0.56) if n_stocks else None
+        # a richly varied landscape (Gaussian hills); routes wind through the valleys between peaks
+        bumps = [(0.34 * (g - 1), 0.54 * (g - 1), 1.5), (0.64 * (g - 1), 0.40 * (g - 1), 1.4),
+                 (0.50 * (g - 1), 0.78 * (g - 1), 1.2), (0.80 * (g - 1), 0.58 * (g - 1), 1.2),
+                 (0.24 * (g - 1), 0.32 * (g - 1), 1.1), (0.44 * (g - 1), 0.44 * (g - 1), 1.3)]
+        sigma = 0.16 * (g - 1)
+        # a wall at a chokepoint on the high→plant line (forces a reroute) for the barrier variant
+        blocked = {at(0.45, 0.47), at(0.48, 0.51)} if barrier else set()
+        net = GridNetwork(g, g, spacing=1.0, terrain="hills",
+                          terrain_opts={"bumps": bumps, "sigma": sigma}, blocked=blocked)
 
         def loaded_cost(a: int, b: int) -> float:
             return net.dist(a, b) * (1.0 + ROAD_GRADE * max(0.0, net.elev[b] - net.elev[a]))

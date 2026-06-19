@@ -74,6 +74,20 @@ class GridNetwork:
                     notch *= 1.0 - pass_depth * math.exp(-((x - cp) ** 2) / (2 * wp * wp))
                 elev[n] = ridge * notch + base_tilt * y / denom
             return elev
+        if terrain == "hills":
+            # A richly varied landscape: a sum of Gaussian bumps (peaks) at given centres. Graded haul
+            # routes wind through the valleys between peaks, so spread-out interior O-D pairs get distinct,
+            # non-border routes. `bumps` = [(cx, cy, amp)] in grid coords; deterministic, no RNG.
+            bumps = opts.get("bumps", [(0.35, 0.55, 1.5), (0.65, 0.40, 1.3), (0.5, 0.8, 1.1),
+                                       (0.78, 0.62, 1.2), (0.25, 0.3, 1.0)])
+            sig = opts.get("sigma", 2.2)
+            elev = {}
+            for n, (x, y) in self.coords.items():
+                e = 0.0
+                for cx, cy, amp in bumps:
+                    e += amp * math.exp(-((x - cx) ** 2 + (y - cy) ** 2) / (2 * sig * sig))
+                elev[n] = e
+            return elev
         raise ValueError(f"unknown terrain '{terrain}'")
 
     def dist(self, a: int, b: int) -> float:
