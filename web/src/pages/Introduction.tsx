@@ -75,7 +75,7 @@ function En() {
       <section>
         <h2>What you'll find</h2>
         <ul>
-          <li><Link to="/experiments">Experiments</Link> — worked case studies, each with a detailed write-up, ≥10 comparable regimes, an animated player, and a sim-vs-theory comparison.</li>
+          <li><Link to="/">Experiments</Link> — worked case studies, each with a detailed write-up, ≥10 comparable regimes, an animated player, and a sim-vs-theory comparison.</li>
           <li><Link to="/theory">Theory</Link> — the concepts from zero: the event loop, queueing theory and the M/M/c formulas, and why replications and validation matter.</li>
           <li><Link to="/build">How to build</Link> — the end-to-end recipe for building a simulation program of this kind, with the real code.</li>
         </ul>
@@ -152,7 +152,7 @@ function Es() {
       <section>
         <h2>Qué vas a encontrar</h2>
         <ul>
-          <li><Link to="/experiments">Experimentos</Link> — casos de estudio, cada uno con explicación detallada, ≥10 regímenes comparables, un reproductor animado y una comparación sim-vs-teoría.</li>
+          <li><Link to="/">Experimentos</Link> — casos de estudio, cada uno con explicación detallada, ≥10 regímenes comparables, un reproductor animado y una comparación sim-vs-teoría.</li>
           <li><Link to="/theory">Teoría</Link> — los conceptos desde cero: el bucle de eventos, la teoría de colas y las fórmulas M/M/c, y por qué importan las réplicas y la validación.</li>
           <li><Link to="/build">Cómo construir</Link> — la receta de punta a punta para construir un programa de simulación de este tipo, con el código real.</li>
         </ul>

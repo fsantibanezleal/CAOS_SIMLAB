@@ -36,8 +36,7 @@ export function ScenarioExperiment({ manifestId, description }: { manifestId: st
 
   return (
     <div>
-      <div className="prose">{description}</div>
-
+      {/* The simulator first — you land straight in a running sim. */}
       <div className="variant-bar">
         <span className="variant-bar-label">
           {t("sim.variants")} ({manifest.variants.length}) · {manifest.lane === "live" ? t("sim.laneLive") : t("sim.lanePrecomputed")}
@@ -57,6 +56,9 @@ export function ScenarioExperiment({ manifestId, description }: { manifestId: st
       </div>
 
       {active && <VariantPlayer key={active.id} variant={active} />}
+
+      {/* The problem write-up + the cross-regime comparison sit below the live sim. */}
+      <div className="prose" style={{ marginTop: "1.75rem" }}>{description}</div>
 
       <div style={{ marginTop: "1.5rem" }}>
         <VariantComparison variants={manifest.variants} activeId={active?.id ?? ""} onSelect={setActiveId} />

@@ -3,6 +3,14 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.03.001] - 2026-06-19
+### Changed
+- **You now land directly on the simulator** (`/` = the Experiments simulator) — entering the app drops
+  you straight into a running sim, per the product intent. Introduction moved to `/introduction`
+  (`/experiments` redirects to `/`).
+- In a case study, the **live simulator (regime selector + animated player) now renders first**, with the
+  problem write-up and the cross-regime comparison below it.
+
 ## [0.03.000] - 2026-06-19
 ### Added
 - **12 pre-simulated regimes for S01** (a `Variant` family on the scenario): a load sweep (ρ from 0.33
