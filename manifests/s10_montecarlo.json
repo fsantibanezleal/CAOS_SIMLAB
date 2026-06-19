@@ -1,0 +1,440 @@
+{
+  "schema": "simlab.manifest/v2",
+  "id": "s10_montecarlo",
+  "title": "Monte-Carlo Replication / CI Study",
+  "method": "hybrid",
+  "tier": 3,
+  "engine": "numpy",
+  "seed": 42,
+  "viz": {
+    "renderer": "chart",
+    "dimensionality": "2d"
+  },
+  "wheel_closure": [
+    "numpy"
+  ],
+  "param_specs": [
+    {
+      "key": "lam",
+      "label": "Arrival rate \u03bb",
+      "default": 2.0,
+      "min": 0.1,
+      "max": 10.0,
+      "step": 0.1,
+      "kind": "float"
+    },
+    {
+      "key": "mu",
+      "label": "Service rate \u03bc",
+      "default": 1.0,
+      "min": 0.1,
+      "max": 10.0,
+      "step": 0.1,
+      "kind": "float"
+    },
+    {
+      "key": "c",
+      "label": "Servers c",
+      "default": 3,
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_customers",
+      "label": "Customers per run",
+      "default": 600,
+      "min": 100,
+      "max": 5000,
+      "step": 50,
+      "kind": "int"
+    },
+    {
+      "key": "n_reps",
+      "label": "Replications",
+      "default": 200,
+      "min": 20,
+      "max": 1000,
+      "step": 10,
+      "kind": "int"
+    }
+  ],
+  "lane": "live",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "rep50_mod",
+      "label_en": "50 reps \u00b7 \u03c1\u22480.67",
+      "label_es": "50 r\u00e9plicas \u00b7 \u03c1\u22480.67",
+      "note_en": "Few replications: wide, jumpy CI.",
+      "note_es": "Pocas r\u00e9plicas: IC ancho e inestable.",
+      "params": {
+        "lam": 2.0,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 16.1,
+        "trace_bytes": 2374,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 0.4889,
+        "ci_halfwidth": 0.0515,
+        "theory_Wq": 0.4444,
+        "rel_error_pct": 10.01,
+        "n_reps": 50,
+        "rho": 0.6667
+      },
+      "analytic": {
+        "rho": 0.6667,
+        "p_wait": 0.4444,
+        "Wq": 0.4444,
+        "Lq": 0.8889,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep50_mod-seed42.json"
+    },
+    {
+      "id": "rep200_mod",
+      "label_en": "200 reps \u00b7 \u03c1\u22480.67",
+      "label_es": "200 r\u00e9plicas \u00b7 \u03c1\u22480.67",
+      "note_en": "More replications: the CI tightens around theory.",
+      "note_es": "M\u00e1s r\u00e9plicas: el IC se cierra en torno a la teor\u00eda.",
+      "params": {
+        "lam": 2.0,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 200
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 38.8,
+        "trace_bytes": 6036,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 0.4493,
+        "ci_halfwidth": 0.0265,
+        "theory_Wq": 0.4444,
+        "rel_error_pct": 1.1,
+        "n_reps": 200,
+        "rho": 0.6667
+      },
+      "analytic": {
+        "rho": 0.6667,
+        "p_wait": 0.4444,
+        "Wq": 0.4444,
+        "Lq": 0.8889,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep200_mod-seed42.json"
+    },
+    {
+      "id": "rep500_mod",
+      "label_en": "500 reps \u00b7 \u03c1\u22480.67",
+      "label_es": "500 r\u00e9plicas \u00b7 \u03c1\u22480.67",
+      "note_en": "Many replications: a tight, well-centred CI.",
+      "note_es": "Muchas r\u00e9plicas: IC angosto y bien centrado.",
+      "params": {
+        "lam": 2.0,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 500
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 93.6,
+        "trace_bytes": 13436,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 0.4412,
+        "ci_halfwidth": 0.0168,
+        "theory_Wq": 0.4444,
+        "rel_error_pct": 0.72,
+        "n_reps": 500,
+        "rho": 0.6667
+      },
+      "analytic": {
+        "rho": 0.6667,
+        "p_wait": 0.4444,
+        "Wq": 0.4444,
+        "Lq": 0.8889,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep500_mod-seed42.json"
+    },
+    {
+      "id": "rep200_light",
+      "label_en": "200 reps \u00b7 \u03c1\u22480.50",
+      "label_es": "200 r\u00e9plicas \u00b7 \u03c1\u22480.50",
+      "note_en": "Light load: low variance, easy to estimate.",
+      "note_es": "Carga ligera: baja varianza, f\u00e1cil de estimar.",
+      "params": {
+        "lam": 1.5,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 200
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 38.4,
+        "trace_bytes": 6023,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 0.1592,
+        "ci_halfwidth": 0.0085,
+        "theory_Wq": 0.1579,
+        "rel_error_pct": 0.82,
+        "n_reps": 200,
+        "rho": 0.5
+      },
+      "analytic": {
+        "rho": 0.5,
+        "p_wait": 0.2368,
+        "Wq": 0.1579,
+        "Lq": 0.2368,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep200_light-seed42.json"
+    },
+    {
+      "id": "rep200_busy",
+      "label_en": "200 reps \u00b7 \u03c1\u22480.80",
+      "label_es": "200 r\u00e9plicas \u00b7 \u03c1\u22480.80",
+      "note_en": "Busier: more run-to-run variability.",
+      "note_es": "M\u00e1s ocupada: m\u00e1s variabilidad entre corridas.",
+      "params": {
+        "lam": 2.4,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 200
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 36.2,
+        "trace_bytes": 6015,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 1.0723,
+        "ci_halfwidth": 0.0793,
+        "theory_Wq": 1.0787,
+        "rel_error_pct": 0.59,
+        "n_reps": 200,
+        "rho": 0.8
+      },
+      "analytic": {
+        "rho": 0.8,
+        "p_wait": 0.6472,
+        "Wq": 1.0787,
+        "Lq": 2.5888,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep200_busy-seed42.json"
+    },
+    {
+      "id": "rep200_heavy",
+      "label_en": "200 reps \u00b7 \u03c1\u22480.90",
+      "label_es": "200 r\u00e9plicas \u00b7 \u03c1\u22480.90",
+      "note_en": "Heavy load: high variance \u2014 the CI is wide.",
+      "note_es": "Carga alta: alta varianza \u2014 el IC es ancho.",
+      "params": {
+        "lam": 2.7,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 200
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 35.3,
+        "trace_bytes": 6028,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 2.2727,
+        "ci_halfwidth": 0.1922,
+        "theory_Wq": 2.7235,
+        "rel_error_pct": 16.55,
+        "n_reps": 200,
+        "rho": 0.9
+      },
+      "analytic": {
+        "rho": 0.9,
+        "p_wait": 0.8171,
+        "Wq": 2.7235,
+        "Lq": 7.3535,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep200_heavy-seed42.json"
+    },
+    {
+      "id": "rep500_busy",
+      "label_en": "500 reps \u00b7 \u03c1\u22480.80",
+      "label_es": "500 r\u00e9plicas \u00b7 \u03c1\u22480.80",
+      "note_en": "More reps tame the busy-system variance.",
+      "note_es": "M\u00e1s r\u00e9plicas domestican la varianza del sistema ocupado.",
+      "params": {
+        "lam": 2.4,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 500
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 91.4,
+        "trace_bytes": 13432,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 1.0468,
+        "ci_halfwidth": 0.05,
+        "theory_Wq": 1.0787,
+        "rel_error_pct": 2.96,
+        "n_reps": 500,
+        "rho": 0.8
+      },
+      "analytic": {
+        "rho": 0.8,
+        "p_wait": 0.6472,
+        "Wq": 1.0787,
+        "Lq": 2.5888,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep500_busy-seed42.json"
+    },
+    {
+      "id": "rep500_heavy",
+      "label_en": "500 reps \u00b7 \u03c1\u22480.90",
+      "label_es": "500 r\u00e9plicas \u00b7 \u03c1\u22480.90",
+      "note_en": "Even at \u03c1=0.9, 500 reps give a usable CI.",
+      "note_es": "Aun a \u03c1=0.9, 500 r\u00e9plicas dan un IC utilizable.",
+      "params": {
+        "lam": 2.7,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 500
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 89.3,
+        "trace_bytes": 13438,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 2.2733,
+        "ci_halfwidth": 0.1332,
+        "theory_Wq": 2.7235,
+        "rel_error_pct": 16.53,
+        "n_reps": 500,
+        "rho": 0.9
+      },
+      "analytic": {
+        "rho": 0.9,
+        "p_wait": 0.8171,
+        "Wq": 2.7235,
+        "Lq": 7.3535,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep500_heavy-seed42.json"
+    },
+    {
+      "id": "rep50_heavy",
+      "label_en": "50 reps \u00b7 \u03c1\u22480.90",
+      "label_es": "50 r\u00e9plicas \u00b7 \u03c1\u22480.90",
+      "note_en": "The danger case: few reps at high load \u2014 don't trust it.",
+      "note_es": "El caso peligroso: pocas r\u00e9plicas a carga alta \u2014 no conf\u00edes.",
+      "params": {
+        "lam": 2.7,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 9.0,
+        "trace_bytes": 2369,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 2.4852,
+        "ci_halfwidth": 0.3728,
+        "theory_Wq": 2.7235,
+        "rel_error_pct": 8.75,
+        "n_reps": 50,
+        "rho": 0.9
+      },
+      "analytic": {
+        "rho": 0.9,
+        "p_wait": 0.8171,
+        "Wq": 2.7235,
+        "Lq": 7.3535,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep50_heavy-seed42.json"
+    },
+    {
+      "id": "rep500_light",
+      "label_en": "500 reps \u00b7 \u03c1\u22480.50",
+      "label_es": "500 r\u00e9plicas \u00b7 \u03c1\u22480.50",
+      "note_en": "Best case: light load, many reps, razor-tight CI.",
+      "note_es": "Mejor caso: carga ligera, muchas r\u00e9plicas, IC fin\u00edsimo.",
+      "params": {
+        "lam": 1.5,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 600,
+        "n_reps": 500
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 94.0,
+        "trace_bytes": 13418,
+        "reasons": []
+      },
+      "kpis": {
+        "final_mean": 0.1576,
+        "ci_halfwidth": 0.0054,
+        "theory_Wq": 0.1579,
+        "rel_error_pct": 0.19,
+        "n_reps": 500,
+        "rho": 0.5
+      },
+      "analytic": {
+        "rho": 0.5,
+        "p_wait": 0.2368,
+        "Wq": 0.1579,
+        "Lq": 0.2368,
+        "stable": true
+      },
+      "trace": "data/artifacts/s10_montecarlo/rep500_light-seed42.json"
+    }
+  ]
+}

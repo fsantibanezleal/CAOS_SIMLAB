@@ -1,0 +1,370 @@
+{
+  "schema": "simlab.manifest/v2",
+  "id": "s05_beergame",
+  "title": "Beer Game (Supply-Chain Bullwhip)",
+  "method": "ABM",
+  "tier": 2,
+  "engine": "numpy",
+  "seed": 42,
+  "viz": {
+    "renderer": "chart",
+    "dimensionality": "2d"
+  },
+  "wheel_closure": [
+    "numpy"
+  ],
+  "param_specs": [
+    {
+      "key": "weeks",
+      "label": "Weeks",
+      "default": 52,
+      "min": 20,
+      "max": 120,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "lead",
+      "label": "Lead time L",
+      "default": 2,
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "theta",
+      "label": "Forecast smoothing \u03b8",
+      "default": 0.4,
+      "min": 0.1,
+      "max": 0.9,
+      "step": 0.05,
+      "kind": "float"
+    },
+    {
+      "key": "step",
+      "label": "Demand change",
+      "default": 4.0,
+      "min": 0.0,
+      "max": 12.0,
+      "step": 1.0,
+      "kind": "float"
+    },
+    {
+      "key": "pattern",
+      "label": "Demand pattern (0 step,1 spike,2 noise)",
+      "default": 0,
+      "min": 0,
+      "max": 2,
+      "step": 1,
+      "kind": "int"
+    }
+  ],
+  "lane": "live",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "L1",
+      "label_en": "Lead time 1 wk",
+      "label_es": "Lead time 1 sem",
+      "note_en": "Short lead time: modest amplification.",
+      "note_es": "Lead time corto: amplificaci\u00f3n modesta.",
+      "params": {
+        "weeks": 52,
+        "lead": 1,
+        "theta": 0.4,
+        "step": 4.0,
+        "pattern": 0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 8.0,
+        "trace_bytes": 2678,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 19.36,
+        "bullwhip_distributor": 6.15,
+        "bullwhip_wholesaler": 2.34,
+        "bullwhip_retailer": 1.26,
+        "peak_factory_order": 50.0
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/L1-seed42.json"
+    },
+    {
+      "id": "L2",
+      "label_en": "Lead time 2 wk",
+      "label_es": "Lead time 2 sem",
+      "note_en": "The baseline bullwhip case.",
+      "note_es": "El caso base de bullwhip.",
+      "params": {
+        "weeks": 52,
+        "lead": 2,
+        "theta": 0.4,
+        "step": 4.0,
+        "pattern": 0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.3,
+        "trace_bytes": 2684,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 101.92,
+        "bullwhip_distributor": 20.38,
+        "bullwhip_wholesaler": 4.57,
+        "bullwhip_retailer": 1.52,
+        "peak_factory_order": 101.7
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/L2-seed42.json"
+    },
+    {
+      "id": "L3",
+      "label_en": "Lead time 3 wk",
+      "label_es": "Lead time 3 sem",
+      "note_en": "Longer lead time amplifies more.",
+      "note_es": "Mayor lead time amplifica m\u00e1s.",
+      "params": {
+        "weeks": 52,
+        "lead": 3,
+        "theta": 0.4,
+        "step": 4.0,
+        "pattern": 0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.3,
+        "trace_bytes": 2689,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 382.0,
+        "bullwhip_distributor": 57.52,
+        "bullwhip_wholesaler": 8.65,
+        "bullwhip_retailer": 1.87,
+        "peak_factory_order": 190.8
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/L3-seed42.json"
+    },
+    {
+      "id": "L4",
+      "label_en": "Lead time 4 wk",
+      "label_es": "Lead time 4 sem",
+      "note_en": "Long lead time: violent upstream swings.",
+      "note_es": "Lead time largo: oscilaciones upstream violentas.",
+      "params": {
+        "weeks": 52,
+        "lead": 4,
+        "theta": 0.4,
+        "step": 4.0,
+        "pattern": 0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.2,
+        "trace_bytes": 2686,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 1202.53,
+        "bullwhip_distributor": 138.35,
+        "bullwhip_wholesaler": 15.35,
+        "bullwhip_retailer": 2.3,
+        "peak_factory_order": 332.0
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/L4-seed42.json"
+    },
+    {
+      "id": "theta20",
+      "label_en": "Smoothing \u03b8=0.2",
+      "label_es": "Suavizado \u03b8=0.2",
+      "note_en": "Heavy smoothing: calmer, slower response.",
+      "note_es": "Mucho suavizado: respuesta m\u00e1s calmada y lenta.",
+      "params": {
+        "weeks": 52,
+        "lead": 2,
+        "theta": 0.2,
+        "step": 4.0,
+        "pattern": 0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.2,
+        "trace_bytes": 2726,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 10.67,
+        "bullwhip_distributor": 4.57,
+        "bullwhip_wholesaler": 2.18,
+        "bullwhip_retailer": 1.29,
+        "peak_factory_order": 34.2
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/theta20-seed42.json"
+    },
+    {
+      "id": "theta40",
+      "label_en": "Smoothing \u03b8=0.4",
+      "label_es": "Suavizado \u03b8=0.4",
+      "note_en": "Moderate forecasting reactivity.",
+      "note_es": "Reactividad de pron\u00f3stico moderada.",
+      "params": {
+        "weeks": 52,
+        "lead": 2,
+        "theta": 0.4,
+        "step": 4.0,
+        "pattern": 0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.2,
+        "trace_bytes": 2684,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 101.92,
+        "bullwhip_distributor": 20.38,
+        "bullwhip_wholesaler": 4.57,
+        "bullwhip_retailer": 1.52,
+        "peak_factory_order": 101.7
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/theta40-seed42.json"
+    },
+    {
+      "id": "theta70",
+      "label_en": "Smoothing \u03b8=0.7",
+      "label_es": "Suavizado \u03b8=0.7",
+      "note_en": "Reactive forecasting worsens the bullwhip.",
+      "note_es": "Pron\u00f3stico reactivo empeora el bullwhip.",
+      "params": {
+        "weeks": 52,
+        "lead": 2,
+        "theta": 0.7,
+        "step": 4.0,
+        "pattern": 0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.3,
+        "trace_bytes": 2656,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 1555.1,
+        "bullwhip_distributor": 159.98,
+        "bullwhip_wholesaler": 15.45,
+        "bullwhip_retailer": 2.01,
+        "peak_factory_order": 377.4
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/theta70-seed42.json"
+    },
+    {
+      "id": "bigstep",
+      "label_en": "Big demand step",
+      "label_es": "Salto de demanda grande",
+      "note_en": "A large step: large overshoot upstream.",
+      "note_es": "Un salto grande: gran sobre-pico upstream.",
+      "params": {
+        "weeks": 52,
+        "lead": 2,
+        "theta": 0.4,
+        "step": 8.0,
+        "pattern": 0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.2,
+        "trace_bytes": 2687,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 99.14,
+        "bullwhip_distributor": 20.38,
+        "bullwhip_wholesaler": 4.57,
+        "bullwhip_retailer": 1.52,
+        "peak_factory_order": 195.4
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/bigstep-seed42.json"
+    },
+    {
+      "id": "spike",
+      "label_en": "One-week spike",
+      "label_es": "Pico de una semana",
+      "note_en": "A transient spike still ripples upstream.",
+      "note_es": "Un pico transitorio igual repercute upstream.",
+      "params": {
+        "weeks": 52,
+        "lead": 2,
+        "theta": 0.4,
+        "step": 8.0,
+        "pattern": 1
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.3,
+        "trace_bytes": 2462,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 555.24,
+        "bullwhip_distributor": 117.56,
+        "bullwhip_wholesaler": 26.12,
+        "bullwhip_retailer": 5.28,
+        "peak_factory_order": 195.4
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/spike-seed42.json"
+    },
+    {
+      "id": "noisy",
+      "label_en": "Noisy demand",
+      "label_es": "Demanda ruidosa",
+      "note_en": "Random demand: variance amplifies stage by stage.",
+      "note_es": "Demanda aleatoria: la varianza se amplifica eslab\u00f3n a eslab\u00f3n.",
+      "params": {
+        "weeks": 52,
+        "lead": 2,
+        "theta": 0.4,
+        "step": 5.0,
+        "pattern": 2
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.3,
+        "trace_bytes": 2697,
+        "reasons": []
+      },
+      "kpis": {
+        "bullwhip_factory": 160.47,
+        "bullwhip_distributor": 42.97,
+        "bullwhip_wholesaler": 12.92,
+        "bullwhip_retailer": 3.9,
+        "peak_factory_order": 108.1
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s05_beergame/noisy-seed42.json"
+    }
+  ]
+}

@@ -23,29 +23,43 @@ const SIR_KPI: GridKpiConfig = {
     { key: "gamma", en: "γ", es: "γ" },
   ],
 };
+const BEERGAME_KPI: GridKpiConfig = {
+  key: "bullwhip_factory", en: "Bullwhip ratio at the factory", es: "Razón bullwhip en la fábrica",
+  cols: [
+    { key: "bullwhip_retailer", en: "Retailer", es: "Minorista" },
+    { key: "bullwhip_wholesaler", en: "Wholesaler", es: "Mayorista" },
+    { key: "bullwhip_distributor", en: "Distributor", es: "Distribuidor" },
+    { key: "bullwhip_factory", en: "Factory", es: "Fábrica" },
+    { key: "peak_factory_order", en: "Peak order", es: "Pico orden" },
+  ],
+};
+const MONTECARLO_KPI: GridKpiConfig = {
+  key: "ci_halfwidth", en: "95% CI half-width", es: "Semiancho del IC 95%",
+  cols: [
+    { key: "final_mean", en: "Mean Wq", es: "Media Wq" },
+    { key: "theory_Wq", en: "Theory Wq", es: "Wq teoría" },
+    { key: "ci_halfwidth", en: "CI half-width", es: "Semiancho IC" },
+    { key: "rel_error_pct", en: "Rel. err %", es: "Error rel. %" },
+    { key: "n_reps", en: "Reps", es: "Réplicas" },
+  ],
+};
 
 export default function Experiments() {
   const { t } = useTranslation();
   const lang = useLang();
+  const L = (en: string, es: string) => (lang === "es" ? es : en);
 
   const tabs = [
-    {
-      id: "s01",
-      label: "S01 · " + (lang === "es" ? "Cola banco/clínica" : "Bank / clinic queue"),
-      content: <ScenarioExperiment manifestId="s01_queue" description={<S01Desc lang={lang} />} />,
-    },
-    {
-      id: "s02",
-      label: "S02 · " + (lang === "es" ? "Segregación de Schelling" : "Schelling segregation"),
-      content: <ScenarioExperiment manifestId="s02_schelling" description={<S02Desc lang={lang} />} gridKpi={SCHELLING_KPI} />,
-    },
-    {
-      id: "s03",
-      label: "S03 · " + (lang === "es" ? "Epidemia (SIR)" : "Epidemic (SIR)"),
-      content: <ScenarioExperiment manifestId="s03_sir" description={<S03Desc lang={lang} />} gridKpi={SIR_KPI} />,
-    },
-    { id: "s04", label: "S04 · " + (lang === "es" ? "Urgencias" : "Emergency dept."), content: <Coming lang={lang} which="ed" /> },
-    { id: "s07", label: "S07 · " + (lang === "es" ? "Ruteo de camiones" : "Haul routing"), content: <Coming lang={lang} which="haul" /> },
+    { id: "s01", label: "S01 · " + L("Bank / clinic queue", "Cola banco/clínica"), content: <ScenarioExperiment manifestId="s01_queue" description={<S01Desc lang={lang} />} /> },
+    { id: "s02", label: "S02 · " + L("Schelling segregation", "Segregación de Schelling"), content: <ScenarioExperiment manifestId="s02_schelling" description={<S02Desc lang={lang} />} gridKpi={SCHELLING_KPI} /> },
+    { id: "s03", label: "S03 · " + L("Epidemic (SIR)", "Epidemia (SIR)"), content: <ScenarioExperiment manifestId="s03_sir" description={<S03Desc lang={lang} />} gridKpi={SIR_KPI} /> },
+    { id: "s04", label: "S04 · " + L("Emergency dept.", "Urgencias"), content: <Coming lang={lang} which="ed" /> },
+    { id: "s05", label: "S05 · " + L("Beer Game (bullwhip)", "Beer Game (bullwhip)"), content: <ScenarioExperiment manifestId="s05_beergame" description={<S05Desc lang={lang} />} gridKpi={BEERGAME_KPI} /> },
+    { id: "s06", label: "S06 · " + L("Job-shop (CP-SAT)", "Job-shop (CP-SAT)"), content: <Coming lang={lang} which="jobshop" /> },
+    { id: "s07", label: "S07 · " + L("Haul routing", "Ruteo de camiones"), content: <Coming lang={lang} which="haul" /> },
+    { id: "s08", label: "S08 · " + L("Vehicle routing (VRP)", "Ruteo de vehículos (VRP)"), content: <Coming lang={lang} which="vrp" /> },
+    { id: "s09", label: "S09 · " + L("Ambulance dispatch", "Despacho ambulancias"), content: <Coming lang={lang} which="ambulance" /> },
+    { id: "s10", label: "S10 · " + L("Monte-Carlo / CI", "Monte-Carlo / IC"), content: <ScenarioExperiment manifestId="s10_montecarlo" description={<S10Desc lang={lang} />} gridKpi={MONTECARLO_KPI} /> },
   ];
 
   return (
@@ -53,9 +67,10 @@ export default function Experiments() {
       <div className="page-head">
         <h1>{t("nav.experiments")}</h1>
         <p className="lede">
-          {lang === "es"
-            ? "Casos de estudio trabajados. Cada uno explica el problema y lo que aborda, ofrece ≥10 regímenes pre-simulados para comparar, un reproductor animado y una comparación de resultados."
-            : "Worked case studies. Each explains the problem and what it addresses, offers ≥10 pre-simulated regimes to compare, an animated player, and a comparison of results."}
+          {L(
+            "Worked case studies across DES, ABM and optimization. Each explains the problem and what it addresses, offers ≥10 pre-simulated regimes to compare, an animated player, and a comparison of results. Five are live; the optimization/map cases are landing next.",
+            "Casos de estudio sobre DES, ABM y optimización. Cada uno explica el problema y lo que aborda, ofrece ≥10 regímenes pre-simulados para comparar, un reproductor animado y una comparación de resultados. Cinco están activos; los casos de optimización/mapas llegan a continuación.",
+          )}
         </p>
       </div>
       <Tabs tabs={tabs} ariaLabel={t("nav.experiments")} />
@@ -64,80 +79,120 @@ export default function Experiments() {
 }
 
 function S01Desc({ lang }: { lang: string }) {
-  if (lang === "es") {
-    return (
-      <>
-        <h2>El problema: una cola con varios servidores (M/M/c)</h2>
-        <p>Clientes llegan a un banco o una clínica y esperan a ser atendidos por uno de <em>c</em> servidores idénticos. Las llegadas son aleatorias (Poisson, tasa <em>λ</em>) y cada atención dura un tiempo exponencial (tasa <em>μ</em>). Es el problema canónico de la teoría de colas: el <strong>M/M/c</strong>.</p>
-        <p><strong>Qué aborda:</strong> cómo la utilización ρ = λ/(c·μ) gobierna la congestión y por qué la espera explota cuando ρ→1; el efecto <strong>pooling</strong> (a igual ρ, más servidores acortan la espera); la Ley de Little; y la <strong>validación</strong> contra la fórmula cerrada de Erlang-C. Hay 12 regímenes pre-simulados — un barrido de carga y uno de número de servidores.</p>
-      </>
-    );
-  }
-  return (
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: una cola con varios servidores (M/M/c)</h2>
+      <p>Clientes llegan a un banco o clínica y esperan a uno de <em>c</em> servidores idénticos. Llegadas Poisson (λ), servicio exponencial (μ). Es el problema canónico de la teoría de colas.</p>
+      <p><strong>Qué aborda:</strong> cómo ρ = λ/(c·μ) gobierna la congestión y por qué la espera explota cuando ρ→1; el <strong>pooling</strong> (a igual ρ, más servidores acortan la espera); la Ley de Little; y la <strong>validación</strong> contra Erlang-C. 12 regímenes.</p>
+    </>
+  ) : (
     <>
       <h2>The problem: a multi-server queue (M/M/c)</h2>
-      <p>Customers arrive at a bank or clinic and wait for one of <em>c</em> identical servers. Arrivals are random (Poisson, rate <em>λ</em>) and each service takes an exponential time (rate <em>μ</em>). This is the canonical queueing-theory problem: the <strong>M/M/c</strong>.</p>
-      <p><strong>What it addresses:</strong> how utilization ρ = λ/(c·μ) governs congestion and why waiting explodes as ρ→1; the <strong>pooling</strong> effect (at equal ρ, more servers shorten the wait); Little's Law; and <strong>validation</strong> against the closed-form Erlang-C. 12 pre-simulated regimes — a load sweep and a server-count sweep.</p>
+      <p>Customers arrive at a bank or clinic and wait for one of <em>c</em> identical servers. Poisson arrivals (λ), exponential service (μ). The canonical queueing-theory problem.</p>
+      <p><strong>What it addresses:</strong> how ρ = λ/(c·μ) governs congestion and why waiting explodes as ρ→1; the <strong>pooling</strong> effect; Little's Law; and <strong>validation</strong> against Erlang-C. 12 regimes.</p>
     </>
   );
 }
 
 function S02Desc({ lang }: { lang: string }) {
-  if (lang === "es") {
-    return (
-      <>
-        <h2>El problema: segregación de Schelling</h2>
-        <p>Dos grupos ocupan una grilla con algunas celdas vacías. Cada agente está <em>contento</em> si al menos una fracción <em>tolerancia</em> de sus vecinos (vecindad de Moore) son de su mismo tipo; los descontentos se mudan a una celda vacía al azar. Reglas locales simples, semilla fija.</p>
-        <p><strong>Qué aborda — emergencia:</strong> aun con una preferencia local leve (¡incluso querer solo un 30–50% de vecinos similares!), el sistema se segrega globalmente, un patrón que ningún agente buscó. Mueve el selector de regímenes para ver el <strong>punto de quiebre</strong>: bajo cierta tolerancia casi no hay segregación, y por encima aparece de golpe. El gráfico muestra el índice de segregación creciendo paso a paso.</p>
-      </>
-    );
-  }
-  return (
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: segregación de Schelling</h2>
+      <p>Dos grupos en una grilla con celdas vacías. Un agente está <em>contento</em> si una fracción <em>tolerancia</em> de sus vecinos son de su tipo; los descontentos se mudan. Reglas locales simples, semilla fija.</p>
+      <p><strong>Qué aborda — emergencia:</strong> una preferencia local leve produce segregación global que nadie buscó. Busca el <strong>punto de quiebre</strong> con el selector; el gráfico muestra el índice de segregación creciendo.</p>
+    </>
+  ) : (
     <>
       <h2>The problem: Schelling segregation</h2>
-      <p>Two groups occupy a grid with some empty cells. An agent is <em>happy</em> if at least a fraction <em>tolerance</em> of its Moore-neighbours are its own type; unhappy agents relocate to a random empty cell. Simple local rules, fixed seed.</p>
-      <p><strong>What it addresses — emergence:</strong> even a mild local preference (wanting just 30–50% similar neighbours!) drives the system to global segregation that no agent intended. Move the regime selector to find the <strong>tipping point</strong>: below a tolerance there is almost no segregation, and above it segregation appears sharply. The chart shows the segregation index climbing step by step.</p>
+      <p>Two groups on a grid with empty cells. An agent is <em>happy</em> if a fraction <em>tolerance</em> of its neighbours are its type; unhappy ones relocate. Simple local rules, fixed seed.</p>
+      <p><strong>What it addresses — emergence:</strong> a mild local preference drives global segregation no agent intended. Find the <strong>tipping point</strong> with the selector; the chart shows the segregation index climbing.</p>
     </>
   );
 }
 
 function S03Desc({ lang }: { lang: string }) {
-  if (lang === "es") {
-    return (
-      <>
-        <h2>El problema: epidemia SIR sobre una grilla</h2>
-        <p>Cada celda es <em>Susceptible</em>, <em>Infectada</em> o <em>Recuperada</em>. Una susceptible se infecta con probabilidad 1−(1−β)<sup>k</sup> según su número <em>k</em> de vecinos infectados; una infectada se recupera con probabilidad <em>γ</em> por paso. Es la versión por agentes del modelo compartimental de Kermack–McKendrick.</p>
-        <p><strong>Qué aborda:</strong> el <strong>umbral epidémico</strong> — por debajo de cierta transmisibilidad el brote se apaga; por encima, despega, alcanza un <em>pico</em> y se extingue dejando una <em>tasa de ataque</em> de recuperados. Compara regímenes β/γ para ver cómo cambian el pico y el momento del pico; el gráfico muestra las curvas S/I/R en el tiempo.</p>
-      </>
-    );
-  }
-  return (
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: epidemia SIR sobre una grilla</h2>
+      <p>Cada celda es Susceptible, Infectada o Recuperada. Contagio con probabilidad 1−(1−β)<sup>k</sup> según vecinos infectados <em>k</em>; recuperación con probabilidad <em>γ</em>. Versión por agentes del modelo de Kermack–McKendrick.</p>
+      <p><strong>Qué aborda:</strong> el <strong>umbral epidémico</strong> — bajo cierta transmisibilidad se apaga; arriba, despega, pico y extinción con una <em>tasa de ataque</em>. Compara regímenes β/γ; el gráfico muestra las curvas S/I/R.</p>
+    </>
+  ) : (
     <>
       <h2>The problem: SIR epidemic on a grid</h2>
-      <p>Each cell is <em>Susceptible</em>, <em>Infected</em> or <em>Recovered</em>. A susceptible cell becomes infected with probability 1−(1−β)<sup>k</sup> given its number <em>k</em> of infected neighbours; an infected cell recovers with probability <em>γ</em> per step. It is the agent version of the Kermack–McKendrick compartmental model.</p>
-      <p><strong>What it addresses:</strong> the <strong>epidemic threshold</strong> — below a transmissibility the outbreak fizzles; above it, the epidemic takes off, peaks, and burns out, leaving an <em>attack rate</em> of recovered. Compare β/γ regimes to see how the peak and its timing change; the chart shows the S/I/R curves over time.</p>
+      <p>Each cell is Susceptible, Infected or Recovered. Infection with probability 1−(1−β)<sup>k</sup> from <em>k</em> infected neighbours; recovery with probability <em>γ</em>. The agent version of Kermack–McKendrick.</p>
+      <p><strong>What it addresses:</strong> the <strong>epidemic threshold</strong> — below a transmissibility it fizzles; above, it takes off, peaks and burns out with an <em>attack rate</em>. Compare β/γ regimes; the chart shows the S/I/R curves.</p>
     </>
   );
 }
 
-function Coming({ lang, which }: { lang: string; which: "ed" | "haul" }) {
-  const copy = {
+function S05Desc({ lang }: { lang: string }) {
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: el efecto bullwhip (Beer Game)</h2>
+      <p>Cuatro eslabones en serie (minorista → mayorista → distribuidor → fábrica). Cada uno pronostica las órdenes que recibe (suavizado exponencial) y usa una regla order-up-to con un <em>lead time</em> de envío. Un cambio en la demanda del cliente se transmite aguas arriba.</p>
+      <p><strong>Qué aborda — el bullwhip:</strong> incluso un cambio modesto de demanda se <strong>amplifica</strong> en oscilaciones de órdenes cada vez mayores hacia la fábrica. La razón de bullwhip (varianza de órdenes / varianza de demanda) crece eslabón a eslabón. Compara lead time y suavizado para ver qué empeora la amplificación; el gráfico muestra las órdenes de cada eslabón en el tiempo.</p>
+    </>
+  ) : (
+    <>
+      <h2>The problem: the bullwhip effect (Beer Game)</h2>
+      <p>Four serial echelons (retailer → wholesaler → distributor → factory). Each forecasts the orders it receives (exponential smoothing) and uses an order-up-to rule with a shipping <em>lead time</em>. A change in customer demand propagates upstream.</p>
+      <p><strong>What it addresses — the bullwhip:</strong> even a modest demand change is <strong>amplified</strong> into ever-larger order swings toward the factory. The bullwhip ratio (order variance / demand variance) grows stage by stage. Compare lead time and smoothing to see what worsens the amplification; the chart shows each echelon's orders over time.</p>
+    </>
+  );
+}
+
+function S10Desc({ lang }: { lang: string }) {
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: ¿cuánto confío en una corrida?</h2>
+      <p>Una simulación estocástica es un experimento aleatorio: una sola corrida da un número ruidoso. Este caso corre <em>N réplicas</em> independientes del M/M/c y muestra la <strong>media corriente</strong> y el <strong>intervalo de confianza del 95%</strong> a medida que se acumulan réplicas, contra la respuesta cerrada de Erlang-C.</p>
+      <p><strong>Qué aborda — réplicas e IC:</strong> el IC se angosta como 1/√n; con pocas réplicas a carga alta el estimador es poco confiable. Compara regímenes (réplicas × carga) para ver el semiancho del IC encogerse; el histograma muestra la distribución de Wq por corrida.</p>
+    </>
+  ) : (
+    <>
+      <h2>The problem: how much do I trust one run?</h2>
+      <p>A stochastic simulation is a random experiment: a single run gives a noisy number. This case runs <em>N independent replications</em> of the M/M/c and shows the <strong>running mean</strong> and the <strong>95% confidence interval</strong> as replications accumulate, against the closed-form Erlang-C answer.</p>
+      <p><strong>What it addresses — replications & CIs:</strong> the CI narrows like 1/√n; with few replications at high load the estimate is untrustworthy. Compare regimes (reps × load) to watch the CI half-width shrink; the histogram shows the per-run Wq distribution.</p>
+    </>
+  );
+}
+
+function Coming({ lang, which }: { lang: string; which: "ed" | "haul" | "jobshop" | "vrp" | "ambulance" }) {
+  const copy: Record<string, { en: { h: string; p: string }; es: { h: string; p: string } }> = {
     ed: {
-      en: { h: "Emergency department patient flow — DES", p: "A multi-stage DES with priority triage and non-stationary arrivals: patients flow through triage, treatment and disposition under limited resources. It addresses results-honesty head-on — single run vs N replications, confidence intervals, and the warm-up period." },
-      es: { h: "Flujo de pacientes en urgencias — DES", p: "Un DES multi-etapa con triage por prioridad y llegadas no estacionarias: los pacientes fluyen por triage, tratamiento y disposición con recursos limitados. Aborda de frente la honestidad de resultados — una corrida vs N réplicas, intervalos de confianza y el periodo de calentamiento." },
+      en: { h: "Emergency department patient flow — DES", p: "A multi-stage DES with priority triage and non-stationary arrivals: patients flow through triage, treatment and disposition under limited resources, exercising replications, CIs and warm-up." },
+      es: { h: "Flujo de pacientes en urgencias — DES", p: "Un DES multi-etapa con triage por prioridad y llegadas no estacionarias: triage, tratamiento y disposición con recursos limitados, ejercitando réplicas, IC y calentamiento." },
+    },
+    jobshop: {
+      en: { h: "Job-shop scheduling — CP-SAT", p: "Minimize makespan over machines/jobs/precedences with a constraint solver (OR-Tools CP-SAT). A pure combinatorial-optimization exhibit with a Gantt view; precomputed (native solver)." },
+      es: { h: "Programación job-shop — CP-SAT", p: "Minimizar el makespan sobre máquinas/trabajos/precedencias con un solver de restricciones (OR-Tools CP-SAT). Un caso de optimización combinatoria pura con vista Gantt; precomputado (solver nativo)." },
     },
     haul: {
-      en: { h: "Construction haul routing — optimize-then-simulate", p: "Trucks haul material over a road network where elevation drives cost. An optimizer (OR-Tools) plans routes offline; a DES then replays them under stochastic delays. Precomputed (native solver, larger data) and the one case where 3D terrain is pedagogically real." },
-      es: { h: "Ruteo de camiones en construcción — optimizar-luego-simular", p: "Camiones transportan material sobre una red vial donde la elevación maneja el costo. Un optimizador (OR-Tools) planifica rutas offline; un DES las reproduce bajo demoras estocásticas. Precomputado (solver nativo, datos más grandes) y el único caso donde el terreno 3D es pedagógicamente real." },
+      en: { h: "Construction haul routing — optimize-then-simulate", p: "Trucks haul material over a road network where elevation drives cost. An optimizer plans routes offline; a DES replays them under stochastic delays. The one case where 3D terrain is pedagogically real." },
+      es: { h: "Ruteo de camiones — optimizar-luego-simular", p: "Camiones transportan material sobre una red vial donde la elevación maneja el costo. Un optimizador planifica rutas offline; un DES las reproduce bajo demoras. El único caso donde el terreno 3D es pedagógicamente real." },
     },
-  }[which];
-  const c = lang === "es" ? copy.es : copy.en;
+    vrp: {
+      en: { h: "Vehicle routing (VRP/VRPTW)", p: "Route a fleet to serve customers (with time windows) minimizing distance — OR-Tools / PyVRP. Then simulate the plan under stochastic demand to show time-window fragility. Map viz; precomputed." },
+      es: { h: "Ruteo de vehículos (VRP/VRPTW)", p: "Rutea una flota para servir clientes (con ventanas de tiempo) minimizando distancia — OR-Tools / PyVRP. Luego simula el plan bajo demanda estocástica para ver la fragilidad de las ventanas. Viz de mapa; precomputado." },
+    },
+    ambulance: {
+      en: { h: "Emergency / ambulance dispatch", p: "Stochastic calls over a city graph: an offline base dispatch plan evaluated over many stochastic-call DES runs — response-time distributions and coverage. Map viz; precomputed." },
+      es: { h: "Despacho de ambulancias", p: "Llamados estocásticos sobre un grafo de ciudad: un plan de despacho base evaluado sobre muchas corridas DES con llamados aleatorios — distribuciones de tiempo de respuesta y cobertura. Viz de mapa; precomputado." },
+    },
+  };
+  const c = lang === "es" ? copy[which].es : copy[which].en;
   return (
     <div className="prose">
       <h2>{c.h}</h2>
       <p>{c.p}</p>
       <Callout variant="note" title={lang === "es" ? "En construcción" : "Under construction"}>
-        <p>{lang === "es" ? "Llega en una próxima fase del roadmap (carril de precómputo con OR-Tools + mapas)." : "Arriving in a later roadmap phase (the OR-Tools + maps precompute lane)."}</p>
+        <p>{lang === "es" ? "Llega en la fase de precómputo (OR-Tools / OSMnx + mapas deck.gl/MapLibre)." : "Arriving in the precompute phase (OR-Tools / OSMnx + deck.gl/MapLibre maps)."}</p>
       </Callout>
     </div>
   );

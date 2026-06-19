@@ -262,6 +262,10 @@ code, kbd { font-family: var(--font-mono); }
 .grid-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.1rem; font-size: 0.82rem; color: var(--color-fg-subtle); }
 .grid-legend-item { display: inline-flex; align-items: center; }
 
+/* Chart/series viz */
+.chart-stage { display: flex; flex-direction: column; gap: 0.5rem; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; }
+
 /* Timeline */
 .timeline { display: flex; flex-direction: column; gap: 0.7rem; }
 .timeline-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }

@@ -3,7 +3,22 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
-## [0.07.000] - 2026-06-19
+## [0.08.000] - 2026-06-19
+### Added
+- **Two new chart/series scenarios** (pure-Python + NumPy, seeded):
+  - **S10 — Monte-Carlo / CI study**: N replications of the M/M/c (S01 model) → running mean + a 95%
+    confidence band that narrows like 1/√n toward the closed-form Erlang-C value, plus a per-run Wq
+    histogram. 10 regimes (replications × load). Makes the replications/CI lesson interactive.
+  - **S05 — Beer Game (bullwhip)**: 4 serial echelons with an order-up-to + smoothed-forecast policy and
+    a shipping lead time; a demand change is amplified upstream. 10 regimes (lead time / smoothing /
+    demand pattern); reports the bullwhip ratio per echelon.
+- **Chart/series visualization** (`ChartViz` + `ChartVariantPlayer`): multi-line chart with an optional
+  confidence band, horizontal reference lines, a histogram, and a playhead that reveals the series while
+  playing. New trace schema `simlab.charttrace/v1`. The case-study player now branches across three
+  renderers (queue-network · agent-grid · chart); the KPI comparison is reused for grid + chart scenarios.
+- Experiments now shows the **full 10-scenario roadmap** — 5 live (S01 queue, S02 Schelling, S03 SIR,
+  S05 Beer Game, S10 Monte-Carlo) + 5 upcoming (S04 ED, S06 job-shop, S07 haul, S08 VRP, S09 ambulance).
+  18 tests total.
 ### Added
 - **Two new ABM scenarios** (live-capable, pure-Python + NumPy, fully seeded):
   - **S02 — Schelling segregation**: a grid of two groups; unhappy agents relocate. 10 regimes (a

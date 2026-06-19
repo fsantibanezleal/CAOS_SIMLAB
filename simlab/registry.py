@@ -9,8 +9,13 @@ from .core.scenario import Scenario
 from .scenarios.s01_queue import QueueScenario
 from .scenarios.s02_schelling import SchellingScenario
 from .scenarios.s03_sir import SIRScenario
+from .scenarios.s05_beergame import BeerGameScenario
+from .scenarios.s10_montecarlo import MonteCarloScenario
 
-SCENARIOS: dict[str, Scenario] = {s.id: s for s in [QueueScenario(), SchellingScenario(), SIRScenario()]}
+SCENARIOS: dict[str, Scenario] = {
+    s.id: s
+    for s in [QueueScenario(), SchellingScenario(), SIRScenario(), BeerGameScenario(), MonteCarloScenario()]
+}
 
 
 def get_scenario(scenario_id: str) -> Scenario:
