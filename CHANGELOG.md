@@ -3,7 +3,19 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
-## [0.04.000] - 2026-06-19
+## [0.05.000] - 2026-06-19
+### Added
+- **Deep, referenced Theory** to the CAOS_SEISMIC standard: three top tabs (Queueing theory · DES
+  methodology · Agent-based modeling) of vertical sub-tabs, each with rigorous prose, **KaTeX equations**
+  (M/M/c steady state, Erlang-C, Little's Law, Kingman heavy-traffic, SIR R₀), an assumptions block, a
+  theme-aware **SVG figure**, and inline references.
+- **Verified bibliography** (`data/citations.ts`, 25 references, 14 DOI-verified) + `Cite` / `ReferenceList`
+  components and a References tab.
+- **Quality SVG diagrams** (`components/figures/`): M/M/c schematic, birth–death CTMC, Wq-vs-ρ knee,
+  pooling bars, DES event-loop timeline, replications/CI, SIR compartment flow, emergence grid.
+### Changed
+- **Width fix** completed: removed the 75ch prose cap so content fills the page; added figure/text rows,
+  definition grids and assumption blocks (matches the sister CAOS app's layout density).
 ### Changed
 - **Richer queue animation.** Customers are assigned to a SPECIFIC server (S1…Sc, labelled) and animate
   as transit dots travelling queue→server and server→sink, so you can see who is doing the work and
