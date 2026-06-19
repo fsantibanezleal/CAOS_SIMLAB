@@ -1,4 +1,4 @@
-import type { ChartTrace, FlowTrace, GanttTrace, GridTrace, ScenarioManifest, Trace } from "./types";
+import type { ChartTrace, FlowTrace, GanttTrace, GridTrace, RouteTrace, ScenarioManifest, Trace } from "./types";
 
 const BASE = import.meta.env.BASE_URL; // "/" on the custom domain
 
@@ -41,4 +41,11 @@ export async function loadGanttTrace(path: string): Promise<GanttTrace> {
   const res = await fetch(`${BASE}${path}`);
   if (!res.ok) throw new Error(`gantt trace ${path}: HTTP ${res.status}`);
   return (await res.json()) as GanttTrace;
+}
+
+/** Load a route/network trace (S07 haul, S08 VRP, S09 ambulance). */
+export async function loadRouteTrace(path: string): Promise<RouteTrace> {
+  const res = await fetch(`${BASE}${path}`);
+  if (!res.ok) throw new Error(`route trace ${path}: HTTP ${res.status}`);
+  return (await res.json()) as RouteTrace;
 }

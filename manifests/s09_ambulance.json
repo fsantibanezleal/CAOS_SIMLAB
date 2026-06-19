@@ -1,0 +1,399 @@
+{
+  "schema": "simlab.manifest/v2",
+  "id": "s09_ambulance",
+  "title": "Ambulance Dispatch",
+  "method": "des",
+  "tier": 3,
+  "engine": "numpy",
+  "seed": 42,
+  "viz": {
+    "renderer": "route",
+    "dimensionality": "2d"
+  },
+  "wheel_closure": [
+    "numpy"
+  ],
+  "param_specs": [
+    {
+      "key": "grid",
+      "label": "Grid size",
+      "default": 8,
+      "min": 5,
+      "max": 11,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_ambulances",
+      "label": "Ambulances",
+      "default": 4,
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_stations",
+      "label": "Stations",
+      "default": 2,
+      "min": 1,
+      "max": 5,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "call_rate",
+      "label": "Calls per hour",
+      "default": 12.0,
+      "min": 2.0,
+      "max": 40.0,
+      "step": 1.0,
+      "kind": "float"
+    },
+    {
+      "key": "threshold",
+      "label": "Response target",
+      "default": 8.0,
+      "min": 2.0,
+      "max": 20.0,
+      "step": 0.5,
+      "kind": "float"
+    },
+    {
+      "key": "horizon",
+      "label": "Window (min)",
+      "default": 90.0,
+      "min": 30.0,
+      "max": 300.0,
+      "step": 10.0,
+      "kind": "float"
+    }
+  ],
+  "lane": "live",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "a2",
+      "label_en": "2 ambulances \u00b7 1 station",
+      "label_es": "2 ambulancias \u00b7 1 base",
+      "note_en": "Under-resourced: long waits, low coverage.",
+      "note_es": "Recursos escasos: esperas largas, baja cobertura.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 2,
+        "n_stations": 1,
+        "call_rate": 12.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 11.1,
+        "trace_bytes": 15958,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 17,
+        "mean_response": 17.78,
+        "p90_response": 34.93,
+        "coverage_pct": 29.4,
+        "load_pct": 129.1,
+        "n_ambulances": 2
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/a2-seed42.json"
+    },
+    {
+      "id": "a3",
+      "label_en": "3 ambulances \u00b7 1 station",
+      "label_es": "3 ambulancias \u00b7 1 base",
+      "note_en": "Still centralized: travel from one base hurts.",
+      "note_es": "A\u00fan centralizado: viajar desde una sola base penaliza.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 3,
+        "n_stations": 1,
+        "call_rate": 12.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 4.5,
+        "trace_bytes": 15913,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 17,
+        "mean_response": 6.42,
+        "p90_response": 11.61,
+        "coverage_pct": 76.5,
+        "load_pct": 86.1,
+        "n_ambulances": 3
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/a3-seed42.json"
+    },
+    {
+      "id": "a4",
+      "label_en": "4 ambulances \u00b7 2 stations",
+      "label_es": "4 ambulancias \u00b7 2 bases",
+      "note_en": "Two stations cut travel times.",
+      "note_es": "Dos bases reducen los tiempos de viaje.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 4,
+        "n_stations": 2,
+        "call_rate": 12.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 3.4,
+        "trace_bytes": 14380,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 17,
+        "mean_response": 3.04,
+        "p90_response": 4.62,
+        "coverage_pct": 100.0,
+        "load_pct": 56.0,
+        "n_ambulances": 4
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/a4-seed42.json"
+    },
+    {
+      "id": "a4s1",
+      "label_en": "4 ambulances \u00b7 1 station",
+      "label_es": "4 ambulancias \u00b7 1 base",
+      "note_en": "Same fleet, one base: worse coverage.",
+      "note_es": "Misma flota, una base: peor cobertura.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 4,
+        "n_stations": 1,
+        "call_rate": 12.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 3.5,
+        "trace_bytes": 15967,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 17,
+        "mean_response": 4.11,
+        "p90_response": 6.15,
+        "coverage_pct": 94.1,
+        "load_pct": 64.6,
+        "n_ambulances": 4
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/a4s1-seed42.json"
+    },
+    {
+      "id": "a6",
+      "label_en": "6 ambulances \u00b7 2 stations",
+      "label_es": "6 ambulancias \u00b7 2 bases",
+      "note_en": "Comfortable fleet for this demand.",
+      "note_es": "Flota holgada para esta demanda.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 6,
+        "n_stations": 2,
+        "call_rate": 12.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 4.4,
+        "trace_bytes": 14531,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 17,
+        "mean_response": 2.95,
+        "p90_response": 4.62,
+        "coverage_pct": 100.0,
+        "load_pct": 37.4,
+        "n_ambulances": 6
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/a6-seed42.json"
+    },
+    {
+      "id": "a4s4",
+      "label_en": "4 ambulances \u00b7 4 stations",
+      "label_es": "4 ambulancias \u00b7 4 bases",
+      "note_en": "Spread thin: great siting, less surge capacity.",
+      "note_es": "Repartidas: buena ubicaci\u00f3n, menos capacidad de pico.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 4,
+        "n_stations": 4,
+        "call_rate": 12.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 3.0,
+        "trace_bytes": 13206,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 17,
+        "mean_response": 1.73,
+        "p90_response": 3.08,
+        "coverage_pct": 100.0,
+        "load_pct": 49.6,
+        "n_ambulances": 4
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/a4s4-seed42.json"
+    },
+    {
+      "id": "surge",
+      "label_en": "4 ambulances \u00b7 high demand",
+      "label_es": "4 ambulancias \u00b7 alta demanda",
+      "note_en": "A demand surge overwhelms the fleet.",
+      "note_es": "Un alza de demanda supera a la flota.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 4,
+        "n_stations": 2,
+        "call_rate": 22.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 6.8,
+        "trace_bytes": 25381,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 36,
+        "mean_response": 16.29,
+        "p90_response": 31.84,
+        "coverage_pct": 36.1,
+        "load_pct": 118.7,
+        "n_ambulances": 4
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/surge-seed42.json"
+    },
+    {
+      "id": "surge6",
+      "label_en": "6 ambulances \u00b7 high demand",
+      "label_es": "6 ambulancias \u00b7 alta demanda",
+      "note_en": "More units absorb the surge.",
+      "note_es": "M\u00e1s unidades absorben el alza.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 6,
+        "n_stations": 2,
+        "call_rate": 22.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 8.6,
+        "trace_bytes": 25404,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 36,
+        "mean_response": 5.87,
+        "p90_response": 10.49,
+        "coverage_pct": 77.8,
+        "load_pct": 79.4,
+        "n_ambulances": 6
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/surge6-seed42.json"
+    },
+    {
+      "id": "quiet",
+      "label_en": "3 ambulances \u00b7 low demand",
+      "label_es": "3 ambulancias \u00b7 baja demanda",
+      "note_en": "Low demand: even a small fleet covers well.",
+      "note_es": "Baja demanda: hasta una flota chica cubre bien.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 3,
+        "n_stations": 2,
+        "call_rate": 6.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 1.2,
+        "trace_bytes": 8173,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 6,
+        "mean_response": 3.33,
+        "p90_response": 4.62,
+        "coverage_pct": 100.0,
+        "load_pct": 27.2,
+        "n_ambulances": 3
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/quiet-seed42.json"
+    },
+    {
+      "id": "big",
+      "label_en": "8 ambulances \u00b7 4 stations",
+      "label_es": "8 ambulancias \u00b7 4 bases",
+      "note_en": "A large, well-sited system under heavy load.",
+      "note_es": "Un sistema grande y bien ubicado bajo carga alta.",
+      "params": {
+        "grid": 8,
+        "n_ambulances": 8,
+        "n_stations": 4,
+        "call_rate": 22.0,
+        "threshold": 8.0,
+        "horizon": 90.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 10.4,
+        "trace_bytes": 23504,
+        "reasons": []
+      },
+      "kpis": {
+        "calls": 36,
+        "mean_response": 2.1,
+        "p90_response": 3.26,
+        "coverage_pct": 100.0,
+        "load_pct": 54.0,
+        "n_ambulances": 8
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s09_ambulance/big-seed42.json"
+    }
+  ]
+}

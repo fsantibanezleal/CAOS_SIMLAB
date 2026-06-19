@@ -3,6 +3,29 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.10.000] - 2026-06-19
+### Added
+- **Geospatial routing lane — the final three case studies, all on a self-contained synthetic road
+  network** (grid of junctions + adjacency + an elevation field; Dijkstra shortest paths with a pluggable
+  edge cost; no OSM / tiles / external maps — fully reproducible from `(params, seed)`). New shared
+  `simlab/scenarios/_geo.py`, trace schema `simlab.routetrace/v1`, and a new **route visualization**
+  (`RouteViz` + `RouteVariantPlayer`): roads, planned-route polylines, agents interpolated along timed
+  legs with a motion trail, pulsing incident markers, elevation-shaded junctions, and a live HUD. Brings
+  the case-study player to **six renderers** and **all 10 scenarios live**.
+  - **S07 — Construction haul routing** (hybrid optimize-then-simulate, pure-Python DES): trucks cycle
+    load↔dump where elevation grades the loaded climb; a shared **loader is the bottleneck**. 10 regimes
+    show throughput **saturating** as the fleet is over-trucked (9 vs 12 trucks: same loads, double the
+    loader wait), extra loaders lifting the ceiling, and grade lengthening the cycle.
+  - **S08 — Vehicle routing problem** (capacitated VRP, **OR-Tools** routing solver → precompute lane): K
+    capacity-limited vehicles serve N customers minimizing distance, with a global-span cost that balances
+    routes. 10 regimes surface the **total-distance ↔ longest-route** trade-off across capacity, fleet
+    size and customer density.
+  - **S09 — Ambulance dispatch** (stochastic EMS, pure-Python DES): Poisson calls, nearest-available
+    dispatch (accounting for busy units), scene → hospital → base. 10 regimes cover **fleet sizing and
+    station siting** (offered load >100% = overwhelmed; more well-sited stations cut response; surges
+    collapse coverage), reporting mean/p90 response and coverage within the response target.
+- **29 tests** (7 new routing/network tests). Pipeline writes 30 new seeded traces + 3 manifests.
+
 ## [0.09.000] - 2026-06-19
 ### Added
 - **S04 — Emergency department (multi-stage DES)**: triage → treatment (priority pool) → discharge, with

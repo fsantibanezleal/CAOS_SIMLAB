@@ -1,0 +1,398 @@
+{
+  "schema": "simlab.manifest/v2",
+  "id": "s08_vrp",
+  "title": "Vehicle Routing Problem (VRP)",
+  "method": "optimization",
+  "tier": 3,
+  "engine": "ortools",
+  "seed": 42,
+  "viz": {
+    "renderer": "route",
+    "dimensionality": "2d"
+  },
+  "wheel_closure": [],
+  "param_specs": [
+    {
+      "key": "grid",
+      "label": "Grid size",
+      "default": 7,
+      "min": 4,
+      "max": 10,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_customers",
+      "label": "Customers",
+      "default": 12,
+      "min": 4,
+      "max": 18,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_vehicles",
+      "label": "Vehicles",
+      "default": 3,
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "capacity",
+      "label": "Vehicle capacity",
+      "default": 12,
+      "min": 4,
+      "max": 40,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "inst_seed",
+      "label": "Instance seed",
+      "default": 1,
+      "min": 0,
+      "max": 9999,
+      "step": 1,
+      "kind": "int"
+    }
+  ],
+  "lane": "precomputed",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "small",
+      "label_en": "8 customers \u00b7 2 vehicles",
+      "label_es": "8 clientes \u00b7 2 veh\u00edculos",
+      "note_en": "A small instance: two clean routes.",
+      "note_es": "Instancia peque\u00f1a: dos rutas limpias.",
+      "params": {
+        "grid": 6,
+        "n_customers": 8,
+        "n_vehicles": 2,
+        "capacity": 14,
+        "inst_seed": 21
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3042.3,
+        "trace_bytes": 3708,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3042ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 22.0,
+        "vehicles_used": 2,
+        "customers": 8,
+        "max_route_time": 12.0,
+        "capacity": 14
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/small-seed42.json"
+    },
+    {
+      "id": "base",
+      "label_en": "12 customers \u00b7 3 vehicles",
+      "label_es": "12 clientes \u00b7 3 veh\u00edculos",
+      "note_en": "The baseline: three balanced routes.",
+      "note_es": "El caso base: tres rutas balanceadas.",
+      "params": {
+        "grid": 7,
+        "n_customers": 12,
+        "n_vehicles": 3,
+        "capacity": 12,
+        "inst_seed": 22
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3010.7,
+        "trace_bytes": 5114,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3011ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 36.0,
+        "vehicles_used": 3,
+        "customers": 12,
+        "max_route_time": 12.0,
+        "capacity": 12
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/base-seed42.json"
+    },
+    {
+      "id": "tightcap",
+      "label_en": "12 customers \u00b7 tight capacity",
+      "label_es": "12 clientes \u00b7 capacidad ajustada",
+      "note_en": "Tighter capacity forces more back-and-forth.",
+      "note_es": "Menor capacidad obliga a m\u00e1s idas y vueltas.",
+      "params": {
+        "grid": 7,
+        "n_customers": 12,
+        "n_vehicles": 3,
+        "capacity": 8,
+        "inst_seed": 22
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3007.6,
+        "trace_bytes": 5112,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3008ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 36.0,
+        "vehicles_used": 3,
+        "customers": 12,
+        "max_route_time": 12.0,
+        "capacity": 8
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/tightcap-seed42.json"
+    },
+    {
+      "id": "fewveh",
+      "label_en": "12 customers \u00b7 2 vehicles",
+      "label_es": "12 clientes \u00b7 2 veh\u00edculos",
+      "note_en": "Fewer vehicles: longer individual routes.",
+      "note_es": "Menos veh\u00edculos: rutas individuales m\u00e1s largas.",
+      "params": {
+        "grid": 7,
+        "n_customers": 12,
+        "n_vehicles": 2,
+        "capacity": 18,
+        "inst_seed": 22
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3009.3,
+        "trace_bytes": 4778,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3009ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 30.0,
+        "vehicles_used": 2,
+        "customers": 12,
+        "max_route_time": 16.0,
+        "capacity": 18
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/fewveh-seed42.json"
+    },
+    {
+      "id": "manyveh",
+      "label_en": "12 customers \u00b7 4 vehicles",
+      "label_es": "12 clientes \u00b7 4 veh\u00edculos",
+      "note_en": "More vehicles: shorter routes, more total distance?",
+      "note_es": "M\u00e1s veh\u00edculos: rutas m\u00e1s cortas, \u00bfm\u00e1s distancia total?",
+      "params": {
+        "grid": 7,
+        "n_customers": 12,
+        "n_vehicles": 4,
+        "capacity": 9,
+        "inst_seed": 22
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3005.9,
+        "trace_bytes": 5108,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3006ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 36.0,
+        "vehicles_used": 3,
+        "customers": 12,
+        "max_route_time": 12.0,
+        "capacity": 9
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/manyveh-seed42.json"
+    },
+    {
+      "id": "c15",
+      "label_en": "15 customers \u00b7 3 vehicles",
+      "label_es": "15 clientes \u00b7 3 veh\u00edculos",
+      "note_en": "More customers per vehicle.",
+      "note_es": "M\u00e1s clientes por veh\u00edculo.",
+      "params": {
+        "grid": 8,
+        "n_customers": 15,
+        "n_vehicles": 3,
+        "capacity": 14,
+        "inst_seed": 23
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3011.4,
+        "trace_bytes": 6380,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3011ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 46.0,
+        "vehicles_used": 3,
+        "customers": 15,
+        "max_route_time": 16.0,
+        "capacity": 14
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/c15-seed42.json"
+    },
+    {
+      "id": "c15v4",
+      "label_en": "15 customers \u00b7 4 vehicles",
+      "label_es": "15 clientes \u00b7 4 veh\u00edculos",
+      "note_en": "Spread across four vehicles.",
+      "note_es": "Repartido en cuatro veh\u00edculos.",
+      "params": {
+        "grid": 8,
+        "n_customers": 15,
+        "n_vehicles": 4,
+        "capacity": 12,
+        "inst_seed": 23
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3010.7,
+        "trace_bytes": 6383,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3011ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 46.0,
+        "vehicles_used": 3,
+        "customers": 15,
+        "max_route_time": 16.0,
+        "capacity": 12
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/c15v4-seed42.json"
+    },
+    {
+      "id": "c18",
+      "label_en": "18 customers \u00b7 4 vehicles",
+      "label_es": "18 clientes \u00b7 4 veh\u00edculos",
+      "note_en": "A larger instance on a bigger grid.",
+      "note_es": "Una instancia mayor en una grilla m\u00e1s grande.",
+      "params": {
+        "grid": 9,
+        "n_customers": 18,
+        "n_vehicles": 4,
+        "capacity": 14,
+        "inst_seed": 24
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3024.4,
+        "trace_bytes": 8168,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3024ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 64.0,
+        "vehicles_used": 4,
+        "customers": 18,
+        "max_route_time": 18.0,
+        "capacity": 14
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/c18-seed42.json"
+    },
+    {
+      "id": "dense",
+      "label_en": "10 customers \u00b7 dense grid",
+      "label_es": "10 clientes \u00b7 grilla densa",
+      "note_en": "Customers packed on a small grid.",
+      "note_es": "Clientes apretados en una grilla peque\u00f1a.",
+      "params": {
+        "grid": 6,
+        "n_customers": 10,
+        "n_vehicles": 3,
+        "capacity": 10,
+        "inst_seed": 25
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3004.4,
+        "trace_bytes": 4115,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3004ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 30.0,
+        "vehicles_used": 3,
+        "customers": 10,
+        "max_route_time": 12.0,
+        "capacity": 10
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/dense-seed42.json"
+    },
+    {
+      "id": "spread",
+      "label_en": "12 customers \u00b7 large grid",
+      "label_es": "12 clientes \u00b7 grilla grande",
+      "note_en": "Customers spread over a large grid: long legs.",
+      "note_es": "Clientes dispersos en una grilla grande: tramos largos.",
+      "params": {
+        "grid": 10,
+        "n_customers": 12,
+        "n_vehicles": 3,
+        "capacity": 14,
+        "inst_seed": 26
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3010.5,
+        "trace_bytes": 8909,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)",
+          "run 3011ms > 3000ms gate"
+        ]
+      },
+      "kpis": {
+        "total_distance": 56.0,
+        "vehicles_used": 3,
+        "customers": 12,
+        "max_route_time": 20.0,
+        "capacity": 14
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s08_vrp/spread-seed42.json"
+    }
+  ]
+}
