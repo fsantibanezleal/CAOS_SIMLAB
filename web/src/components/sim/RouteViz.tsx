@@ -35,7 +35,37 @@ export function RouteViz({ trace, state, time }: { trace: RouteTrace; state: Rou
   }, [trace.legend]);
 
   const hasElev = trace.nodes.some((n) => typeof n.elev === "number");
-  const elevFill = (e: number) => `hsl(${Math.round(210 - e * 182)} 62% ${55 - e * 8}%)`;
+  const elevFill = (e: number) => `hsl(${Math.round(210 - e * 182)} 62% ${Math.round(55 - e * 18)}%)`; // blue (low) -> orange (high)
+
+  // normalize elevation to [0,1] over the trace nodes (the ridge peak can exceed 1) before colouring
+  const elevNorm = useMemo(() => {
+    const es2 = trace.nodes.map((n) => n.elev).filter((e): e is number => typeof e === "number");
+    if (!es2.length) return null;
+    const mn = Math.min(...es2);
+    return { mn, span: Math.max(...es2) - mn || 1 };
+  }, [trace.nodes]);
+
+  // a paint-once elevation field behind the roads (a ridge + passes are invisible from dots alone)
+  const field = useMemo(() => {
+    if (!hasElev || !elevNorm || typeof document === "undefined") return null;
+    const { minx, miny, maxx, maxy } = trace.bounds;
+    const cols = Math.round(maxx - minx) + 1;
+    const rows = Math.round(maxy - miny) + 1;
+    if (cols < 2 || rows < 2) return null;
+    const cv = document.createElement("canvas");
+    cv.width = cols;
+    cv.height = rows;
+    const ctx = cv.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = "hsl(0 0% 45%)"; // neutral for any removed (blocked) cell
+    ctx.fillRect(0, 0, cols, rows);
+    for (const n of trace.nodes) {
+      if (typeof n.elev !== "number") continue;
+      ctx.fillStyle = elevFill((n.elev - elevNorm.mn) / elevNorm.span);
+      ctx.fillRect(Math.round(n.x - minx), Math.round(maxy - n.y), 1, 1); // invert y: high world-y at top
+    }
+    return { url: cv.toDataURL(), x: px(minx), y: py(maxy), w: px(maxx) - px(minx), h: py(miny) - py(maxy) };
+  }, [hasElev, elevNorm, trace.nodes, trace.bounds, px, py]);
 
   // scenario-appropriate running counter for the HUD (F1)
   const totalCustomers = useMemo(() => trace.nodes.filter((n) => n.kind === "customer").length, [trace.nodes]);
@@ -54,6 +84,21 @@ export function RouteViz({ trace, state, time }: { trace: RouteTrace; state: Rou
 
   return (
     <svg className="routeviz" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={trace.title}>
+      {/* elevation field (terrain) behind everything — ridge reads warm, passes cool */}
+      {field && (
+        <image href={field.url} x={field.x} y={field.y} width={field.w} height={field.h}
+          preserveAspectRatio="none" opacity={0.55} />
+      )}
+
+      {/* impassable cells (haul wall) */}
+      {(trace.barriers ?? []).map((b, i) => (
+        <g key={`bar${i}`}>
+          <rect x={px(b.x) - 8} y={py(b.y) - 8} width={16} height={16} rx={3} fill="var(--color-bad)" opacity={0.22} />
+          <line x1={px(b.x) - 6} y1={py(b.y) - 6} x2={px(b.x) + 6} y2={py(b.y) + 6} stroke="var(--color-bad)" strokeWidth={2.2} />
+          <line x1={px(b.x) - 6} y1={py(b.y) + 6} x2={px(b.x) + 6} y2={py(b.y) - 6} stroke="var(--color-bad)" strokeWidth={2.2} />
+        </g>
+      ))}
+
       {/* roads */}
       {trace.edges.map(([a, b], i) => {
         const ca = coord.get(a)!;
@@ -73,7 +118,8 @@ export function RouteViz({ trace, state, time }: { trace: RouteTrace; state: Rou
         const c = colorForKind[n.kind];
         const flash = state.nodeFlash.get(n.id) ?? 0;
         const servedDim = n.kind === "customer" && state.served.has(n.id);
-        const fill = isSpecial ? c : hasElev && typeof n.elev === "number" ? elevFill(n.elev) : "var(--color-fg-faint)";
+        // junctions are faint dots over the elevation field (the field carries the terrain colour now)
+        const fill = isSpecial ? c : "var(--color-fg-faint)";
         return (
           <g key={n.id}>
             {flash > 0 && (

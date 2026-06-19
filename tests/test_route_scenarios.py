@@ -37,15 +37,46 @@ def test_haul_loader_saturates_and_reproducible():
     a = sc.run({}, seed=42)
     assert a.to_json() == sc.run({}, seed=42).to_json()
     assert a.nodes and a.edges and a.agents
-    t9 = sc.run(_vparams(sc, "t9"), 42)
-    t12 = sc.run(_vparams(sc, "t12"), 42)
-    # one loader caps throughput: extra trucks just queue (same loads, longer wait)
-    assert t12.kpis["loads_delivered"] == t9.kpis["loads_delivered"]
-    assert t12.kpis["loader_wait_per_load"] > t9.kpis["loader_wait_per_load"]
+    t6 = sc.run(_vparams(sc, "f_t6"), 42)
+    t12 = sc.run(_vparams(sc, "f_t12"), 42)
+    # one loader caps throughput: more trucks just queue (loads plateau, the wait explodes)
+    assert t12.kpis["loads_delivered"] >= t6.kpis["loads_delivered"]
+    assert t12.kpis["loader_wait_per_load"] > 2 * t6.kpis["loader_wait_per_load"]
     # a second loader lifts the ceiling
-    assert sc.run(_vparams(sc, "l2t12"), 42).kpis["loads_delivered"] > t12.kpis["loads_delivered"]
-    # grade lengthens the cycle
-    assert sc.run(_vparams(sc, "steep"), 42).kpis["mean_cycle_time"] > sc.run(_vparams(sc, "flat"), 42).kpis["mean_cycle_time"]
+    assert sc.run(_vparams(sc, "f_l2t12"), 42).kpis["loads_delivered"] > t12.kpis["loads_delivered"]
+    # steep grade lengthens the cycle vs flat
+    assert sc.run(_vparams(sc, "x_steep2"), 42).kpis["mean_cycle_time"] > sc.run(_vparams(sc, "x_flat"), 42).kpis["mean_cycle_time"]
+
+
+def test_haul_route_switches_with_grade():
+    """The non-monotone ridge makes the optimal route flip direct->pass across the critical grade."""
+    sc = HaulScenario()
+    mid = sc.run(_vparams(sc, "r_mid"), 42)       # grade 3 < g*≈3.38
+    sw = sc.run(_vparams(sc, "r_switch"), 42)     # grade 4 > g*
+    assert "crest" in mid.analytic["route_via"]   # direct over the ridge
+    assert "pass" in sw.analytic["route_via"]     # flipped to the low pass
+    assert mid.routes[0]["path"] != sw.routes[0]["path"]  # the actual haul polyline changed
+    # moving the pass sends the detour the other way
+    assert "pass" in sc.run(_vparams(sc, "r_passR"), 42).analytic["route_via"]
+    # a wall reroutes the haul even at low grade, and is recorded for the viz
+    wall = sc.run(_vparams(sc, "r_wall"), 42)
+    assert wall.analytic["cross_col"] != wall.analytic["lift_col"] and wall.barriers
+
+
+def test_haul_route_tie_stable():
+    """A route-shape variant must not flip under tiny (±1e-9) cost noise — no near-ties (critique)."""
+    from simlab.scenarios._geo import GridNetwork
+    g = 12
+    net = GridNetwork(g, g, spacing=1.0, terrain="ridge", terrain_opts={"passes": [2], "ridge_row": 5.5})
+    load, dump = 4, (g - 1) * g + 4
+    for grade in (3.0, 4.0):
+        def c(a, b, grade=grade):
+            return net.dist(a, b) * (1.0 + grade * max(0.0, net.elev[b] - net.elev[a]))
+        base = net.shortest_path(load, dump, cost=c)[0]
+        for eps in (1e-9, -1e-9):
+            def cp(a, b, eps=eps, grade=grade):
+                return net.dist(a, b) * (1.0 + grade * max(0.0, net.elev[b] - net.elev[a])) + eps
+            assert net.shortest_path(load, dump, cost=cp)[0] == base, (grade, eps)
 
 
 def test_haul_pipeline_manifest(tmp_path):

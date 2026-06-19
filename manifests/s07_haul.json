@@ -17,9 +17,9 @@
     {
       "key": "grid",
       "label": "Grid size",
-      "default": 7,
-      "min": 4,
-      "max": 9,
+      "default": 12,
+      "min": 10,
+      "max": 14,
       "step": 1,
       "kind": "int"
     },
@@ -51,6 +51,33 @@
       "kind": "float"
     },
     {
+      "key": "pass_col",
+      "label": "Pass column",
+      "default": 2,
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "lift_col",
+      "label": "Load/dump column",
+      "default": 4,
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "barrier",
+      "label": "Wall on direct line",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "step": 1,
+      "kind": "int"
+    },
+    {
       "key": "horizon",
       "label": "Shift length",
       "default": 60.0,
@@ -67,314 +94,524 @@
   },
   "variants": [
     {
-      "id": "t2",
+      "id": "r_low",
+      "label_en": "Low grade \u00b7 direct",
+      "label_es": "Pendiente baja \u00b7 directo",
+      "note_en": "Low grade: the short route straight over the crest wins.",
+      "note_es": "Pendiente baja: gana la ruta corta recta por la cima.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 5,
+        "n_loaders": 1,
+        "grade": 1.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.8,
+        "trace_bytes": 20571,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 10,
+        "throughput_per_hr": 10.0,
+        "mean_cycle_time": 28.26,
+        "loader_wait_per_load": 3.98,
+        "switch_grade_est": 3.38,
+        "n_trucks": 5,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "direct over crest",
+        "cross_col": 4,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/r_low-seed42.json"
+    },
+    {
+      "id": "r_mid",
+      "label_en": "Grade 3 \u00b7 at the edge",
+      "label_es": "Pendiente 3 \u00b7 en el l\u00edmite",
+      "note_en": "Just below the switch (g*\u22483.4): still direct over the ridge.",
+      "note_es": "Justo bajo el salto (g*\u22483,4): a\u00fan directo por el cord\u00f3n.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 5,
+        "n_loaders": 1,
+        "grade": 3.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.8,
+        "trace_bytes": 20541,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 10,
+        "throughput_per_hr": 10.0,
+        "mean_cycle_time": 30.79,
+        "loader_wait_per_load": 3.98,
+        "switch_grade_est": 3.38,
+        "n_trucks": 5,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "direct over crest",
+        "cross_col": 4,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/r_mid-seed42.json"
+    },
+    {
+      "id": "r_switch",
+      "label_en": "Grade 4 \u00b7 flips to the pass",
+      "label_es": "Pendiente 4 \u00b7 salta al paso",
+      "note_en": "Just past the switch: the optimal route flips to the low pass.",
+      "note_es": "Pasado el salto: la ruta \u00f3ptima salta al paso bajo.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 5,
+        "n_loaders": 1,
+        "grade": 4.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.8,
+        "trace_bytes": 22085,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 10,
+        "throughput_per_hr": 10.0,
+        "mean_cycle_time": 31.32,
+        "loader_wait_per_load": 3.98,
+        "switch_grade_est": 3.38,
+        "n_trucks": 5,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "pass at col 2",
+        "cross_col": 2,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/r_switch-seed42.json"
+    },
+    {
+      "id": "r_steep",
+      "label_en": "Steep \u00b7 long detour",
+      "label_es": "Empinado \u00b7 desv\u00edo largo",
+      "note_en": "Steep: climbing dominates, the long pass detour is clearly cheaper.",
+      "note_es": "Empinado: trepar domina, el desv\u00edo por el paso es claramente m\u00e1s barato.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 5,
+        "n_loaders": 1,
+        "grade": 8.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.8,
+        "trace_bytes": 22085,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 10,
+        "throughput_per_hr": 10.0,
+        "mean_cycle_time": 31.63,
+        "loader_wait_per_load": 3.98,
+        "switch_grade_est": 3.38,
+        "n_trucks": 5,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "pass at col 2",
+        "cross_col": 2,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/r_steep-seed42.json"
+    },
+    {
+      "id": "r_passR",
+      "label_en": "Pass on the right",
+      "label_es": "Paso a la derecha",
+      "note_en": "Pass moved right (col 9): the detour now goes the other way.",
+      "note_es": "Paso movido a la derecha (col 9): el desv\u00edo va al otro lado.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 5,
+        "n_loaders": 1,
+        "grade": 6.0,
+        "pass_col": 9,
+        "lift_col": 7,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.8,
+        "trace_bytes": 22002,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 10,
+        "throughput_per_hr": 10.0,
+        "mean_cycle_time": 31.47,
+        "loader_wait_per_load": 3.98,
+        "switch_grade_est": 3.38,
+        "n_trucks": 5,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "pass at col 9",
+        "cross_col": 9,
+        "lift_col": 7
+      },
+      "trace": "data/artifacts/s07_haul/r_passR-seed42.json"
+    },
+    {
+      "id": "r_wall",
+      "label_en": "Wall on the direct line",
+      "label_es": "Muro en la l\u00ednea directa",
+      "note_en": "A barrier across the direct climb reroutes the haul even at low grade.",
+      "note_es": "Una barrera en la subida directa redirige el acarreo aun a pendiente baja.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 5,
+        "n_loaders": 1,
+        "grade": 1.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 1,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.9,
+        "trace_bytes": 21828,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 10,
+        "throughput_per_hr": 10.0,
+        "mean_cycle_time": 31.75,
+        "loader_wait_per_load": 3.98,
+        "switch_grade_est": 2.98,
+        "n_trucks": 5,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 2.98,
+        "route_via": "pass at col 3",
+        "cross_col": 3,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/r_wall-seed42.json"
+    },
+    {
+      "id": "f_t2",
       "label_en": "2 trucks \u00b7 1 loader",
       "label_es": "2 camiones \u00b7 1 cargador",
-      "note_en": "Under-trucked: the loader idles, low throughput.",
-      "note_es": "Pocos camiones: el cargador se desocupa, bajo rendimiento.",
+      "note_en": "Under-trucked: the loader idles, throughput is fleet-limited.",
+      "note_es": "Pocos camiones: el cargador se desocupa, lo limita la flota.",
       "params": {
-        "grid": 7,
+        "grid": 12,
         "n_trucks": 2,
         "n_loaders": 1,
         "grade": 3.0,
-        "horizon": 60.0
-      },
-      "lane": "live",
-      "gate": {
-        "pure_python": true,
-        "run_ms": 7.1,
-        "trace_bytes": 7666,
-        "reasons": []
-      },
-      "kpis": {
-        "loads_delivered": 4,
-        "throughput_per_hr": 4.0,
-        "mean_cycle_time": 32.0,
-        "loader_wait_per_load": 0.99,
-        "n_trucks": 2,
-        "n_loaders": 1
-      },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/t2-seed42.json"
-    },
-    {
-      "id": "t4",
-      "label_en": "4 trucks \u00b7 1 loader",
-      "label_es": "4 camiones \u00b7 1 cargador",
-      "note_en": "Approaching a matched fleet.",
-      "note_es": "Acerc\u00e1ndose a una flota equilibrada.",
-      "params": {
-        "grid": 7,
-        "n_trucks": 4,
-        "n_loaders": 1,
-        "grade": 3.0,
-        "horizon": 60.0
-      },
-      "lane": "live",
-      "gate": {
-        "pure_python": true,
-        "run_ms": 0.4,
-        "trace_bytes": 11192,
-        "reasons": []
-      },
-      "kpis": {
-        "loads_delivered": 8,
-        "throughput_per_hr": 8.0,
-        "mean_cycle_time": 32.0,
-        "loader_wait_per_load": 2.98,
-        "n_trucks": 4,
-        "n_loaders": 1
-      },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/t4-seed42.json"
-    },
-    {
-      "id": "t6",
-      "label_en": "6 trucks \u00b7 1 loader",
-      "label_es": "6 camiones \u00b7 1 cargador",
-      "note_en": "The loader is busy; queues start to form.",
-      "note_es": "El cargador est\u00e1 ocupado; empiezan las colas.",
-      "params": {
-        "grid": 7,
-        "n_trucks": 6,
-        "n_loaders": 1,
-        "grade": 3.0,
-        "horizon": 60.0
-      },
-      "lane": "live",
-      "gate": {
-        "pure_python": true,
-        "run_ms": 1.7,
-        "trace_bytes": 14720,
-        "reasons": []
-      },
-      "kpis": {
-        "loads_delivered": 12,
-        "throughput_per_hr": 12.0,
-        "mean_cycle_time": 32.0,
-        "loader_wait_per_load": 4.97,
-        "n_trucks": 6,
-        "n_loaders": 1
-      },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/t6-seed42.json"
-    },
-    {
-      "id": "t9",
-      "label_en": "9 trucks \u00b7 1 loader",
-      "label_es": "9 camiones \u00b7 1 cargador",
-      "note_en": "Over-trucked: trucks queue, throughput saturates.",
-      "note_es": "Demasiados camiones: hacen cola, el rendimiento se satura.",
-      "params": {
-        "grid": 7,
-        "n_trucks": 9,
-        "n_loaders": 1,
-        "grade": 3.0,
-        "horizon": 60.0
-      },
-      "lane": "live",
-      "gate": {
-        "pure_python": true,
-        "run_ms": 0.5,
-        "trace_bytes": 17460,
-        "reasons": []
-      },
-      "kpis": {
-        "loads_delivered": 15,
-        "throughput_per_hr": 15.0,
-        "mean_cycle_time": 32.0,
-        "loader_wait_per_load": 11.15,
-        "n_trucks": 9,
-        "n_loaders": 1
-      },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/t9-seed42.json"
-    },
-    {
-      "id": "t12",
-      "label_en": "12 trucks \u00b7 1 loader",
-      "label_es": "12 camiones \u00b7 1 cargador",
-      "note_en": "Heavy over-trucking: a long loader queue, no gain.",
-      "note_es": "Mucho exceso de camiones: cola larga, sin ganancia.",
-      "params": {
-        "grid": 7,
-        "n_trucks": 12,
-        "n_loaders": 1,
-        "grade": 3.0,
-        "horizon": 60.0
-      },
-      "lane": "live",
-      "gate": {
-        "pure_python": true,
-        "run_ms": 0.5,
-        "trace_bytes": 17653,
-        "reasons": []
-      },
-      "kpis": {
-        "loads_delivered": 15,
-        "throughput_per_hr": 15.0,
-        "mean_cycle_time": 32.0,
-        "loader_wait_per_load": 20.71,
-        "n_trucks": 12,
-        "n_loaders": 1
-      },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/t12-seed42.json"
-    },
-    {
-      "id": "l2t9",
-      "label_en": "9 trucks \u00b7 2 loaders",
-      "label_es": "9 camiones \u00b7 2 cargadores",
-      "note_en": "A second loader lifts the throughput ceiling.",
-      "note_es": "Un segundo cargador sube el techo de rendimiento.",
-      "params": {
-        "grid": 7,
-        "n_trucks": 9,
-        "n_loaders": 2,
-        "grade": 3.0,
-        "horizon": 60.0
-      },
-      "lane": "live",
-      "gate": {
-        "pure_python": true,
-        "run_ms": 0.5,
-        "trace_bytes": 20285,
-        "reasons": []
-      },
-      "kpis": {
-        "loads_delivered": 18,
-        "throughput_per_hr": 18.0,
-        "mean_cycle_time": 32.0,
-        "loader_wait_per_load": 3.52,
-        "n_trucks": 9,
-        "n_loaders": 2
-      },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/l2t9-seed42.json"
-    },
-    {
-      "id": "l2t12",
-      "label_en": "12 trucks \u00b7 2 loaders",
-      "label_es": "12 camiones \u00b7 2 cargadores",
-      "note_en": "Two loaders absorb a bigger fleet.",
-      "note_es": "Dos cargadores absorben una flota mayor.",
-      "params": {
-        "grid": 7,
-        "n_trucks": 12,
-        "n_loaders": 2,
-        "grade": 3.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
         "horizon": 60.0
       },
       "lane": "live",
       "gate": {
         "pure_python": true,
         "run_ms": 0.7,
-        "trace_bytes": 25722,
+        "trace_bytes": 15028,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 4,
+        "throughput_per_hr": 4.0,
+        "mean_cycle_time": 30.79,
+        "loader_wait_per_load": 0.99,
+        "switch_grade_est": 3.38,
+        "n_trucks": 2,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "direct over crest",
+        "cross_col": 4,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/f_t2-seed42.json"
+    },
+    {
+      "id": "f_t6",
+      "label_en": "6 trucks \u00b7 1 loader",
+      "label_es": "6 camiones \u00b7 1 cargador",
+      "note_en": "Loader busy; queues begin to form (MF approaching 1).",
+      "note_es": "Cargador ocupado; empiezan las colas (MF cerca de 1).",
+      "params": {
+        "grid": 12,
+        "n_trucks": 6,
+        "n_loaders": 1,
+        "grade": 3.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.9,
+        "trace_bytes": 22378,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 12,
+        "throughput_per_hr": 12.0,
+        "mean_cycle_time": 30.79,
+        "loader_wait_per_load": 4.97,
+        "switch_grade_est": 3.38,
+        "n_trucks": 6,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "direct over crest",
+        "cross_col": 4,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/f_t6-seed42.json"
+    },
+    {
+      "id": "f_t12",
+      "label_en": "12 trucks \u00b7 1 loader",
+      "label_es": "12 camiones \u00b7 1 cargador",
+      "note_en": "Over-trucked: near-identical loads, the loader wait roughly doubles.",
+      "note_es": "Sobre-equipado: cargas casi iguales, la espera del cargador casi se duplica.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 12,
+        "n_loaders": 1,
+        "grade": 3.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.9,
+        "trace_bytes": 25467,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 15,
+        "throughput_per_hr": 15.0,
+        "mean_cycle_time": 30.79,
+        "loader_wait_per_load": 20.95,
+        "switch_grade_est": 3.38,
+        "n_trucks": 12,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "direct over crest",
+        "cross_col": 4,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/f_t12-seed42.json"
+    },
+    {
+      "id": "f_l2t12",
+      "label_en": "12 trucks \u00b7 2 loaders",
+      "label_es": "12 camiones \u00b7 2 cargadores",
+      "note_en": "A second loader lifts the throughput ceiling.",
+      "note_es": "Un segundo cargador sube el techo de rendimiento.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 12,
+        "n_loaders": 2,
+        "grade": 3.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.9,
+        "trace_bytes": 33398,
         "reasons": []
       },
       "kpis": {
         "loads_delivered": 24,
         "throughput_per_hr": 24.0,
-        "mean_cycle_time": 32.0,
+        "mean_cycle_time": 30.79,
         "loader_wait_per_load": 4.95,
+        "switch_grade_est": 3.38,
         "n_trucks": 12,
         "n_loaders": 2
       },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/l2t12-seed42.json"
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "direct over crest",
+        "cross_col": 4,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/f_l2t12-seed42.json"
     },
     {
-      "id": "flat",
-      "label_en": "6 trucks \u00b7 flat haul",
-      "label_es": "6 camiones \u00b7 acarreo plano",
-      "note_en": "No grade: fast cycles, higher throughput.",
-      "note_es": "Sin pendiente: ciclos r\u00e1pidos, mayor rendimiento.",
-      "params": {
-        "grid": 7,
-        "n_trucks": 6,
-        "n_loaders": 1,
-        "grade": 0.0,
-        "horizon": 60.0
-      },
-      "lane": "live",
-      "gate": {
-        "pure_python": true,
-        "run_ms": 0.4,
-        "trace_bytes": 14574,
-        "reasons": []
-      },
-      "kpis": {
-        "loads_delivered": 12,
-        "throughput_per_hr": 12.0,
-        "mean_cycle_time": 29.0,
-        "loader_wait_per_load": 4.97,
-        "n_trucks": 6,
-        "n_loaders": 1
-      },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/flat-seed42.json"
-    },
-    {
-      "id": "steep",
-      "label_en": "6 trucks \u00b7 steep haul",
-      "label_es": "6 camiones \u00b7 acarreo empinado",
-      "note_en": "Steep grade: slow loaded climb dominates the cycle.",
-      "note_es": "Pendiente fuerte: la subida cargada domina el ciclo.",
-      "params": {
-        "grid": 7,
-        "n_trucks": 6,
-        "n_loaders": 1,
-        "grade": 6.0,
-        "horizon": 60.0
-      },
-      "lane": "live",
-      "gate": {
-        "pure_python": true,
-        "run_ms": 0.4,
-        "trace_bytes": 14578,
-        "reasons": []
-      },
-      "kpis": {
-        "loads_delivered": 12,
-        "throughput_per_hr": 12.0,
-        "mean_cycle_time": 35.0,
-        "loader_wait_per_load": 4.97,
-        "n_trucks": 6,
-        "n_loaders": 1
-      },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/steep-seed42.json"
-    },
-    {
-      "id": "l3t12",
+      "id": "f_l3t12",
       "label_en": "12 trucks \u00b7 3 loaders",
       "label_es": "12 camiones \u00b7 3 cargadores",
-      "note_en": "Three loaders, big fleet: high throughput.",
-      "note_es": "Tres cargadores, flota grande: alto rendimiento.",
+      "note_en": "Three loaders absorb the big fleet.",
+      "note_es": "Tres cargadores absorben la flota grande.",
       "params": {
-        "grid": 7,
+        "grid": 12,
         "n_trucks": 12,
         "n_loaders": 3,
         "grade": 3.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
         "horizon": 60.0
       },
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.6,
-        "trace_bytes": 25854,
+        "run_ms": 1.0,
+        "trace_bytes": 33388,
         "reasons": []
       },
       "kpis": {
         "loads_delivered": 24,
         "throughput_per_hr": 24.0,
-        "mean_cycle_time": 32.0,
+        "mean_cycle_time": 30.79,
         "loader_wait_per_load": 2.95,
+        "switch_grade_est": 3.38,
         "n_trucks": 12,
         "n_loaders": 3
       },
-      "analytic": {},
-      "trace": "data/artifacts/s07_haul/l3t12-seed42.json"
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "direct over crest",
+        "cross_col": 4,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/f_l3t12-seed42.json"
+    },
+    {
+      "id": "x_steep2",
+      "label_en": "6 trucks \u00b7 steep haul",
+      "label_es": "6 camiones \u00b7 acarreo empinado",
+      "note_en": "Steep + matched-ish fleet: the long cycle lowers throughput.",
+      "note_es": "Empinado + flota casi pareja: el ciclo largo baja el rendimiento.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 6,
+        "n_loaders": 1,
+        "grade": 8.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.9,
+        "trace_bytes": 24230,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 12,
+        "throughput_per_hr": 12.0,
+        "mean_cycle_time": 31.63,
+        "loader_wait_per_load": 4.97,
+        "switch_grade_est": 3.38,
+        "n_trucks": 6,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "pass at col 2",
+        "cross_col": 2,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/x_steep2-seed42.json"
+    },
+    {
+      "id": "x_flat",
+      "label_en": "6 trucks \u00b7 flat haul",
+      "label_es": "6 camiones \u00b7 acarreo plano",
+      "note_en": "Flat haul: fast cycles, the route is trivially direct.",
+      "note_es": "Acarreo plano: ciclos r\u00e1pidos, la ruta es trivialmente directa.",
+      "params": {
+        "grid": 12,
+        "n_trucks": 6,
+        "n_loaders": 1,
+        "grade": 0.0,
+        "pass_col": 2,
+        "lift_col": 4,
+        "barrier": 0,
+        "horizon": 60.0
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 0.9,
+        "trace_bytes": 22183,
+        "reasons": []
+      },
+      "kpis": {
+        "loads_delivered": 13,
+        "throughput_per_hr": 13.0,
+        "mean_cycle_time": 27.0,
+        "loader_wait_per_load": 4.59,
+        "switch_grade_est": 3.38,
+        "n_trucks": 6,
+        "n_loaders": 1
+      },
+      "analytic": {
+        "switch_grade_est": 3.38,
+        "route_via": "direct over crest",
+        "cross_col": 4,
+        "lift_col": 4
+      },
+      "trace": "data/artifacts/s07_haul/x_flat-seed42.json"
     }
   ]
 }

@@ -15,30 +15,66 @@ import numpy as np
 
 class GridNetwork:
     def __init__(self, rows: int, cols: int, spacing: float = 1.0, jitter: float = 0.0,
-                 rng: np.random.Generator | None = None) -> None:
+                 rng: np.random.Generator | None = None, *, terrain: str = "ramp",
+                 terrain_opts: dict | None = None, blocked: set[int] | None = None) -> None:
+        # `terrain`/`terrain_opts`/`blocked` are keyword-only with ramp defaults, so existing positional
+        # callers (S08/S09: GridNetwork(g, g, spacing=1.0)) reproduce the old graph + ramp elevation
+        # byte-for-byte. `blocked` removes interior nodes entirely (true impassable cells).
         self.rows, self.cols = rows, cols
+        blocked = blocked or set()
         self.coords: dict[int, tuple[float, float]] = {}
         for r in range(rows):
             for c in range(cols):
+                nid = r * cols + c
+                if nid in blocked:
+                    continue
                 jx = float(rng.uniform(-jitter, jitter)) if (rng is not None and jitter) else 0.0
                 jy = float(rng.uniform(-jitter, jitter)) if (rng is not None and jitter) else 0.0
-                self.coords[r * cols + c] = (c * spacing + jx, r * spacing + jy)
+                self.coords[nid] = (c * spacing + jx, r * spacing + jy)
         self.adj: dict[int, list[int]] = {n: [] for n in self.coords}
         self.edges: list[list[int]] = []
         for r in range(rows):
             for c in range(cols):
                 nid = r * cols + c
+                if nid not in self.coords:
+                    continue
                 for dr, dc in ((0, 1), (1, 0)):
                     nr, nc = r + dr, c + dc
                     if nr < rows and nc < cols:
                         m = nr * cols + nc
+                        if m not in self.coords:
+                            continue
                         self.adj[nid].append(m)
                         self.adj[m].append(nid)
                         self.edges.append([nid, m])
-        xs = [x for x, _ in self.coords.values()]
-        ys = [y for _, y in self.coords.values()]
-        self._span = (max(xs) + max(ys)) or 1.0
-        self.elev = {n: (x + y) / self._span for n, (x, y) in self.coords.items()}  # 0..1, ridge to top-right
+        # span from the NOMINAL grid extent (not the possibly-holey coords) so blocking never shifts the
+        # frame or the ramp field.
+        self._span = ((cols - 1) * spacing + (rows - 1) * spacing) or 1.0
+        self.elev = self._build_elev(terrain, terrain_opts or {})
+
+    def _build_elev(self, terrain: str, opts: dict) -> dict[int, float]:
+        if terrain == "ramp":
+            return {n: (x + y) / self._span for n, (x, y) in self.coords.items()}  # 0..1, ridge to top-right
+        if terrain == "ridge":
+            # A horizontal ridge (wall) at `ridge_row` separates load (bottom) from dump (top); `passes`
+            # carve low notches so a detour through a pass climbs far less than going over the crest.
+            ridge_row = opts.get("ridge_row", (self.rows - 1) / 2.0)
+            passes = opts.get("passes", [2])
+            w = opts.get("w", 0.75)
+            ridge_amp = opts.get("ridge_amp", 1.6)
+            wp = opts.get("wp", 0.8)
+            pass_depth = opts.get("pass_depth", 0.97)
+            base_tilt = opts.get("base_tilt", 0.05)
+            denom = (self.rows - 1) or 1
+            elev: dict[int, float] = {}
+            for n, (x, y) in self.coords.items():
+                ridge = ridge_amp * math.exp(-((y - ridge_row) ** 2) / (2 * w * w))
+                notch = 1.0
+                for cp in passes:
+                    notch *= 1.0 - pass_depth * math.exp(-((x - cp) ** 2) / (2 * wp * wp))
+                elev[n] = ridge * notch + base_tilt * y / denom
+            return elev
+        raise ValueError(f"unknown terrain '{terrain}'")
 
     def dist(self, a: int, b: int) -> float:
         (x1, y1), (x2, y2) = self.coords[a], self.coords[b]

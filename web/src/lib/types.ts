@@ -154,6 +154,7 @@ export interface RouteTrace {
   routes: RoutePlan[];
   agents: RouteAgent[];
   markers: RouteMarker[];
+  barriers?: { x: number; y: number }[];
   legend: { code: string; label_en: string; label_es: string; color: string }[];
   t_end: number;
   kpis: Record<string, number>;
