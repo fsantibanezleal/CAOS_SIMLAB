@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { loadTrace } from "@/lib/data";
-import { buildCustomers, stateAt } from "@/lib/replay";
+import { assignServers, buildCustomers, frameAt } from "@/lib/replay";
 import type { Trace, VariantEntry } from "@/lib/types";
 import { KpiPanel } from "./KpiPanel";
 import { QueueViz } from "./QueueViz";
@@ -45,7 +45,12 @@ export function VariantPlayer({ variant }: { variant: VariantEntry }) {
     };
   }, [variant.trace]);
 
-  const customers = useMemo(() => (trace ? buildCustomers(trace) : []), [trace]);
+  const customers = useMemo(() => {
+    if (!trace) return [];
+    const cs = buildCustomers(trace);
+    assignServers(cs, Math.round(trace.params.c));
+    return cs;
+  }, [trace]);
   const tEnd = trace?.timeline.t_end ?? 0;
 
   useEffect(() => {
@@ -87,13 +92,14 @@ export function VariantPlayer({ variant }: { variant: VariantEntry }) {
   if (error) return <div className="banner error">⚠ {error}</div>;
   if (!trace) return <div className="loading">{t("common.loading")}</div>;
 
-  const state = stateAt(customers, time);
   const c = Math.round(trace.params.c);
+  const win = Math.max(0.45, tEnd / 260); // flash/transit window in sim-time
+  const frame = frameAt(customers, c, time, win);
 
   return (
     <div className="sim-layout">
       <div className="sim-stage">
-        <QueueViz state={state} c={c} />
+        <QueueViz frame={frame} c={c} />
         <div className="card">
           <Timeline
             time={time}

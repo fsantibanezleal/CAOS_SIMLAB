@@ -1,12 +1,13 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
+import { SubTabs } from "@/components/content/SubTabs";
 import { loadManifest } from "@/lib/data";
 import { useLang } from "@/lib/useLang";
 import type { ScenarioManifest } from "@/lib/types";
 import { VariantComparison } from "./VariantComparison";
 import { VariantPlayer } from "./VariantPlayer";
 
-/** One case study: its problem write-up + a ≥10-variant selector + the player + the comparison chart. */
+/** One case study: a ≥10-regime selector, then 3 sub-tabs — Simulator · Summary charts · Context. */
 export function ScenarioExperiment({ manifestId, description }: { manifestId: string; description: ReactNode }) {
   const { t } = useTranslation();
   const lang = useLang();
@@ -34,9 +35,27 @@ export function ScenarioExperiment({ manifestId, description }: { manifestId: st
 
   const active = manifest.variants.find((v) => v.id === activeId) ?? manifest.variants[0];
 
+  const tabs = [
+    {
+      id: "sim",
+      label: t("sim.tabSimulator"),
+      content: active ? <VariantPlayer key={active.id} variant={active} /> : null,
+    },
+    {
+      id: "charts",
+      label: t("sim.tabCharts"),
+      content: <VariantComparison variants={manifest.variants} activeId={active?.id ?? ""} onSelect={setActiveId} />,
+    },
+    {
+      id: "context",
+      label: t("sim.tabContext"),
+      content: <div className="prose">{description}</div>,
+    },
+  ];
+
   return (
     <div>
-      {/* The simulator first — you land straight in a running sim. */}
+      {/* The regime selector stays on top; the 3 sub-tabs below keep the simulator visible without scrolling. */}
       <div className="variant-bar">
         <span className="variant-bar-label">
           {t("sim.variants")} ({manifest.variants.length}) · {manifest.lane === "live" ? t("sim.laneLive") : t("sim.lanePrecomputed")}
@@ -55,14 +74,7 @@ export function ScenarioExperiment({ manifestId, description }: { manifestId: st
         {active && <p className="variant-note">{lang === "es" ? active.note_es : active.note_en}</p>}
       </div>
 
-      {active && <VariantPlayer key={active.id} variant={active} />}
-
-      {/* The problem write-up + the cross-regime comparison sit below the live sim. */}
-      <div className="prose" style={{ marginTop: "1.75rem" }}>{description}</div>
-
-      <div style={{ marginTop: "1.5rem" }}>
-        <VariantComparison variants={manifest.variants} activeId={active?.id ?? ""} onSelect={setActiveId} />
-      </div>
+      <SubTabs tabs={tabs} ariaLabel={t("sim.tabSimulator")} />
     </div>
   );
 }

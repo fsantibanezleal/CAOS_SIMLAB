@@ -3,7 +3,16 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
-## [0.03.001] - 2026-06-19
+## [0.04.000] - 2026-06-19
+### Changed
+- **Richer queue animation.** Customers are assigned to a SPECIFIC server (S1…Sc, labelled) and animate
+  as transit dots travelling queue→server and server→sink, so you can see who is doing the work and
+  where the flow goes. Servers flash a ring when they receive/deliver; the Arrivals/Served counters pulse
+  when they change. Reconstructed server assignment is deterministic from the trace.
+- **Each case study is now 3 sub-tabs** under the regime selector — Simulator · Summary charts · Context —
+  so the simulator is visible without scrolling.
+- **Width fix.** Content prose now fills the page width (the previous 75ch cap left pages half-empty);
+  added figure/text rows, definition grids and assumption blocks for wide layouts.
 ### Changed
 - **You now land directly on the simulator** (`/` = the Experiments simulator) — entering the app drops
   you straight into a running sim, per the product intent. Introduction moved to `/introduction`
