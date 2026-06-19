@@ -73,6 +73,34 @@ export interface GridTrace {
   frames: GridFrame[];
 }
 
+// ── Chart/series trace (Monte-Carlo CI, Beer Game bullwhip) (simlab.charttrace/v1) ──
+export interface ChartLine {
+  key: string;
+  color: string;
+  label_en: string;
+  label_es: string;
+  dashed?: boolean;
+}
+export interface ChartTrace {
+  schema: string;
+  scenario: string;
+  title: string;
+  method: string;
+  seed: number;
+  params: Record<string, number>;
+  x_label_en: string;
+  x_label_es: string;
+  y_label_en: string;
+  y_label_es: string;
+  series: Record<string, number[]>; // includes "x"
+  lines: ChartLine[];
+  band: { lo: string; hi: string; color: string; label_en: string; label_es: string } | null;
+  bars: { edges: number[]; counts: number[]; color: string; label_en: string; label_es: string } | null;
+  ref_lines: { y: number; color: string; label_en: string; label_es: string }[];
+  kpis: Record<string, number>;
+  analytic: Record<string, unknown>;
+}
+
 export interface ScenarioManifest {
   schema: string;
   id: string;

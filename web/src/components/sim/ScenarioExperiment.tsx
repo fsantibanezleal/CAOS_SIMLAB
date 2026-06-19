@@ -7,6 +7,7 @@ import type { ScenarioManifest } from "@/lib/types";
 import { VariantComparison } from "./VariantComparison";
 import { VariantPlayer } from "./VariantPlayer";
 import { GridVariantPlayer } from "./GridVariantPlayer";
+import { ChartVariantPlayer } from "./ChartVariantPlayer";
 import { GridComparison } from "./GridComparison";
 
 export interface GridKpiConfig {
@@ -52,16 +53,18 @@ export function ScenarioExperiment({
   if (!manifest) return <div className="loading">{t("common.loading")}</div>;
 
   const active = manifest.variants.find((v) => v.id === activeId) ?? manifest.variants[0];
-  const isGrid = manifest.viz.renderer === "agent-grid";
+  const renderer = manifest.viz.renderer;
 
   const player = active
-    ? isGrid
+    ? renderer === "agent-grid"
       ? <GridVariantPlayer key={active.id} variant={active} />
-      : <VariantPlayer key={active.id} variant={active} />
+      : renderer === "chart"
+        ? <ChartVariantPlayer key={active.id} variant={active} />
+        : <VariantPlayer key={active.id} variant={active} />
     : null;
 
   const charts =
-    isGrid && gridKpi ? (
+    gridKpi ? (
       <GridComparison variants={manifest.variants} activeId={active?.id ?? ""} onSelect={setActiveId}
         kpiKey={gridKpi.key} kpiLabelEn={gridKpi.en} kpiLabelEs={gridKpi.es} cols={gridKpi.cols} />
     ) : (

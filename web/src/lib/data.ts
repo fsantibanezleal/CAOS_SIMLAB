@@ -1,4 +1,4 @@
-import type { GridTrace, ScenarioManifest, Trace } from "./types";
+import type { ChartTrace, GridTrace, ScenarioManifest, Trace } from "./types";
 
 const BASE = import.meta.env.BASE_URL; // "/" on the custom domain
 
@@ -20,4 +20,11 @@ export async function loadGridTrace(path: string): Promise<GridTrace> {
   const res = await fetch(`${BASE}${path}`);
   if (!res.ok) throw new Error(`grid trace ${path}: HTTP ${res.status}`);
   return (await res.json()) as GridTrace;
+}
+
+/** Load a chart/series trace (Monte-Carlo, Beer Game). */
+export async function loadChartTrace(path: string): Promise<ChartTrace> {
+  const res = await fetch(`${BASE}${path}`);
+  if (!res.ok) throw new Error(`chart trace ${path}: HTTP ${res.status}`);
+  return (await res.json()) as ChartTrace;
 }
