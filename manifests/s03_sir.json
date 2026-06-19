@@ -1,0 +1,380 @@
+{
+  "schema": "simlab.manifest/v2",
+  "id": "s03_sir",
+  "title": "SIR / SEIR Epidemic",
+  "method": "ABM",
+  "tier": 1,
+  "engine": "numpy",
+  "seed": 42,
+  "viz": {
+    "renderer": "agent-grid",
+    "dimensionality": "2d"
+  },
+  "wheel_closure": [
+    "numpy"
+  ],
+  "param_specs": [
+    {
+      "key": "size",
+      "label": "Grid size",
+      "default": 38,
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "beta",
+      "label": "Infection prob \u03b2 (per infected neighbor)",
+      "default": 0.2,
+      "min": 0.02,
+      "max": 0.6,
+      "step": 0.01,
+      "kind": "float"
+    },
+    {
+      "key": "gamma",
+      "label": "Recovery prob \u03b3 (per step)",
+      "default": 0.2,
+      "min": 0.02,
+      "max": 0.6,
+      "step": 0.01,
+      "kind": "float"
+    },
+    {
+      "key": "init_infected",
+      "label": "Initial infected fraction",
+      "default": 0.02,
+      "min": 0.002,
+      "max": 0.2,
+      "step": 0.002,
+      "kind": "float"
+    },
+    {
+      "key": "steps",
+      "label": "Max steps",
+      "default": 80,
+      "min": 20,
+      "max": 160,
+      "step": 5,
+      "kind": "int"
+    }
+  ],
+  "lane": "live",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "fizzle",
+      "label_en": "Below threshold (fizzles)",
+      "label_es": "Bajo umbral (se apaga)",
+      "note_en": "Transmissibility too low: the outbreak dies out.",
+      "note_es": "Transmisibilidad muy baja: el brote se apaga.",
+      "params": {
+        "size": 38,
+        "beta": 0.06,
+        "gamma": 0.25,
+        "init_infected": 0.02,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 12.8,
+        "trace_bytes": 214563,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.0298,
+        "peak_step": 7,
+        "attack_rate": 0.1988,
+        "duration_steps": 72,
+        "beta": 0.06,
+        "gamma": 0.25
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/fizzle-seed42.json"
+    },
+    {
+      "id": "threshold",
+      "label_en": "Near threshold",
+      "label_es": "Cerca del umbral",
+      "note_en": "Right at the tipping point \u2014 small, slow spread.",
+      "note_es": "Justo en el punto de quiebre \u2014 propagaci\u00f3n peque\u00f1a y lenta.",
+      "params": {
+        "size": 38,
+        "beta": 0.1,
+        "gamma": 0.25,
+        "init_infected": 0.02,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.7,
+        "trace_bytes": 211640,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.1309,
+        "peak_step": 17,
+        "attack_rate": 0.9086,
+        "duration_steps": 71,
+        "beta": 0.1,
+        "gamma": 0.25
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/threshold-seed42.json"
+    },
+    {
+      "id": "mild",
+      "label_en": "Mild wave",
+      "label_es": "Ola leve",
+      "note_en": "A modest epidemic with a low peak.",
+      "note_es": "Una epidemia modesta con pico bajo.",
+      "params": {
+        "size": 38,
+        "beta": 0.14,
+        "gamma": 0.2,
+        "init_infected": 0.02,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.5,
+        "trace_bytes": 208706,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.2839,
+        "peak_step": 12,
+        "attack_rate": 0.9827,
+        "duration_steps": 70,
+        "beta": 0.14,
+        "gamma": 0.2
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/mild-seed42.json"
+    },
+    {
+      "id": "moderate",
+      "label_en": "Moderate wave",
+      "label_es": "Ola moderada",
+      "note_en": "The classic SIR wave: rise, peak, burnout.",
+      "note_es": "La ola SIR cl\u00e1sica: sube, pico, extinci\u00f3n.",
+      "params": {
+        "size": 38,
+        "beta": 0.2,
+        "gamma": 0.2,
+        "init_infected": 0.02,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 3.7,
+        "trace_bytes": 132515,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.3823,
+        "peak_step": 10,
+        "attack_rate": 0.9965,
+        "duration_steps": 44,
+        "beta": 0.2,
+        "gamma": 0.2
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/moderate-seed42.json"
+    },
+    {
+      "id": "severe",
+      "label_en": "Severe wave",
+      "label_es": "Ola severa",
+      "note_en": "High transmissibility: tall, fast peak.",
+      "note_es": "Alta transmisibilidad: pico alto y r\u00e1pido.",
+      "params": {
+        "size": 38,
+        "beta": 0.3,
+        "gamma": 0.2,
+        "init_infected": 0.02,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 3.9,
+        "trace_bytes": 132445,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.4404,
+        "peak_step": 7,
+        "attack_rate": 1.0,
+        "duration_steps": 44,
+        "beta": 0.3,
+        "gamma": 0.2
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/severe-seed42.json"
+    },
+    {
+      "id": "explosive",
+      "label_en": "Explosive",
+      "label_es": "Explosiva",
+      "note_en": "Very fast spread, very high peak.",
+      "note_es": "Propagaci\u00f3n muy r\u00e1pida, pico muy alto.",
+      "params": {
+        "size": 38,
+        "beta": 0.42,
+        "gamma": 0.15,
+        "init_infected": 0.02,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 4.8,
+        "trace_bytes": 179278,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.5561,
+        "peak_step": 6,
+        "attack_rate": 1.0,
+        "duration_steps": 60,
+        "beta": 0.42,
+        "gamma": 0.15
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/explosive-seed42.json"
+    },
+    {
+      "id": "fastrec",
+      "label_en": "Fast recovery",
+      "label_es": "Recuperaci\u00f3n r\u00e1pida",
+      "note_en": "High \u03b3 damps the peak even at high \u03b2.",
+      "note_es": "Una \u03b3 alta amortigua el pico aun con \u03b2 alta.",
+      "params": {
+        "size": 38,
+        "beta": 0.26,
+        "gamma": 0.4,
+        "init_infected": 0.02,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.7,
+        "trace_bytes": 91479,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.2313,
+        "peak_step": 9,
+        "attack_rate": 0.9834,
+        "duration_steps": 30,
+        "beta": 0.26,
+        "gamma": 0.4
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/fastrec-seed42.json"
+    },
+    {
+      "id": "slowrec",
+      "label_en": "Slow recovery",
+      "label_es": "Recuperaci\u00f3n lenta",
+      "note_en": "Low \u03b3 stretches a long, smouldering epidemic.",
+      "note_es": "Una \u03b3 baja alarga una epidemia prolongada.",
+      "params": {
+        "size": 38,
+        "beta": 0.16,
+        "gamma": 0.08,
+        "init_infected": 0.02,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 6.3,
+        "trace_bytes": 238025,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.5346,
+        "peak_step": 12,
+        "attack_rate": 0.9958,
+        "duration_steps": 80,
+        "beta": 0.16,
+        "gamma": 0.08
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/slowrec-seed42.json"
+    },
+    {
+      "id": "seed1",
+      "label_en": "Single seed",
+      "label_es": "Semilla \u00fanica",
+      "note_en": "Starts from ~one case and spreads as a front.",
+      "note_es": "Parte de ~un caso y se propaga como frente.",
+      "params": {
+        "size": 38,
+        "beta": 0.24,
+        "gamma": 0.2,
+        "init_infected": 0.004,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 4.6,
+        "trace_bytes": 176478,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.1891,
+        "peak_step": 10,
+        "attack_rate": 0.9965,
+        "duration_steps": 59,
+        "beta": 0.24,
+        "gamma": 0.2
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/seed1-seed42.json"
+    },
+    {
+      "id": "denseseed",
+      "label_en": "Dense seeding",
+      "label_es": "Siembra densa",
+      "note_en": "Many initial cases ignite the whole board fast.",
+      "note_es": "Muchos casos iniciales encienden el tablero r\u00e1pido.",
+      "params": {
+        "size": 38,
+        "beta": 0.18,
+        "gamma": 0.2,
+        "init_infected": 0.1,
+        "steps": 80
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.8,
+        "trace_bytes": 109068,
+        "reasons": []
+      },
+      "kpis": {
+        "peak_infected_frac": 0.5069,
+        "peak_step": 5,
+        "attack_rate": 0.9979,
+        "duration_steps": 36,
+        "beta": 0.18,
+        "gamma": 0.2
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s03_sir/denseseed-seed42.json"
+    }
+  ]
+}

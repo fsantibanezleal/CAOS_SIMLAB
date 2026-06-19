@@ -1,0 +1,341 @@
+{
+  "schema": "simlab.manifest/v2",
+  "id": "s02_schelling",
+  "title": "Schelling Segregation",
+  "method": "ABM",
+  "tier": 1,
+  "engine": "numpy",
+  "seed": 42,
+  "viz": {
+    "renderer": "agent-grid",
+    "dimensionality": "2d"
+  },
+  "wheel_closure": [
+    "numpy"
+  ],
+  "param_specs": [
+    {
+      "key": "size",
+      "label": "Grid size",
+      "default": 30,
+      "min": 10,
+      "max": 60,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "empty",
+      "label": "Empty fraction",
+      "default": 0.1,
+      "min": 0.02,
+      "max": 0.4,
+      "step": 0.01,
+      "kind": "float"
+    },
+    {
+      "key": "tolerance",
+      "label": "Tolerance (min same-type)",
+      "default": 0.5,
+      "min": 0.1,
+      "max": 0.85,
+      "step": 0.05,
+      "kind": "float"
+    },
+    {
+      "key": "steps",
+      "label": "Max steps",
+      "default": 50,
+      "min": 10,
+      "max": 120,
+      "step": 5,
+      "kind": "int"
+    }
+  ],
+  "lane": "live",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "t30",
+      "label_en": "Tolerance 30%",
+      "label_es": "Tolerancia 30%",
+      "note_en": "Very tolerant: barely any segregation.",
+      "note_es": "Muy tolerante: casi nada de segregaci\u00f3n.",
+      "params": {
+        "size": 30,
+        "empty": 0.1,
+        "tolerance": 0.3,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 9.3,
+        "trace_bytes": 31808,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.7305,
+        "final_happy_frac": 1.0,
+        "steps_run": 16,
+        "tolerance": 0.3
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/t30-seed42.json"
+    },
+    {
+      "id": "t375",
+      "label_en": "Tolerance 37.5%",
+      "label_es": "Tolerancia 37.5%",
+      "note_en": "Mild preference, mild clustering.",
+      "note_es": "Preferencia leve, agrupaci\u00f3n leve.",
+      "params": {
+        "size": 30,
+        "empty": 0.1,
+        "tolerance": 0.375,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 3.2,
+        "trace_bytes": 50171,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.773,
+        "final_happy_frac": 1.0,
+        "steps_run": 26,
+        "tolerance": 0.375
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/t375-seed42.json"
+    },
+    {
+      "id": "t45",
+      "label_en": "Tolerance 45%",
+      "label_es": "Tolerancia 45%",
+      "note_en": "Approaching the tipping point.",
+      "note_es": "Acerc\u00e1ndose al punto de quiebre.",
+      "params": {
+        "size": 30,
+        "empty": 0.1,
+        "tolerance": 0.45,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 1.9,
+        "trace_bytes": 26299,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.8669,
+        "final_happy_frac": 1.0,
+        "steps_run": 13,
+        "tolerance": 0.45
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/t45-seed42.json"
+    },
+    {
+      "id": "t50",
+      "label_en": "Tolerance 50% (classic)",
+      "label_es": "Tolerancia 50% (cl\u00e1sico)",
+      "note_en": "The classic case: strong segregation from a 'fair' rule.",
+      "note_es": "El caso cl\u00e1sico: fuerte segregaci\u00f3n desde una regla 'justa'.",
+      "params": {
+        "size": 30,
+        "empty": 0.1,
+        "tolerance": 0.5,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 1.8,
+        "trace_bytes": 26297,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.8669,
+        "final_happy_frac": 1.0,
+        "steps_run": 13,
+        "tolerance": 0.5
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/t50-seed42.json"
+    },
+    {
+      "id": "t55",
+      "label_en": "Tolerance 55%",
+      "label_es": "Tolerancia 55%",
+      "note_en": "Sharper segregation; more churn.",
+      "note_es": "Segregaci\u00f3n m\u00e1s marcada; m\u00e1s movimiento.",
+      "params": {
+        "size": 30,
+        "empty": 0.1,
+        "tolerance": 0.55,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 4.1,
+        "trace_bytes": 64850,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.943,
+        "final_happy_frac": 1.0,
+        "steps_run": 34,
+        "tolerance": 0.55
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/t55-seed42.json"
+    },
+    {
+      "id": "t625",
+      "label_en": "Tolerance 62.5%",
+      "label_es": "Tolerancia 62.5%",
+      "note_en": "High demand for similarity.",
+      "note_es": "Alta exigencia de similitud.",
+      "params": {
+        "size": 30,
+        "empty": 0.1,
+        "tolerance": 0.625,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 6.9,
+        "trace_bytes": 94235,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.9787,
+        "final_happy_frac": 0.9963,
+        "steps_run": 50,
+        "tolerance": 0.625
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/t625-seed42.json"
+    },
+    {
+      "id": "t70",
+      "label_en": "Tolerance 70%",
+      "label_es": "Tolerancia 70%",
+      "note_en": "So demanding that agents rarely settle.",
+      "note_es": "Tan exigente que los agentes casi no se asientan.",
+      "params": {
+        "size": 30,
+        "empty": 0.12,
+        "tolerance": 0.7,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 7.9,
+        "trace_bytes": 94228,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.9869,
+        "final_happy_frac": 0.9911,
+        "steps_run": 50,
+        "tolerance": 0.7
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/t70-seed42.json"
+    },
+    {
+      "id": "dense",
+      "label_en": "Dense (5% empty)",
+      "label_es": "Densa (5% vac\u00edo)",
+      "note_en": "Few vacancies: hard to relocate, slow to segregate.",
+      "note_es": "Pocas vacantes: dif\u00edcil reubicarse, segrega lento.",
+      "params": {
+        "size": 30,
+        "empty": 0.05,
+        "tolerance": 0.5,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.4,
+        "trace_bytes": 33644,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.8643,
+        "final_happy_frac": 1.0,
+        "steps_run": 17,
+        "tolerance": 0.5
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/dense-seed42.json"
+    },
+    {
+      "id": "roomy",
+      "label_en": "Roomy (25% empty)",
+      "label_es": "Holgada (25% vac\u00edo)",
+      "note_en": "Plenty of room: fast, clean segregation.",
+      "note_es": "Mucho espacio: segregaci\u00f3n r\u00e1pida y n\u00edtida.",
+      "params": {
+        "size": 30,
+        "empty": 0.25,
+        "tolerance": 0.5,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 1.8,
+        "trace_bytes": 24466,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.9019,
+        "final_happy_frac": 1.0,
+        "steps_run": 12,
+        "tolerance": 0.5
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/roomy-seed42.json"
+    },
+    {
+      "id": "spacious",
+      "label_en": "Spacious (35% empty)",
+      "label_es": "Amplia (35% vac\u00edo)",
+      "note_en": "Very sparse board at the classic tolerance.",
+      "note_es": "Tablero muy disperso a la tolerancia cl\u00e1sica.",
+      "params": {
+        "size": 30,
+        "empty": 0.35,
+        "tolerance": 0.5,
+        "steps": 50
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.0,
+        "trace_bytes": 29975,
+        "reasons": []
+      },
+      "kpis": {
+        "final_segregation": 0.9049,
+        "final_happy_frac": 1.0,
+        "steps_run": 15,
+        "tolerance": 0.5
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s02_schelling/spacious-seed42.json"
+    }
+  ]
+}

@@ -3,7 +3,18 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
-## [0.06.000] - 2026-06-19
+## [0.07.000] - 2026-06-19
+### Added
+- **Two new ABM scenarios** (live-capable, pure-Python + NumPy, fully seeded):
+  - **S02 — Schelling segregation**: a grid of two groups; unhappy agents relocate. 10 regimes (a
+    tolerance sweep + density variants); tracks the segregation index over time.
+  - **S03 — SIR epidemic**: grid contagion (β per infected neighbour, γ recovery). 10 regimes (β/γ
+    sweep across the epidemic threshold); tracks the S/I/R curves and the attack rate.
+- **Agent-grid visualization**: a canvas grid player (theme-aware cell colours, legend, frame scrubber)
+  + an over-time **series chart** (segregation / epidemic curves) + a per-regime **comparison** (bars +
+  table). The case-study player now branches on the scenario's viz renderer (queue-network vs agent-grid).
+- New frame-based trace schema (`simlab.gridtrace/v1`) + the scenarios' tests (reproducibility, variant
+  family, grid pipeline manifest). 15 tests total.
 ### Added
 - **Graduate-level Theory**, transcribed from a deep-research workflow (3 reports, web-verified). Three
   domains as vertical sub-tab sections, each sub-tab carrying full bilingual prose, governing **equations
