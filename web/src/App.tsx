@@ -15,7 +15,7 @@ export default function App() {
         {tab === "about" && <About />}
       </main>
       <footer className="footer">
-        <span>CAOS_SIMLAB · v0.01.000 · MIT</span>
+        <span>CAOS_SIMLAB · v0.02.000 · MIT</span>
         <a className="link" href="https://github.com/fsantibanezleal/CAOS_SIMLAB" target="_blank" rel="noreferrer">
           GitHub
         </a>
