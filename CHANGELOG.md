@@ -3,7 +3,21 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
-## [0.05.000] - 2026-06-19
+## [0.06.000] - 2026-06-19
+### Added
+- **Graduate-level Theory**, transcribed from a deep-research workflow (3 reports, web-verified). Three
+  domains as vertical sub-tab sections, each sub-tab carrying full bilingual prose, governing **equations
+  (KaTeX)**, an assumptions/limits block, a theme-aware **bilingual SVG figure**, and DOI references:
+  - **Queueing (M/M/c)** — 9 sub-tabs: Kendall notation, birth–death CTMC + steady state, stability,
+    Erlang-C (Wq/Lq/W/L), Little's Law, PASTA, the ρ→1 knee + Kingman, pooling/square-root staffing.
+  - **DES methodology** — 7 sub-tabs: the FEL worldview, the study lifecycle, input modeling + GoF,
+    RNG/seeding/CRN, replications & CIs, V&V (Erlang-C as the worked check), warm-up/run-length.
+  - **ABM** — 10 sub-tabs: agents/scheduler/activation, emergence, the ODD protocol, validation, and the
+    canonical models (Schelling, SIR/Kermack–McKendrick, Boids, Sugarscape, Mesa).
+- ~17 **bilingual, theme-aware SVG diagrams** across the theory (event-loop, CTMC, Erlang-C knee,
+  replications/CI, SIR, emergence, ODD, Boids, …) and a full **bibliography** tab (25+ verified refs).
+### Changed
+- Replaced the earlier shallow Theory summaries; the lede fills the page width (0.05.001).
 ### Added
 - **Deep, referenced Theory** to the CAOS_SEISMIC standard: three top tabs (Queueing theory · DES
   methodology · Agent-based modeling) of vertical sub-tabs, each with rigorous prose, **KaTeX equations**
