@@ -40,6 +40,9 @@ const en = {
     laneLive: "live-capable",
     lanePrecomputed: "precomputed",
     seed: "seed",
+    tabSimulator: "Simulator",
+    tabCharts: "Summary charts",
+    tabContext: "Context",
   },
   kpi: {
     title: "Result vs theory",
@@ -97,6 +100,9 @@ const es: typeof en = {
     laneLive: "ejecutable en vivo",
     lanePrecomputed: "precomputado",
     seed: "semilla",
+    tabSimulator: "Simulador",
+    tabCharts: "Gráficos de resumen",
+    tabContext: "Contexto",
   },
   kpi: {
     title: "Resultado vs teoría",
