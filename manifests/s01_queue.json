@@ -1,34 +1,494 @@
 {
-  "schema": "simlab.manifest/v1",
+  "schema": "simlab.manifest/v2",
   "id": "s01_queue",
   "title": "Bank / Clinic Queue (M/M/c)",
   "method": "DES",
   "tier": 1,
   "engine": "simpy",
   "seed": 42,
-  "params": {
-    "lam": 2.0,
-    "mu": 1.0,
-    "c": 3,
-    "n_customers": 300
-  },
-  "lane": "live",
-  "gate": {
-    "pure_python": true,
-    "run_ms": 9.4,
-    "trace_bytes": 35304,
-    "reasons": [],
-    "thresholds": {
-      "max_run_ms": 3000.0,
-      "max_trace_bytes": 1000000
-    }
+  "viz": {
+    "renderer": "queue-network",
+    "dimensionality": "2d"
   },
   "wheel_closure": [
     "simpy",
     "numpy"
   ],
-  "viz": {
-    "renderer": "queue-network",
-    "dimensionality": "2d"
-  }
+  "param_specs": [
+    {
+      "key": "lam",
+      "label": "Arrival rate \u03bb (/min)",
+      "default": 2.0,
+      "min": 0.1,
+      "max": 10.0,
+      "step": 0.1,
+      "kind": "float"
+    },
+    {
+      "key": "mu",
+      "label": "Service rate \u03bc (/min)",
+      "default": 1.0,
+      "min": 0.1,
+      "max": 10.0,
+      "step": 0.1,
+      "kind": "float"
+    },
+    {
+      "key": "c",
+      "label": "Servers c",
+      "default": 3,
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_customers",
+      "label": "Customers",
+      "default": 300,
+      "min": 50,
+      "max": 5000,
+      "step": 50,
+      "kind": "int"
+    }
+  ],
+  "lane": "live",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "light",
+      "label_en": "Light load (\u03c1\u22480.33)",
+      "label_es": "Carga ligera (\u03c1\u22480.33)",
+      "note_en": "Servers mostly idle; almost no one waits.",
+      "note_es": "Servidores casi ociosos; casi nadie espera.",
+      "params": {
+        "lam": 1.0,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 9.3,
+        "trace_bytes": 35643,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 0.0828,
+        "W_sim": 1.1515,
+        "Lq_little": 0.0828,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.3333
+      },
+      "analytic": {
+        "rho": 0.3333,
+        "p_wait": 0.0909,
+        "Wq": 0.0455,
+        "Lq": 0.0455,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/light-seed42.json"
+    },
+    {
+      "id": "moderate",
+      "label_en": "Moderate (\u03c1\u22480.67)",
+      "label_es": "Moderada (\u03c1\u22480.67)",
+      "note_en": "A healthy operating point; short, stable queue.",
+      "note_es": "Punto de operaci\u00f3n sano; cola corta y estable.",
+      "params": {
+        "lam": 2.0,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 3.6,
+        "trace_bytes": 35304,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 0.747,
+        "W_sim": 1.8157,
+        "Lq_little": 1.494,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.6667
+      },
+      "analytic": {
+        "rho": 0.6667,
+        "p_wait": 0.4444,
+        "Wq": 0.4444,
+        "Lq": 0.8889,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/moderate-seed42.json"
+    },
+    {
+      "id": "busy",
+      "label_en": "Busy (\u03c1\u22480.80)",
+      "label_es": "Ocupada (\u03c1\u22480.80)",
+      "note_en": "Waits become noticeable as load rises.",
+      "note_es": "Las esperas se notan al subir la carga.",
+      "params": {
+        "lam": 2.4,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.3,
+        "trace_bytes": 35185,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 1.5764,
+        "W_sim": 2.6451,
+        "Lq_little": 3.7834,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.8
+      },
+      "analytic": {
+        "rho": 0.8,
+        "p_wait": 0.6472,
+        "Wq": 1.0787,
+        "Lq": 2.5888,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/busy-seed42.json"
+    },
+    {
+      "id": "heavy",
+      "label_en": "Heavy (\u03c1\u22480.90)",
+      "label_es": "Alta (\u03c1\u22480.90)",
+      "note_en": "Near the knee of the curve \u2014 waits climb fast.",
+      "note_es": "Cerca del codo de la curva \u2014 la espera sube r\u00e1pido.",
+      "params": {
+        "lam": 2.7,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.3,
+        "trace_bytes": 35090,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 3.9558,
+        "W_sim": 5.0245,
+        "Lq_little": 10.6808,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.9
+      },
+      "analytic": {
+        "rho": 0.9,
+        "p_wait": 0.8171,
+        "Wq": 2.7235,
+        "Lq": 7.3535,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/heavy-seed42.json"
+    },
+    {
+      "id": "saturated",
+      "label_en": "Near-saturation (\u03c1\u22480.95)",
+      "label_es": "Casi saturada (\u03c1\u22480.95)",
+      "note_en": "Tiny load increases cause huge wait increases.",
+      "note_es": "Peque\u00f1os aumentos de carga disparan la espera.",
+      "params": {
+        "lam": 2.85,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.3,
+        "trace_bytes": 35071,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 5.9118,
+        "W_sim": 6.9805,
+        "Lq_little": 16.8487,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.95
+      },
+      "analytic": {
+        "rho": 0.95,
+        "p_wait": 0.907,
+        "Wq": 6.0467,
+        "Lq": 17.2332,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/saturated-seed42.json"
+    },
+    {
+      "id": "unstable",
+      "label_en": "Unstable (\u03c1\u22481.10)",
+      "label_es": "Inestable (\u03c1\u22481.10)",
+      "note_en": "Arrivals exceed capacity: the queue grows without bound (theory Wq = \u221e).",
+      "note_es": "Las llegadas superan la capacidad: la cola crece sin l\u00edmite (teor\u00eda Wq = \u221e).",
+      "params": {
+        "lam": 3.3,
+        "mu": 1.0,
+        "c": 3,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.4,
+        "trace_bytes": 35039,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 11.8573,
+        "W_sim": 12.926,
+        "Lq_little": 39.1292,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 1.1
+      },
+      "analytic": {
+        "rho": 1.1,
+        "p_wait": null,
+        "Wq": null,
+        "Lq": null,
+        "stable": false
+      },
+      "trace": "data/artifacts/s01_queue/unstable-seed42.json"
+    },
+    {
+      "id": "mm1",
+      "label_en": "Single server M/M/1 (\u03c1\u22480.80)",
+      "label_es": "Un servidor M/M/1 (\u03c1\u22480.80)",
+      "note_en": "One server at \u03c1=0.8 \u2014 compare its wait with the multi-server pools below.",
+      "note_es": "Un servidor a \u03c1=0.8 \u2014 compara su espera con los pools multi-servidor de abajo.",
+      "params": {
+        "lam": 0.8,
+        "mu": 1.0,
+        "c": 1,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.2,
+        "trace_bytes": 35726,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 5.4629,
+        "W_sim": 6.5316,
+        "Lq_little": 4.3703,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.8
+      },
+      "analytic": {
+        "rho": 0.8,
+        "p_wait": 0.8,
+        "Wq": 4.0,
+        "Lq": 3.2,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/mm1-seed42.json"
+    },
+    {
+      "id": "mm1_busy",
+      "label_en": "Single server busy (\u03c1\u22480.90)",
+      "label_es": "Un servidor ocupado (\u03c1\u22480.90)",
+      "note_en": "A single busy server: long, volatile waits.",
+      "note_es": "Un solo servidor ocupado: esperas largas y vol\u00e1tiles.",
+      "params": {
+        "lam": 0.9,
+        "mu": 1.0,
+        "c": 1,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 3.6,
+        "trace_bytes": 35711,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 12.9092,
+        "W_sim": 13.9779,
+        "Lq_little": 11.6183,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.9
+      },
+      "analytic": {
+        "rho": 0.9,
+        "p_wait": 0.9,
+        "Wq": 9.0,
+        "Lq": 8.1,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/mm1_busy-seed42.json"
+    },
+    {
+      "id": "c2",
+      "label_en": "Two servers (\u03c1\u22480.80)",
+      "label_es": "Dos servidores (\u03c1\u22480.80)",
+      "note_en": "Same \u03c1 as M/M/1 but pooled across 2 servers.",
+      "note_es": "Mismo \u03c1 que M/M/1 pero compartido entre 2 servidores.",
+      "params": {
+        "lam": 1.6,
+        "mu": 1.0,
+        "c": 2,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.2,
+        "trace_bytes": 35428,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 2.5639,
+        "W_sim": 3.6326,
+        "Lq_little": 4.1023,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.8
+      },
+      "analytic": {
+        "rho": 0.8,
+        "p_wait": 0.7111,
+        "Wq": 1.7778,
+        "Lq": 2.8444,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/c2-seed42.json"
+    },
+    {
+      "id": "c5",
+      "label_en": "Five servers (\u03c1\u22480.80)",
+      "label_es": "Cinco servidores (\u03c1\u22480.80)",
+      "note_en": "Same \u03c1, more servers: pooling shortens the wait (economies of scale).",
+      "note_es": "Mismo \u03c1, m\u00e1s servidores: el pooling acorta la espera (econom\u00edas de escala).",
+      "params": {
+        "lam": 4.0,
+        "mu": 1.0,
+        "c": 5,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.3,
+        "trace_bytes": 34945,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 0.7949,
+        "W_sim": 1.8635,
+        "Lq_little": 3.1794,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.8
+      },
+      "analytic": {
+        "rho": 0.8,
+        "p_wait": 0.5541,
+        "Wq": 0.5541,
+        "Lq": 2.2165,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/c5-seed42.json"
+    },
+    {
+      "id": "c10",
+      "label_en": "Ten servers (\u03c1\u22480.80)",
+      "label_es": "Diez servidores (\u03c1\u22480.80)",
+      "note_en": "A large pool at the same \u03c1 \u2014 the wait nearly vanishes.",
+      "note_es": "Un pool grande al mismo \u03c1 \u2014 la espera casi desaparece.",
+      "params": {
+        "lam": 8.0,
+        "mu": 1.0,
+        "c": 10,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 3.0,
+        "trace_bytes": 34840,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 0.2305,
+        "W_sim": 1.2992,
+        "Lq_little": 1.844,
+        "n_customers": 300,
+        "mean_service": 1.0,
+        "utilization_offered": 0.8
+      },
+      "analytic": {
+        "rho": 0.8,
+        "p_wait": 0.4092,
+        "Wq": 0.2046,
+        "Lq": 1.6367,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/c10-seed42.json"
+    },
+    {
+      "id": "fast",
+      "label_en": "Fast service, 2 servers (\u03c1\u22480.50)",
+      "label_es": "Servicio r\u00e1pido, 2 servidores (\u03c1\u22480.50)",
+      "note_en": "Doubling the service rate \u03bc halves the load.",
+      "note_es": "Duplicar la tasa de servicio \u03bc reduce la carga a la mitad.",
+      "params": {
+        "lam": 2.0,
+        "mu": 2.0,
+        "c": 2,
+        "n_customers": 300
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 2.3,
+        "trace_bytes": 35310,
+        "reasons": []
+      },
+      "kpis": {
+        "Wq_sim": 0.2313,
+        "W_sim": 0.7657,
+        "Lq_little": 0.4626,
+        "n_customers": 300,
+        "mean_service": 0.5,
+        "utilization_offered": 0.5
+      },
+      "analytic": {
+        "rho": 0.5,
+        "p_wait": 0.3333,
+        "Wq": 0.1667,
+        "Lq": 0.3333,
+        "stable": true
+      },
+      "trace": "data/artifacts/s01_queue/fast-seed42.json"
+    }
+  ]
 }

@@ -15,7 +15,7 @@ from statistics import fmean
 import simpy
 
 from ..core.rng import make_rng
-from ..core.scenario import ParamSpec, Scenario
+from ..core.scenario import ParamSpec, Scenario, Variant
 from ..core.trace import Trace
 
 
@@ -27,7 +27,8 @@ def erlang_c_mmc(lam: float, mu: float, c: int) -> dict:
     rho = lam / (c * mu)
     a = lam / mu  # offered load (Erlangs)
     if rho >= 1.0:
-        return {"rho": round(rho, 4), "p_wait": 1.0, "Wq": math.inf, "Lq": math.inf, "stable": False}
+        # Unstable: no finite steady state. Use null (not inf) so the trace stays valid JSON.
+        return {"rho": round(rho, 4), "p_wait": None, "Wq": None, "Lq": None, "stable": False}
     sum_terms = sum((a ** n) / math.factorial(n) for n in range(c))
     last = (a ** c) / (math.factorial(c) * (1.0 - rho))
     p0 = 1.0 / (sum_terms + last)
@@ -52,6 +53,44 @@ class QueueScenario(Scenario):
         ParamSpec("c", "Servers c", 3, 1, 10, 1, kind="int"),
         ParamSpec("n_customers", "Customers", 300, 50, 5000, 50, kind="int"),
     ]
+
+    def variants(self) -> list[Variant]:
+        """12 pre-simulated regimes: a load sweep (ρ from 0.33 to unstable), the single-server M/M/1
+        special case, and a fixed-ρ server-count sweep that exposes the pooling effect."""
+        n = 300
+
+        def v(vid, le, ls, lam, mu, c, ne, ns):
+            return Variant(vid, le, ls, {"lam": lam, "mu": mu, "c": c, "n_customers": n}, ne, ns)
+
+        return [
+            v("light", "Light load (ρ≈0.33)", "Carga ligera (ρ≈0.33)", 1.0, 1.0, 3,
+              "Servers mostly idle; almost no one waits.", "Servidores casi ociosos; casi nadie espera."),
+            v("moderate", "Moderate (ρ≈0.67)", "Moderada (ρ≈0.67)", 2.0, 1.0, 3,
+              "A healthy operating point; short, stable queue.", "Punto de operación sano; cola corta y estable."),
+            v("busy", "Busy (ρ≈0.80)", "Ocupada (ρ≈0.80)", 2.4, 1.0, 3,
+              "Waits become noticeable as load rises.", "Las esperas se notan al subir la carga."),
+            v("heavy", "Heavy (ρ≈0.90)", "Alta (ρ≈0.90)", 2.7, 1.0, 3,
+              "Near the knee of the curve — waits climb fast.", "Cerca del codo de la curva — la espera sube rápido."),
+            v("saturated", "Near-saturation (ρ≈0.95)", "Casi saturada (ρ≈0.95)", 2.85, 1.0, 3,
+              "Tiny load increases cause huge wait increases.", "Pequeños aumentos de carga disparan la espera."),
+            v("unstable", "Unstable (ρ≈1.10)", "Inestable (ρ≈1.10)", 3.3, 1.0, 3,
+              "Arrivals exceed capacity: the queue grows without bound (theory Wq = ∞).",
+              "Las llegadas superan la capacidad: la cola crece sin límite (teoría Wq = ∞)."),
+            v("mm1", "Single server M/M/1 (ρ≈0.80)", "Un servidor M/M/1 (ρ≈0.80)", 0.8, 1.0, 1,
+              "One server at ρ=0.8 — compare its wait with the multi-server pools below.",
+              "Un servidor a ρ=0.8 — compara su espera con los pools multi-servidor de abajo."),
+            v("mm1_busy", "Single server busy (ρ≈0.90)", "Un servidor ocupado (ρ≈0.90)", 0.9, 1.0, 1,
+              "A single busy server: long, volatile waits.", "Un solo servidor ocupado: esperas largas y volátiles."),
+            v("c2", "Two servers (ρ≈0.80)", "Dos servidores (ρ≈0.80)", 1.6, 1.0, 2,
+              "Same ρ as M/M/1 but pooled across 2 servers.", "Mismo ρ que M/M/1 pero compartido entre 2 servidores."),
+            v("c5", "Five servers (ρ≈0.80)", "Cinco servidores (ρ≈0.80)", 4.0, 1.0, 5,
+              "Same ρ, more servers: pooling shortens the wait (economies of scale).",
+              "Mismo ρ, más servidores: el pooling acorta la espera (economías de escala)."),
+            v("c10", "Ten servers (ρ≈0.80)", "Diez servidores (ρ≈0.80)", 8.0, 1.0, 10,
+              "A large pool at the same ρ — the wait nearly vanishes.", "Un pool grande al mismo ρ — la espera casi desaparece."),
+            v("fast", "Fast service, 2 servers (ρ≈0.50)", "Servicio rápido, 2 servidores (ρ≈0.50)", 2.0, 2.0, 2,
+              "Doubling the service rate μ halves the load.", "Duplicar la tasa de servicio μ reduce la carga a la mitad."),
+        ]
 
     def run(self, params: dict, seed: int) -> Trace:
         p = self.coerce(params)

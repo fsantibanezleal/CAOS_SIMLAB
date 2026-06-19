@@ -1,8 +1,9 @@
 """The per-scenario manifest — the keystone that makes the live/precompute call auditable.
 
-Each scenario emits a manifest declaring its lane, engine, seed, params, the MEASURED gate numbers, the
-wheel closure and its viz binding. The app reads it to know how to run/replay a scenario; CI reads it to
-enforce that nothing tagged "live" actually breaches the gates.
+A scenario emits ONE manifest listing its family of pre-simulated **variants**. Each variant declares its
+lane, params, the MEASURED gate numbers, its KPIs and analytic reference, and its committed trace path.
+The app reads the manifest to populate the variant selector and to know how to run/replay each one; CI
+reads it to enforce that nothing tagged "live" actually breaches the gates.
 """
 from __future__ import annotations
 
@@ -10,12 +11,15 @@ import json
 from pathlib import Path
 from typing import Any
 
-from .scenario import GATE_MAX_RUN_MS, GATE_MAX_TRACE_BYTES, GateResult, Scenario
+from .scenario import GATE_MAX_RUN_MS, GATE_MAX_TRACE_BYTES, Scenario
 
-SCHEMA = "simlab.manifest/v1"
+SCHEMA = "simlab.manifest/v2"
 
 
-def build_manifest(scenario: Scenario, seed: int, params: dict, gate: GateResult) -> dict[str, Any]:
+def build_scenario_manifest(scenario: Scenario, seed: int, variants: list[dict[str, Any]]) -> dict[str, Any]:
+    """Assemble the scenario manifest from per-variant result dicts (built by the pipeline)."""
+    lanes = {v["lane"] for v in variants}
+    scenario_lane = "live" if lanes == {"live"} else "precomputed"
     return {
         "schema": SCHEMA,
         "id": scenario.id,
@@ -24,17 +28,12 @@ def build_manifest(scenario: Scenario, seed: int, params: dict, gate: GateResult
         "tier": scenario.tier,
         "engine": scenario.engine,
         "seed": int(seed),
-        "params": params,
-        "lane": gate.lane,
-        "gate": {
-            "pure_python": gate.pure_python,
-            "run_ms": gate.run_ms,
-            "trace_bytes": gate.trace_bytes,
-            "reasons": gate.reasons,
-            "thresholds": {"max_run_ms": GATE_MAX_RUN_MS, "max_trace_bytes": GATE_MAX_TRACE_BYTES},
-        },
-        "wheel_closure": list(scenario.wheels),
         "viz": {"renderer": scenario.viz, "dimensionality": scenario.dimensionality},
+        "wheel_closure": list(scenario.wheels),
+        "param_specs": [vars(p) for p in scenario.param_specs],
+        "lane": scenario_lane,
+        "gate_thresholds": {"max_run_ms": GATE_MAX_RUN_MS, "max_trace_bytes": GATE_MAX_TRACE_BYTES},
+        "variants": variants,
     }
 
 
