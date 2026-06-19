@@ -160,6 +160,16 @@ export interface RouteTrace {
   analytic: Record<string, unknown>;
 }
 
+export interface ParamSpec {
+  key: string;
+  label: string;
+  default: number;
+  min: number;
+  max: number;
+  step: number;
+  kind: "float" | "int";
+}
+
 export interface ScenarioManifest {
   schema: string;
   id: string;
@@ -170,6 +180,7 @@ export interface ScenarioManifest {
   seed: number;
   viz: { renderer: string; dimensionality: string };
   wheel_closure: string[];
+  param_specs: ParamSpec[];
   lane: "live" | "precomputed";
   variants: VariantEntry[];
 }

@@ -5,12 +5,8 @@ import { loadManifest } from "@/lib/data";
 import { useLang } from "@/lib/useLang";
 import type { ScenarioManifest } from "@/lib/types";
 import { VariantComparison } from "./VariantComparison";
-import { VariantPlayer } from "./VariantPlayer";
-import { GridVariantPlayer } from "./GridVariantPlayer";
-import { ChartVariantPlayer } from "./ChartVariantPlayer";
-import { FlowVariantPlayer } from "./FlowVariantPlayer";
-import { GanttVariantPlayer } from "./GanttVariantPlayer";
-import { RouteVariantPlayer } from "./RouteVariantPlayer";
+import { PlayerSwitch } from "./PlayerSwitch";
+import { LivePanel } from "./LivePanel";
 import { GridComparison } from "./GridComparison";
 
 export interface GridKpiConfig {
@@ -58,17 +54,7 @@ export function ScenarioExperiment({
   const active = manifest.variants.find((v) => v.id === activeId) ?? manifest.variants[0];
   const renderer = manifest.viz.renderer;
 
-  const players: Record<string, ReactNode> = active
-    ? {
-        "agent-grid": <GridVariantPlayer key={active.id} variant={active} />,
-        chart: <ChartVariantPlayer key={active.id} variant={active} />,
-        flow: <FlowVariantPlayer key={active.id} variant={active} />,
-        gantt: <GanttVariantPlayer key={active.id} variant={active} />,
-        route: <RouteVariantPlayer key={active.id} variant={active} />,
-        "queue-network": <VariantPlayer key={active.id} variant={active} />,
-      }
-    : {};
-  const player = active ? (players[renderer] ?? <VariantPlayer key={active.id} variant={active} />) : null;
+  const player = active ? <PlayerSwitch key={active.id} renderer={renderer} variant={active} /> : null;
 
   const charts =
     gridKpi ? (
@@ -80,6 +66,7 @@ export function ScenarioExperiment({
 
   const tabs = [
     { id: "sim", label: t("sim.tabSimulator"), content: player },
+    { id: "live", label: t("sim.tabLive"), content: active ? <LivePanel manifest={manifest} variant={active} /> : null },
     { id: "charts", label: t("sim.tabCharts"), content: charts },
     { id: "context", label: t("sim.tabContext"), content: <div className="prose">{description}</div> },
   ];
