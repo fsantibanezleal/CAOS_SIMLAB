@@ -10,6 +10,7 @@ import { GridVariantPlayer } from "./GridVariantPlayer";
 import { ChartVariantPlayer } from "./ChartVariantPlayer";
 import { FlowVariantPlayer } from "./FlowVariantPlayer";
 import { GanttVariantPlayer } from "./GanttVariantPlayer";
+import { RouteVariantPlayer } from "./RouteVariantPlayer";
 import { GridComparison } from "./GridComparison";
 
 export interface GridKpiConfig {
@@ -63,6 +64,7 @@ export function ScenarioExperiment({
         chart: <ChartVariantPlayer key={active.id} variant={active} />,
         flow: <FlowVariantPlayer key={active.id} variant={active} />,
         gantt: <GanttVariantPlayer key={active.id} variant={active} />,
+        route: <RouteVariantPlayer key={active.id} variant={active} />,
         "queue-network": <VariantPlayer key={active.id} variant={active} />,
       }
     : {};

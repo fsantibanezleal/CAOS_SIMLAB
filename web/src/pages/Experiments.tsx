@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { Tabs } from "@/components/content/Tabs";
-import { Callout } from "@/components/content/Callout";
 import { ScenarioExperiment, type GridKpiConfig } from "@/components/sim/ScenarioExperiment";
 import { useLang } from "@/lib/useLang";
 
@@ -63,6 +62,37 @@ const JOBSHOP_KPI: GridKpiConfig = {
     { key: "utilization", en: "Utilization", es: "Utilización" },
   ],
 };
+const HAUL_KPI: GridKpiConfig = {
+  key: "throughput_per_hr", en: "Throughput per hour (saturates at the loader)", es: "Rendimiento por hora (se satura en el cargador)",
+  cols: [
+    { key: "loads_delivered", en: "Loads", es: "Cargas" },
+    { key: "throughput_per_hr", en: "Throughput /hr", es: "Rendimiento /hr" },
+    { key: "loader_wait_per_load", en: "Loader wait/load", es: "Espera cargador/carga" },
+    { key: "mean_cycle_time", en: "Cycle time", es: "Tiempo ciclo" },
+    { key: "n_trucks", en: "Trucks", es: "Camiones" },
+    { key: "n_loaders", en: "Loaders", es: "Cargadores" },
+  ],
+};
+const VRP_KPI: GridKpiConfig = {
+  key: "total_distance", en: "Total distance (vs longest route)", es: "Distancia total (vs ruta más larga)",
+  cols: [
+    { key: "total_distance", en: "Total dist.", es: "Dist. total" },
+    { key: "max_route_time", en: "Longest route", es: "Ruta más larga" },
+    { key: "vehicles_used", en: "Vehicles", es: "Vehículos" },
+    { key: "customers", en: "Customers", es: "Clientes" },
+    { key: "capacity", en: "Capacity", es: "Capacidad" },
+  ],
+};
+const AMBULANCE_KPI: GridKpiConfig = {
+  key: "coverage_pct", en: "Coverage within the response target", es: "Cobertura dentro de la meta de respuesta",
+  cols: [
+    { key: "coverage_pct", en: "Coverage %", es: "Cobertura %" },
+    { key: "mean_response", en: "Mean resp.", es: "Resp. media" },
+    { key: "p90_response", en: "p90 resp.", es: "Resp. p90" },
+    { key: "load_pct", en: "Offered load %", es: "Carga ofrecida %" },
+    { key: "n_ambulances", en: "Ambulances", es: "Ambulancias" },
+  ],
+};
 
 export default function Experiments() {
   const { t } = useTranslation();
@@ -76,9 +106,9 @@ export default function Experiments() {
     { id: "s04", label: "S04 · " + L("Emergency dept.", "Urgencias"), content: <ScenarioExperiment manifestId="s04_ed" description={<S04Desc lang={lang} />} gridKpi={ED_KPI} /> },
     { id: "s05", label: "S05 · " + L("Beer Game (bullwhip)", "Beer Game (bullwhip)"), content: <ScenarioExperiment manifestId="s05_beergame" description={<S05Desc lang={lang} />} gridKpi={BEERGAME_KPI} /> },
     { id: "s06", label: "S06 · " + L("Job-shop (CP-SAT)", "Job-shop (CP-SAT)"), content: <ScenarioExperiment manifestId="s06_jobshop" description={<S06Desc lang={lang} />} gridKpi={JOBSHOP_KPI} /> },
-    { id: "s07", label: "S07 · " + L("Haul routing", "Ruteo de camiones"), content: <Coming lang={lang} which="haul" /> },
-    { id: "s08", label: "S08 · " + L("Vehicle routing (VRP)", "Ruteo de vehículos (VRP)"), content: <Coming lang={lang} which="vrp" /> },
-    { id: "s09", label: "S09 · " + L("Ambulance dispatch", "Despacho ambulancias"), content: <Coming lang={lang} which="ambulance" /> },
+    { id: "s07", label: "S07 · " + L("Haul routing", "Ruteo de camiones"), content: <ScenarioExperiment manifestId="s07_haul" description={<S07Desc lang={lang} />} gridKpi={HAUL_KPI} /> },
+    { id: "s08", label: "S08 · " + L("Vehicle routing (VRP)", "Ruteo de vehículos (VRP)"), content: <ScenarioExperiment manifestId="s08_vrp" description={<S08Desc lang={lang} />} gridKpi={VRP_KPI} /> },
+    { id: "s09", label: "S09 · " + L("Ambulance dispatch", "Despacho ambulancias"), content: <ScenarioExperiment manifestId="s09_ambulance" description={<S09Desc lang={lang} />} gridKpi={AMBULANCE_KPI} /> },
     { id: "s10", label: "S10 · " + L("Monte-Carlo / CI", "Monte-Carlo / IC"), content: <ScenarioExperiment manifestId="s10_montecarlo" description={<S10Desc lang={lang} />} gridKpi={MONTECARLO_KPI} /> },
   ];
 
@@ -88,8 +118,8 @@ export default function Experiments() {
         <h1>{t("nav.experiments")}</h1>
         <p className="lede">
           {L(
-            "Worked case studies across DES, ABM and optimization. Each explains the problem and what it addresses, offers ≥10 pre-simulated regimes to compare, an animated player, and a comparison of results. Seven are live; the geospatial routing cases are landing next.",
-            "Casos de estudio sobre DES, ABM y optimización. Cada uno explica el problema y lo que aborda, ofrece ≥10 regímenes pre-simulados para comparar, un reproductor animado y una comparación de resultados. Siete están activos; los casos de ruteo geoespacial llegan a continuación.",
+            "Ten worked case studies across DES, ABM and optimization — queues, segregation, epidemics, emergency flow, supply chains, scheduling, and three geospatial routing problems on a synthetic road network. Each explains the problem and what it addresses, offers ≥10 pre-simulated regimes to compare, an animated player, and a comparison of results.",
+            "Diez casos de estudio sobre DES, ABM y optimización — colas, segregación, epidemias, flujo de urgencias, cadenas de suministro, programación y tres problemas de ruteo geoespacial sobre una red vial sintética. Cada uno explica el problema y lo que aborda, ofrece ≥10 regímenes pre-simulados para comparar, un reproductor animado y una comparación de resultados.",
           )}
         </p>
       </div>
@@ -217,29 +247,53 @@ function S10Desc({ lang }: { lang: string }) {
   );
 }
 
-function Coming({ lang, which }: { lang: string; which: "haul" | "vrp" | "ambulance" }) {
-  const copy: Record<string, { en: { h: string; p: string }; es: { h: string; p: string } }> = {
-    haul: {
-      en: { h: "Construction haul routing — optimize-then-simulate", p: "Trucks haul material over a road network where elevation drives cost. An optimizer plans routes offline; a DES replays them under stochastic delays. The one case where 3D terrain is pedagogically real." },
-      es: { h: "Ruteo de camiones — optimizar-luego-simular", p: "Camiones transportan material sobre una red vial donde la elevación maneja el costo. Un optimizador planifica rutas offline; un DES las reproduce bajo demoras. El único caso donde el terreno 3D es pedagógicamente real." },
-    },
-    vrp: {
-      en: { h: "Vehicle routing (VRP/VRPTW)", p: "Route a fleet to serve customers (with time windows) minimizing distance — OR-Tools / PyVRP. Then simulate the plan under stochastic demand to show time-window fragility. Map viz; precomputed." },
-      es: { h: "Ruteo de vehículos (VRP/VRPTW)", p: "Rutea una flota para servir clientes (con ventanas de tiempo) minimizando distancia — OR-Tools / PyVRP. Luego simula el plan bajo demanda estocástica para ver la fragilidad de las ventanas. Viz de mapa; precomputado." },
-    },
-    ambulance: {
-      en: { h: "Emergency / ambulance dispatch", p: "Stochastic calls over a city graph: an offline base dispatch plan evaluated over many stochastic-call DES runs — response-time distributions and coverage. Map viz; precomputed." },
-      es: { h: "Despacho de ambulancias", p: "Llamados estocásticos sobre un grafo de ciudad: un plan de despacho base evaluado sobre muchas corridas DES con llamados aleatorios — distribuciones de tiempo de respuesta y cobertura. Viz de mapa; precomputado." },
-    },
-  };
-  const c = lang === "es" ? copy[which].es : copy[which].en;
-  return (
-    <div className="prose">
-      <h2>{c.h}</h2>
-      <p>{c.p}</p>
-      <Callout variant="note" title={lang === "es" ? "En construcción" : "Under construction"}>
-        <p>{lang === "es" ? "Llega en la fase de precómputo (OR-Tools / OSMnx + mapas deck.gl/MapLibre)." : "Arriving in the precompute phase (OR-Tools / OSMnx + deck.gl/MapLibre maps)."}</p>
-      </Callout>
-    </div>
+function S07Desc({ lang }: { lang: string }) {
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: ruteo de acarreo en faena (optimizar-luego-simular)</h2>
+      <p>Una flota de camiones cicla entre un punto de <strong>carguío</strong> (terreno bajo) y un <strong>botadero</strong> cuesta arriba, sobre una red vial donde la <strong>elevación maneja el costo</strong>: cargados suben lento hacia el botadero y vuelven rápido vacíos. La ruta de acarreo se elige con un costo de arista <em>graduado</em> por pendiente (Dijkstra); luego un DES reproduce el ciclo. El <strong>cargador</strong> es un recurso compartido — el cuello de botella.</p>
+      <p><strong>Qué aborda — emparejar la flota al cargador:</strong> agregar camiones sube el rendimiento solo hasta que el cargador se satura; más allá, los camiones <strong>hacen cola en el cargador</strong> y el rendimiento se estanca mientras la espera explota (compara 9 vs 12 camiones: mismas cargas, el doble de espera). Un segundo o tercer cargador levanta el techo. La pendiente alarga el ciclo cargado (compara <em>plano</em> vs <em>empinado</em>). La animación muestra los camiones subiendo lento y bajando rápido; el HUD cuenta cuántos van en ruta.</p>
+    </>
+  ) : (
+    <>
+      <h2>The problem: construction haul routing (optimize-then-simulate)</h2>
+      <p>A truck fleet cycles between a <strong>load</strong> point (low ground) and an uphill <strong>dump</strong>, over a road network where <strong>elevation drives cost</strong>: loaded trucks climb slowly toward the dump and return fast empty. The haul route is chosen with a grade-<em>graded</em> edge cost (Dijkstra); a DES then replays the cycle. The shared <strong>loader</strong> is the bottleneck.</p>
+      <p><strong>What it addresses — match the fleet to the loader:</strong> adding trucks lifts throughput only until the loader saturates; beyond that, trucks <strong>queue at the loader</strong> and throughput plateaus while the wait explodes (compare 9 vs 12 trucks: identical loads, double the wait). A second or third loader raises the ceiling. Grade lengthens the loaded climb (compare <em>flat</em> vs <em>steep</em>). The animation shows trucks crawling uphill and racing back; the HUD counts how many are en route.</p>
+    </>
+  );
+}
+
+function S08Desc({ lang }: { lang: string }) {
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: ruteo de vehículos capacitado (VRP, OR-Tools)</h2>
+      <p>Un depósito y N clientes con demanda sobre una red vial; hay que rutear K vehículos con <strong>capacidad</strong> limitada para servir a todos minimizando la distancia total. Las distancias son caminos más cortos en la grilla. Es <strong>optimización combinatoria</strong> pura: el solver de ruteo de <strong>OR-Tools</strong> es código nativo, por lo que el caso es precomputado y se reproduce el plan óptimo como vehículos recorriendo la red.</p>
+      <p><strong>Qué aborda — el compromiso distancia total ↔ ruta más larga:</strong> con menos vehículos la distancia total baja pero la ruta más larga crece (peor balance de jornada); un coeficiente de <em>span global</em> equilibra las rutas, de modo que sumar vehículos acorta la ruta máxima a costa de algo de distancia total. Compara capacidad ajustada, número de vehículos y densidad de clientes; la animación muestra cada vehículo (un color por ruta) saliendo del depósito y volviendo.</p>
+    </>
+  ) : (
+    <>
+      <h2>The problem: capacitated vehicle routing (VRP, OR-Tools)</h2>
+      <p>A depot and N customers with demand on a road network; route K <strong>capacity</strong>-limited vehicles to serve everyone minimizing total distance. Distances are grid shortest paths. This is pure <strong>combinatorial optimization</strong>: the <strong>OR-Tools</strong> routing solver is native code, so the case is precomputed and the optimal plan is replayed as vehicles driving the network.</p>
+      <p><strong>What it addresses — the total-distance ↔ longest-route trade-off:</strong> fewer vehicles cut total distance but lengthen the longest route (worse shift balance); a <em>global-span</em> cost balances the routes, so adding vehicles shortens the max route at the cost of some total distance. Compare tight capacity, vehicle count, and customer density; the animation shows each vehicle (one colour per route) leaving the depot and returning.</p>
+    </>
+  );
+}
+
+function S09Desc({ lang }: { lang: string }) {
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: despacho de ambulancias (EMS estocástico)</h2>
+      <p>Los llamados de emergencia llegan como un proceso de <strong>Poisson</strong> en ubicaciones aleatorias de la red. Las ambulancias esperan en <strong>bases</strong>; cada llamado lo atiende la unidad que puede <strong>llegar antes</strong> (nearest-available, contando a las que siguen ocupadas). La ambulancia viaja a la escena, atiende, traslada al hospital y vuelve a su base. DES puro, con semilla.</p>
+      <p><strong>Qué aborda — dimensionar y ubicar la flota:</strong> con pocas unidades la <em>carga ofrecida</em> supera el 100% (el sistema se desborda: cobertura baja, respuesta larga); a igual flota, <strong>más bases bien ubicadas</strong> bajan el tiempo de viaje (compara 4 ambulancias en 1 vs 2 vs 4 bases); y un <strong>alza de demanda</strong> hunde la cobertura hasta que se agregan unidades. La métrica clave es la <strong>cobertura dentro de la meta de respuesta</strong>. La animación muestra los llamados como anillos rojos pulsantes y las ambulancias despachadas hacia ellos; el HUD cuenta los llamados pendientes.</p>
+    </>
+  ) : (
+    <>
+      <h2>The problem: ambulance dispatch (stochastic EMS)</h2>
+      <p>Emergency calls arrive as a <strong>Poisson</strong> process at random locations on the network. Ambulances wait at <strong>stations</strong>; each call is served by the unit that can <strong>reach it earliest</strong> (nearest-available, accounting for those still busy). The ambulance drives to the scene, treats, transports to hospital, and returns to base. Pure DES, seeded.</p>
+      <p><strong>What it addresses — fleet sizing and station siting:</strong> with too few units the <em>offered load</em> exceeds 100% (the system is overwhelmed: low coverage, long response); for a fixed fleet, <strong>more well-sited stations</strong> cut travel time (compare 4 ambulances over 1 vs 2 vs 4 stations); and a <strong>demand surge</strong> collapses coverage until units are added. The headline metric is <strong>coverage within the response target</strong>. The animation shows calls as pulsing red rings with ambulances dispatched toward them; the HUD counts pending calls.</p>
+    </>
   );
 }

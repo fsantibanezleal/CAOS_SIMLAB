@@ -135,6 +135,31 @@ export interface GanttTrace {
   analytic: Record<string, unknown>;
 }
 
+// ── Route/network trace (S07 haul, S08 VRP, S09 ambulance) (simlab.routetrace/v1) ──
+export interface RouteNode { id: number; x: number; y: number; kind: string; label?: string; elev?: number }
+export interface RouteLeg { a: number; b: number; t0: number; t1: number }
+export interface RouteAgent { id: number; kind: string; color: string; legs: RouteLeg[]; home?: number }
+export interface RouteMarker { x: number; y: number; t0: number; t1: number; kind: string }
+export interface RoutePlan { agent: number; path: number[]; color: string }
+export interface RouteTrace {
+  schema: string;
+  scenario: string;
+  title: string;
+  method: string;
+  seed: number;
+  params: Record<string, number>;
+  bounds: { minx: number; miny: number; maxx: number; maxy: number };
+  nodes: RouteNode[];
+  edges: number[][];
+  routes: RoutePlan[];
+  agents: RouteAgent[];
+  markers: RouteMarker[];
+  legend: { code: string; label_en: string; label_es: string; color: string }[];
+  t_end: number;
+  kpis: Record<string, number>;
+  analytic: Record<string, unknown>;
+}
+
 export interface ScenarioManifest {
   schema: string;
   id: string;
