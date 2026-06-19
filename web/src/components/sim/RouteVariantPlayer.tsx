@@ -113,7 +113,8 @@ export function RouteVariantPlayer({ variant }: { variant: VariantEntry }) {
     seek(0);
     setPlaying(true);
   };
-  const state = routeStateAt(trace, time, coord);
+  const win = Math.max(0.5, tEnd / 90); // arrival-flash / spawn-pop window in sim-time
+  const state = routeStateAt(trace, time, coord, win);
 
   return (
     <div className="sim-layout">

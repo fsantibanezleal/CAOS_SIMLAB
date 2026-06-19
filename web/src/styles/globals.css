@@ -280,6 +280,7 @@ code, kbd { font-family: var(--font-mono); }
 .rv-incident-ring { fill: none; stroke: var(--color-bad); stroke-width: 2; opacity: 0.7; }
 .rv-hud { fill: var(--color-fg); font: 800 15px var(--font-mono); }
 .rv-hud-sub { fill: var(--color-fg-subtle); font: 600 12px var(--font-mono); }
+.rv-hud-pulse { fill: var(--color-accent); font-family: var(--font-mono); font-weight: 800; }
 
 /* Live (Pyodide) lane */
 .live-panel { display: flex; flex-direction: column; gap: 1rem; }

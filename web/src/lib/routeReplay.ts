@@ -1,5 +1,7 @@
 // Deterministic replay for route/network traces: interpolate each agent's position at time t from its
-// timed legs, and resolve which incident markers are active. Mirrors simlab.routetrace/v1.
+// timed legs, resolve active incident markers, and surface event cues for the temporal coloring — node
+// arrival flashes (an agent reaching a special node), a "served" set (visited destinations), per-marker
+// spawn pops, and running terminal counters. Mirrors simlab.routetrace/v1.
 import type { RouteAgent, RouteMarker, RouteTrace } from "./types";
 
 export interface AgentPos {
@@ -13,11 +15,21 @@ export interface AgentPos {
   moving: boolean;
 }
 
+export interface LiveMarker extends RouteMarker {
+  spawn: number; // 0..1 bright pop decaying from t0 so a NEW call stands out
+}
+
 export interface RouteState {
   agents: AgentPos[];
-  markers: RouteMarker[]; // only those active at t
+  markers: LiveMarker[]; // active (pending) markers only
   movingCount: number;
-  pendingCount: number; // active incident markers (S09)
+  pendingCount: number;
+  nodeFlash: Map<number, number>; // nodeId -> 0..1 deliver flash (agent just arrived)
+  served: Set<number>; // special nodes visited so far (dims served customers in S08)
+  arrivalsByKind: Record<string, number>; // running count of arrivals per node kind
+  resolved: number; // incident markers resolved so far (S09)
+  arrivalFlash: number; // pulse when any special-node arrival just happened
+  resolvedFlash: number; // pulse when a marker just resolved
 }
 
 /** Index node coordinates for O(1) lookup. */
@@ -49,7 +61,6 @@ export function agentPosAt(
     const a = at(legs[0].a);
     return a ? { ...base, x: a.x, y: a.y, moving: false } : null;
   }
-  // active leg?
   for (const l of legs) {
     if (t >= l.t0 && t <= l.t1) {
       const a = at(l.a);
@@ -67,24 +78,64 @@ export function agentPosAt(
       };
     }
   }
-  // between legs or after the last: sit at the last completed leg's destination
   let last = legs[0];
   for (const l of legs) if (l.t1 <= t) last = l;
   const b = at(last.b);
   return b ? { ...base, x: b.x, y: b.y, moving: false } : null;
 }
 
-export function routeStateAt(trace: RouteTrace, t: number, coord: Map<number, { x: number; y: number }>): RouteState {
+export function routeStateAt(trace: RouteTrace, t: number, coord: Map<number, { x: number; y: number }>, win = 1): RouteState {
+  const kindOf = new Map<number, string>();
+  for (const n of trace.nodes) kindOf.set(n.id, n.kind);
+
   const agents: AgentPos[] = [];
+  const nodeFlash = new Map<number, number>();
+  const served = new Set<number>();
+  const arrivalsByKind: Record<string, number> = {};
+  let arrivalFlash = 0;
   for (const a of trace.agents) {
     const p = agentPosAt(a, t, coord, a.home);
     if (p) agents.push(p);
+    for (const leg of a.legs) {
+      const kind = kindOf.get(leg.b);
+      if (!kind || kind === "junction") continue; // only special destinations count
+      if (leg.t1 <= t) {
+        served.add(leg.b);
+        arrivalsByKind[kind] = (arrivalsByKind[kind] ?? 0) + 1;
+        const age = t - leg.t1;
+        if (age >= 0 && age < win) {
+          const f = 1 - age / win;
+          nodeFlash.set(leg.b, Math.max(nodeFlash.get(leg.b) ?? 0, f));
+          arrivalFlash = Math.max(arrivalFlash, f);
+        }
+      }
+    }
   }
-  const markers = trace.markers.filter((m) => t >= m.t0 && t <= m.t1);
+
+  const markers: LiveMarker[] = [];
+  let resolved = 0;
+  let resolvedFlash = 0;
+  for (const m of trace.markers) {
+    if (t >= m.t1) {
+      resolved++;
+      const age = t - m.t1;
+      if (age >= 0 && age < win) resolvedFlash = Math.max(resolvedFlash, 1 - age / win);
+    } else if (t >= m.t0) {
+      const dt = t - m.t0;
+      markers.push({ ...m, spawn: dt < win ? 1 - dt / win : 0 });
+    }
+  }
+
   return {
     agents,
     markers,
     movingCount: agents.filter((a) => a.moving).length,
     pendingCount: markers.length,
+    nodeFlash,
+    served,
+    arrivalsByKind,
+    resolved,
+    arrivalFlash,
+    resolvedFlash,
   };
 }

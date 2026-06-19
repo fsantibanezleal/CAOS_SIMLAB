@@ -3,6 +3,27 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.11.001] - 2026-06-19
+### Fixed
+- **Dynamism parity across every viz** — the S01 queue's "temporal coloring" (event flash rings + counter
+  pulse + traveling dots) was inconsistent: some scenes felt static. Brought every scene up to that bar
+  with the topology-appropriate analogue (guided by a multi-agent adversarial viz review):
+  - **S04 ED flow** now flashes each station on receive/hand-off, pulses the arrival/served counts, and
+    sends priority-coloured patients **traveling between stations** (source→triage→treatment→discharge→out)
+    — previously static (the original report). New flash/transit computation in `flowReplay`.
+  - **S07/S08/S09 route** destination nodes now **flash on arrival** (an expanding glow ring); served VRP
+    customers **dim** so route progress reads at a glance (was: a served customer was pixel-identical to an
+    unserved one); the HUD gains a **pulsing running counter** (loads / served N/total / resolved) and
+    S09's incidents now **POP per-spawn** instead of sharing one global sine. New event/served/counter
+    channels in `routeReplay`.
+  - **S02/S03 grid** cells that just changed state get a brief fading **halo** (a relocation / a spreading
+    infection now reads as "happening now"), via a per-cell diff vs the previous frame in `AgentGridViz`.
+  - **S05/S10 charts** gain a **leading-edge marker** on each revealed series so the eye tracks "now"
+    (progressive reveal + playhead was already correct).
+- Process: a 50-agent adversarial review (`wip/.../viz-review-2026-06-19.md`) graded all 10 scenes for
+  attractiveness / clarity / dynamics-coverage / live-correctness; the 5 confirmed findings are fixed here.
+  Verified in-browser (Playwright) across the route/grid/chart scenes; zero console errors.
+
 ## [0.11.000] - 2026-06-19
 ### Added
 - **Pyodide live param-tuning lane — the architecture's reason-for-being is now interactive.** A new 4th
