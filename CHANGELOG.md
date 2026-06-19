@@ -3,6 +3,33 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.11.000] - 2026-06-19
+### Added
+- **Pyodide live param-tuning lane — the architecture's reason-for-being is now interactive.** A new 4th
+  **"Live (your browser)"** sub-tab per case study loads Pyodide (Python 3.13 + numpy + simpy) in a Web
+  Worker from the jsdelivr CDN, writes the inlined `simlab` sources into the WASM filesystem, and runs the
+  **exact same `Scenario.run`** the offline pipeline runs — so tuning the sliders + seed and pressing Run
+  computes a fresh trace **in the browser, no server**, animated by the very same per-renderer player.
+  - **`simlab/live.py`** (`run_trace_json`, `live_lanes`) — the in-browser entrypoint, sharing the
+    `Scenario.run → Trace.to_json` path; a hard guard refuses native-engine scenarios.
+  - **Worker stack:** `pyodide.worker.ts` (classic worker, `importScripts` the pinned Pyodide v0.28.3 UMD;
+    explicit `indexURL`), `pyodideClient.ts` (lazy singleton, `warmUp`/`runLive`/`verifyLive` + phase
+    progress), `pyodideProtocol.ts`, `pyodide-config.ts`. `copy-data.mjs` now also inlines `simlab/**/*.py`
+    into `public/pyodide/simlab-sources.json` at prebuild (canonical source = the package itself).
+  - **`LivePanel`** + `LiveControls`: sliders generated from `manifest.param_specs`, a seed field,
+    Run/Reset, a one-time-download note, live progress, and a "computed live in your browser · N ms · numpy
+    X" badge. Players are reused unchanged via an in-memory trace registry in `data.ts` (synthetic
+    `live://` keys) + a shared `PlayerSwitch`.
+  - **"Verify against the committed trace"** (replay = truth): re-runs the active regime in WASM and
+    compares its serialized trace to the committed file — **byte-equality**, with a 1e-9 numeric-tolerance
+    fallback that warns (never crashes). Verified live: **all 8 live-capable scenarios reproduce their
+    committed traces byte-for-byte** (S01–S05, S07, S09, S10) even across the numpy 2.4.6→2.2.5 gap, so no
+    trace regeneration was needed.
+  - **Gate:** native-engine scenarios (S06 CP-SAT, S08 OR-Tools) show a read-only "precomputed only"
+    explainer driven by `gate.reasons` — no Run button, so the ~runtime download never fires for them.
+- **32 tests** (3 new `test_live.py`, incl. a CPython byte-equality regression vs every committed trace).
+  Verified end-to-end in a real browser (Playwright): run + verify + native-only gate, zero console errors.
+
 ## [0.10.000] - 2026-06-19
 ### Added
 - **Geospatial routing lane — the final three case studies, all on a self-contained synthetic road
