@@ -43,6 +43,26 @@ const MONTECARLO_KPI: GridKpiConfig = {
     { key: "n_reps", en: "Reps", es: "Réplicas" },
   ],
 };
+const ED_KPI: GridKpiConfig = {
+  key: "mean_LOS", en: "Mean length-of-stay", es: "Estancia media",
+  cols: [
+    { key: "mean_LOS", en: "LOS", es: "Estancia" },
+    { key: "mean_LOS_urgent", en: "LOS urgent", es: "Estancia urgente" },
+    { key: "mean_LOS_standard", en: "LOS standard", es: "Estancia estándar" },
+    { key: "mean_wait_treatment", en: "Wait treat.", es: "Espera trat." },
+    { key: "rho_treatment", en: "ρ treat.", es: "ρ trat." },
+  ],
+};
+const JOBSHOP_KPI: GridKpiConfig = {
+  key: "makespan", en: "Makespan (lower is better)", es: "Makespan (menor es mejor)",
+  cols: [
+    { key: "makespan", en: "Makespan", es: "Makespan" },
+    { key: "n_jobs", en: "Jobs", es: "Trabajos" },
+    { key: "n_machines", en: "Machines", es: "Máquinas" },
+    { key: "n_operations", en: "Ops", es: "Ops" },
+    { key: "utilization", en: "Utilization", es: "Utilización" },
+  ],
+};
 
 export default function Experiments() {
   const { t } = useTranslation();
@@ -53,9 +73,9 @@ export default function Experiments() {
     { id: "s01", label: "S01 · " + L("Bank / clinic queue", "Cola banco/clínica"), content: <ScenarioExperiment manifestId="s01_queue" description={<S01Desc lang={lang} />} /> },
     { id: "s02", label: "S02 · " + L("Schelling segregation", "Segregación de Schelling"), content: <ScenarioExperiment manifestId="s02_schelling" description={<S02Desc lang={lang} />} gridKpi={SCHELLING_KPI} /> },
     { id: "s03", label: "S03 · " + L("Epidemic (SIR)", "Epidemia (SIR)"), content: <ScenarioExperiment manifestId="s03_sir" description={<S03Desc lang={lang} />} gridKpi={SIR_KPI} /> },
-    { id: "s04", label: "S04 · " + L("Emergency dept.", "Urgencias"), content: <Coming lang={lang} which="ed" /> },
+    { id: "s04", label: "S04 · " + L("Emergency dept.", "Urgencias"), content: <ScenarioExperiment manifestId="s04_ed" description={<S04Desc lang={lang} />} gridKpi={ED_KPI} /> },
     { id: "s05", label: "S05 · " + L("Beer Game (bullwhip)", "Beer Game (bullwhip)"), content: <ScenarioExperiment manifestId="s05_beergame" description={<S05Desc lang={lang} />} gridKpi={BEERGAME_KPI} /> },
-    { id: "s06", label: "S06 · " + L("Job-shop (CP-SAT)", "Job-shop (CP-SAT)"), content: <Coming lang={lang} which="jobshop" /> },
+    { id: "s06", label: "S06 · " + L("Job-shop (CP-SAT)", "Job-shop (CP-SAT)"), content: <ScenarioExperiment manifestId="s06_jobshop" description={<S06Desc lang={lang} />} gridKpi={JOBSHOP_KPI} /> },
     { id: "s07", label: "S07 · " + L("Haul routing", "Ruteo de camiones"), content: <Coming lang={lang} which="haul" /> },
     { id: "s08", label: "S08 · " + L("Vehicle routing (VRP)", "Ruteo de vehículos (VRP)"), content: <Coming lang={lang} which="vrp" /> },
     { id: "s09", label: "S09 · " + L("Ambulance dispatch", "Despacho ambulancias"), content: <Coming lang={lang} which="ambulance" /> },
@@ -68,8 +88,8 @@ export default function Experiments() {
         <h1>{t("nav.experiments")}</h1>
         <p className="lede">
           {L(
-            "Worked case studies across DES, ABM and optimization. Each explains the problem and what it addresses, offers ≥10 pre-simulated regimes to compare, an animated player, and a comparison of results. Five are live; the optimization/map cases are landing next.",
-            "Casos de estudio sobre DES, ABM y optimización. Cada uno explica el problema y lo que aborda, ofrece ≥10 regímenes pre-simulados para comparar, un reproductor animado y una comparación de resultados. Cinco están activos; los casos de optimización/mapas llegan a continuación.",
+            "Worked case studies across DES, ABM and optimization. Each explains the problem and what it addresses, offers ≥10 pre-simulated regimes to compare, an animated player, and a comparison of results. Seven are live; the geospatial routing cases are landing next.",
+            "Casos de estudio sobre DES, ABM y optimización. Cada uno explica el problema y lo que aborda, ofrece ≥10 regímenes pre-simulados para comparar, un reproductor animado y una comparación de resultados. Siete están activos; los casos de ruteo geoespacial llegan a continuación.",
           )}
         </p>
       </div>
@@ -129,6 +149,40 @@ function S03Desc({ lang }: { lang: string }) {
   );
 }
 
+function S04Desc({ lang }: { lang: string }) {
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: flujo de pacientes en urgencias (DES multi-etapa)</h2>
+      <p>Los pacientes llegan (de forma no estacionaria, con un posible <em>surge</em> diurno), pasan por <strong>triage</strong> (cola FCFS), luego por <strong>tratamiento</strong> (un pool con <em>prioridad</em>: los urgentes se adelantan) y finalmente un retardo de <strong>alta</strong>. El cuello de botella es tratamiento.</p>
+      <p><strong>Qué aborda:</strong> el <strong>flujo multi-etapa</strong> con recursos limitados, el efecto de la <strong>prioridad</strong> (urgente vs estándar) sobre quién espera, y cómo las <strong>llegadas no estacionarias</strong> (un surge) saturan el sistema. Compara regímenes (carga, dotación de camillas, surge, mezcla de urgentes) y observa la estancia media por clase. La animación muestra los pacientes (rojos = urgentes) fluyendo por las estaciones.</p>
+    </>
+  ) : (
+    <>
+      <h2>The problem: emergency-department patient flow (multi-stage DES)</h2>
+      <p>Patients arrive (non-stationary, with an optional daytime <em>surge</em>), pass through <strong>triage</strong> (FCFS queue), then <strong>treatment</strong> (a <em>priority</em> pool: urgent patients jump the queue), then a <strong>discharge</strong> delay. Treatment is the bottleneck.</p>
+      <p><strong>What it addresses:</strong> <strong>multi-stage flow</strong> under limited resources, the effect of <strong>priority</strong> (urgent vs standard) on who waits, and how <strong>non-stationary arrivals</strong> (a surge) overload the system. Compare regimes (load, bay staffing, surge, urgent mix) and watch the mean length-of-stay by class. The animation shows patients (red = urgent) flowing through the stations.</p>
+    </>
+  );
+}
+
+function S06Desc({ lang }: { lang: string }) {
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: programación job-shop (optimización con CP-SAT)</h2>
+      <p>Cada trabajo es una secuencia ordenada de operaciones, cada una en una máquina específica por un tiempo fijo; una máquina hace una operación a la vez. El optimizador asigna tiempos de inicio para <strong>minimizar el makespan</strong> (cuándo termina el último trabajo). Esto es <strong>optimización combinatoria pura</strong> — lo que hace un solver, en contraste con los simuladores estocásticos del resto del lab. Se usa <strong>OR-Tools CP-SAT</strong>; como es código nativo, el escenario es precomputado y se muestra el horario óptimo como diagrama de Gantt.</p>
+      <p><strong>Qué aborda:</strong> qué resuelve un optimizador de restricciones, y cómo la contención de máquinas determina el makespan. Incluye el benchmark clásico <strong>Fisher–Thompson ft06</strong> (6×6, óptimo probado de 55) y varias instancias generadas. La animación recorre el horario como si se ejecutara.</p>
+    </>
+  ) : (
+    <>
+      <h2>The problem: job-shop scheduling (constraint optimization, CP-SAT)</h2>
+      <p>Each job is an ordered sequence of operations, each needing a specific machine for a fixed time; a machine does one operation at a time. The optimizer assigns start times to <strong>minimize the makespan</strong> (when the last job finishes). This is <strong>pure combinatorial optimization</strong> — what a solver does, in contrast with the stochastic simulators elsewhere in the lab. It uses <strong>OR-Tools CP-SAT</strong>; being native code, the scenario is precomputed and the optimal schedule is shown as a Gantt chart.</p>
+      <p><strong>What it addresses:</strong> what a constraint optimizer solves, and how machine contention drives the makespan. Includes the classic <strong>Fisher–Thompson ft06</strong> benchmark (6×6, proven optimal 55) and several generated instances. The animation sweeps the schedule as if it were executing.</p>
+    </>
+  );
+}
+
 function S05Desc({ lang }: { lang: string }) {
   const es = lang === "es";
   return es ? (
@@ -163,16 +217,8 @@ function S10Desc({ lang }: { lang: string }) {
   );
 }
 
-function Coming({ lang, which }: { lang: string; which: "ed" | "haul" | "jobshop" | "vrp" | "ambulance" }) {
+function Coming({ lang, which }: { lang: string; which: "haul" | "vrp" | "ambulance" }) {
   const copy: Record<string, { en: { h: string; p: string }; es: { h: string; p: string } }> = {
-    ed: {
-      en: { h: "Emergency department patient flow — DES", p: "A multi-stage DES with priority triage and non-stationary arrivals: patients flow through triage, treatment and disposition under limited resources, exercising replications, CIs and warm-up." },
-      es: { h: "Flujo de pacientes en urgencias — DES", p: "Un DES multi-etapa con triage por prioridad y llegadas no estacionarias: triage, tratamiento y disposición con recursos limitados, ejercitando réplicas, IC y calentamiento." },
-    },
-    jobshop: {
-      en: { h: "Job-shop scheduling — CP-SAT", p: "Minimize makespan over machines/jobs/precedences with a constraint solver (OR-Tools CP-SAT). A pure combinatorial-optimization exhibit with a Gantt view; precomputed (native solver)." },
-      es: { h: "Programación job-shop — CP-SAT", p: "Minimizar el makespan sobre máquinas/trabajos/precedencias con un solver de restricciones (OR-Tools CP-SAT). Un caso de optimización combinatoria pura con vista Gantt; precomputado (solver nativo)." },
-    },
     haul: {
       en: { h: "Construction haul routing — optimize-then-simulate", p: "Trucks haul material over a road network where elevation drives cost. An optimizer plans routes offline; a DES replays them under stochastic delays. The one case where 3D terrain is pedagogically real." },
       es: { h: "Ruteo de camiones — optimizar-luego-simular", p: "Camiones transportan material sobre una red vial donde la elevación maneja el costo. Un optimizador planifica rutas offline; un DES las reproduce bajo demoras. El único caso donde el terreno 3D es pedagógicamente real." },

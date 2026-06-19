@@ -3,6 +3,20 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.09.000] - 2026-06-19
+### Added
+- **S04 — Emergency department (multi-stage DES)**: triage → treatment (priority pool) → discharge, with
+  non-stationary arrivals + an optional surge; SimPy, seeded. 10 regimes (load / staffing / surge / urgent
+  mix); reports length-of-stay by class. New **flow visualization** (`FlowViz`): patients (coloured by
+  priority) flowing through station queues + servers; new trace schema `simlab.flowtrace/v1`.
+- **S06 — Job-shop scheduling (OR-Tools CP-SAT)**: minimize makespan over machines/jobs/precedences;
+  includes the classic **Fisher–Thompson ft06** benchmark (proven optimal makespan 55) + generated
+  instances. 10 regimes. New **Gantt visualization** (`GanttViz`): job-coloured bars per machine with a
+  sweeping playhead; new trace schema `simlab.gantt/v1`. Native solver → precompute lane
+  (`requirements-precompute.txt`; lazy import keeps the registry/CI importable without OR-Tools).
+- The case-study player now branches across **five renderers** (queue-network · agent-grid · chart · flow
+  · gantt). **7 of 10 scenarios live** (S01–S06 + S10); S07/S08/S09 (geospatial routing) remain. 26 tests.
+
 ## [0.08.000] - 2026-06-19
 ### Added
 - **Two new chart/series scenarios** (pure-Python + NumPy, seeded):

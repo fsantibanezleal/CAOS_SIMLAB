@@ -2,7 +2,7 @@
 # live gate (native code and/or large/slow). NOT loaded by the browser and NOT needed for the live MVP.
 # Installed on demand for the pipeline:  pip install -r requirements-precompute.txt
 #
-# ortools>=9.10     # S06 job-shop (CP-SAT), S08 VRP — native, precompute-only
+ortools>=9.10       # S06 job-shop (CP-SAT) — native, precompute-only (also S08 VRP later)
 # pyvrp>=0.9        # S08 SOTA VRP contrast
 # networkx>=3.2     # graph algorithms
 # osmnx>=1.9        # local road graphs (commit RENDERED GEOMETRY only — never raw .graphml; see ATTRIBUTION.md)
