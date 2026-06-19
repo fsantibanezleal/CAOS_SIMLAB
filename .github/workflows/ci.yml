@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Lint
+        run: ruff check .
+      - name: Tests
+        run: python -m pytest
+      - name: Pipeline smoke (S01 trace + manifest regenerate)
+        run: python -m simlab.pipeline s01_queue
+
+  guards:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Public-repo guards
+        run: |
+          fail=0
+          if git ls-files | grep -qE '(^|/)\.env(\..+)?$' && ! git ls-files | grep -qx '.env.example'; then
+            echo "::error::a real .env is tracked"; fail=1
+          fi
+          if git ls-files | grep -qiE '\.(graphml|osm|pbf|h5|nc|parquet)$'; then
+            echo "::error::raw/heavy data tracked — commit rendered artifacts only (see data/README.md)"; fail=1
+          fi
+          # No local machine paths in tracked files (this guard file itself is excluded).
+          if git grep -nIE 'D:\\_Repos|/d/_Repos|C:\\Users\\' -- ':!.github/**' ; then
+            echo "::error::a local machine path leaked into a tracked file"; fail=1
+          fi
+          exit $fail

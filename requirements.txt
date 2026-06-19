@@ -1,0 +1,5 @@
+# Base runtime — the LIVE lane + core teaching engine. Kept deliberately small: this is also the wheel
+# closure the browser (Pyodide) must load, so every dependency here costs cold-start time.
+numpy>=1.26
+simpy>=4.1
+# mesa>=3.0   # added when the ABM scenarios (S02 Schelling, S03 SIR) land in Phase 1

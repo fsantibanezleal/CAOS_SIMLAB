@@ -1,0 +1,34 @@
+{
+  "schema": "simlab.manifest/v1",
+  "id": "s01_queue",
+  "title": "Bank / Clinic Queue (M/M/c)",
+  "method": "DES",
+  "tier": 1,
+  "engine": "simpy",
+  "seed": 42,
+  "params": {
+    "lam": 2.0,
+    "mu": 1.0,
+    "c": 3,
+    "n_customers": 300
+  },
+  "lane": "live",
+  "gate": {
+    "pure_python": true,
+    "run_ms": 9.4,
+    "trace_bytes": 35304,
+    "reasons": [],
+    "thresholds": {
+      "max_run_ms": 3000.0,
+      "max_trace_bytes": 1000000
+    }
+  },
+  "wheel_closure": [
+    "simpy",
+    "numpy"
+  ],
+  "viz": {
+    "renderer": "queue-network",
+    "dimensionality": "2d"
+  }
+}

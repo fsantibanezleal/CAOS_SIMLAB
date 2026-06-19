@@ -1,0 +1,8 @@
+# OPTIONAL GPU lane — post-v1, local-only. NEVER a hard dependency, NEVER on the deploy path (the app is
+# static; the contract is the committed trace, not the GPU). The setup script detects CUDA and falls back
+# to CPU. The honest verdict (see the repo's "When does GPU actually help?" page): GPU helps large-N ABM
+# and thousands of Monte-Carlo replications, NOT small-N event-loop DES.
+#
+# cupy-cuda12x>=13   # array Monte-Carlo on the GPU (CUDA 12.x)
+# numba>=0.60        # JIT kernels / CUDA fallback
+# FLAME GPU 2 is AGPL-3.0 + CUDA-version-coupled — reference/teaching only, never vendored or imported.

@@ -1,0 +1,30 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# --- Node / web ---
+node_modules/
+web/dist/
+web/.vite/
+
+# --- Secrets / env (this repo is PUBLIC — never commit these) ---
+.env
+.env.*
+!.env.example
+
+# --- Raw / heavy data (commit only compact rendered artifacts under data/artifacts/) ---
+data/raw/
+*.graphml
+*.osm
+*.pbf
+*.parquet
+*.h5
+*.nc
+
+# --- OS ---
+.DS_Store
+Thumbs.db
