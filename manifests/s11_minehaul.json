@@ -1,0 +1,751 @@
+{
+  "schema": "simlab.manifest/v2",
+  "id": "s11_minehaul",
+  "title": "Mine Multi-Destination Haul",
+  "method": "hybrid",
+  "tier": 3,
+  "engine": "ortools",
+  "seed": 42,
+  "viz": {
+    "renderer": "route",
+    "dimensionality": "2d"
+  },
+  "wheel_closure": [],
+  "param_specs": [
+    {
+      "key": "grid",
+      "label": "Grid size",
+      "default": 8,
+      "min": 6,
+      "max": 10,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_trucks",
+      "label": "Trucks",
+      "default": 6,
+      "min": 1,
+      "max": 16,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "plant_demand",
+      "label": "Plant demand (t)",
+      "default": 60.0,
+      "min": 10.0,
+      "max": 160.0,
+      "step": 5.0,
+      "kind": "float"
+    },
+    {
+      "key": "grade_target",
+      "label": "Plant grade target",
+      "default": 2.9,
+      "min": 1.5,
+      "max": 3.4,
+      "step": 0.1,
+      "kind": "float"
+    },
+    {
+      "key": "grade_tol",
+      "label": "Grade band \u00b1",
+      "default": 0.15,
+      "min": 0.05,
+      "max": 0.5,
+      "step": 0.05,
+      "kind": "float"
+    },
+    {
+      "key": "n_stocks",
+      "label": "Stocks",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "init_stock",
+      "label": "Initial stock (t)",
+      "default": 0.0,
+      "min": 0.0,
+      "max": 60.0,
+      "step": 5.0,
+      "kind": "float"
+    },
+    {
+      "key": "stock_grade",
+      "label": "Stock ore grade",
+      "default": 3.0,
+      "min": 1.5,
+      "max": 3.4,
+      "step": 0.1,
+      "kind": "float"
+    },
+    {
+      "key": "barrier",
+      "label": "Wall on a haul road",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "horizon",
+      "label": "Shift length",
+      "default": 90.0,
+      "min": 30.0,
+      "max": 240.0,
+      "step": 10.0,
+      "kind": "float"
+    }
+  ],
+  "lane": "precomputed",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "base",
+      "label_en": "Matched fleet",
+      "label_es": "Flota equilibrada",
+      "note_en": "A matched fleet roughly realizes the plan: blend near target.",
+      "note_es": "Una flota equilibrada realiza el plan: mezcla cerca de la meta.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 6,
+        "plant_demand": 60.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 14.0,
+        "trace_bytes": 26233,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 40.0,
+        "plant_demand": 60.0,
+        "grade_achieved": 2.59,
+        "grade_target": 2.9,
+        "grade_dev": 0.31,
+        "in_band": 0,
+        "plan_adherence_pct": 45.6,
+        "loads_plant": 20,
+        "loads_dump": 0,
+        "loads_stock": 6,
+        "n_trucks": 6
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          15.3,
+          2.7,
+          42.0
+        ],
+        "demand_eff": 60.0,
+        "stock_peak": 12.0,
+        "stock_end": 12.0
+      },
+      "trace": "data/artifacts/s11_minehaul/base-seed42.json"
+    },
+    {
+      "id": "undertrucked",
+      "label_en": "Under-trucked \u00b7 grade slips",
+      "label_es": "Sub-equipado \u00b7 la ley se desajusta",
+      "note_en": "Too few trucks: the far high-grade phase lags, the blend slips below target.",
+      "note_es": "Pocos camiones: la fase rica lejana se atrasa, la mezcla cae bajo la meta.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 3,
+        "plant_demand": 60.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 0.9,
+        "trace_bytes": 15130,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 20.0,
+        "plant_demand": 60.0,
+        "grade_achieved": 1.78,
+        "grade_target": 2.9,
+        "grade_dev": 1.12,
+        "in_band": 0,
+        "plan_adherence_pct": 28.1,
+        "loads_plant": 10,
+        "loads_dump": 0,
+        "loads_stock": 6,
+        "n_trucks": 3
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          15.3,
+          2.7,
+          42.0
+        ],
+        "demand_eff": 60.0,
+        "stock_peak": 12.0,
+        "stock_end": 12.0
+      },
+      "trace": "data/artifacts/s11_minehaul/undertrucked-seed42.json"
+    },
+    {
+      "id": "overtrucked",
+      "label_en": "Over-trucked \u00b7 plan met",
+      "label_es": "Sobre-equipado \u00b7 plan cumplido",
+      "note_en": "Ample fleet: every planned flow completes, the blend lands on target.",
+      "note_es": "Flota amplia: todos los flujos se completan, la mezcla da en la meta.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 12,
+        "plant_demand": 60.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.5,
+        "trace_bytes": 40013,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 60.0,
+        "plant_demand": 60.0,
+        "grade_achieved": 2.86,
+        "grade_target": 2.9,
+        "grade_dev": 0.04,
+        "in_band": 1,
+        "plan_adherence_pct": 71.9,
+        "loads_plant": 30,
+        "loads_dump": 0,
+        "loads_stock": 11,
+        "n_trucks": 12
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          15.3,
+          2.7,
+          42.0
+        ],
+        "demand_eff": 60.0,
+        "stock_peak": 22.0,
+        "stock_end": 22.0
+      },
+      "trace": "data/artifacts/s11_minehaul/overtrucked-seed42.json"
+    },
+    {
+      "id": "tight_grade",
+      "label_en": "Tight grade band",
+      "label_es": "Banda de ley estrecha",
+      "note_en": "A narrow band: small fleet-driven deviations now miss spec.",
+      "note_es": "Banda angosta: peque\u00f1as desviaciones por flota ya salen de especificaci\u00f3n.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 6,
+        "plant_demand": 60.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.08,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.1,
+        "trace_bytes": 26233,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 40.0,
+        "plant_demand": 60.0,
+        "grade_achieved": 2.59,
+        "grade_target": 2.9,
+        "grade_dev": 0.31,
+        "in_band": 0,
+        "plan_adherence_pct": 45.6,
+        "loads_plant": 20,
+        "loads_dump": 0,
+        "loads_stock": 6,
+        "n_trucks": 6
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          15.3,
+          2.7,
+          42.0
+        ],
+        "demand_eff": 60.0,
+        "stock_peak": 12.0,
+        "stock_end": 12.0
+      },
+      "trace": "data/artifacts/s11_minehaul/tight_grade-seed42.json"
+    },
+    {
+      "id": "surge",
+      "label_en": "Demand surge",
+      "label_es": "Alza de demanda",
+      "note_en": "High plant demand stresses the same fleet: adherence drops.",
+      "note_es": "Alta demanda de planta exige a la misma flota: cae la adherencia.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 6,
+        "plant_demand": 120.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.1,
+        "trace_bytes": 21307,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 40.0,
+        "plant_demand": 120.0,
+        "grade_achieved": 1.825,
+        "grade_target": 2.9,
+        "grade_dev": 1.075,
+        "in_band": 0,
+        "plan_adherence_pct": 26.3,
+        "loads_plant": 20,
+        "loads_dump": 0,
+        "loads_stock": 6,
+        "n_trucks": 6
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          30.7,
+          5.3,
+          84.0
+        ],
+        "demand_eff": 120.0,
+        "stock_peak": 12.0,
+        "stock_end": 12.0
+      },
+      "trace": "data/artifacts/s11_minehaul/surge-seed42.json"
+    },
+    {
+      "id": "surge12",
+      "label_en": "Surge \u00b7 bigger fleet",
+      "label_es": "Alza \u00b7 flota mayor",
+      "note_en": "More trucks absorb the surge and restore the blend.",
+      "note_es": "M\u00e1s camiones absorben el alza y recuperan la mezcla.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 12,
+        "plant_demand": 120.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.6,
+        "trace_bytes": 40874,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 70.0,
+        "plant_demand": 120.0,
+        "grade_achieved": 2.5,
+        "grade_target": 2.9,
+        "grade_dev": 0.4,
+        "in_band": 0,
+        "plan_adherence_pct": 46.5,
+        "loads_plant": 35,
+        "loads_dump": 0,
+        "loads_stock": 11,
+        "n_trucks": 12
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          30.7,
+          5.3,
+          84.0
+        ],
+        "demand_eff": 120.0,
+        "stock_peak": 22.0,
+        "stock_end": 22.0
+      },
+      "trace": "data/artifacts/s11_minehaul/surge12-seed42.json"
+    },
+    {
+      "id": "stock_source",
+      "label_en": "Stock as a source",
+      "label_es": "Stock como origen",
+      "note_en": "A pre-built high-grade stock feeds the plant \u2014 the stock DRAINS as a source.",
+      "note_es": "Un stock rico pre-armado alimenta la planta \u2014 el stock se VAC\u00cdA como origen.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 6,
+        "plant_demand": 60.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 40.0,
+        "stock_grade": 3.2,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.0,
+        "trace_bytes": 24060,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 38.0,
+        "plant_demand": 60.0,
+        "grade_achieved": 2.537,
+        "grade_target": 2.9,
+        "grade_dev": 0.363,
+        "in_band": 0,
+        "plan_adherence_pct": 69.0,
+        "loads_plant": 19,
+        "loads_dump": 10,
+        "loads_stock": 0,
+        "n_trucks": 6
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          16.5,
+          0.0,
+          42.0,
+          1.5
+        ],
+        "demand_eff": 60.0,
+        "stock_peak": 40.0,
+        "stock_end": 38.0
+      },
+      "trace": "data/artifacts/s11_minehaul/stock_source-seed42.json"
+    },
+    {
+      "id": "two_phase_rich",
+      "label_en": "High target \u00b7 rich far phase",
+      "label_es": "Meta alta \u00b7 fase rica lejana",
+      "note_en": "A high target needs lots of the distant rich phase; a small fleet can't deliver it.",
+      "note_es": "Una meta alta exige mucha fase rica lejana; una flota chica no la entrega.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 4,
+        "plant_demand": 60.0,
+        "grade_target": 3.2,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 0.9,
+        "trace_bytes": 17809,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 24.0,
+        "plant_demand": 60.0,
+        "grade_achieved": 2.725,
+        "grade_target": 3.2,
+        "grade_dev": 0.475,
+        "in_band": 0,
+        "plan_adherence_pct": 31.6,
+        "loads_plant": 12,
+        "loads_dump": 0,
+        "loads_stock": 6,
+        "n_trucks": 4
+      },
+      "analytic": {
+        "plan_grade": 3.13,
+        "plan_x": [
+          0.0,
+          18.0,
+          42.0
+        ],
+        "demand_eff": 60.0,
+        "stock_peak": 12.0,
+        "stock_end": 12.0
+      },
+      "trace": "data/artifacts/s11_minehaul/two_phase_rich-seed42.json"
+    },
+    {
+      "id": "dump_heavy",
+      "label_en": "Low plant demand",
+      "label_es": "Baja demanda de planta",
+      "note_en": "Little goes to the plant; most production routes to the dump.",
+      "note_es": "Poco va a la planta; casi toda la producci\u00f3n va al botadero.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 6,
+        "plant_demand": 25.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.1,
+        "trace_bytes": 24657,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 28.0,
+        "plant_demand": 25.0,
+        "grade_achieved": 2.821,
+        "grade_target": 2.9,
+        "grade_dev": 0.079,
+        "in_band": 1,
+        "plan_adherence_pct": 73.8,
+        "loads_plant": 14,
+        "loads_dump": 0,
+        "loads_stock": 10,
+        "n_trucks": 6
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          6.4,
+          1.1,
+          17.5
+        ],
+        "demand_eff": 25.0,
+        "stock_peak": 20.0,
+        "stock_end": 20.0
+      },
+      "trace": "data/artifacts/s11_minehaul/dump_heavy-seed42.json"
+    },
+    {
+      "id": "barrier",
+      "label_en": "Wall on a haul road",
+      "label_es": "Muro en una ruta",
+      "note_en": "A barrier lengthens the rich phase's haul road, worsening the slip.",
+      "note_es": "Una barrera alarga la ruta de la fase rica, agravando el desv\u00edo.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 6,
+        "plant_demand": 60.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 1,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.1,
+        "trace_bytes": 26175,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 40.0,
+        "plant_demand": 60.0,
+        "grade_achieved": 2.59,
+        "grade_target": 2.9,
+        "grade_dev": 0.31,
+        "in_band": 0,
+        "plan_adherence_pct": 45.6,
+        "loads_plant": 20,
+        "loads_dump": 0,
+        "loads_stock": 6,
+        "n_trucks": 6
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          15.3,
+          2.7,
+          42.0
+        ],
+        "demand_eff": 60.0,
+        "stock_peak": 12.0,
+        "stock_end": 12.0
+      },
+      "trace": "data/artifacts/s11_minehaul/barrier-seed42.json"
+    },
+    {
+      "id": "low_target",
+      "label_en": "Low grade target",
+      "label_es": "Meta de ley baja",
+      "note_en": "A low target leans on the near phases \u2014 easy to hit on grade.",
+      "note_es": "Meta baja se apoya en las fases cercanas \u2014 f\u00e1cil de lograr en ley.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 6,
+        "plant_demand": 60.0,
+        "grade_target": 2.2,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 0.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.1,
+        "trace_bytes": 20855,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 40.0,
+        "plant_demand": 60.0,
+        "grade_achieved": 1.6,
+        "grade_target": 2.2,
+        "grade_dev": 0.6,
+        "in_band": 0,
+        "plan_adherence_pct": 45.6,
+        "loads_plant": 20,
+        "loads_dump": 0,
+        "loads_stock": 6,
+        "n_trucks": 6
+      },
+      "analytic": {
+        "plan_grade": 2.2,
+        "plan_x": [
+          40.0,
+          0.0,
+          20.0
+        ],
+        "demand_eff": 60.0,
+        "stock_peak": 12.0,
+        "stock_end": 12.0
+      },
+      "trace": "data/artifacts/s11_minehaul/low_target-seed42.json"
+    },
+    {
+      "id": "stock_buffer",
+      "label_en": "Stock buffer building",
+      "label_es": "Stock acumulando",
+      "note_en": "The stock fills from a phase while the plant runs \u2014 watch the bar rise.",
+      "note_es": "El stock se llena desde una fase mientras corre la planta \u2014 mira subir la barra.",
+      "params": {
+        "grid": 8,
+        "n_trucks": 8,
+        "plant_demand": 60.0,
+        "grade_target": 2.9,
+        "grade_tol": 0.15,
+        "n_stocks": 1,
+        "init_stock": 10.0,
+        "stock_grade": 3.0,
+        "barrier": 0,
+        "horizon": 90.0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.3,
+        "trace_bytes": 31371,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "plant_tons": 44.0,
+        "plant_demand": 60.0,
+        "grade_achieved": 2.645,
+        "grade_target": 2.9,
+        "grade_dev": 0.255,
+        "in_band": 0,
+        "plan_adherence_pct": 57.9,
+        "loads_plant": 22,
+        "loads_dump": 0,
+        "loads_stock": 11,
+        "n_trucks": 8
+      },
+      "analytic": {
+        "plan_grade": 2.9,
+        "plan_x": [
+          16.3,
+          0.0,
+          42.0,
+          1.7
+        ],
+        "demand_eff": 60.0,
+        "stock_peak": 30.0,
+        "stock_end": 30.0
+      },
+      "trace": "data/artifacts/s11_minehaul/stock_buffer-seed42.json"
+    }
+  ]
+}

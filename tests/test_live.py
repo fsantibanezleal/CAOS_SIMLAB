@@ -19,7 +19,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def test_live_lanes_excludes_native_engines():
     lanes = set(live_lanes())
-    assert "s06_jobshop" not in lanes and "s08_vrp" not in lanes  # OR-Tools, native
+    assert {"s06_jobshop", "s08_vrp", "s11_minehaul"}.isdisjoint(lanes)  # OR-Tools, native → precompute only
     assert {
         "s01_queue", "s02_schelling", "s03_sir", "s04_ed", "s05_beergame",
         "s07_haul", "s09_ambulance", "s10_montecarlo",

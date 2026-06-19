@@ -29,6 +29,17 @@ const KPI_MAP: Record<string, { en: string; es: string }> = {
   coverage_pct: { en: "Coverage ≤ target %", es: "Cobertura ≤ meta %" },
   load_pct: { en: "Offered load %", es: "Carga ofrecida %" },
   n_ambulances: { en: "Ambulances", es: "Ambulancias" },
+  // S11 mine haul
+  plant_tons: { en: "Plant tonnes", es: "Toneladas a planta" },
+  plant_demand: { en: "Plant demand", es: "Demanda planta" },
+  grade_achieved: { en: "Grade achieved", es: "Ley lograda" },
+  grade_target: { en: "Grade target", es: "Ley objetivo" },
+  grade_dev: { en: "Grade deviation", es: "Desvío de ley" },
+  in_band: { en: "In spec band", es: "En banda" },
+  plan_adherence_pct: { en: "Plan adherence %", es: "Adherencia al plan %" },
+  loads_plant: { en: "Loads → plant", es: "Cargas → planta" },
+  loads_dump: { en: "Loads → dump", es: "Cargas → botadero" },
+  loads_stock: { en: "Loads → stock", es: "Cargas → acopio" },
 };
 const PARAM_MAP: Record<string, { en: string; es: string }> = {
   grid: { en: "Grid size", es: "Tamaño grilla" },
@@ -47,6 +58,12 @@ const PARAM_MAP: Record<string, { en: string; es: string }> = {
   n_stations: { en: "Stations", es: "Bases" },
   call_rate: { en: "Calls / hr", es: "Llamados / hr" },
   threshold: { en: "Response target", es: "Meta respuesta" },
+  plant_demand: { en: "Plant demand (t)", es: "Demanda planta (t)" },
+  grade_target: { en: "Plant grade target", es: "Ley objetivo planta" },
+  grade_tol: { en: "Grade band ±", es: "Banda de ley ±" },
+  n_stocks: { en: "Stocks", es: "Acopios" },
+  init_stock: { en: "Initial stock (t)", es: "Acopio inicial (t)" },
+  stock_grade: { en: "Stock ore grade", es: "Ley del acopio" },
 };
 const SPEEDS = [0.5, 1, 2, 4, 8];
 

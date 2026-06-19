@@ -19,6 +19,16 @@ export interface LiveMarker extends RouteMarker {
   spawn: number; // 0..1 bright pop decaying from t0 so a NEW call stands out
 }
 
+export interface GaugeLevel {
+  x: number;
+  y: number;
+  capacity: number;
+  level: number;
+  color: string;
+  label_en: string;
+  label_es: string;
+}
+
 export interface RouteState {
   agents: AgentPos[];
   markers: LiveMarker[]; // active (pending) markers only
@@ -30,6 +40,7 @@ export interface RouteState {
   resolved: number; // incident markers resolved so far (S09)
   arrivalFlash: number; // pulse when any special-node arrival just happened
   resolvedFlash: number; // pulse when a marker just resolved
+  gauges: GaugeLevel[]; // stock fill levels at time t (S11)
 }
 
 /** Index node coordinates for O(1) lookup. */
@@ -126,6 +137,16 @@ export function routeStateAt(trace: RouteTrace, t: number, coord: Map<number, { 
     }
   }
 
+  // stock fill levels (step-hold: the level is constant between tip/draw events)
+  const gauges: GaugeLevel[] = (trace.gauges ?? []).map((gg) => {
+    let level = gg.frames.length ? gg.frames[0][1] : 0;
+    for (const [ft, fl] of gg.frames) {
+      if (ft <= t) level = fl;
+      else break;
+    }
+    return { x: gg.x, y: gg.y, capacity: gg.capacity, level, color: gg.color, label_en: gg.label_en, label_es: gg.label_es };
+  });
+
   return {
     agents,
     markers,
@@ -137,5 +158,6 @@ export function routeStateAt(trace: RouteTrace, t: number, coord: Map<number, { 
     resolved,
     arrivalFlash,
     resolvedFlash,
+    gauges,
   };
 }
