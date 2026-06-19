@@ -33,3 +33,6 @@ data/raw/
 # --- OS ---
 .DS_Store
 Thumbs.db
+
+# review/wip artifacts belong in CAOS_MANAGE, never this public repo
+/wip/

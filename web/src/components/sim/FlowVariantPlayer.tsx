@@ -95,7 +95,8 @@ export function FlowVariantPlayer({ variant }: { variant: VariantEntry }) {
     seek(0);
     setPlaying(true);
   };
-  const state = flowStateAt(patients, time);
+  const win = Math.max(0.6, tEnd / 200); // flash/transit window in sim-time (matches the queue viz feel)
+  const state = flowStateAt(patients, time, win);
 
   return (
     <div className="sim-layout">

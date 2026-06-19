@@ -76,6 +76,12 @@ export function ChartViz({ trace, current, es }: { trace: ChartTrace; current: n
         })}
 
         <line x1={curX} y1={mt} x2={curX} y2={mt + plotH} stroke="var(--color-fg-faint)" strokeWidth={1} strokeDasharray="3 3" />
+
+        {/* leading-edge markers so the eye tracks "now" on each series */}
+        {trace.lines.map((ln) => {
+          const ys = trace.series[ln.key] ?? [];
+          return <circle key={`led-${ln.key}`} cx={curX} cy={sy(ys[idx] ?? 0)} r={3.4} fill={ln.color} stroke="var(--color-bg)" strokeWidth={1} />;
+        })}
       </svg>
 
       <p className="hint chart-legend">
