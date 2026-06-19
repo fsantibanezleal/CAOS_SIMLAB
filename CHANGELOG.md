@@ -3,6 +3,22 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.15.000] - 2026-06-19
+### Added
+- **Theory page completed — new "Optimization & routing" section** (the page had Queueing, DES, ABM but
+  nothing on the optimization/routing the lab now teaches via S06/S07/S08/S11). A deep `OptimizationTheory`
+  component matching the existing depth: 7 sub-tabs — **Linear programming & duality** (simplex vs
+  interior-point, LP duality + complementary slackness, GLOP, the S11 blend LP), **Integer/MILP**
+  (branch-and-bound, cutting planes, total unimodularity, NP-hardness), **Constraint programming / CP-SAT**
+  (the disjunctive job-shop, no-overlap, makespan, FT06=55), **Shortest paths & graded routing** (Dijkstra
+  O((V+E)log V), the graded edge cost, the route-switch g\*=ΔL/ΔC), **Vehicle routing** (TSP→CVRP→VRPTW,
+  the arc-flow MILP, global-span, guided local search), **Mine haulage & the match factor** (closed
+  finite-source M/M/1//N, MF=(N·t_L)/(c·t_cycle), optimize-then-simulate / plan-vs-reality), and **Exact
+  vs. heuristic / complexity** (P/NP, anytime solving, the live/precompute consequence). Every formula
+  matched to the scenario code; KaTeX-rendered; bilingual; 20 OR citations added to `citations.ts`
+  (Dantzig, Karmarkar, Land-Doig, Gomory, Fisher-Thompson, Dijkstra, Dantzig-Ramser, Toth-Vigo,
+  Morgan-Peterson match factor, …). Authored + adversarially math-checked by a workflow.
+
 ## [0.14.000] - 2026-06-19
 ### Changed
 - **Every scenario's Context rewritten to a deep, formalized standard** (the prior write-ups were too
