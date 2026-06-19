@@ -101,6 +101,40 @@ export interface ChartTrace {
   analytic: Record<string, unknown>;
 }
 
+// ── Multi-stage flow DES (S04 ED) (simlab.flowtrace/v1) ──
+export interface FlowStation { id: string; label_en: string; label_es: string; c: number }
+export interface FlowEvent { t: number; kind: string; id: number; prio: number }
+export interface FlowTrace {
+  schema: string;
+  scenario: string;
+  title: string;
+  method: string;
+  seed: number;
+  params: Record<string, number>;
+  stations: FlowStation[];
+  legend: LegendItem[];
+  kpis: Record<string, number>;
+  analytic: Record<string, unknown>;
+  timeline: { t_end: number; events: FlowEvent[] };
+}
+
+// ── Gantt schedule (S06 job-shop) (simlab.gantt/v1) ──
+export interface GanttOp { job: number; machine: number; start: number; dur: number }
+export interface GanttTrace {
+  schema: string;
+  scenario: string;
+  title: string;
+  method: string;
+  seed: number;
+  params: Record<string, number>;
+  machines: { id: number; label: string }[];
+  jobs: number;
+  ops: GanttOp[];
+  makespan: number;
+  kpis: Record<string, number>;
+  analytic: Record<string, unknown>;
+}
+
 export interface ScenarioManifest {
   schema: string;
   id: string;

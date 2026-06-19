@@ -1,0 +1,448 @@
+{
+  "schema": "simlab.manifest/v2",
+  "id": "s04_ed",
+  "title": "Emergency Department Patient Flow",
+  "method": "DES",
+  "tier": 2,
+  "engine": "simpy",
+  "seed": 42,
+  "viz": {
+    "renderer": "flow",
+    "dimensionality": "2d"
+  },
+  "wheel_closure": [
+    "simpy",
+    "numpy"
+  ],
+  "param_specs": [
+    {
+      "key": "lam",
+      "label": "Arrival rate \u03bb",
+      "default": 2.0,
+      "min": 0.2,
+      "max": 6.0,
+      "step": 0.1,
+      "kind": "float"
+    },
+    {
+      "key": "mu_triage",
+      "label": "Triage rate \u03bc_t",
+      "default": 3.0,
+      "min": 0.5,
+      "max": 10.0,
+      "step": 0.1,
+      "kind": "float"
+    },
+    {
+      "key": "mu_treat",
+      "label": "Treatment rate \u03bc_x",
+      "default": 0.8,
+      "min": 0.2,
+      "max": 4.0,
+      "step": 0.1,
+      "kind": "float"
+    },
+    {
+      "key": "c_triage",
+      "label": "Triage nurses",
+      "default": 2,
+      "min": 1,
+      "max": 6,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "c_treat",
+      "label": "Treatment bays",
+      "default": 3,
+      "min": 1,
+      "max": 10,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "p_urgent",
+      "label": "Urgent fraction",
+      "default": 0.25,
+      "min": 0.0,
+      "max": 0.8,
+      "step": 0.05,
+      "kind": "float"
+    },
+    {
+      "key": "surge",
+      "label": "Daytime surge (0/1)",
+      "default": 0,
+      "min": 0,
+      "max": 1,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_patients",
+      "label": "Patients",
+      "default": 240,
+      "min": 50,
+      "max": 2000,
+      "step": 10,
+      "kind": "int"
+    }
+  ],
+  "lane": "live",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "calm",
+      "label_en": "Calm shift",
+      "label_es": "Turno tranquilo",
+      "note_en": "Light arrivals: short stays, little waiting.",
+      "note_es": "Pocas llegadas: estancias cortas, poca espera.",
+      "params": {
+        "lam": 1.2,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 2,
+        "c_treat": 3,
+        "p_urgent": 0.25,
+        "surge": 0,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 15.4,
+        "trace_bytes": 74365,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 2.231,
+        "mean_LOS_urgent": 2.091,
+        "mean_LOS_standard": 2.276,
+        "mean_wait_treatment": 0.206,
+        "n_patients": 240,
+        "rho_treatment": 0.5,
+        "urgent_frac": 0.242
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/calm-seed42.json"
+    },
+    {
+      "id": "typical",
+      "label_en": "Typical shift",
+      "label_es": "Turno t\u00edpico",
+      "note_en": "Busy but stable; treatment is the bottleneck.",
+      "note_es": "Ocupado pero estable; tratamiento es el cuello de botella.",
+      "params": {
+        "lam": 2.0,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 2,
+        "c_treat": 3,
+        "p_urgent": 0.25,
+        "surge": 0,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.5,
+        "trace_bytes": 73965,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 3.498,
+        "mean_LOS_urgent": 2.442,
+        "mean_LOS_standard": 3.835,
+        "mean_wait_treatment": 1.439,
+        "n_patients": 240,
+        "rho_treatment": 0.833,
+        "urgent_frac": 0.242
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/typical-seed42.json"
+    },
+    {
+      "id": "busy",
+      "label_en": "Busy shift",
+      "label_es": "Turno ocupado",
+      "note_en": "Treatment near capacity \u2014 queues build.",
+      "note_es": "Tratamiento cerca de capacidad \u2014 se forman colas.",
+      "params": {
+        "lam": 2.3,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 2,
+        "c_treat": 3,
+        "p_urgent": 0.25,
+        "surge": 0,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.3,
+        "trace_bytes": 73718,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 4.83,
+        "mean_LOS_urgent": 2.559,
+        "mean_LOS_standard": 5.554,
+        "mean_wait_treatment": 2.752,
+        "n_patients": 240,
+        "rho_treatment": 0.958,
+        "urgent_frac": 0.242
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/busy-seed42.json"
+    },
+    {
+      "id": "overloaded",
+      "label_en": "Overloaded",
+      "label_es": "Sobrecargado",
+      "note_en": "Demand exceeds treatment capacity: the ED backs up.",
+      "note_es": "La demanda supera la capacidad de tratamiento: la urgencia se satura.",
+      "params": {
+        "lam": 2.9,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 2,
+        "c_treat": 3,
+        "p_urgent": 0.25,
+        "surge": 0,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.7,
+        "trace_bytes": 73625,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 13.031,
+        "mean_LOS_urgent": 2.593,
+        "mean_LOS_standard": 16.357,
+        "mean_wait_treatment": 10.915,
+        "n_patients": 240,
+        "rho_treatment": 1.208,
+        "urgent_frac": 0.242
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/overloaded-seed42.json"
+    },
+    {
+      "id": "surge",
+      "label_en": "Daytime surge",
+      "label_es": "Surge diurno",
+      "note_en": "A mid-shift arrival surge stresses the system transiently.",
+      "note_es": "Un surge de llegadas a media jornada estresa el sistema transitoriamente.",
+      "params": {
+        "lam": 2.0,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 2,
+        "c_treat": 3,
+        "p_urgent": 0.25,
+        "surge": 1,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.4,
+        "trace_bytes": 73682,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 9.329,
+        "mean_LOS_urgent": 2.746,
+        "mean_LOS_standard": 11.932,
+        "mean_wait_treatment": 7.317,
+        "n_patients": 240,
+        "rho_treatment": 0.833,
+        "urgent_frac": 0.283
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/surge-seed42.json"
+    },
+    {
+      "id": "understaffed",
+      "label_en": "Understaffed treatment",
+      "label_es": "Tratamiento con poco personal",
+      "note_en": "One fewer bay: the bottleneck tightens sharply.",
+      "note_es": "Una camilla menos: el cuello de botella se aprieta fuerte.",
+      "params": {
+        "lam": 2.0,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 2,
+        "c_treat": 2,
+        "p_urgent": 0.25,
+        "surge": 0,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.6,
+        "trace_bytes": 74083,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 21.248,
+        "mean_LOS_urgent": 2.801,
+        "mean_LOS_standard": 27.126,
+        "mean_wait_treatment": 19.188,
+        "n_patients": 240,
+        "rho_treatment": 1.25,
+        "urgent_frac": 0.242
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/understaffed-seed42.json"
+    },
+    {
+      "id": "wellstaffed",
+      "label_en": "Well-staffed",
+      "label_es": "Bien dotado",
+      "note_en": "An extra bay absorbs the busy load.",
+      "note_es": "Una camilla extra absorbe la carga ocupada.",
+      "params": {
+        "lam": 2.3,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 2,
+        "c_treat": 4,
+        "p_urgent": 0.25,
+        "surge": 0,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.3,
+        "trace_bytes": 73701,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 2.685,
+        "mean_LOS_urgent": 2.304,
+        "mean_LOS_standard": 2.806,
+        "mean_wait_treatment": 0.606,
+        "n_patients": 240,
+        "rho_treatment": 0.719,
+        "urgent_frac": 0.242
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/wellstaffed-seed42.json"
+    },
+    {
+      "id": "triage_bottleneck",
+      "label_en": "Single triage nurse",
+      "label_es": "Una enfermera de triage",
+      "note_en": "Triage becomes the upstream bottleneck.",
+      "note_es": "El triage se vuelve el cuello de botella aguas arriba.",
+      "params": {
+        "lam": 2.0,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 1,
+        "c_treat": 3,
+        "p_urgent": 0.25,
+        "surge": 0,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.0,
+        "trace_bytes": 73974,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 4.1,
+        "mean_LOS_urgent": 2.962,
+        "mean_LOS_standard": 4.463,
+        "mean_wait_treatment": 1.522,
+        "n_patients": 240,
+        "rho_treatment": 0.833,
+        "urgent_frac": 0.242
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/triage_bottleneck-seed42.json"
+    },
+    {
+      "id": "high_urgent",
+      "label_en": "Many urgent",
+      "label_es": "Muchos urgentes",
+      "note_en": "More urgent patients: priority reshapes who waits.",
+      "note_es": "M\u00e1s urgentes: la prioridad redefine qui\u00e9n espera.",
+      "params": {
+        "lam": 2.0,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 2,
+        "c_treat": 3,
+        "p_urgent": 0.45,
+        "surge": 0,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 5.0,
+        "trace_bytes": 73945,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 3.512,
+        "mean_LOS_urgent": 2.458,
+        "mean_LOS_standard": 4.361,
+        "mean_wait_treatment": 1.453,
+        "n_patients": 240,
+        "rho_treatment": 0.833,
+        "urgent_frac": 0.446
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/high_urgent-seed42.json"
+    },
+    {
+      "id": "low_urgent",
+      "label_en": "Few urgent",
+      "label_es": "Pocos urgentes",
+      "note_en": "Few urgent patients: priority rarely bites.",
+      "note_es": "Pocos urgentes: la prioridad casi no se nota.",
+      "params": {
+        "lam": 2.0,
+        "mu_triage": 3.0,
+        "mu_treat": 0.8,
+        "c_triage": 2,
+        "c_treat": 3,
+        "p_urgent": 0.1,
+        "surge": 0,
+        "n_patients": 240
+      },
+      "lane": "live",
+      "gate": {
+        "pure_python": true,
+        "run_ms": 4.9,
+        "trace_bytes": 73952,
+        "reasons": []
+      },
+      "kpis": {
+        "mean_LOS": 3.48,
+        "mean_LOS_urgent": 2.408,
+        "mean_LOS_standard": 3.588,
+        "mean_wait_treatment": 1.42,
+        "n_patients": 240,
+        "rho_treatment": 0.833,
+        "urgent_frac": 0.092
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s04_ed/low_urgent-seed42.json"
+    }
+  ]
+}

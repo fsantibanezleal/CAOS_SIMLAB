@@ -8,6 +8,8 @@ import { VariantComparison } from "./VariantComparison";
 import { VariantPlayer } from "./VariantPlayer";
 import { GridVariantPlayer } from "./GridVariantPlayer";
 import { ChartVariantPlayer } from "./ChartVariantPlayer";
+import { FlowVariantPlayer } from "./FlowVariantPlayer";
+import { GanttVariantPlayer } from "./GanttVariantPlayer";
 import { GridComparison } from "./GridComparison";
 
 export interface GridKpiConfig {
@@ -55,13 +57,16 @@ export function ScenarioExperiment({
   const active = manifest.variants.find((v) => v.id === activeId) ?? manifest.variants[0];
   const renderer = manifest.viz.renderer;
 
-  const player = active
-    ? renderer === "agent-grid"
-      ? <GridVariantPlayer key={active.id} variant={active} />
-      : renderer === "chart"
-        ? <ChartVariantPlayer key={active.id} variant={active} />
-        : <VariantPlayer key={active.id} variant={active} />
-    : null;
+  const players: Record<string, ReactNode> = active
+    ? {
+        "agent-grid": <GridVariantPlayer key={active.id} variant={active} />,
+        chart: <ChartVariantPlayer key={active.id} variant={active} />,
+        flow: <FlowVariantPlayer key={active.id} variant={active} />,
+        gantt: <GanttVariantPlayer key={active.id} variant={active} />,
+        "queue-network": <VariantPlayer key={active.id} variant={active} />,
+      }
+    : {};
+  const player = active ? (players[renderer] ?? <VariantPlayer key={active.id} variant={active} />) : null;
 
   const charts =
     gridKpi ? (

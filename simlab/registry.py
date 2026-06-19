@@ -9,12 +9,17 @@ from .core.scenario import Scenario
 from .scenarios.s01_queue import QueueScenario
 from .scenarios.s02_schelling import SchellingScenario
 from .scenarios.s03_sir import SIRScenario
+from .scenarios.s04_ed import EDScenario
 from .scenarios.s05_beergame import BeerGameScenario
+from .scenarios.s06_jobshop import JobShopScenario
 from .scenarios.s10_montecarlo import MonteCarloScenario
 
 SCENARIOS: dict[str, Scenario] = {
     s.id: s
-    for s in [QueueScenario(), SchellingScenario(), SIRScenario(), BeerGameScenario(), MonteCarloScenario()]
+    for s in [
+        QueueScenario(), SchellingScenario(), SIRScenario(), EDScenario(),
+        BeerGameScenario(), JobShopScenario(), MonteCarloScenario(),
+    ]
 }
 
 

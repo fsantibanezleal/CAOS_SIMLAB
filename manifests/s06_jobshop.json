@@ -1,0 +1,379 @@
+{
+  "schema": "simlab.manifest/v2",
+  "id": "s06_jobshop",
+  "title": "Job-Shop Scheduling (CP-SAT)",
+  "method": "optimization",
+  "tier": 2,
+  "engine": "ortools",
+  "seed": 42,
+  "viz": {
+    "renderer": "gantt",
+    "dimensionality": "2d"
+  },
+  "wheel_closure": [],
+  "param_specs": [
+    {
+      "key": "instance",
+      "label": "Instance (1 = ft06 benchmark, 0 = generated)",
+      "default": 1,
+      "min": 0,
+      "max": 1,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_jobs",
+      "label": "Jobs",
+      "default": 5,
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "n_machines",
+      "label": "Machines",
+      "default": 5,
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "kind": "int"
+    },
+    {
+      "key": "inst_seed",
+      "label": "Instance seed",
+      "default": 1,
+      "min": 0,
+      "max": 9999,
+      "step": 1,
+      "kind": "int"
+    }
+  ],
+  "lane": "precomputed",
+  "gate_thresholds": {
+    "max_run_ms": 3000.0,
+    "max_trace_bytes": 1000000
+  },
+  "variants": [
+    {
+      "id": "ft06",
+      "label_en": "Fisher\u2013Thompson ft06 (6\u00d76)",
+      "label_es": "Fisher\u2013Thompson ft06 (6\u00d76)",
+      "note_en": "The classic 1963 benchmark \u2014 proven optimal makespan 55.",
+      "note_es": "El benchmark cl\u00e1sico de 1963 \u2014 makespan \u00f3ptimo probado de 55.",
+      "params": {
+        "instance": 1,
+        "n_jobs": 6,
+        "n_machines": 6,
+        "inst_seed": 0
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 345.9,
+        "trace_bytes": 1954,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 55,
+        "optimal": true,
+        "n_jobs": 6,
+        "n_machines": 6,
+        "n_operations": 36,
+        "utilization": 0.597
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/ft06-seed42.json"
+    },
+    {
+      "id": "j3m3",
+      "label_en": "3 jobs \u00d7 3 machines",
+      "label_es": "3 trabajos \u00d7 3 m\u00e1quinas",
+      "note_en": "A tiny instance, instantly optimal.",
+      "note_es": "Una instancia diminuta, \u00f3ptima al instante.",
+      "params": {
+        "instance": 0,
+        "n_jobs": 3,
+        "n_machines": 3,
+        "inst_seed": 11
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.5,
+        "trace_bytes": 780,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 22,
+        "optimal": true,
+        "n_jobs": 3,
+        "n_machines": 3,
+        "n_operations": 9,
+        "utilization": 0.652
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/j3m3-seed42.json"
+    },
+    {
+      "id": "j4m3",
+      "label_en": "4 jobs \u00d7 3 machines",
+      "label_es": "4 trabajos \u00d7 3 m\u00e1quinas",
+      "note_en": "More jobs than machines: contention rises.",
+      "note_es": "M\u00e1s trabajos que m\u00e1quinas: sube la contenci\u00f3n.",
+      "params": {
+        "instance": 0,
+        "n_jobs": 4,
+        "n_machines": 3,
+        "inst_seed": 12
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 1.8,
+        "trace_bytes": 905,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 39,
+        "optimal": true,
+        "n_jobs": 4,
+        "n_machines": 3,
+        "n_operations": 12,
+        "utilization": 0.658
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/j4m3-seed42.json"
+    },
+    {
+      "id": "j4m4",
+      "label_en": "4 jobs \u00d7 4 machines",
+      "label_es": "4 trabajos \u00d7 4 m\u00e1quinas",
+      "note_en": "Balanced small shop.",
+      "note_es": "Taller peque\u00f1o balanceado.",
+      "params": {
+        "instance": 0,
+        "n_jobs": 4,
+        "n_machines": 4,
+        "inst_seed": 13
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 2.0,
+        "trace_bytes": 1086,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 35,
+        "optimal": true,
+        "n_jobs": 4,
+        "n_machines": 4,
+        "n_operations": 16,
+        "utilization": 0.7
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/j4m4-seed42.json"
+    },
+    {
+      "id": "j5m4",
+      "label_en": "5 jobs \u00d7 4 machines",
+      "label_es": "5 trabajos \u00d7 4 m\u00e1quinas",
+      "note_en": "Machines become the constraint.",
+      "note_es": "Las m\u00e1quinas son la restricci\u00f3n.",
+      "params": {
+        "instance": 0,
+        "n_jobs": 5,
+        "n_machines": 4,
+        "inst_seed": 14
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 2.9,
+        "trace_bytes": 1252,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 41,
+        "optimal": true,
+        "n_jobs": 5,
+        "n_machines": 4,
+        "n_operations": 20,
+        "utilization": 0.701
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/j5m4-seed42.json"
+    },
+    {
+      "id": "j5m5",
+      "label_en": "5 jobs \u00d7 5 machines",
+      "label_es": "5 trabajos \u00d7 5 m\u00e1quinas",
+      "note_en": "A square 5\u00d75 shop.",
+      "note_es": "Un taller cuadrado 5\u00d75.",
+      "params": {
+        "instance": 0,
+        "n_jobs": 5,
+        "n_machines": 5,
+        "inst_seed": 15
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 4.3,
+        "trace_bytes": 1479,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 48,
+        "optimal": true,
+        "n_jobs": 5,
+        "n_machines": 5,
+        "n_operations": 25,
+        "utilization": 0.604
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/j5m5-seed42.json"
+    },
+    {
+      "id": "j6m4",
+      "label_en": "6 jobs \u00d7 4 machines",
+      "label_es": "6 trabajos \u00d7 4 m\u00e1quinas",
+      "note_en": "Heavy contention on few machines.",
+      "note_es": "Fuerte contenci\u00f3n en pocas m\u00e1quinas.",
+      "params": {
+        "instance": 0,
+        "n_jobs": 6,
+        "n_machines": 4,
+        "inst_seed": 16
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 2.5,
+        "trace_bytes": 1411,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 32,
+        "optimal": true,
+        "n_jobs": 6,
+        "n_machines": 4,
+        "n_operations": 24,
+        "utilization": 0.891
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/j6m4-seed42.json"
+    },
+    {
+      "id": "j6m6",
+      "label_en": "6 jobs \u00d7 6 machines",
+      "label_es": "6 trabajos \u00d7 6 m\u00e1quinas",
+      "note_en": "A 6\u00d76 generated instance.",
+      "note_es": "Una instancia 6\u00d76 generada.",
+      "params": {
+        "instance": 0,
+        "n_jobs": 6,
+        "n_machines": 6,
+        "inst_seed": 17
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3.6,
+        "trace_bytes": 1948,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 46,
+        "optimal": true,
+        "n_jobs": 6,
+        "n_machines": 6,
+        "n_operations": 36,
+        "utilization": 0.63
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/j6m6-seed42.json"
+    },
+    {
+      "id": "j8m4",
+      "label_en": "8 jobs \u00d7 4 machines",
+      "label_es": "8 trabajos \u00d7 4 m\u00e1quinas",
+      "note_en": "Many jobs queue for few machines.",
+      "note_es": "Muchos trabajos en cola por pocas m\u00e1quinas.",
+      "params": {
+        "instance": 0,
+        "n_jobs": 8,
+        "n_machines": 4,
+        "inst_seed": 18
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 3.3,
+        "trace_bytes": 1744,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 60,
+        "optimal": true,
+        "n_jobs": 8,
+        "n_machines": 4,
+        "n_operations": 32,
+        "utilization": 0.821
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/j8m4-seed42.json"
+    },
+    {
+      "id": "j4m6",
+      "label_en": "4 jobs \u00d7 6 machines",
+      "label_es": "4 trabajos \u00d7 6 m\u00e1quinas",
+      "note_en": "More machines than jobs: short makespan.",
+      "note_es": "M\u00e1s m\u00e1quinas que trabajos: makespan corto.",
+      "params": {
+        "instance": 0,
+        "n_jobs": 4,
+        "n_machines": 6,
+        "inst_seed": 19
+      },
+      "lane": "precomputed",
+      "gate": {
+        "pure_python": false,
+        "run_ms": 2.5,
+        "trace_bytes": 1459,
+        "reasons": [
+          "not pure-Python (cannot run in Pyodide/WASM)"
+        ]
+      },
+      "kpis": {
+        "makespan": 49,
+        "optimal": true,
+        "n_jobs": 4,
+        "n_machines": 6,
+        "n_operations": 24,
+        "utilization": 0.469
+      },
+      "analytic": {},
+      "trace": "data/artifacts/s06_jobshop/j4m6-seed42.json"
+    }
+  ]
+}
