@@ -3,6 +3,24 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.14.000] - 2026-06-19
+### Changed
+- **Every scenario's Context rewritten to a deep, formalized standard** (the prior write-ups were too
+  terse). Each of the 11 cases now answers, in order: **the problem** (with the canonical real instance);
+  **Components & variables** (sets, parameters, decision/state variables); **Formalization** — the detailed
+  math, **rendered with KaTeX** (`Equation`/`InlineMath`), with the model class named correctly (M/M/c;
+  finite-source M/M/1//N + match factor; Schelling happiness rule; SIR threshold; priority M/M/c +
+  thinning; order-up-to + bullwhip ratio; CP-SAT disjunctive; CVRP/MILP; nearest-available EMS;
+  replications + CI; blending LP) and every formula matched to the scenario's actual code; **Scope &
+  assumptions** (what's modeled, the Markovian/seeded/stationary assumptions, what's out of scope); then
+  what each variant shows + how to read the viz. Authored + adversarially math-checked by a per-scenario
+  workflow (read code → write → verify vs code). 29–62 rendered equations per scenario.
+- **S11 mine haul — much bigger, richer map** (the small bordered map made every trip hug the edge). New
+  **"hills" terrain** in `_geo.py` (a sum of Gaussian bumps → a varied landscape); a 14×14 grid with the
+  phases / plant / dump / stock placed in the **interior**, spread out, so haul routes **wind through the
+  valleys** (now 100% interior, no border-hugging). The plan-vs-fleet grade-slip lesson still holds
+  (undertrucked 2.05 → overtrucked 2.88 in band).
+
 ## [0.13.000] - 2026-06-19
 ### Added
 - **S11 — Multi-destination mine haul (plan-then-simulate).** A new case study that is genuinely new vs
