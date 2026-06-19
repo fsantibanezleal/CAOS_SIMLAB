@@ -32,6 +32,7 @@ class RouteTrace:
     agents: list[dict[str, Any]] = field(default_factory=list)  # {id, kind, color, legs:[{a,b,t0,t1}]}
     markers: list[dict[str, Any]] = field(default_factory=list)  # {x,y,t0,t1,kind}
     barriers: list[dict[str, Any]] = field(default_factory=list)  # {x,y} impassable cells (haul wall)
+    gauges: list[dict[str, Any]] = field(default_factory=list)  # stock fill bars: {x,y,capacity,label_*,color,frames:[[t,level]]}
     legend: list[dict[str, Any]] = field(default_factory=list)
     t_end: float = 0.0
     kpis: dict[str, Any] = field(default_factory=dict)
@@ -58,6 +59,8 @@ class RouteTrace:
         }
         if self.barriers:  # only emit when present, so barrier-free traces (S08/S09) stay byte-identical
             d["barriers"] = self.barriers
+        if self.gauges:  # only S11 (stock fill bars); other route traces stay byte-identical
+            d["gauges"] = self.gauges
         return d
 
     def to_json(self) -> str:

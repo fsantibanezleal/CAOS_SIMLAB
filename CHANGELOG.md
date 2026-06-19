@@ -3,6 +3,29 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.13.000] - 2026-06-19
+### Added
+- **S11 — Multi-destination mine haul (plan-then-simulate).** A new case study that is genuinely new vs
+  S07/S08: ore flows from several **phases** (load points, each with an ore grade) to three destination
+  **kinds** — a **plant** (grade target), a **dump** (waste), and intermediate **stockpiles** (a node that
+  is a sink AND, once it holds material, a source for later trips). Two coupled OR problems:
+  - **Blending LP** (OR-Tools **GLOP**): choose the per-source plant feed to hit the grade target within
+    demand (linearized deviation); the phase grades straddle the target so the plan is a genuine blend.
+  - **Execution DES** (seeded): a **fixed fleet** runs graded haul cycles with a duty-based, reachable-
+    soonest dispatch. Because the rich phase is far, an under-sized fleet can't deliver its planned tonnage
+    and the **plant grade slips first** (undertrucked 1.78 vs target 2.9 → overtrucked 2.86, in band) —
+    *an optimal plan is necessary but not sufficient*. 12 variants (fleet sizing, demand surge, tight band,
+    stock-as-source/buffer, barrier, low target, dump-heavy).
+  - New **stock fill-bar** primitive in RouteViz (a `gauges` trace field; level interpolated against the
+    replay clock — rises on tip-in, falls on draw-out) + a plant-delivery HUD counter (plant is a pure
+    sink, so the count is unambiguous). `routetrace.py` `gauges` is only serialized when present, so other
+    route traces stay byte-identical. Native solver ⇒ **precompute lane** (no live lane; the Live tab shows
+    the native-only explainer). New tab **S11**; lede updated to eleven cases / four routing problems.
+  - **Deep, formalized description** (the new context standard): problem · components & variables · detailed
+    mathematical formalization (the blending LP, the graded route cost, the achieved-grade + plan-adherence
+    definitions) · scope & assumptions (what's modeled vs the out-of-scope period-scheduling / cut-off-grade
+    / live-dispatch app). 3 new tests (blend + slip/recovery + stock dual role); 38 tests total.
+
 ## [0.12.000] - 2026-06-19
 ### Changed
 - **S07 haul redesigned — the route now genuinely depends on the terrain (was degenerate).** The old grid

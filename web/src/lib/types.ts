@@ -141,6 +141,7 @@ export interface RouteLeg { a: number; b: number; t0: number; t1: number }
 export interface RouteAgent { id: number; kind: string; color: string; legs: RouteLeg[]; home?: number }
 export interface RouteMarker { x: number; y: number; t0: number; t1: number; kind: string }
 export interface RoutePlan { agent: number; path: number[]; color: string }
+export interface RouteGauge { x: number; y: number; capacity: number; label_en: string; label_es: string; color: string; frames: [number, number][] }
 export interface RouteTrace {
   schema: string;
   scenario: string;
@@ -155,6 +156,7 @@ export interface RouteTrace {
   agents: RouteAgent[];
   markers: RouteMarker[];
   barriers?: { x: number; y: number }[];
+  gauges?: RouteGauge[];
   legend: { code: string; label_en: string; label_es: string; color: string }[];
   t_end: number;
   kpis: Record<string, number>;

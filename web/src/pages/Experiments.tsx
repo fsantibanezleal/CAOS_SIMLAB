@@ -94,6 +94,18 @@ const AMBULANCE_KPI: GridKpiConfig = {
     { key: "n_ambulances", en: "Ambulances", es: "Ambulancias" },
   ],
 };
+const MINEHAUL_KPI: GridKpiConfig = {
+  key: "grade_dev", en: "Grade deviation from target (lower is better)", es: "Desvío de ley vs objetivo (menor es mejor)",
+  cols: [
+    { key: "grade_achieved", en: "Grade achieved", es: "Ley lograda" },
+    { key: "grade_target", en: "Grade target", es: "Ley objetivo" },
+    { key: "grade_dev", en: "Deviation", es: "Desvío" },
+    { key: "in_band", en: "In band", es: "En banda" },
+    { key: "plan_adherence_pct", en: "Plan adherence %", es: "Adherencia %" },
+    { key: "plant_tons", en: "Plant t", es: "t planta" },
+    { key: "n_trucks", en: "Trucks", es: "Camiones" },
+  ],
+};
 
 export default function Experiments() {
   const { t } = useTranslation();
@@ -113,6 +125,7 @@ export default function Experiments() {
     { id: "s08", label: "S08 · " + L("Haul routing", "Ruteo de camiones"), content: <ScenarioExperiment manifestId="s07_haul" description={<S07Desc lang={lang} />} gridKpi={HAUL_KPI} /> },
     { id: "s09", label: "S09 · " + L("Vehicle routing (VRP)", "Ruteo de vehículos (VRP)"), content: <ScenarioExperiment manifestId="s08_vrp" description={<S08Desc lang={lang} />} gridKpi={VRP_KPI} /> },
     { id: "s10", label: "S10 · " + L("Ambulance dispatch", "Despacho ambulancias"), content: <ScenarioExperiment manifestId="s09_ambulance" description={<S09Desc lang={lang} />} gridKpi={AMBULANCE_KPI} /> },
+    { id: "s11", label: "S11 · " + L("Multi-destination mine haul", "Acarreo minero multidestino"), content: <ScenarioExperiment manifestId="s11_minehaul" description={<S11Desc lang={lang} />} gridKpi={MINEHAUL_KPI} /> },
   ];
 
   return (
@@ -121,8 +134,8 @@ export default function Experiments() {
         <h1>{t("nav.experiments")}</h1>
         <p className="lede">
           {L(
-            "Ten worked case studies across DES, ABM and optimization — queues, segregation, epidemics, emergency flow, supply chains, scheduling, and three geospatial routing problems on a synthetic road network. Each explains the problem and what it addresses, offers ≥10 pre-simulated regimes to compare, an animated player, and a comparison of results.",
-            "Diez casos de estudio sobre DES, ABM y optimización — colas, segregación, epidemias, flujo de urgencias, cadenas de suministro, programación y tres problemas de ruteo geoespacial sobre una red vial sintética. Cada uno explica el problema y lo que aborda, ofrece ≥10 regímenes pre-simulados para comparar, un reproductor animado y una comparación de resultados.",
+            "Eleven worked case studies across DES, ABM and optimization — queues, segregation, epidemics, emergency flow, supply chains, scheduling, Monte-Carlo, and four geospatial routing problems on a synthetic road network (haul, VRP, ambulance dispatch, and a multi-destination mine haul with a blending LP). Each explains the problem, its components and variables, a detailed formalization, its scope and assumptions; offers ≥10 pre-simulated regimes, an animated player, and a comparison of results.",
+            "Once casos de estudio sobre DES, ABM y optimización — colas, segregación, epidemias, flujo de urgencias, cadenas de suministro, programación, Monte-Carlo y cuatro problemas de ruteo geoespacial sobre una red vial sintética (acarreo, VRP, despacho de ambulancias y un acarreo minero multidestino con LP de blending). Cada uno explica el problema, sus componentes y variables, una formalización detallada, sus alcances y supuestos; ofrece ≥10 regímenes pre-simulados, un reproductor animado y una comparación de resultados.",
           )}
         </p>
       </div>
@@ -246,6 +259,51 @@ function S10Desc({ lang }: { lang: string }) {
       <h2>The problem: how much do I trust one run?</h2>
       <p>A stochastic simulation is a random experiment: a single run gives a noisy number. This case runs <em>N independent replications</em> of the M/M/c and shows the <strong>running mean</strong> and the <strong>95% confidence interval</strong> as replications accumulate, against the closed-form Erlang-C answer.</p>
       <p><strong>What it addresses — replications & CIs:</strong> the CI narrows like 1/√n; with few replications at high load the estimate is untrustworthy. Compare regimes (reps × load) to watch the CI half-width shrink; the histogram shows the per-run Wq distribution.</p>
+    </>
+  );
+}
+
+function S11Desc({ lang }: { lang: string }) {
+  const es = lang === "es";
+  return es ? (
+    <>
+      <h2>El problema: acarreo minero multidestino — un plan óptimo de flujo vs una flota fija (planificar-luego-simular)</h2>
+      <p>Una mina envía mineral desde varias <strong>fases</strong> (puntos de carguío, cada uno con su <em>ley</em> de mineral) hacia tres <strong>tipos de destino</strong>: una <strong>planta</strong> con una ley objetivo, un <strong>botadero</strong> (estéril), y <strong>acopios (stocks)</strong> intermedios — un nodo que es sumidero y, una vez que tiene material, <em>origen</em> para viajes posteriores. Una flota <strong>fija</strong> realiza ciclos de acarreo. Hay dos problemas de optimización acoplados: el <strong>blending</strong> de la alimentación de planta (un LP) y la <strong>ejecución</strong> del plan por la flota (un DES).</p>
+
+      <h3>Componentes y variables</h3>
+      <p><strong>Conjuntos:</strong> fases/orígenes <em>i ∈ S</em> (cada una con ley g<sub>i</sub> y disponibilidad a<sub>i</sub>); destinos = {"{"}planta, botadero, acopios{"}"}; la flota de <em>K</em> camiones (capacidad q por viaje). <strong>Parámetros:</strong> demanda de planta <em>D</em>, ley objetivo <em>g*</em> y banda ±<em>τ</em>; tiempos de carga/descarga; el costo de arista <em>graduado</em> por pendiente del terreno; capacidad de cada acopio y su nivel inicial. <strong>Variables de decisión:</strong> el plan de mezcla x<sub>i</sub> (toneladas de cada origen a la planta) — lo resuelve el LP; y, en la simulación, qué <em>flujo</em> sirve cada camión en cada ciclo (la regla de despacho).</p>
+
+      <h3>Formalización</h3>
+      <p><strong>(1) LP de blending (OR-Tools GLOP):</strong> elegir x<sub>i</sub> ≥ 0 para minimizar la desviación de ley, linealizada con d⁺, d⁻ ≥ 0:</p>
+      <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.9rem", paddingLeft: "1rem" }}>min  d⁺ + d⁻<br />s.a.  Σ<sub>i</sub> x<sub>i</sub> = D&nbsp;&nbsp;(demanda);&nbsp;&nbsp;0 ≤ x<sub>i</sub> ≤ a<sub>i</sub>&nbsp;&nbsp;(disponibilidad);<br />&nbsp;&nbsp;&nbsp;&nbsp;Σ<sub>i</sub> g<sub>i</sub> x<sub>i</sub> − g*·D = d⁺ − d⁻&nbsp;&nbsp;(ley mezclada vs objetivo).</p>
+      <p>Como las leyes de las fases <em>rodean</em> al objetivo y la disponibilidad de cada una es limitada, ninguna fase sola satisface la planta: <strong>el plan es una mezcla genuina</strong>. <strong>(2) Costo de ruta:</strong> cada par origen→destino se rutea por el camino más corto bajo el costo graduado costo(a→b) = dist × (1 + ρ·max(0, Δelev)) (Dijkstra). <strong>(3) Ejecución (DES):</strong> los <em>K</em> camiones ciclan carga → acarreo graduado → descarga → retorno; el despacho hace el trabajo factible <em>alcanzable más pronto</em> manteniendo la planta como prioridad. La <strong>ley lograda</strong> es ĝ = (Σ tons·g<sub>origen</sub>) / (Σ tons) sobre lo realmente entregado a la planta; la <strong>adherencia al plan</strong> = entregado / planificado. Un acopio tiene un nivel ℓ(t) que <em>sube</em> al recibir y <em>baja</em> al despachar (ℓ ≥ q para poder originar).</p>
+
+      <h3>Alcances y supuestos</h3>
+      <p><strong>Modela:</strong> un <em>turno</em> con fases, leyes, demanda y disponibilidad <strong>dadas</strong>; el plan óptimo de flujo + blending; y su realización por una flota fija bajo rutas graduadas, contención de cargador y disponibilidad de áreas. <strong>La lección:</strong> <em>un plan óptimo es necesario pero no suficiente</em> — una flota insuficiente entrega una versión degradada y, como la fase rica está lejos, <strong>la ley es lo primero que se desajusta</strong>; con suficientes camiones el plan se realiza y la ley vuelve a la banda. <strong>Supuestos:</strong> determinístico y con semilla; capacidad de camión y tiempos fijos; el LP es estático (no re-optimiza en vivo). <strong>Queda fuera</strong> (sería otra herramienta): la planificación por períodos / secuenciamiento de bloques, la ley de corte (Lane), y el despacho re-optimizando en tiempo real. Solver nativo (OR-Tools) ⇒ caso <strong>precomputado</strong>, sin modo en vivo.</p>
+
+      <h3>Qué muestra cada variante</h3>
+      <p><strong>undertrucked → base → overtrucked</strong>: la misma demanda con flota creciente — la ley sube de muy baja a dentro de la banda (el plan se realiza). <strong>two_phase_rich</strong>: una meta alta exige la fase rica lejana, que una flota chica no alcanza. <strong>surge / surge12</strong>: un alza de demanda desajusta la ley hasta sumar camiones. <strong>stock_source</strong>: un acopio rico pre-armado alimenta la planta — mira la barra <em>vaciarse</em>. <strong>stock_buffer</strong>: un acopio se <em>llena</em> desde una fase. <strong>low_target</strong>: meta baja apoyada en fases cercanas (fácil). <strong>dump_heavy</strong>: poca planta, casi todo al botadero. <strong>barrier</strong>: un muro alarga la ruta de la fase rica.</p>
+      <p><strong>Cómo leer la animación.</strong> Nodos: <strong>fases</strong> (azul), <strong>planta</strong> (verde, con meta de ley), <strong>botadero</strong> (ámbar), <strong>acopio</strong> (magenta) con una <strong>barra de nivel</strong> que sube/baja; las polilíneas de color son los flujos planificados; los camiones suben lento por la ruta graduada; el HUD cuenta los viajes a planta. En la tabla compara <strong>ley lograda vs objetivo</strong> y la <strong>adherencia al plan</strong> al cambiar la flota.</p>
+    </>
+  ) : (
+    <>
+      <h2>The problem: multi-destination mine haul — an optimal flow plan vs a fixed fleet (plan-then-simulate)</h2>
+      <p>A mine sends ore from several <strong>phases</strong> (load points, each with an ore <em>grade</em>) to three <strong>destination kinds</strong>: a <strong>plant</strong> with a grade target, a <strong>dump</strong> (waste), and intermediate <strong>stockpiles</strong> — a node that is a sink and, once it holds material, a <em>source</em> for later trips. A <strong>fixed</strong> fleet runs haul cycles. Two coupled optimization problems: the plant-feed <strong>blend</strong> (an LP) and the fleet's <strong>execution</strong> of the plan (a DES).</p>
+
+      <h3>Components &amp; variables</h3>
+      <p><strong>Sets:</strong> phases/sources <em>i ∈ S</em> (each with grade g<sub>i</sub> and availability a<sub>i</sub>); destinations = {"{"}plant, dump, stocks{"}"}; a fleet of <em>K</em> trucks (capacity q per trip). <strong>Parameters:</strong> plant demand <em>D</em>, grade target <em>g*</em> with band ±<em>τ</em>; load/tip times; the slope-<em>graded</em> edge cost; each stock's capacity and initial level. <strong>Decision variables:</strong> the blend plan x<sub>i</sub> (tonnes from each source to the plant) — solved by the LP; and, in the simulation, which <em>flow</em> each truck serves per cycle (the dispatch rule).</p>
+
+      <h3>Formalization</h3>
+      <p><strong>(1) Blending LP (OR-Tools GLOP):</strong> choose x<sub>i</sub> ≥ 0 to minimize the grade deviation, linearized with d⁺, d⁻ ≥ 0:</p>
+      <p style={{ fontFamily: "var(--font-mono)", fontSize: "0.9rem", paddingLeft: "1rem" }}>min  d⁺ + d⁻<br />s.t.  Σ<sub>i</sub> x<sub>i</sub> = D&nbsp;&nbsp;(demand);&nbsp;&nbsp;0 ≤ x<sub>i</sub> ≤ a<sub>i</sub>&nbsp;&nbsp;(availability);<br />&nbsp;&nbsp;&nbsp;&nbsp;Σ<sub>i</sub> g<sub>i</sub> x<sub>i</sub> − g*·D = d⁺ − d⁻&nbsp;&nbsp;(blended grade vs target).</p>
+      <p>Because the phase grades <em>straddle</em> the target and each phase's availability is capped, no single phase satisfies the plant: <strong>the plan is a genuine blend</strong>. <strong>(2) Route cost:</strong> each source→destination pair is routed by the shortest path under the graded cost cost(a→b) = dist × (1 + ρ·max(0, Δelev)) (Dijkstra). <strong>(3) Execution (DES):</strong> the <em>K</em> trucks cycle load → graded haul → tip → return; dispatch does the feasible job <em>reachable soonest</em> with the plant as priority. The <strong>achieved grade</strong> is ĝ = (Σ tons·g<sub>source</sub>) / (Σ tons) over what was actually delivered to the plant; <strong>plan adherence</strong> = delivered / planned. A stock holds a level ℓ(t) that <em>rises</em> on tip-in and <em>falls</em> on draw-out (ℓ ≥ q to be able to source).</p>
+
+      <h3>Scope &amp; assumptions</h3>
+      <p><strong>Models:</strong> one <em>shift</em> with phases, grades, demand and availability <strong>given</strong>; the optimal flow + blend plan; and its realization by a fixed fleet under graded routes, loader contention and area availability. <strong>The lesson:</strong> <em>an optimal plan is necessary but not sufficient</em> — an under-sized fleet realizes a degraded version and, because the rich phase is far, <strong>the grade target slips first</strong>; with enough trucks the plan is realized and the grade returns to band. <strong>Assumptions:</strong> deterministic and seeded; fixed truck capacity and service times; the LP is static (no live re-optimization). <strong>Out of scope</strong> (a separate tool): period scheduling / block sequencing, cut-off-grade (Lane's algorithm), and real-time re-optimizing dispatch. Native solver (OR-Tools) ⇒ a <strong>precomputed</strong> case, no live lane.</p>
+
+      <h3>What each variant shows</h3>
+      <p><strong>undertrucked → base → overtrucked</strong>: the same demand with a growing fleet — the grade climbs from far-off to inside the band (the plan is realized). <strong>two_phase_rich</strong>: a high target needs the distant rich phase a small fleet can't deliver. <strong>surge / surge12</strong>: a demand surge throws the grade off until trucks are added. <strong>stock_source</strong>: a pre-built rich stock feeds the plant — watch the bar <em>drain</em>. <strong>stock_buffer</strong>: a stock <em>fills</em> from a phase. <strong>low_target</strong>: a low target leans on the near phases (easy). <strong>dump_heavy</strong>: little to the plant, most to the dump. <strong>barrier</strong>: a wall lengthens the rich phase's road.</p>
+      <p><strong>How to read the viz.</strong> Nodes: <strong>phases</strong> (blue), <strong>plant</strong> (green, grade target), <strong>dump</strong> (amber), <strong>stock</strong> (magenta) with a <strong>fill bar</strong> that rises/falls; the coloured polylines are the planned flows; trucks crawl uphill on the graded route; the HUD counts trips to the plant. In the table, compare <strong>grade achieved vs target</strong> and <strong>plan adherence</strong> as you change the fleet.</p>
     </>
   );
 }

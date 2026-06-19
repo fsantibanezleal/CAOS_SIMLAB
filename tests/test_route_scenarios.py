@@ -127,3 +127,38 @@ def test_vrp_pipeline_manifest(tmp_path):
     assert res["variants"] >= 10
     m = json.loads((tmp_path / "manifests" / "s08_vrp.json").read_text(encoding="utf-8"))
     assert m["viz"]["renderer"] == "route" and m["lane"] == "precomputed"
+
+
+def test_minehaul_blend_slip_and_recovery():
+    pytest.importorskip("ortools")
+    from simlab.scenarios.s11_minehaul import MineHaulScenario
+    sc = MineHaulScenario()
+    assert len(sc.variants()) >= 10
+    base = sc.run(_vparams(sc, "base"), 42)
+    assert base.to_json() == sc.run(_vparams(sc, "base"), 42).to_json()  # GLOP + DES deterministic
+    assert base.nodes and base.agents and base.routes
+    # the blend PLAN hits the target (the LP can satisfy the grade); the achieved grade is the fleet's reality
+    assert abs(base.analytic["plan_grade"] - base.kpis["grade_target"]) <= 0.05
+    under = sc.run(_vparams(sc, "undertrucked"), 42)
+    over = sc.run(_vparams(sc, "overtrucked"), 42)
+    # an optimal plan is degraded by a fixed fleet: the grade slips, and more trucks recover it
+    assert under.kpis["grade_dev"] > over.kpis["grade_dev"]
+    assert over.kpis["in_band"] == 1 and under.kpis["in_band"] == 0
+
+
+def test_minehaul_stock_dual_role():
+    pytest.importorskip("ortools")
+    from simlab.scenarios.s11_minehaul import MineHaulScenario
+    sc = MineHaulScenario()
+    src = sc.run(_vparams(sc, "stock_source"), 42)   # pre-built stock → drains as a source
+    assert src.gauges and src.analytic["stock_end"] < 40.0
+    buf = sc.run(_vparams(sc, "stock_buffer"), 42)    # empty-ish stock → fills as a sink
+    assert buf.analytic["stock_peak"] > _vparams(sc, "stock_buffer")["init_stock"]
+
+
+def test_minehaul_pipeline_manifest(tmp_path):
+    pytest.importorskip("ortools")
+    res = precompute("s11_minehaul", seed=42, out_root=tmp_path)
+    assert res["variants"] >= 10
+    m = json.loads((tmp_path / "manifests" / "s11_minehaul.json").read_text(encoding="utf-8"))
+    assert m["viz"]["renderer"] == "route" and m["lane"] == "precomputed"  # native solver → no live lane

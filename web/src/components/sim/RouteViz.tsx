@@ -73,9 +73,12 @@ export function RouteViz({ trace, state, time }: { trace: RouteTrace; state: Rou
     () => trace.nodes.filter((n) => n.kind === "customer" && state.served.has(n.id)).length,
     [trace.nodes, state.served],
   );
+  const hasPlant = trace.nodes.some((n) => n.kind === "plant");
   const progress = (() => {
     if (trace.markers.length > 0)
       return { label: es ? "resueltos" : "resolved", value: `${state.resolved}`, flash: state.resolvedFlash };
+    if (hasPlant) // plant is a pure sink, so its arrival count is unambiguous (unlike the stock's dual role)
+      return { label: es ? "a planta" : "to plant", value: `${state.arrivalsByKind["plant"] ?? 0}`, flash: state.arrivalFlash };
     if (totalCustomers > 0)
       return { label: es ? "atendidos" : "served", value: `${servedCustomers}/${totalCustomers}`, flash: state.arrivalFlash };
     const dump = state.arrivalsByKind["dump"] ?? 0;
@@ -160,6 +163,21 @@ export function RouteViz({ trace, state, time }: { trace: RouteTrace; state: Rou
           <circle cx={px(a.x)} cy={py(a.y)} r={5} style={{ fill: a.color }} className="rv-agent" />
         </g>
       ))}
+
+      {/* stock fill bars (S11): a node that is sink-then-source — the level rises/falls over the shift */}
+      {state.gauges.map((gg, i) => {
+        const bx = px(gg.x) + 11;
+        const bh = 46;
+        const by = py(gg.y) - bh / 2;
+        const fillH = bh * Math.max(0, Math.min(1, gg.capacity > 0 ? gg.level / gg.capacity : 0));
+        return (
+          <g key={`gauge${i}`}>
+            <rect x={bx} y={by} width={8} height={bh} rx={2} fill="var(--color-surface-2)" stroke="var(--color-border)" />
+            <rect x={bx} y={by + bh - fillH} width={8} height={fillH} rx={2} style={{ fill: gg.color }} />
+            <text x={bx + 4} y={by - 4} textAnchor="middle" className="rv-node-label">{Math.round(gg.level)}</text>
+          </g>
+        );
+      })}
 
       {/* live HUD — counters pulse on change (F1) */}
       <text x={14} y={26} className="rv-hud">{"t = " + time.toFixed(1)}</text>

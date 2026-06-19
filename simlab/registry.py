@@ -16,6 +16,7 @@ from .scenarios.s07_haul import HaulScenario
 from .scenarios.s08_vrp import VRPScenario
 from .scenarios.s09_ambulance import AmbulanceScenario
 from .scenarios.s10_montecarlo import MonteCarloScenario
+from .scenarios.s11_minehaul import MineHaulScenario
 
 SCENARIOS: dict[str, Scenario] = {
     s.id: s
@@ -23,6 +24,7 @@ SCENARIOS: dict[str, Scenario] = {
         QueueScenario(), SchellingScenario(), SIRScenario(), EDScenario(),
         BeerGameScenario(), JobShopScenario(), HaulScenario(),
         VRPScenario(), AmbulanceScenario(), MonteCarloScenario(),
+        MineHaulScenario(),
     ]
 }
 
