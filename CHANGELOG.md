@@ -3,6 +3,23 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.03.000] - 2026-06-19
+### Added
+- **12 pre-simulated regimes for S01** (a `Variant` family on the scenario): a load sweep (ρ from 0.33
+  to unstable) and a server-count sweep at fixed ρ that exposes the pooling effect (M/M/1 → c=10).
+- Pipeline now emits one seeded trace per variant + a **manifest v2** listing all variants with their
+  gate verdict, KPIs and Erlang-C reference. Tests cover the variant family + the v2 manifest.
+- **Full web rebuild to the CAOS_SEISMIC design system**: multi-page SPA (react-router) with
+  Introduction · Experiments · Theory · How-to-build; header with brand + nav + GitHub / personal /
+  portfolio icon-links + language + light/dark toggles (lucide-react); react-i18next EN/ES.
+- **Experiments**: tabs per case study; S01 ships a **≥10-variant selector**, an animated player, and a
+  sim-vs-theory **comparison scatter + table** (click a point to load that regime).
+- **Theory**: tabbed deep content (DES fundamentals, queueing M/M/c with **KaTeX** equations, validation
+  & replications, ABM) ; **How-to-build**: the end-to-end recipe with real code.
+### Changed
+- Unstable analytic Wq serialized as **null** (not `Infinity`) so committed traces stay valid JSON.
+- Retired the thin Phase-1a "Learn / About" single-group viewer.
+
 ## [0.02.000] - 2026-06-19
 ### Added
 - **Web viewer (Phase 1a)** — React 19 + Vite static SPA, deployed to GitHub Pages at

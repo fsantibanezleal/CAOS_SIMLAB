@@ -6,9 +6,11 @@ noisy — that is itself a lesson, see test_single_run_is_noisy_but_replications
 """
 from __future__ import annotations
 
+import json
 from statistics import fmean
 
 from simlab.core.scenario import classify_lane
+from simlab.pipeline import precompute
 from simlab.scenarios.s01_queue import QueueScenario, erlang_c_mmc
 
 
@@ -34,7 +36,7 @@ def test_erlang_c_known_value():
 def test_unstable_system_is_flagged():
     ref = erlang_c_mmc(5.0, 1.0, 3)  # rho > 1
     assert ref["stable"] is False
-    assert ref["Wq"] == float("inf")
+    assert ref["Wq"] is None  # null, not inf — keeps the committed trace valid JSON
 
 
 def test_single_run_is_noisy_but_replications_converge():
@@ -53,3 +55,27 @@ def test_s01_is_live_lane():
     tr = sc.run({}, seed=42)
     gate = classify_lane(sc.pure_python, run_ms=50.0, trace_bytes=len(tr.to_json()))
     assert gate.lane == "live", gate.reasons
+
+
+def test_variants_are_many_distinct_and_reproducible():
+    sc = QueueScenario()
+    vs = sc.variants()
+    assert len(vs) >= 10  # the brief: at least 10 pre-simulated parameter versions
+    ids = [v.id for v in vs]
+    assert len(set(ids)) == len(ids)  # unique ids
+    assert all(v.label_en and v.label_es for v in vs)  # bilingual labels
+    a = sc.run(vs[0].params, seed=42)
+    b = sc.run(vs[0].params, seed=42)
+    assert a.to_json() == b.to_json()
+
+
+def test_pipeline_emits_v2_manifest_and_every_variant_trace(tmp_path):
+    res = precompute("s01_queue", seed=42, out_root=tmp_path)
+    assert res["variants"] >= 10
+    manifest = json.loads((tmp_path / "manifests" / "s01_queue.json").read_text(encoding="utf-8"))
+    assert manifest["schema"] == "simlab.manifest/v2"
+    assert manifest["lane"] in ("live", "precomputed")
+    assert len(manifest["variants"]) >= 10
+    for v in manifest["variants"]:
+        assert (tmp_path / v["trace"]).exists(), v["trace"]
+        assert "kpis" in v and "analytic" in v and "gate" in v

@@ -1,28 +1,24 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useI18n } from "../i18n";
-import { loadManifest, loadTrace } from "../lib/data";
-import { buildCustomers, stateAt } from "../lib/replay";
-import type { Manifest, Trace } from "../lib/types";
+import { useTranslation } from "react-i18next";
+import { loadTrace } from "@/lib/data";
+import { buildCustomers, stateAt } from "@/lib/replay";
+import type { Trace, VariantEntry } from "@/lib/types";
 import { KpiPanel } from "./KpiPanel";
 import { QueueViz } from "./QueueViz";
 import { Timeline } from "./Timeline";
 
-const SCENARIO = "s01_queue";
-const SEED = 42;
-
 const PARAM_LABELS: Record<string, string> = {
-  lam: "params.lam",
-  mu: "params.mu",
-  c: "params.c",
-  n_customers: "params.n",
+  lam: "Arrival rate λ (/min)",
+  mu: "Service rate μ (/min)",
+  c: "Servers c",
+  n_customers: "Customers",
 };
 
-export function Simulator() {
-  const { t } = useI18n();
-  const [manifest, setManifest] = useState<Manifest | null>(null);
+/** Loads a variant's committed trace and plays it: animated queue + KPIs + run config. */
+export function VariantPlayer({ variant }: { variant: VariantEntry }) {
+  const { t } = useTranslation();
   const [trace, setTrace] = useState<Trace | null>(null);
   const [error, setError] = useState<string | null>(null);
-
   const [time, setTime] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeed] = useState(2);
@@ -33,10 +29,13 @@ export function Simulator() {
 
   useEffect(() => {
     let alive = true;
-    Promise.all([loadManifest(SCENARIO), loadTrace(SCENARIO, SEED)])
-      .then(([m, tr]) => {
+    setTrace(null);
+    setError(null);
+    setTime(0);
+    timeRef.current = 0;
+    loadTrace(variant.trace)
+      .then((tr) => {
         if (!alive) return;
-        setManifest(m);
         setTrace(tr);
         setPlaying(true);
       })
@@ -44,12 +43,11 @@ export function Simulator() {
     return () => {
       alive = false;
     };
-  }, []);
+  }, [variant.trace]);
 
   const customers = useMemo(() => (trace ? buildCustomers(trace) : []), [trace]);
   const tEnd = trace?.timeline.t_end ?? 0;
 
-  // Animation loop driven by real-time deltas.
   useEffect(() => {
     if (!playing || !trace) return;
     let raf = 0;
@@ -87,23 +85,18 @@ export function Simulator() {
   };
 
   if (error) return <div className="banner error">⚠ {error}</div>;
-  if (!trace || !manifest) return <div className="loading">{t("sim.loading")}</div>;
+  if (!trace) return <div className="loading">{t("common.loading")}</div>;
 
   const state = stateAt(customers, time);
   const c = Math.round(trace.params.c);
 
   return (
-    <div className="sim">
-      <div className="sim-head">
-        <h2>{trace.title}</h2>
-        <span className={"lane-badge " + manifest.lane}>{t("sim.lane.precomputed")}</span>
-      </div>
-
-      <div className="sim-main">
-        <div className="sim-stage card">
-          <QueueViz state={state} c={c} />
+    <div className="sim-layout">
+      <div className="sim-stage">
+        <QueueViz state={state} c={c} />
+        <div className="card">
           <Timeline
-            t={time}
+            time={time}
             tEnd={tEnd}
             playing={playing}
             speed={speed}
@@ -112,28 +105,26 @@ export function Simulator() {
             onSeek={seek}
             onSpeed={setSpeed}
           />
-          <p className="hint">{t("sim.lane.note")}</p>
         </div>
-
-        <aside className="sim-side">
-          <div className="params card">
-            <h3>{t("sim.params")}</h3>
-            <ul className="param-list">
-              {Object.entries(trace.params).map(([key, val]) => (
-                <li key={key}>
-                  <span>{t(PARAM_LABELS[key] ?? key)}</span>
-                  <strong>{Number.isInteger(val) ? val : val.toFixed(2)}</strong>
-                </li>
-              ))}
-              <li>
-                <span>seed</span>
-                <strong>{trace.seed}</strong>
-              </li>
-            </ul>
-          </div>
-          <KpiPanel trace={trace} />
-        </aside>
       </div>
+      <aside className="sim-side">
+        <div className="params card">
+          <h3>{t("sim.runConfig")}</h3>
+          <ul className="param-list">
+            {Object.entries(trace.params).map(([k, v]) => (
+              <li key={k}>
+                <span className="k">{PARAM_LABELS[k] ?? k}</span>
+                <span className="v">{Number.isInteger(v) ? v : v.toFixed(2)}</span>
+              </li>
+            ))}
+            <li>
+              <span className="k">{t("sim.seed")}</span>
+              <span className="v">{trace.seed}</span>
+            </li>
+          </ul>
+        </div>
+        <KpiPanel kpis={trace.kpis} analytic={trace.analytic} />
+      </aside>
     </div>
   );
 }

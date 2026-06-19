@@ -29,6 +29,22 @@ class ParamSpec:
 
 
 @dataclass
+class Variant:
+    """A named, pre-simulated parameter set for a scenario.
+
+    Each scenario ships a *family* of variants (≥10) so the app can offer a selector and the learner can
+    compare regimes side by side — e.g. a light queue vs a near-saturated one vs an unstable one. Labels
+    are bilingual (the app picks by language); `note_*` is a one-line "what this variant shows".
+    """
+    id: str
+    label_en: str
+    label_es: str
+    params: dict
+    note_en: str = ""
+    note_es: str = ""
+
+
+@dataclass
 class GateResult:
     pure_python: bool
     run_ms: float
@@ -68,6 +84,13 @@ class Scenario:
 
     def default_params(self) -> dict[str, float]:
         return {p.key: p.default for p in self.param_specs}
+
+    def variants(self) -> list["Variant"]:
+        """The pre-simulated parameter family. Default: a single variant from the defaults.
+
+        Scenarios override this to ship ≥10 regimes for side-by-side comparison.
+        """
+        return [Variant("default", "Default", "Por defecto", self.default_params())]
 
     def coerce(self, params: dict) -> dict:
         """Merge with defaults and coerce int params (UI sends floats)."""

@@ -1,10 +1,17 @@
-// Mirrors the simlab trace + manifest schemas (simlab/core/trace.py, manifest.py).
+// Mirrors the simlab trace + manifest v2 schemas (simlab/core/*.py, simlab/pipeline.py).
 
 export interface SimEvent {
   t: number;
-  kind: string; // "arrival" | "start" | "depart" for S01
+  kind: string; // "arrival" | "start" | "depart"
   id?: number;
-  [k: string]: unknown;
+}
+
+export interface Analytic {
+  rho: number;
+  p_wait: number | null;
+  Wq: number | null;
+  Lq: number | null;
+  stable: boolean;
 }
 
 export interface Trace {
@@ -15,11 +22,32 @@ export interface Trace {
   seed: number;
   params: Record<string, number>;
   kpis: Record<string, number>;
-  analytic: Record<string, number>;
+  analytic: Analytic;
   timeline: { t_end: number; events: SimEvent[] };
 }
 
-export interface Manifest {
+export interface GateInfo {
+  pure_python: boolean;
+  run_ms: number;
+  trace_bytes: number;
+  reasons: string[];
+}
+
+export interface VariantEntry {
+  id: string;
+  label_en: string;
+  label_es: string;
+  note_en: string;
+  note_es: string;
+  params: Record<string, number>;
+  lane: "live" | "precomputed";
+  gate: GateInfo;
+  kpis: Record<string, number>;
+  analytic: Analytic;
+  trace: string; // repo-relative path, forward slashes
+}
+
+export interface ScenarioManifest {
   schema: string;
   id: string;
   title: string;
@@ -27,15 +55,8 @@ export interface Manifest {
   tier: number;
   engine: string;
   seed: number;
-  params: Record<string, number>;
-  lane: "live" | "precomputed";
-  gate: {
-    pure_python: boolean;
-    run_ms: number;
-    trace_bytes: number;
-    reasons: string[];
-    thresholds: { max_run_ms: number; max_trace_bytes: number };
-  };
-  wheel_closure: string[];
   viz: { renderer: string; dimensionality: string };
+  wheel_closure: string[];
+  lane: "live" | "precomputed";
+  variants: VariantEntry[];
 }
