@@ -29,17 +29,17 @@ videos:
 
 ```text
 # requirements-precompute.txt  (offline lane)
-salabim>=26.0          # DES teaching counterpoint + offline .mp4/.gif render (desktop/headless only)
+salabim==26.0.6        # DES teaching chapter + offline mp4/gif render (tkinter desktop; NOT web-embeddable)
 ```
 
-> Note: at the time of writing Salabim is installed in the lab `.venv` but may not yet be
-> pinned in `requirements-precompute.txt`. Add the line above so the offline lane is
-> reproducible from a clean checkout.
+> The exact `==26.0.6` pin is what `requirements-precompute.txt` carries and what is installed +
+> verified in the lab `.venv`, so the offline lane is reproducible from a clean checkout. (As a
+> design-rationale floor, anything `>=26.0` carries the 26.x yieldless/classic split documented below.)
 
 ## 2. Exact install line and installed version
 
 ```bash
-pip install "salabim>=26.0"
+pip install "salabim==26.0.6"
 ```
 
 - **Installed version in this lab:** `salabim 26.0.6`
@@ -117,7 +117,7 @@ docs, not this page.)
 - **Precompute lane (local machine):** yes — render heavy-scenario replay videos offline
   and commit the compact artifact; the SPA replays it under the *"precomputed due to cost"*
   banner.
-- **VPS:** never runs Salabim; it only serves the SPA + committed artifacts.
+- **Deploy (GitHub Pages):** never runs Salabim; it only serves the SPA + committed artifacts.
 
 See [`02_usage.md`](./02_usage.md) for a runnable example and
 [`03_applying.md`](./03_applying.md) for how this maps onto the lab's scenarios and when to

@@ -47,7 +47,7 @@ function En() {
             <p className="muted">
               Many autonomous agents follow simple local rules; global behaviour <em>emerges</em> that no
               single agent intended — segregation, epidemics, flocking, traffic. Engine here:{" "}
-              <span className="mono">Mesa 3</span> (precomputed and replayed in the browser).
+              <span className="mono">Mesa 3</span> (runs live in your browser via Pyodide).
             </p>
           </div>
         </div>
@@ -66,9 +66,10 @@ function En() {
         </ul>
         <Callout variant="strong" title="It's a static site — no server simulates on demand">
           <p>
-            All compute is offline (the committed traces) or, for light models, in your own browser. There is
-            no backend, nothing to attack, and nothing to pay for — the same architecture carries the heavy
-            case studies (routing, dispatch, scheduling), whose native solvers are precomputed offline.
+            All compute is offline (the committed traces) or, for the pure-Python models, live in your own
+            browser via Pyodide (DES, ABM and graph dispatch alike). There is no backend, nothing to attack,
+            and nothing to pay for — only the native-solver case studies (OR-Tools: scheduling S06, vehicle
+            routing S08, mine-haul LP S11) are precomputed offline, because they have no WebAssembly build.
           </p>
         </Callout>
       </section>
@@ -124,7 +125,7 @@ function Es() {
             <p className="muted">
               Muchos agentes autónomos siguen reglas locales simples; <em>emerge</em> un comportamiento global
               que ningún agente buscó — segregación, epidemias, bandadas, tráfico. Motor aquí:{" "}
-              <span className="mono">Mesa 3</span> (precomputado y reproducido en el navegador).
+              <span className="mono">Mesa 3</span> (corre en vivo en tu navegador vía Pyodide).
             </p>
           </div>
         </div>
@@ -144,9 +145,10 @@ function Es() {
         </ul>
         <Callout variant="strong" title="Es un sitio estático — ningún servidor simula bajo demanda">
           <p>
-            Todo el cómputo es offline (los traces commiteados) o, para modelos livianos, en tu propio
-            navegador. No hay backend, nada que atacar ni nada que pagar — la misma arquitectura sostiene los
-            casos pesados (ruteo, despacho, programación), cuyos solvers nativos se precomputan offline.
+            Todo el cómputo es offline (los traces commiteados) o, para los modelos de Python puro, en vivo en
+            tu propio navegador vía Pyodide (lo mismo DES, ABM y despacho sobre grafos). No hay backend, nada
+            que atacar ni nada que pagar — solo los casos de solver nativo (OR-Tools: programación S06, ruteo
+            de vehículos S08, LP de acarreo S11) se precomputan offline, porque no tienen build de WebAssembly.
           </p>
         </Callout>
       </section>

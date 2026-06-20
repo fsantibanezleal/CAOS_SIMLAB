@@ -91,7 +91,7 @@ The DES-frameworks research places Ciw very deliberately:
   large M/M/1-style runs and degrades as queues grow. That is fine for the small,
   validation-sized runs S01 needs (thousands of events, sub-second), and it is exactly why
   anything heavy is pushed to the **precompute lane and replayed** rather than run live on
-  the single, GPU-less VPS. To speed up *many* replications, parallelise runs across CPU
+  the static deploy (GitHub Pages, no backend). To speed up *many* replications, parallelise runs across CPU
   cores with [`joblib`](../12_joblib.md) — you do not make a single Ciw run faster.
 
 - **License hygiene.** Ciw is **MIT**, safe for a public repo (recorded in the

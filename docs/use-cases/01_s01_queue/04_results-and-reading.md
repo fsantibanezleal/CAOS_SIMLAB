@@ -20,7 +20,7 @@ This is the headline lesson: **as `ρ → 1` the wait blows up nonlinearly.**
 |---|---|---|---|---|---|---|---|
 | `light` | 1.0 | 0.33 | 0.083 | 0.045 | 0.045 | 0.010 | yes |
 | `moderate` | 2.0 | 0.67 | 0.747 | 0.444 | 0.441 | 0.007 | yes |
-| `busy` | 2.4 | 0.80 | 1.576 | 1.079 | 1.101 | 0.020 | yes |
+| `busy` | 2.4 | 0.80 | 1.576 | 1.079 | 1.101 | 0.021 | yes |
 | `heavy` | 2.7 | 0.90 | 3.956 | 2.724 | 2.497 | 0.083 | yes |
 | `saturated` | 2.85 | 0.95 | 5.912 | 6.047 | 6.665 | 0.102 | yes |
 | `unstable` | 3.3 | 1.10 | 11.857 | — (∞) | — (n/a) | — | — |
@@ -92,9 +92,11 @@ Three numbers are meant to be read **together**: `Wq_sim` (SimPy), `Wq` (Erlang-
 
 ## 4. Lane & performance (committed run)
 
-S01 ships **live** (`seed = 42`). Measured per-variant run times range from ≈ **2.7 ms** (`unstable`) to
-≈ **1032 ms** (`c10`, the ten-server pool), all inside the 3 s live gate; each trace is ≈ **35 KB**, far
-inside the 1 MB gate. Note that most of every *stable* variant's run time is the **Ciw cross-check** (10
+S01 ships **live** (`seed = 42`). Measured per-variant run times range from ≈ **6.2 ms** (`unstable`) to
+≈ **2498.6 ms** (`c10`, the ten-server pool, ~2.5 s) — all inside the 3 s live gate, but the heavier stable
+variants (`saturated` ≈ 2.2 s, `c5` ≈ 2.1 s, `c10` ≈ 2.5 s) sit close to it, so the gate is *cleared*, not
+cleared with room to spare; each trace is ≈ **35 KB**, far inside the 1 MB gate. Note that most of every
+*stable* variant's run time is the **Ciw cross-check** (10
 seeded M/M/c replications), not the SimPy animation: the SimPy run itself is cheap (~a few ms for 300
 customers). The `unstable` variant is fast for exactly that reason — it does **not** short-circuit the
 SimPy simulation (all 300 customers are still simulated, which is why it reports a finite

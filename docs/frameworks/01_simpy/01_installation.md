@@ -103,8 +103,9 @@ The `Requires:` field is empty.
 
 - **Python version.** SimPy 4.1.2 supports CPython 3.8–3.14. The lab's local environment runs on
   **Python 3.13**. SimPy uses only the standard library, so it is unaffected by platform specifics.
-- **OS.** Works identically on Windows, macOS, and Linux (including the GPU-less VPS that
-  serves the app). No system libraries, no display server, no compiler needed.
+- **OS.** Works identically on Windows, macOS, and Linux (including the Linux CI that runs the
+  precompute pipeline). The live deploy is GitHub Pages, which only serves static files (zero
+  server compute). No system libraries, no display server, no compiler needed.
 - **Browser (Pyodide).** Because SimPy is pure Python, it loads inside Pyodide in a Web Worker with
   no special build step, which is what makes the light DES scenarios genuinely **live in-browser**.
   Note that SimPy has *no built-in animation*, and that is deliberate here: the engine emits a

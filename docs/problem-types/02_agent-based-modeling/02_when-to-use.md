@@ -63,9 +63,9 @@ execution modes, and each ABM scenario picks exactly one:
 | **What ships** | static HTML/JS the host serves | a committed **seeded trace** the SPA **replays** |
 | **Server compute** | none | none (it only serves the trace) |
 | **Best for** | light, canonical models the learner tunes live | heavy / large-N / geo / crowd models too costly per-visitor |
-| **Gate** | must pass the 3-gate rule (below) | anything that fails a live gate |
+| **Gate** | must pass the 4-gate rule (below) | anything that fails a live gate |
 
-### The 3-gate rule
+### The 4-gate rule
 
 A scenario ships **live only if all three gates hold**; failing any one routes it to **precompute**. The gate
 verdict and the *measured* numbers are recorded per-scenario, and CI rejects a "live" scenario that breaches a

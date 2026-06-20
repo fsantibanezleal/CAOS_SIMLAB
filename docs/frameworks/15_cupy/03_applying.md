@@ -72,8 +72,8 @@ Monte-Carlo**:
 4. **Attach the statistics on the host.** The CI math (`z`/`t` critical values) is cheap and stays in
    [`scipy.stats`](../13_scipy-stats.md) on the CPU — never hand-rolled.
 5. **Commit the summary as a replay artifact.** The GPU precompute writes the *same artifact shape* (CI
-   envelope / KPIs) the CPU path writes, so the trace-player replays both transparently and the VPS carries no
-   CUDA dependency.
+   envelope / KPIs) the CPU path writes, so the trace-player replays both transparently and the live (Pages)
+   deploy carries no CUDA dependency.
 
 A subtlety the lab keeps honest: the **batched-array** formulation (the GPU-friendly one) is great for KPIs
 that are pure functions of array reductions (a mean wait via the earliest-free-server method, a hit-fraction,
@@ -106,8 +106,8 @@ for a GPU.
 - **Determinism vs animation.** GPU thread-scheduling is non-deterministic; for any replayed trace, fix the
   per-replication seed and snapshot deterministic state so the committed artifact is reproducible regardless of
   scheduling.
-- **License & deploy hygiene.** CuPy is **MIT** (safe). But **no GPU dependency goes on the VPS / Pages runtime
-  path** — prod serves only `dist` + precomputed artifacts (ADR-0002). CuPy lives strictly in
+- **License & deploy hygiene.** CuPy is **MIT** (safe). But **no GPU dependency goes on the live (GitHub Pages)
+  deploy runtime** — GitHub Pages serves only `dist` + precomputed artifacts (zero server compute; ADR-0002). CuPy lives strictly in
   [`requirements-gpu.txt`](../../../requirements-gpu.txt) behind a CUDA-detect-with-CPU-fallback.
 
 ---

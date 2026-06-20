@@ -7,9 +7,11 @@ results. Together they exercise every problem type and almost every framework in
 ## How to read this wiki
 
 - **The numbering (`01`…`11`) is the scenario order S01–S11.** The early scenarios are the lightweight
-  *live* exhibits (queues, ABM classics); the later ones are the heavier *precompute* hybrids (optimize-then-
-  simulate routing, the Monte-Carlo study, the mine haul). Read top to bottom for the full progression, or
-  jump to the scenario you need.
+  *live* exhibits (queues, ABM classics); the later ones include the *precompute* native-optimizer scenarios
+  (the OR-Tools job-shop, the CVRP, the mine-haul LP, and the haul-routing plan). Note the mix is not a clean
+  split: S09 (ambulance dispatch) and S10 (the Monte-Carlo CI study) are pure-Python and run **live**, and
+  S07's SimPy replay runs live over its committed plan. Read top to bottom for the full progression, or jump
+  to the scenario you need.
 - **Each entry links to that scenario's own node** (`./use-cases/<NN_sNN_slug>.md`), and **each node has its
   own folder** (`./use-cases/<NN_sNN_slug>/`) holding the read-in-order pages — *assumptions · formalization ·
   solvers applied · results and reading*.
@@ -33,15 +35,16 @@ results. Together they exercise every problem type and almost every framework in
    Fisher–Thompson `ft06` benchmark; pure combinatorial optimization with OR-Tools CP-SAT. *(Optimization ·
    precompute)*
 7. [**07 · S07 — Construction Haul Routing**](./use-cases/07_s07_haul.md) — the haul route switches at a
-   critical grade, behind a shared-loader bottleneck; OR-Tools + SimPy + OSMnx/NetworkX. *(Optimization + DES ·
-   precompute)*
+   critical grade, behind a shared-loader bottleneck; NetworkX + OR-Tools CP-SAT route plan (precomputed,
+   committed as a grade×wall grid) + a live SimPy replay. *(Optimization + DES · precompute plan + live replay)*
 8. [**08 · S08 — Vehicle Routing (CVRP)**](./use-cases/08_s08_vrp.md) — minimum-distance capacitated routes,
-   the same instance through two SOTA engines; OR-Tools + PyVRP + SimPy. *(Optimization · precompute)*
+   the same instance through two SOTA engines; OR-Tools + PyVRP. *(Optimization · precompute)*
 9. [**09 · S09 — Ambulance Dispatch**](./use-cases/09_s09_ambulance.md) — nearest-available dispatch over a
-   city graph, a spatial multi-server EMS queue; OR-Tools + SimPy + graph. *(Optimization + DES · live)*
+   city graph, a spatial multi-server EMS queue; SimPy + NetworkX (closed-form nearest-available dispatch).
+   *(DES · live)*
 10. [**10 · S10 — Monte-Carlo CI Study**](./use-cases/10_s10_montecarlo.md) — how many seeded replications to
-    match the Erlang-C answer; the running mean and 95% CI over the S01/S04 base models. joblib (+ CuPy/Numba)
-    + SciPy. *(Monte-Carlo · precompute)*
+    match the Erlang-C answer; the running mean and 95% CI over the S01/S04 base models. joblib (threading
+    backend, live) + SciPy. *(Monte-Carlo · live)*
 11. [**11 · S11 — Mine Multi-Destination Haul**](./use-cases/11_s11_minehaul.md) — a blend LP picks phase
     tonnages for a target grade, then a fixed fleet realizes the plan over haul roads; OR-Tools GLOP LP +
     SimPy. *(Optimization + DES · precompute)*
@@ -50,9 +53,9 @@ results. Together they exercise every problem type and almost every framework in
 
 | Problem type | Scenarios |
 |---|---|
-| [Discrete-Event Simulation](./problem-types/01_discrete-event-simulation.md) | S01, S04 (+ the DES legs of S07/S08/S09/S11, and S10's base models) |
+| [Discrete-Event Simulation](./problem-types/01_discrete-event-simulation.md) | S01, S04, S09 (live SimPy + NetworkX DES) (+ the SimPy replay legs of S07/S11, and S10's base models) |
 | [Agent-Based Modeling](./problem-types/02_agent-based-modeling.md) | S02, S03, S05 |
-| [Optimization & Routing](./problem-types/03_optimization-routing.md) | S06, S07, S08, S09, S11 |
+| [Optimization & Routing](./problem-types/03_optimization-routing.md) | S06, S07, S08, S11 (S09 is listed in the routing section as the closed-form **no-solver** exception — it is a live SimPy + NetworkX DES) |
 | [Monte-Carlo & Replications](./problem-types/04_monte-carlo-replications.md) | S10 (the dedicated exhibit; the methodology applies to every stochastic scenario) |
 
 ## See also

@@ -1,6 +1,6 @@
 """Ciw M/M/c validation: simulate mean waiting time, compare to closed-form Erlang-C.
 
-Scenario S01 ("Bank / Clinic Teller Queue") is the lab's queueing on-ramp. Its whole
+Scenario S01 ("Bank / Clinic Queue") is the lab's queueing on-ramp. Its whole
 pedagogical point is *validation*: a discrete-event simulation should agree with the
 analytical M/M/c result. This script runs an M/M/c queue in Ciw, estimates the mean
 waiting time across independent seeded replications, and prints it next to the Erlang-C

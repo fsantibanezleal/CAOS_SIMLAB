@@ -12,11 +12,15 @@ stochastic simulation is never one run — it is a *mean with a confidence inter
 seeded replications, and that standard error only shrinks like `1/√n` (4× the runs to halve the interval).
 joblib turns "run K independent seeded replications of a cheap model and collect their KPIs" into a few
 lines that saturate every CPU core and finish in seconds, while staying **bit-reproducible across any worker
-count** (one seed per task, RNG built inside the worker). It lives in the **precompute** lane — the offline
-engine that generates committed replication sweeps and CI studies; the browser only ever replays the seeded
-artifacts those sweeps produce. Reach for joblib whenever you have many independent CPU runs to aggregate
-into an interval; reach for a GPU only above the crossover where heavy data-parallel arithmetic out-earns
-transfer/launch overhead — and never put the discrete-event *model* itself on the GPU.
+count** (one seed per task, RNG built inside the worker). joblib is **pure Python and ships in `LIVE_WHEELS`**
+(micropip installs it into the Pyodide worker), so it runs in **both lanes**: **live in the browser** —
+`Parallel(..., backend="threading")` is the one joblib backend that works under Pyodide/WASM (no
+fork/subprocess), and it is exactly how the shipped **S10** Monte-Carlo / CI study runs live — **and offline**
+in the local `.venv` for heavier committed replication sweeps. The browser may run the study live or replay a
+committed seed-42 trace; either way the answer is identical. Reach for joblib whenever you have many
+independent CPU runs to aggregate into an interval; reach for a GPU only above the crossover where heavy
+data-parallel arithmetic out-earns transfer/launch overhead — and never put the discrete-event *model* itself
+on the GPU.
 
 ## Read in order
 

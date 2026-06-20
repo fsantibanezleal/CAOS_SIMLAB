@@ -25,7 +25,7 @@ Next: [`02_usage.md`](02_usage.md) → [`03_applying.md`](03_applying.md)
 Mesa-Geo belongs to the **precompute lane**, not the live lane. Like the rest of
 that lane, it is run **offline** in the local pipeline to generate a compact,
 committed trajectory artifact, which the static web viewer then replays. It is
-never executed on the no-GPU production VPS, and its native GIS stack
+never executed on the live (Pages) deploy, and its native GIS stack
 (rasterio/GDAL, pyproj, rtree) rules out the in-browser Pyodide path. See
 [`../../guides/01_precompute-pipeline.md`](../../guides/01_precompute-pipeline.md) for
 the lane it lives in and [`../../architecture.md`](../../architecture.md) for the

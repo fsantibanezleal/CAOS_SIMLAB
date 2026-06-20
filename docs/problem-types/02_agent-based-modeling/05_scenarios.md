@@ -72,7 +72,7 @@ When you build a real ABM scenario in this lab:
    ([NetLogo Web](../../frameworks/07_netlogo-web.md), or Pyodide-Mesa). Heavy / large-N / geo / pedestrian →
    **precompute** ([Mesa](../../frameworks/04_mesa.md) / [Mesa-Geo](../../frameworks/05_mesa-geo.md) /
    [JuPedSim](../../frameworks/06_jupedsim.md) headless → trace → replay). Run it past the
-   [3-gate rule](../../architecture/03_the-gate.md) and record the verdict. See
+   [4-gate rule](../../architecture/03_the-gate.md) and record the verdict. See
    [02 · When to use](./02_when-to-use.md).
 3. **Use the real framework** — Mesa for Python (Mesa-Geo for maps), NetLogo Web for live cards, JuPedSim for
    crowds. Not AgentPy (deprecated), not desmod, not a bespoke NumPy loop as the methodology. See

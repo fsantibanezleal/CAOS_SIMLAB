@@ -21,14 +21,23 @@ specify four things — and each maps one-to-one onto a Mesa abstraction:
 | **Agents + state** | who acts, and what do they remember? | `mesa.Agent` subclass with attributes |
 | **Environment / topology** | who is a neighbor of whom? | a space: `SingleGrid` / `NetworkGrid` / `MultiGrid` / Mesa-Geo |
 | **Local rule** | what does one agent do per tick, given its neighbors? | `Agent.step()` |
-| **Activation + time** | in what order, and how is "a tick" defined? | `Model.step()` → `self.agents.shuffle_do("step")` |
+| **Activation + time** | in what order, and how is "a tick" defined? | a per-tick update over `self.agents` — the generic Mesa idiom is `self.agents.shuffle_do("step")`; the in-repo S02 model instead drives a **manual batch update** (decide all unhappy agents against the start-of-step config, then relocate them one-by-one) |
 | **(plus) Seed** | how do we make the run reproducible? | `super().__init__(rng=<int>)` |
 
-The **solve loop** is then: instantiate the `Model` with a fixed `rng=`, call `model.step()` for N ticks,
-and read out an observable each tick (a `DataCollector` reporter, or a hand-written metric like the
-`happy_fraction` in the example). Because every random draw flows through the seeded RNG, the resulting
-trajectory is the *one true run* — which is exactly what the lab commits and replays. There is no separate
-"solver"; in ABM the **run is the answer**.
+The **solve loop** is then: instantiate the `Model` with a fixed `rng=`, drive each tick (the generic Mesa
+call is `self.agents.shuffle_do("step")`; S02 hand-rolls a **batch update** — see the note below), and read
+out an observable each tick (a `DataCollector` reporter, or a hand-written metric like the segregation index
+in the example). Because every random draw flows through the seeded RNG, the resulting trajectory is the
+*one true run* — which is exactly what the lab commits and replays. There is no separate "solver"; in ABM
+the **run is the answer**.
+
+> **In-repo model vs. the standalone example.** The runnable [`example.py`](./example.py) is the *generic*
+> Mesa Schelling (a `torus=True` `SingleGrid`, an integer-homophily threshold, a per-agent `Agent.step()`
+> activated with `self.agents.shuffle_do("step")`). The shipped scenario `simlab/scenarios/s02_schelling.py`
+> differs deliberately: a **non-torus** grid, a **fractional `tolerance`** threshold, a **50/50** group split,
+> and a hand-rolled **batch update** (`segregation_and_unhappy()` then `relocate()`) instead of
+> `Agent.step()`/`shuffle_do`. Both are real Mesa 3 (`mesa.Agent` / `mesa.Model` / `SingleGrid`); the example
+> teaches the canonical idiom, the scenario records the canonical lab trace.
 
 ## 2. Which lab scenarios involve Mesa
 
@@ -49,7 +58,7 @@ Mesa's `Agent` / `Model` / space / `AgentSet` abstractions map one-to-one onto t
 > `simlab/scenarios/s02_schelling.py`, `s03_sir.py` and `s05_beergame.py` all use `mesa.Agent` /
 > `mesa.Model` / `AgentSet` activation (engine = "mesa") and `import mesa`. All three carry
 > `lane: "live"` in their manifests; the browser worker `micropip.install`s `mesa` and it was *measured*
-> to clear the 3-gate rule (`mesa ⊆ LIVE_WHEELS`, run < 3 s after a ~3 s cold start, trace < 1 MB). The
+> to clear the 4-gate rule (`mesa ⊆ LIVE_WHEELS`, run < 3 s after a ~3 s cold start, trace < 1 MB). The
 > same seeded models are *also* run headless in the local pipeline to commit a canonical replay artifact
 > for instant first paint and byte-for-byte reproducibility.
 
@@ -59,9 +68,10 @@ That split — live Mesa engine *plus* a committed canonical replay — is the a
    committed trace (Arrow/JSON), then a live Run button re-executes real Mesa 3 in Pyodide on top of it.
    What does *not* ship is **SolaraViz** (Mesa's server-bound visualization) — the lab's React/SVG viewer
    owns the pixels instead, on a static SPA with zero server compute.
-2. **Mesa rules are fully visible in the code and the paper.** The lab is didactic. The `Agent.step()`
-   and `Model.step()` implementations are in-repo; learners read the Mesa abstractions directly from the
-   source, not hidden inside a framework blackbox.
+2. **Mesa rules are fully visible in the code and the paper.** The lab is didactic. The `mesa.Agent` /
+   `mesa.Model` subclasses and the per-tick update (the generic `shuffle_do("step")` idiom in the example; a
+   manual **batch update** in the S02 scenario) are in-repo; learners read the Mesa abstractions directly from
+   the source, not hidden inside a framework blackbox.
 3. **Live for pure-Python; precompute only for native code.** Pure-Python engines whose wheels ⊆
    `LIVE_WHEELS` (SimPy, Ciw, **Mesa**, joblib/scipy, networkx) run live under Pyodide. The precompute lane
    is reserved for the **native-code** engines that cannot run in WASM — OR-Tools CP-SAT/GLOP (S06, S07,
@@ -81,7 +91,7 @@ Pyodide**:
 ```
 local .venv (Mesa, headless)        committed artifact      web SPA (Pyodide live)
 ┌───────────────────────────┐        ┌──────────────┐       ┌─────────────────────────┐
-│ Model.step() each tick →   │ record │ trace.arrow  │ first │ React player first-paints│
+│ per-tick update each tick  │ record │ trace.arrow  │ first │ React player first-paints│
 │ DataCollector / frame trace├───────►│  / .json     ├──────►│ the trace, then a "Run"  │
 └───────────────────────────┘        └──────────────┘ paint │ button re-runs real Mesa │
         seeded (rng=…)                small & versioned      │ live via micropip+Pyodide│
@@ -103,7 +113,7 @@ live-lane rationale: [../../guides/02_live-lane-pyodide.md](../../guides/02_live
 
 ## 4. Honest trade-offs (from the research)
 
-Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
+Grounded in the project's internal ABM-frameworks research note:
 
 **Strengths**
 - **De-facto Python ABM standard** — Apache-2.0, actively maintained, JOSS-published (2025), huge community
@@ -115,7 +125,7 @@ Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
 
 **Limits / pitfalls**
 - **Not a web-serving engine.** SolaraViz is a stateful Python process per session; do **not** put it
-  behind nginx for public users. Use it locally; serve replays. *(Primary architectural risk.)*
+  up as a public live server. Use it locally; serve replays. *(Primary architectural risk.)*
 - **Object-per-agent ceiling (~1e5 agents).** Mesa bogs down past ~100k agents. If a "heavy" scenario needs
   more, route it to **FLAME GPU 2** (CUDA), **ABMax** (JAX) or **AMBER** (Polars) — do not fight Mesa.
 - **CPU-only, no GPU.** Fine for the lab's small models; irrelevant for million-agent scale.
@@ -132,7 +142,7 @@ Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
 |---|---|---|
 | To **learn/teach** ABM in Python; build small–medium models (≤1e5 agents) | **Mesa 3** | the standard; abstractions = curriculum |
 | **Real maps / GIS** in an ABM | **Mesa-Geo** ([../mesa-geo/](../05_mesa-geo.md)) | GeoAgents over Shapely/GeoPandas, Leaflet |
-| An **instant, zero-server in-browser** animated classic (Schelling, SIR, Wolf-Sheep) | **NetLogo Web** ([../netlogo-web/](../07_netlogo-web.md)) | compiles to JS, runs fully client-side, zero VPS compute |
+| An **instant, zero-server in-browser** animated classic (Schelling, SIR, Wolf-Sheep) | **NetLogo Web** ([../netlogo-web/](../07_netlogo-web.md)) | compiles to JS, runs fully client-side, zero server compute |
 | A **throwaway ≤10-line demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab instead uses **Mesa 3** for S02/S03/S05 (run live in Pyodide, with a committed canonical replay) — real abstractions, reproducible |
 | **Millions of agents** | **FLAME GPU 2** / ABMax / AMBER ([../gpu-abm-chapter/](../18_gpu-abm-chapter.md)) | GPU / vectorized / columnar scale beyond Mesa's ceiling |
 | **Crowd / pedestrian flow** | **JuPedSim** ([../jupedsim/](../06_jupedsim.md)) | validated social-force / collision-free-speed, pip-installable |
@@ -151,4 +161,4 @@ Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
 - API + runnable example + verified output: [02_usage.md](./02_usage.md)
 - Runnable example source: [example.py](./example.py)
 - Live-lane rationale (why Mesa runs in Pyodide): [../../guides/02_live-lane-pyodide.md](../../guides/02_live-lane-pyodide.md)
-- Research (decision + trade-offs): `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`
+- Research (decision + trade-offs): the project's internal ABM-frameworks research note

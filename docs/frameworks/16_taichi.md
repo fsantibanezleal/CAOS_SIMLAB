@@ -11,7 +11,7 @@ where a GPU back-end genuinely helps.
 It is deliberately **not** a pillar of the lab. The flagship value here is small-N didactic clarity
 (queueing DES, emergent ABM) where a GPU is pointless; Taichi earns its place only in the one workload
 where regular-grid arithmetic dominates, and even there it stays an **optional precompute/GPU-lane
-exhibit** — never on the live web path, never on the VPS. The lab uses it `arch=ti.cpu` by default so every
+exhibit** — never on the live web path, never on the deploy runtime. The lab uses it `arch=ti.cpu` by default so every
 example runs on a GPU-less machine, precomputes frames locally, commits a compact trace, and replays it
 statically in the browser (which cannot run Taichi's native LLVM core). Pick it when — and only when — your
 state is a regular lattice updated synchronously from its neighbours and you want one piece of Python that

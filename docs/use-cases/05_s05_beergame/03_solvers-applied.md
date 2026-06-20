@@ -53,9 +53,11 @@ def step(self) -> None:
 
 That fixed downstream→upstream order is the activation regime the Beer Game *needs*: a downstream echelon
 must place its order before its upstream neighbour acts on it, so `incoming` carries the freshly-placed
-order one stage up per iteration. Because each stage's order at week `t` still depends only on its incoming
-order at week `t`, this tick-by-tick cascade is mathematically identical to a whole-horizon vectorized
-sweep — the emitted trace is byte-for-byte unchanged.
+order one stage up per iteration. Each stage's order at week `t` still depends only on its incoming order at
+week `t`. When this scenario was **ported** from its earlier whole-horizon NumPy implementation to the Mesa
+agent-step form, that property let the migration be checked the rigorous way: the per-tick agent cascade was
+verified to reproduce the prior NumPy trace before the old code path was retired. (That equivalence was a
+one-time migration check, not a present-day parallel implementation — only the Mesa model ships today.)
 
 **Lazy Mesa import.** Mesa (and its closure: pandas/scipy/networkx) is heavy, so the `EchelonAgent` +
 `BeerGameModel` classes are built **lazily** inside `_models()` and cached, not at module top level.
@@ -74,9 +76,9 @@ there is no separate "solver" step — the iterated `step()` *is* the solve.
 
 ## 3. The lane for this scenario: **live**
 
-The lab classifies each scenario into a lane by a measured **3-gate AND rule** (`classify_lane` in
-`simlab/core/scenario.py`): a scenario is `live` only if it is **pure-Python**, **runs < 3 s** in the
-in-browser Worker, and emits a **< 1 MB** trace (and its wheel closure is in `LIVE_WHEELS`).
+The lab classifies each scenario into a lane by a measured **4-gate AND rule** (`classify_lane` in
+`simlab/core/scenario.py`): a scenario is `live` only if it is **pure-Python**, its **wheel closure is in
+`LIVE_WHEELS`**, it **runs < 3 s** in the in-browser Worker, and it emits a **< 1 MB** trace.
 
 **S05 passes the gate with huge margin and is tagged `live`** in
 [`manifests/s05_beergame.json`](../../../manifests/s05_beergame.json) (and on every variant). The recorded

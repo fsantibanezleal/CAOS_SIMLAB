@@ -8,9 +8,11 @@
 ## Model class
 
 S08 is the **Capacitated Vehicle Routing Problem (CVRP)**, the canonical *optimize-then-route* problem and
-an **NP-hard** combinatorial optimization. It is cast as an **arc-flow MILP**. There is **no time
-dimension and no randomness** in the model itself — one instance is solved once. Two solvers attack the
-**same** instance with **two different objectives** (§Objective).
+an **NP-hard** combinatorial optimization. It is modeled *conceptually* as an **arc-flow MILP** (the
+formulation below), but neither shipped engine builds an explicit MILP: OR-Tools realizes it through its
+routing model (a circuit constraint plus a `Capacity` dimension) and PyVRP solves it with a hybrid genetic
+search (HGS). There is **no time dimension and no randomness** in the model itself — one instance is solved
+once. Two solvers attack the **same** instance with **two different objectives** (§Objective).
 
 ## Sets
 
@@ -43,7 +45,10 @@ from shortest paths on an undirected grid.
 | $x_{ij} \in \{0,1\}$ | **arc selection**: 1 if some vehicle traverses arc $i \to j$, else 0 |
 | $u_i$ | **cumulative load** carried when leaving node $i$ (an MTZ-style load/position variable; OR-Tools' *Capacity* dimension) |
 
-In the rendered plan the solver output is a set of per-vehicle **`special`-index sequences** (each
+The load variable $u_i$ is a **purely internal** OR-Tools `Capacity` quantity — it is consumed inside the
+solve to enforce feasibility and eliminate subtours, but it is **not** carried in the committed trace (the
+trace records only the per-vehicle routes plus per-route `loads`, the total demand on each route). In the
+rendered plan the solver output is a set of per-vehicle **`special`-index sequences** (each
 `depot..customers..depot`); these are equivalent to a feasible assignment of $x_{ij}=1$ along each route.
 
 ## Objective
@@ -70,9 +75,13 @@ route — is the whole pedagogical point of running both.
 
 ## Constraints
 
-**Degree constraints** — each customer is visited exactly once, and $K$ vehicles leave the depot:
+**Degree constraints** — each customer is visited exactly once, and **at most** $K$ vehicles leave the depot:
 
-$$\sum_{j\in V} x_{ij} = 1 \;\; \forall i\neq 0, \qquad \sum_{i\in V} x_{ij} = 1 \;\; \forall j\neq 0, \qquad \sum_{j} x_{0j} = K$$
+$$\sum_{j\in V} x_{ij} = 1 \;\; \forall i\neq 0, \qquad \sum_{i\in V} x_{ij} = 1 \;\; \forall j\neq 0, \qquad \sum_{j} x_{0j} \le K$$
+
+The depot-degree constraint is written $\le K$ (not $= K$) because the shipped solve **drops empty routes**:
+a vehicle whose only trip is depot→depot is not rendered and does not count toward `vehicles_used`, so the
+realized number of routes leaving the depot is **at most** $K$ (often fewer than the available fleet).
 
 **Capacity** is enforced with the cumulative-load variables in **MTZ** style, which simultaneously
 **eliminate subtours**:
@@ -98,7 +107,7 @@ The primary plan's KPIs (from **OR-Tools**, carried in the trace exactly as the 
 |---|---|
 | `total_distance` | the **base objective** — total distance over all used arcs |
 | `vehicles_used` | how many of the $K$ available vehicles carry a non-trivial route (depot→depot routes are dropped) |
-| `max_route_time` | the **longest route** (the term the global span penalizes) — surfaced in render-time units |
+| `max_route_time` | the **longest route's cumulative distance** (`max_route_dist`, the term the global span actually penalizes — the span coefficient is set on the **`Distance`** dimension) — surfaced in render-time units (uniform speed $=1$, so the value equals the longest route's distance) |
 | `customers` | $n$, the number of customers served |
 | `capacity` | $Q$ |
 

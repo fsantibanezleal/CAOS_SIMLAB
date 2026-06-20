@@ -40,7 +40,7 @@ The lab runs on a **three-lane** execution model (mirrors CAOS_SEISMIC):
 2. **Precompute (local machine):** heavy or native work runs offline and ships a compact
    committed artifact, replayed in the SPA under a *"precomputed due to cost; full pipeline
    in the repo"* banner.
-3. **VPS:** only serves the SPA + artifacts; no GPU, often no display server.
+3. **Deploy (GitHub Pages):** only serves the SPA + artifacts; zero server compute, no GPU, no display server.
 
 Salabim belongs **only to lane 2**, and specifically as the **offline `.mp4`/`.gif`
 render** for heavy scenarios — plus a **teaching chapter** showing zero-to-animation in pure
@@ -126,7 +126,7 @@ renderer leak onto the hot path.
   report 01 and reaffirmed in adv-04 ("Salabim relegated to the offline-video lane —
   correct"). React owns the live pixels.
 - **Headless rendering is fragile.** Video on a headless box needs `blind_animation=True` (or
-  `pyvirtualdisplay`) and an `ffmpeg` binary; do the render on the local box, not in VPS CI,
+  `pyvirtualdisplay`) and an `ffmpeg` binary; do the render on the local box, not in CI,
   to avoid flakiness (report 01, risks).
 - **Pure-Python speed ceiling.** Like SimPy, Salabim is ~10–20× slower than a C++ engine on
   heavy DES and degrades as queues grow — another reason it stays in the *precompute* lane,

@@ -52,7 +52,7 @@ For **Common Random Numbers** (the variance-reduction technique in
 - **No GPU dependency is on the ship path.** The highest-ROI GPU use — the 10k-replications CI study
   ([S10](../../use-cases/10_s10_montecarlo.md)) — runs in **seconds on CPU cores via joblib**, so it ships as
   **CPU precompute** and delivers the full curriculum without a GPU gate.
-- **GPU is one *optional* exhibit, never on the VPS / Pages runtime path.** CuPy / Numba Monte-Carlo lives in
+- **GPU is one *optional* exhibit, never on the live (GitHub Pages) deploy runtime.** CuPy / Numba Monte-Carlo lives in
   a separate `requirements-gpu.txt` behind a **CUDA-detect-with-CPU-fallback** so GPU-less learners reproduce
   every result on CPU. See the [GPU lane guide](../../guides/03_gpu-lane.md) and the
   [precompute pipeline](../../guides/01_precompute-pipeline.md).

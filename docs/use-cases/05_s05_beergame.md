@@ -7,7 +7,7 @@ only its immediate customer's orders and, to cover a shipping lead time, repleni
 (base-stock) policy on an exponentially-smoothed forecast. The classic result (Lee, Padmanabhan & Whang,
 1997) is that a modest, one-off change in end-customer demand is **amplified** into ever-larger order swings
 as it moves upstream — the **bullwhip effect**. The lab models the canonical MIT Beer Game (base demand 8
-units/week, a step at week 6, 52 weeks) as four `mesa.Agent` echelons each running the order rule, and
+units/week, a step at displayed week 7, 52 weeks) as four `mesa.Agent` echelons each running the order rule, and
 measures the per-echelon bullwhip ratio `Bᵢ = Var(oᵢ)/Var(d)`. The bullwhip is *emergent*: nobody programs
 it — it appears from the four agents interacting.
 

@@ -98,24 +98,27 @@ This is the spine of the hybrid scenarios and the reason DES and optimization si
 
 S10 takes the **M/M/c model** (same model *class* as S01, but implemented as a fast NumPy heap-based
 earliest-free-server estimator — a *different engine* from S01's SimPy `Resource` run) and runs it across
-many seeds (CPU via `joblib`; an optional CuPy/Numba GPU exhibit) to draw confidence-interval envelopes
-*beside* the naive single-run answer — making "one run lies" visible and quantified. The replication
-machinery wraps the model; S10 itself is **live** (numpy + joblib + scipy ⊆ `LIVE_WHEELS`).
+many seeds (CPU via `joblib`) to draw confidence-interval envelopes *beside* the naive single-run answer —
+making "one run lies" visible and quantified. The replication machinery wraps the model; S10 itself is
+**live** (numpy + joblib + scipy ⊆ `LIVE_WHEELS`).
 
 ## 5. Where SimPy runs — live vs precomputed
 
 Because SimPy is **pure Python**, light DES scenarios run **live in the Pyodide Web Worker**: move a
 slider, SimPy re-runs in the browser, the React queue-network animates. A scenario falls back to the
 **precompute lane** only when it breaches a gate (long horizon, large entity count, or many
-replications). The lab's **3-gate rule** (pure-Python AND < 3 s AND < ~1 MB trace) enforces this
-structurally — CI fails the build if a scenario tagged "live" breaches a gate, so a heavy run can never
-accidentally ship as live.
+replications). The lab's **4-gate rule** (pure-Python AND wheels ⊆ `LIVE_WHEELS` AND run < 3 s AND
+trace < ~1 MB) enforces this structurally — CI fails the build if a scenario tagged "live" breaches a gate,
+so a heavy run can never accidentally ship as live.
 
-- **Live (in-browser):** S01, S04, S09 (SimPy + NetworkX), and S10's replicated CI study (numpy + joblib +
-  scipy all ⊆ `LIVE_WHEELS`).
-- **Precomputed (committed trace, replayed):** the SimPy legs of S07 and S11 — **not** because the SimPy is
-  heavy, but because each is paired with a **native OR-Tools** optimizer (CP-SAT / GLOP) that cannot run in
-  WASM, so the whole scenario is computed offline and replayed. (S08 has no SimPy leg.)
+- **Live (in-browser):** S01, S04, S09 (SimPy + NetworkX), **S07** (a live SimPy replay over a *committed*
+  native plan — see below), and S10's replicated CI study (numpy + joblib + scipy all ⊆ `LIVE_WHEELS`).
+- **Live-by-replay (S07):** the native OR-Tools/NetworkX route plan can't run in WASM, so it is computed
+  offline and **committed as data** (`s07_plans.py`); but the SimPy leg itself is pure-Python, so it runs
+  **live** over that fixed plan in the browser (the fleet sliders mutate the live replay; the grade/wall
+  controls re-select among committed plans). The native step is precomputed; the SimPy is not.
+- **Precomputed (committed trace, replayed):** the SimPy leg of S11 — its GLOP-optimized allocation trace is
+  computed offline and replayed. (S08 has no SimPy leg.)
 
 ## 6. Honest trade-offs (grounded in the research)
 
@@ -130,33 +133,36 @@ The DES-frameworks and healthcare-DES research dimensions surface these honestly
   for DES). This keeps the teaching code idiomatic and the rendering modern, and is *why* SimPy fits the
   "files not a runtime DB" architecture.
 - **Theory runs out.** Closed-form queueing results exist only for idealised assumptions (Poisson
-  arrivals, exponential service, simple disciplines). The moment a model adds priority classes,
-  non-stationary arrivals, or multi-stage shared resources (the real S04 ED), **no closed form exists**
+  arrivals, exponential service, simple disciplines). The moment a model adds priority classes, a
+  time-varying arrival rate (S04's fixed daytime surge window), or multi-stage shared resources (the S04
+  ED), **no closed form exists**
   and replicated simulation with a CI is the only honest measure *in principle*. The S01→S04 ramp teaches
   this transition — from "check against theory" to "theory ran out." (The shipped S04 is a single seeded
   run; the explicit replicated-CI demonstration — "one run lies" with an envelope — is **S10**.)
 - **A single run is not evidence.** An animation is a hypothesis generator; the *claim* must come from
   replicated statistics after a warm-up, never from "it looked busy." Each scenario carries a
   **STRESS-DES model card** (a 20-item DES reporting checklist) so assumptions and outputs are auditable.
-- **Educational, not operational.** The hospital/EMS models are synthetic-by-default (optionally shaped
-  by public NHS A&E distributions); they are labelled educational and must not imply clinical or service
-  validity.
+- **Educational, not operational.** The hospital/EMS models are **fully synthetic** — illustrative
+  parameters, no real-hospital data of any kind; they are labelled educational and must not imply clinical
+  or service validity.
 
 ## 7. Scenario map — exactly where SimPy is used
 
 | Scenario | SimPy's role | Paired tools | Lane |
 |---|---|---|---|
 | **S01 — Bank / Clinic Queue (M/M/c)** | Live engine: arrivals, server pool, queue, ρ, Little's Law — a single ~300-customer run (no replications, no CI). The lab's "hello world" and the basis of [`example.py`](./example.py). | **Ciw** in-run cross-check (10 capped warmed-up reps → `theory_in_ci` + `rel_err` vs Erlang-C) | live |
-| **S04 — Emergency Department Patient Flow** | Live engine: non-stationary Poisson arrivals, priority triage, multi-stage resource-limited flow (triage → treatment → disposition). No closed form. (A single seeded run; the replicated-CI lesson lives in **S10**, not here.) | — | live |
-| **S07 — Construction Haul Routing** *(DES leg)* | The *simulate* leg of optimize-then-simulate: a **deterministic** SimPy DES of the closed finite-source haul cycle (fixed load/dump times, inert seed) over the CP-SAT-certified route. Saturation comes from the shared finite loader, not random variates. | **OR-Tools CP-SAT** (route-cost certificate) + NetworkX (graph) | precomputed |
+| **S04 — Emergency Department Patient Flow** | Live engine: synthetic **non-stationary (Lewis–Shedler thinned) Poisson** arrivals with one fixed surge window over the middle of the shift (`[0.30H, 0.60H)`, λ doubled); **FCFS triage** (`simpy.Resource`) → **non-preemptive priority treatment** (`simpy.PriorityResource`) → discharge, multi-stage resource-limited flow. No closed form. (A single seeded run; the replicated-CI lesson lives in **S10**, not here.) | — | live |
+| **S07 — Construction Haul Routing** *(DES leg)* | The *simulate* leg of optimize-then-simulate: a **deterministic** SimPy DES of the closed finite-source haul cycle (fixed load/dump times, inert seed) over the CP-SAT-certified route. Saturation comes from the shared finite loader, not random variates. The native plan is precomputed + committed (`s07_plans.py`); the SimPy replay runs **live**. | **OR-Tools CP-SAT** (route-cost certificate) + NetworkX (graph) | live (SimPy replay over a committed native plan) |
 | **S08 — Last-Mile Delivery VRP** | **No SimPy leg.** A deterministic two-solver head-to-head (OR-Tools vs PyVRP) rendered from a committed trace with a scrubber. | **OR-Tools** + **PyVRP** (no SimPy) | precomputed |
 | **S09 — Ambulance Dispatch** | Live engine: one seeded Poisson call stream over a city graph drives nearest-available dispatch; response-time / coverage KPIs. The DES is the event-ordering mechanism (variates drawn up front), **not** replicated or a stochastic stress-test. No OR-Tools. | **NetworkX** (shortest paths) | **live** |
-| **S10 — Monte-Carlo Replication / CI Study** | Base model = the M/M/c (a fast heap-based estimator, same model *class* as S01 but a different engine — not the S01 SimPy run), replicated across seeds to draw CI envelopes vs the naive single run. | **joblib** (CPU); optional **CuPy/Numba** GPU exhibit | live |
+| **S10 — Monte-Carlo Replication / CI Study** | Base model = the M/M/c (a fast heap-based estimator, same model *class* as S01 but a different engine — not the S01 SimPy run), replicated across seeds to draw CI envelopes vs the naive single run. | **joblib** (CPU) | live |
 | **S11 — (LP/GLOP leg) hybrid** *(DES leg)* | A **deterministic** SimPy DES of the haul system under the GLOP-optimized allocation (no stochastic variates). | **OR-Tools GLOP** (LP leg) | precomputed |
 
-> The shipped DES legs of S07/S11 are **deterministic** pure SimPy (the same engine as the minimal example,
-> in the precompute lane because their optimizer is native OR-Tools). S09 is live pure SimPy + NetworkX.
-> S08 has no SimPy leg.
+> The shipped DES legs of S07 and S11 are **deterministic** pure SimPy (the same engine as the minimal
+> example). They differ on the lane: **S07 runs live** — only its native OR-Tools/NetworkX plan is
+> precomputed and committed (`s07_plans.py`), while the SimPy replay over that fixed plan runs in the
+> browser; **S11**'s SimPy leg is shipped as a precomputed, replayed trace. S09 is live pure SimPy +
+> NetworkX. S08 has no SimPy leg.
 
 ## 8. A worked mini-decision
 
@@ -169,7 +175,8 @@ not random noise, is what saturates the fleet; it reports one run, not a CI. Set
 seeded-RNG delays (still reproducible per seed). S07 runs in the **live lane**: its OR-Tools/NetworkX route
 plan is precomputed offline and **committed** (`s07_plans.py`) because OR-Tools is native and can't run in
 Pyodide, while the pure-Python **SimPy replay over that fixed plan runs live** in the browser — the
-fleet/load/dump/breakdown sliders mutate the replay; the grade slider re-selects a committed plan.
+fleet/load/dump/breakdown sliders mutate the replay; the grade slider and the wall toggle re-select among
+the committed plans (a full grade×wall grid).
 
 ## Sources
 

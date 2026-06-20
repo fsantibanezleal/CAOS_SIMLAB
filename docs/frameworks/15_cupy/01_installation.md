@@ -2,7 +2,7 @@
 
 CuPy is **NumPy & SciPy for the GPU**: the same array API, executed on an NVIDIA CUDA device. In
 CAOS_SIMLAB it is an **optional GPU exhibit only** — it belongs to the `gpu` requirements lane, is never on
-the live (browser/Pyodide) or VPS deploy path, and every result it produces is reproducible on the CPU via
+the live (browser/Pyodide) or GitHub Pages deploy runtime, and every result it produces is reproducible on the CPU via
 the fallback baked into the example. See
 [`../../problem-types/04_monte-carlo-replications.md`](../../problem-types/04_monte-carlo-replications.md) §8 for
 *why* (the honest "when does a GPU actually help?" verdict), and the

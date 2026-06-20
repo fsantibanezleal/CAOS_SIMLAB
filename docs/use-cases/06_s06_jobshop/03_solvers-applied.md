@@ -51,7 +51,9 @@ The build mirrors the formalization one-to-one
 - **It proves optimality on these sizes.** For the small-to-moderate instances here, CP-SAT returns a
   **proved-optimal** schedule — the committed `ft06` run is `OPTIMAL` with $C_{\max}=55$, matching the
   literature, and all ten variants return `OPTIMAL`. (On a hard instance it would stop *near* optimal at the
-  time limit and report a bound; that is why the time limit, single worker and seed are committed.)
+  10 s cap and report a bound. The reproducibility invariants that make the committed trace
+  machine-independent are `num_search_workers = 1` and the fixed `random_seed = 42` — a single deterministic
+  search thread; the 10 s cap is just a safety ceiling these small instances never approach.)
 - **One library, maximum didactic surface.** OR-Tools also provides Routing (S07–S09) and GLOP LP (S11), so
   the lab teaches CP scheduling, routing and LP from a single `pip install ortools`. CP-SAT is the
   pure-optimization anchor of that set. See the
@@ -65,9 +67,11 @@ job-shop on `ft06` (verified makespan 55) alongside a GLOP LP.
 
 **Precompute, always.** OR-Tools is native C++ with a Python wrapper; it **cannot** compile to WASM and so
 never runs in the Pyodide live lane. The scenario declares `pure_python = False`, which fails the engine
-gate of the lab's [3-gate rule](../../architecture.md) (`live` requires pure-Python *and* `run_ms < 3000`
-*and* `trace_bytes < ~1 MB`). The committed manifest records `lane = precomputed` with the reason
-*"not pure-Python (cannot run in Pyodide/WASM)"*; measured `run_ms ≈ 1059`, `trace_bytes ≈ 1954` for `ft06`.
+gate of the lab's [4-gate](../../architecture/03_the-gate.md) (`live` requires pure-Python *and*
+`wheels ⊆ LIVE_WHEELS` *and* `run_ms < 3000` *and* `trace_bytes < ~1 MB`). The committed manifest records
+`lane = precomputed` with the reason *"not pure-Python (cannot run in Pyodide/WASM)"*; for `ft06` the
+measured gate timing is well under the 3 s cap (`run_ms` ≈ 39.5 ms in the committed manifest — a few tens of
+ms; note S06 fails the lane on the engine gate, not on time) and `trace_bytes ≈ 1954`.
 
 Concretely:
 

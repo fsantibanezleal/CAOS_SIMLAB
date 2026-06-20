@@ -25,7 +25,8 @@ from ..core.scenario import ParamSpec, Scenario, Variant
 
 S, I, R = 0, 1, 2  # noqa: E741 — standard SIR compartment names
 
-# The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy third-party dep absent under Pyodide).
+# The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy dep the worker loads at runtime via
+# micropip — it IS in LIVE_WHEELS and runs live — not at module import).
 # Importing this module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps;
 # Mesa is imported only when ``run()`` calls ``_models()`` to build the classes (cached after the first
 # build, so behaviour is identical to top-level class definitions).

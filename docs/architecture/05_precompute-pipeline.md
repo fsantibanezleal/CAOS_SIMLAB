@@ -42,7 +42,7 @@ compare side by side — light queue vs near-saturated vs unstable), and for eac
    rel = Path("data")/"artifacts"/sc.id/f"{var.id}-seed{seed}.json"
    trace_bytes = trace.write(out_root / rel)
    ```
-4. **Classify the lane from measurement** with the four-part gate
+4. **Classify the lane from measurement** with the 4-gate
    ([03_the-gate.md](./03_the-gate.md)):
    ```python
    gate = classify_lane(sc.pure_python, run_ms, trace_bytes, sc.wheels)

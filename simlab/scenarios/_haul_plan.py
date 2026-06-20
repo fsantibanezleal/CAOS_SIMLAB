@@ -40,7 +40,7 @@ def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.
     (plain distance for an empty return, grade-penalised distance for a loaded climb). Nodes/edges mirror
     ``_geo`` exactly, so ``nx.dijkstra_path`` reproduces the lab's graded shortest path byte-for-byte.
     """
-    import networkx as nx  # lazy: native-absent under Pyodide, only needed in the offline plan builder
+    import networkx as nx  # lazy: offline-only — this plan builder is never imported in the live worker
 
     g = nx.DiGraph()
     g.add_nodes_from(net.coords)
@@ -52,7 +52,7 @@ def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.
 
 def nx_route(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst: int) -> list[int]:
     """The cheapest haul route src->dst on the graded road graph (NetworkX Dijkstra)."""
-    import networkx as nx  # lazy: native-absent under Pyodide, only needed in the offline plan builder
+    import networkx as nx  # lazy: offline-only — this plan builder is never imported in the live worker
 
     g = build_road_graph(net, cost)
     return nx.dijkstra_path(g, src, dst, weight="weight")
@@ -188,17 +188,22 @@ def build_plan(grid: int, grade: float, pass_col: int, lift_col: int, barrier: i
 
 
 def enumerate_plan_geometries() -> list[tuple[int, float, int, int, int]]:
-    """The deterministic set of geometries to precompute: every grade slider step at the default geometry
-    (so the route-flip lesson is fully live across the grade slider), plus the off-default geometries the
-    committed variants use (r_passR's right pass, r_wall's barrier). (grid, grade, pass_col, lift_col, barrier).
+    """The deterministic set of geometries to precompute: every grade slider step at the default geometry,
+    for BOTH wall states (barrier 0 and 1), so the two free geometry sliders — grade AND the wall toggle —
+    re-select among committed plans across their whole range with no live OR-Tools miss. Plus the off-default
+    pass column the r_passR variant uses. (grid, grade, pass_col, lift_col, barrier).
     """
     geoms: list[tuple[int, float, int, int, int]] = []
-    # grade slider: 0.0 .. 8.0 step 0.5 at the default geometry (grid 12, pass 2, lift 4, no wall)
-    for i in range(17):  # 0.0 .. 8.0 inclusive
-        geoms.append((12, round(i * 0.5, 1), 2, 4, 0))
-    # variant-specific geometries
-    geoms.append((12, 6.0, 9, 7, 0))   # r_passR — pass moved right
-    geoms.append((12, 1.0, 2, 4, 1))   # r_wall  — barrier on the direct climb
+    # The two load/dump corridors any variant pins: the default (pass 2, lift 4) and r_passR's right pass
+    # (pass 9, lift 7). For each corridor commit the FULL free-slider grid — grade 0.0..8.0 step 0.5 × wall
+    # off/on — so the only sliders a learner can move (grade + the wall toggle) always hit a committed plan at
+    # every position, for every variant, with no live OR-Tools miss. (pass/lift columns are pinned in the
+    # param_specs, so no other corridor is reachable.)
+    corridors = [(2, 4), (9, 7)]
+    for pass_col, lift_col in corridors:
+        for barrier in (0, 1):
+            for i in range(17):  # 0.0 .. 8.0 inclusive
+                geoms.append((12, round(i * 0.5, 1), pass_col, lift_col, barrier))
     # de-dup, preserve order
     seen: set[tuple[int, float, int, int, int]] = set()
     out: list[tuple[int, float, int, int, int]] = []

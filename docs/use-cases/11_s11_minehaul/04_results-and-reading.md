@@ -13,23 +13,25 @@ high-grade phase needs the longest loaded hauls, so it is the first to be starve
 trucks. The headline KPI is **grade deviation from target** (`grade_dev`, lower is better) with the
 companion **plan adherence %**.
 
-| Variant | Trucks | Designed outcome |
+| Variant | Trucks | Realized outcome (committed KPIs) |
 |---|---|---|
-| `undertrucked` | 3 | Too few trucks: the far rich phase lags, the blend **slips below target**. |
-| `base` | 6 | A matched fleet roughly realizes the plan: blend **near target**. |
-| `overtrucked` | 12 | Ample fleet: every planned flow completes, the blend **lands on target**. |
+| `undertrucked` | 3 | Far too few trucks: the rich phase is badly starved — only **33% adherence**, `ĝ ≈ 1.78` vs target 2.9 (**`grade_dev ≈ 1.12`**, well below band). |
+| `base` | 6 | The default fleet **closes much of the gap but still misses spec**: **63% adherence**, `ĝ ≈ 2.55` vs 2.9 (**`grade_dev ≈ 0.35`, `in_band = 0`** — about 2.3× the tolerance). It takes more trucks to land in band. |
+| `overtrucked` | 12 | Ample fleet: every planned flow completes — **100% adherence**, `ĝ ≈ 2.86`, **`in_band = 1`**: the blend lands on target. |
 
 Reading these three in order is the lesson: *an optimal plan is necessary but not sufficient.* The LP's
 `plan_grade` (in the analytic block) stays the same across all three — only the **realized** `ĝ` moves,
-because realization is fleet-limited.
+climbing from far below the band (`undertrucked`) toward the target as the fleet grows, but it only reaches
+**inside the band at `overtrucked` (≈ 12 trucks)**; the 6-truck `base` is still out of band. Realization is
+fleet-limited.
 
 ## The other regimes (all twelve variants)
 
 | Variant | Key change | What it shows |
 |---|---|---|
-| `base` | nt=6 | Matched fleet — blend near target. |
-| `undertrucked` | nt=3 | Rich phase starved — grade below band. |
-| `overtrucked` | nt=12 | Plan fully met — on target. |
+| `base` | nt=6 | Default 6-truck fleet — closes much of the gap but still **out of band** (63% adherence, `grade_dev ≈ 0.35`). |
+| `undertrucked` | nt=3 | Rich phase badly starved — grade far below band (33% adherence). |
+| `overtrucked` | nt=12 | Plan fully met — **in band**, on target (100% adherence). |
 | `tight_grade` | tol=0.08 | A **narrow band** — small fleet-driven deviations now miss spec. |
 | `surge` | dem=120 | A **demand surge** at the same fleet — adherence drops, out of band. |
 | `surge12` | nt=16, dem=120, hz=200 | More trucks + a longer shift **absorb the surge** — back in band. |

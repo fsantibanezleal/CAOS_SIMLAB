@@ -19,7 +19,7 @@ where the GPU back-ends genuinely help.
 ## Which requirements lane
 
 Taichi is an **optional, precompute-/GPU-lane** tool — it is **never** on the live web path and
-**never** on the VPS. It belongs with the heavier engines used offline to generate committed traces, and
+**never** on the deploy runtime. It belongs with the heavier engines used offline to generate committed traces, and
 with the GPU lane:
 
 - It is **not** in `requirements.txt` (the slim base/live runtime — that file is deliberately minimal so
@@ -35,7 +35,7 @@ The four requirements lanes at a glance, and where Taichi lands:
 
 | Lane | File | On deploy? | Taichi here? |
 |---|---|---|---|
-| Base / live runtime | `requirements.txt` | yes (VPS + Pyodide) | no — native LLVM core, cannot enter the browser closure |
+| Base / live runtime | `requirements.txt` | yes (GitHub Pages + Pyodide) | no — native LLVM core, cannot enter the browser closure |
 | Precompute | `requirements-precompute.txt` | no (local only) | yes — offline frame generation |
 | GPU | `requirements-gpu.txt` | no (local only) | yes — optional CUDA/Vulkan/Metal acceleration |
 | Dev / tooling | `requirements-dev.txt` | no | no |

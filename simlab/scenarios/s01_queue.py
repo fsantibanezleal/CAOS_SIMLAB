@@ -2,7 +2,7 @@
 
 Teaches: arrivals, a server pool, the queue, utilisation rho, Little's Law — and crucially
 VALIDATION: the simulated mean wait is compared against the closed-form M/M/c (Erlang-C) result, so the
-learner sees "does my simulation match the theory?". Pure-Python (SimPy + Ciw) => runs live in Pyodide.
+learner sees "does my simulation match the theory?". Pure-Python (SimPy + Ciw + NumPy) => runs live in Pyodide.
 
 Two independent simulators back the validation lesson, so "the sim converges to theory" is *real*:
 

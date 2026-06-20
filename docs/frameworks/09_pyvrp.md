@@ -17,9 +17,12 @@ specialised HGS solver finds materially shorter routes than a general solver's
 defaults, which is the whole point of showing both. Because it is **native C++ /
 Python it cannot run in the browser**, so it lives in the **precompute lane** —
 it runs offline to generate committed solution traces, and the web app replays
-them. This pairing drives scenario **S08 (VRP/VRPTW)**, whose optimized routes
-are then handed to a **SimPy** replay to demonstrate that an optimum on paper is
-fragile under stochastic delay (the lab's optimize-then-simulate lesson).
+them. This pairing drives scenario **S08 (CVRP)**: PyVRP's HGS and OR-Tools'
+Routing solver are run on the **identical CVRP instance** and the optimized routes
+are committed for a deterministic **head-to-head** — the distance gap between the
+two solvers is the whole point. **S08 has no SimPy leg and no time windows**
+(strictly CVRP, not VRP/VRPTW); it is a two-solver comparison replayed from a
+committed trace, not an optimize-then-simulate hybrid.
 
 ## Read in order
 
@@ -37,8 +40,9 @@ fragile under stochastic delay (the lab's optimize-then-simulate lesson).
 
 ## Scenarios that use it
 
-- **S08 — Vehicle Routing Problem** (precompute lane; OR-Tools baseline **+**
-  PyVRP SOTA contrast → SimPy replay):
+- **S08 — Capacitated Vehicle Routing (CVRP)** (precompute lane; OR-Tools
+  Routing baseline **+** PyVRP SOTA contrast on the **same instance**, a
+  deterministic head-to-head — **no SimPy, no time windows**):
   [`simlab/scenarios/s08_vrp.py`](../../simlab/scenarios/s08_vrp.py) ·
   manifest [`manifests/s08_vrp.json`](../../manifests/s08_vrp.json)
 

@@ -47,7 +47,8 @@ and s for the surge.
   (priority code 0) jumps ahead of **standard** patients (code 1) in the treatment queue. Triage is plain
   FCFS — priority bites only where the bottleneck is.
 - **Non-stationary arrivals.** The arrival intensity is time-varying: an optional **daytime surge** doubles
-  the rate over the middle third-to-60% of the shift, modeling a mid-shift demand spike.
+  the rate over the **middle 30%–60% of the shift** (the window `[0.3H, 0.6H)` of the horizon `H`), modeling
+  a mid-shift demand spike.
 - **Per-class length-of-stay.** Total time-in-system is tracked separately for urgent vs standard patients,
   so the effect of priority (urgent LOS falls at the expense of standard LOS) is directly visible.
 

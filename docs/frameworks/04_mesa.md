@@ -12,25 +12,28 @@ real maps ([mesa-geo](./05_mesa-geo.md)), or an instant zero-server in-browser c
 ([netlogo-web](./07_netlogo-web.md)).
 
 **How this lab uses it.** Mesa **runs LIVE in the browser via Pyodide** — it was *measured* to satisfy the
-3-gate live rule (pure-Python, run < 3 s, trace < 1 MB) with `mesa ⊆ LIVE_WHEELS`, and the worker
+4-gate live rule (pure-Python, run < 3 s, trace < 1 MB) with `mesa ⊆ LIVE_WHEELS`, and the worker
 `micropip.install`s it (a `sqlite3` load for `mesa.experimental` and a ~3 s cold start are the cost). The
 three ABM scenarios — **S02 Schelling**, **S03 SIR**, **S05 Beer Game** — are classified `lane: "live"` in
 their manifests and expose a live Run button: move a slider and real Mesa 3 re-runs in the browser. The same
 models are *also* run headless and seeded in the local `.venv` to commit the canonical replay artifact (the
 deterministic first-paint trace), so the page renders instantly and a clone reproduces the run byte-for-byte;
 the live Run then re-executes the model on top of that. What Mesa cannot serve is **SolaraViz**, its
-first-class visualization — a stateful Python server bound to a localhost port, wrong for a static SPA on a
-shared no-GPU VPS; the lab's React/SVG viewer owns the pixels instead. The `Agent.step()` / `Model.step()`
-code is in-repo so the abstractions stay the curriculum, not a blackbox. This split (live Mesa engine + a
+first-class visualization — a stateful Python server bound to a localhost port, wrong for a static SPA on
+GitHub Pages (zero server compute); the lab's React/SVG viewer owns the pixels instead. The `mesa.Agent` / `mesa.Model`
+subclasses are in-repo so the abstractions stay the curriculum, not a blackbox. (Note the in-repo S02 model
+drives a **manual batch update** — all unhappy agents are decided against the start-of-step configuration,
+then relocated one-by-one — rather than the generic Mesa `self.agents.shuffle_do("step")` idiom shown in the
+standalone example; see [02_usage.md](./04_mesa/02_usage.md).) This split (live Mesa engine + a
 committed canonical replay; React owns the rendering) is documented in
 [03_applying.md](./04_mesa/03_applying.md).
 
 ## Read in order
 
-1. [01_installation.md](./04_mesa/01_installation.md) — exact `pip install "mesa>=3.0"` line, the resolved
-   **3.5.1** version, the requirements lanes (pinned locally in `requirements-precompute.txt`; the browser
-   worker `micropip.install`s it so it also runs **live**, `mesa ⊆ LIVE_WHEELS`), key transitive deps
-   (numpy 2.4.6 / pandas / networkx / tqdm), and platform / no-CUDA notes.
+1. [01_installation.md](./04_mesa/01_installation.md) — the `pip install "mesa>=3.0"` floor and the exact
+   committed pin **`mesa==3.5.1`**, the requirements lanes (hard-pinned in `requirements-precompute.txt`; the
+   browser worker `micropip.install`s it so it also runs **live**, `mesa ⊆ LIVE_WHEELS`), key transitive deps
+   (numpy 2.4.6 / pandas 3.0.3 / networkx 3.6.1 / tqdm), and platform / no-CUDA notes.
 2. [02_usage.md](./04_mesa/02_usage.md) — the real API and concepts (the four ingredients; the Mesa-2→3
    activation break; `rng=` seeding), the Schelling example walked through step by step, and its **real
    captured output** (re-run and verified).

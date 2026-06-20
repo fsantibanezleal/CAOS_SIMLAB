@@ -22,7 +22,8 @@ from ..core.scenario import ParamSpec, Scenario, Variant
 
 EMPTY, A, B = 0, 1, 2
 
-# The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy third-party dep absent under Pyodide).
+# The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy dep the worker loads at runtime via
+# micropip — it IS in LIVE_WHEELS and runs live — not at module import).
 # Importing this module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps;
 # Mesa is imported only when ``run()`` calls ``_models()`` to build the classes (cached after the first
 # build, so behaviour is identical to top-level class definitions).
@@ -66,8 +67,9 @@ def _models() -> tuple[type, type]:
         """The Schelling world: a (non-torus) ``SingleGrid`` populated with two household types.
 
         Built with Mesa 3. Activation uses the model's ``AgentSet`` (``self.agents``). Relocation of unhappy
-        agents is done *simultaneously* per step (all unhappy agents are computed first, then moved), which is
-        the classic batch Schelling update; every move uses ``self.random`` so the run is deterministic.
+        agents is a *batch update* per step: all unhappy agents are decided against the start-of-step config
+        first, then relocated one-by-one into the growing empty pool — the classic batch Schelling update;
+        every move uses ``self.random`` so the run is deterministic.
         """
 
         def __init__(self, size: int, empty_frac: float, tolerance: float, seed: int) -> None:
@@ -113,7 +115,7 @@ def _models() -> tuple[type, type]:
             return seg, unhappy
 
         def relocate(self, unhappy: list["SchellingHousehold"]) -> None:
-            """Move every unhappy agent to a random empty cell (simultaneous batch update).
+            """Move every unhappy agent to a random empty cell (batch update).
 
             Sorted empties + seeded shuffle keep this deterministic regardless of set iteration order.
             """

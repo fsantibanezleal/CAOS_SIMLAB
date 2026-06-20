@@ -3,6 +3,29 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.17.001] - 2026-06-20
+### Fixed — 5-layer consistency (multi-round adversarial remediation) + functional
+- Removed the stale v0.16 "Mesa/joblib/SciPy = precompute-only" lane lie from every surface (it had survived on
+  the deployed Build/Introduction/Methodology pages): Build now shows the real `LIVE_WHEELS` closure, and the
+  live/precompute taxonomy matches the gate everywhere — only the native OR-Tools scenarios (S06/S08/S11)
+  precompute; S07 (SimPy replay over a committed native plan) and S09 (SimPy+NetworkX) run live.
+- Experiments tabs now use the canonical scenario ids (S07 Haul, S08 VRP, S09 Ambulance, S10 Monte-Carlo) —
+  dropped the display renumber that contradicted the docs and the Introduction page.
+- **s07 live fix:** committed the full grade×wall grid for both load/dump corridors (68 plans) so every variant
+  × every reachable slider stop resolves to a committed plan (fixed a live `RuntimeError` when toggling the wall
+  / moving the grade off the one committed point); Reset restores the variant's regime; added a plan-coverage
+  guard test.
+- Consistency/honesty: s09 `method` `des`→`DES` (regenerated trace+manifest); S08 web degree constraint
+  `Σ x_0j ≤ K` (shipped solve drops empty routes); S04 documented as a non-stationary (Lewis–Shedler thinned)
+  Poisson with FCFS triage + non-preemptive priority treatment; S05 as a fixed-order serial cascade with its
+  real emitted KPIs; S10 CI uses the exact `scipy.stats.norm.ppf(0.975)` (not a hand-typed 1.96); s11 base
+  honestly out of band; drifted numbers aligned to the manifests across docs + web.
+- Reframed the Mesa-Geo / JuPedSim "applying" docs to the honest future-variant pattern (no fabricated
+  scenarios); added the PyVRP citation (Wouda, Lan & Kool 2024) + wired the VRP refs; corrected stale
+  deploy-architecture prose (static GitHub Pages, no VPS/backend); removed internal `wip/` path citations from
+  the public docs; unified the gate name to **4-gate**.
+- CI: `deploy-pages` also triggers on `simlab/**` (the live Pyodide bundle inlines `simlab/**/*.py`).
+
 ## [0.17.000] - 2026-06-20
 ### Fixed — restore ALL 8 live modes (the v0.16 regression)
 - v0.16 wrongly demoted s02/s03/s05/s07/s09/s10 to precompute, removing their interactive Run. Restored every
@@ -13,9 +36,10 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
   stay precompute. Gate: live iff `pure_python AND wheels ⊆ LIVE_WHEELS AND <3s AND <1MB`; worker loads the
   closure on demand. NetLogo Web card added as the alternate ABM live engine.
 ### Added
-- Documentation rebuilt as a **numbered wiki**: `docs/frameworks/NN_<fw>/` (18, verified examples),
-  `docs/use-cases/NN_<scenario>/` (assumptions+formalization+solvers+results, 11), deep `docs/architecture/`
-  (7 files), granular problem-types/guides, master + section indexes.
+- Documentation rebuilt as a **numbered wiki**: 18 `docs/frameworks/NN_<fw>/` guides with **16 verified
+  `example.py`** (NetLogo Web is an in-browser JS card and the GPU-ABM chapter is reference-only, so both are
+  doc-only by design), `docs/use-cases/NN_<scenario>/` (assumptions+formalization+solvers+results, 11), deep
+  `docs/architecture/` (7 files), granular problem-types/guides, master + section indexes.
 ### Fixed — cross-layer consistency
 - Hard adversarial validation (15 independent auditors) found **83 defects**; all remediated — docs,
   docstrings, in-code comments, web content and manifests aligned to the code+manifest truth (Mesa = live not
@@ -32,8 +56,9 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 - **Monte-Carlo → joblib** (CPU-parallel seeded replications) + **scipy.stats** confidence intervals (s10),
   replacing the hand-rolled NumPy loop.
 ### Added
-- Documentation rebuilt: `docs/problem-types/` (DES/ABM/optimization/Monte-Carlo) and `docs/frameworks/<tool>/`
-  for 18 tools (installation/usage/applying + a verified `example.py` actually run in the .venv), plus
+- Documentation rebuilt: `docs/problem-types/` (DES/ABM/optimization/Monte-Carlo) and 18 `docs/frameworks/<tool>/`
+  guides (installation/usage/applying) with **16 verified `example.py` actually run in the .venv** (NetLogo Web
+  is a JS in-browser card and the GPU-ABM chapter is reference-only, so both are doc-only by design), plus
   `docs/guides/` (precompute/live/gpu) and a docs index. `requirements-precompute.txt`/`requirements-gpu.txt`
   pinned to verified versions; setup scripts install the precompute lane.
 ### Fixed
@@ -187,7 +212,7 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
     infection now reads as "happening now"), via a per-cell diff vs the previous frame in `AgentGridViz`.
   - **S05/S10 charts** gain a **leading-edge marker** on each revealed series so the eye tracks "now"
     (progressive reveal + playhead was already correct).
-- Process: a 50-agent adversarial review (`wip/.../viz-review-2026-06-19.md`) graded all 10 scenes for
+- Process: a 50-agent internal adversarial visualization review graded all 10 scenes for
   attractiveness / clarity / dynamics-coverage / live-correctness; the 5 confirmed findings are fixed here.
   Verified in-browser (Playwright) across the route/grid/chart scenes; zero console errors.
 

@@ -42,17 +42,24 @@ The core API (OR-Tools 9.x "new style", lower-case methods, as used in S06):
 
 #### Determinism knobs
 
-Mandatory in this lab so committed traces replay bit-for-bit:
+The **reproducibility invariants** — what makes a committed trace replay bit-for-bit — are exactly two: a
+single search worker and a fixed seed.
 
 ```python
 solver.parameters.num_search_workers = 1     # multi-worker search is faster but NON-deterministic
 solver.parameters.random_seed = 42
-solver.parameters.max_time_in_seconds = 5.0  # bound the search so the script always terminates
+solver.parameters.max_time_in_seconds = 10.0 # a TERMINATION GUARD, not a determinism knob (cap is per-scenario)
 ```
 
 Multi-worker search races several strategies in parallel and returns whichever finishes first, which makes
 the result order non-reproducible. Pinning a single worker plus a fixed seed trades a little speed for exact
 reproducibility — the right call when the output is a *committed artifact* the web app will replay forever.
+
+The time cap is **not** a determinism knob: it only guarantees the script terminates, and its value is
+**per-scenario**, not a single mandated number. The small benchmark instances here all solve to `OPTIMAL`
+well inside any cap, so the cap never actually fires. S06 and the S07 plan builder use **10 s**
+(`CP_TIME_LIMIT_S = 10.0`); the standalone [`example.py`](./example.py) uses the same 10 s. Changing the cap
+does not change the (already-optimal) result — only `num_search_workers=1` + `random_seed` do.
 
 ### GLOP (linear programming)
 
@@ -89,8 +96,9 @@ The script [`example.py`](./example.py) runs two tiny demos. Run it from the rep
    (`model.add(s >= ends[(j, k-1)])`). On each machine, the intervals must not overlap
    (`model.add_no_overlap(machine_intervals[m])`).
 4. **Objective.** `makespan = max over jobs of (last op's end)` via `add_max_equality`; we `minimize(makespan)`.
-5. **Solve.** Single worker, `random_seed=42`, 5-second cap. We print the makespan and whether the solver
-   returned `OPTIMAL` (proved) vs `FEASIBLE` (found, not proved).
+5. **Solve.** Single worker, `random_seed=42`, 10-second termination cap (the same cap S06 and the S07 plan
+   builder use; the instance solves to `OPTIMAL` long before it fires). We print the makespan and whether the
+   solver returned `OPTIMAL` (proved) vs `FEASIBLE` (found, not proved).
 
 The `horizon = sum of all durations` is used as a safe upper bound on any start/end — every operation must
 finish by the time you run them all back-to-back, so no variable domain can be too small.

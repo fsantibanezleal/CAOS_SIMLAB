@@ -29,7 +29,8 @@ The default instance (the slider mid-points in the code):
 
 The grid is **fully occupied** — `SingleGrid` with exactly one `SIRAgent` per cell (`n²` agents). It is
 seeded at start: each cell is set Infected if a seeded draw `< i₀`, else Susceptible; if no cell ignites,
-the centre cell is forced to Infected so the run isn't inert (`states[n_cells // 2] = I`). The 10 shipped
+a single fixed cell is forced to Infected so the run isn't inert (`states[n_cells // 2] = I` — flat index
+`n²//2`, which is the **left-edge middle-row** cell, *not* the geometric centre). The 10 shipped
 **variants** sweep `β`, `γ` and `i₀` around this instance (see
 [04 · Results & reading](./04_results-and-reading.md)).
 

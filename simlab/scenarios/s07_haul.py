@@ -21,9 +21,9 @@ honestly into a NATIVE plan and a LIVE replay:
 * **The REPLAY (live).** **SimPy** (``docs/frameworks/01_simpy``) replays the cycle as a real discrete-event
   simulation over the FIXED committed plan: each truck is a process that requests a shared ``simpy.Resource``
   (the loaders), loads, hauls up the planned route, dumps, hauls back, and re-enters the queue. This is the
-  interactive half — the fleet sliders (trucks, loaders, load/dump times, breakdown rate, seed) mutate the
-  REPLAY over the fixed plan, never the plan itself. SimPy + NumPy are pure-Python wheels Pyodide loads, so
-  this scenario runs **LIVE** (``pure_python = True``); OR-Tools is never imported in the worker.
+  interactive half — the fleet sliders (trucks, loaders, load/dump times, breakdown rate, shift length, seed)
+  mutate the REPLAY over the fixed plan, never the plan itself. SimPy + NumPy are pure-Python wheels Pyodide
+  loads, so this scenario runs **LIVE** (``pure_python = True``); OR-Tools is never imported in the worker.
 
 The plan-vs-fleet split is itself the lesson: an optimal route PLAN is necessary but not sufficient — a
 fixed fleet realizes a degraded version of it, and only the grade slider (which re-selects among committed
@@ -133,14 +133,17 @@ class HaulScenario(Scenario):
     def _load_plan(self, grid: int, grade: float, pass_col: int, lift_col: int, barrier: int) -> dict:
         """Fetch the COMMITTED plan for this geometry (built offline by NetworkX+OR-Tools).
 
-        Live mode tunes the fleet over a FIXED plan, so the geometry must match a committed one. The grade
-        slider re-selects among committed plans (the route flips live); other geometry knobs are pinned to
-        the committed defaults by their param_specs. An off-grid geometry has no committed plan, which is a
-        native-plan miss (it would need OR-Tools/NetworkX, absent in the worker) — reported honestly.
+        Live mode tunes the fleet over a FIXED plan, so the geometry must match a committed one. The two free
+        geometry sliders — grade (route flips live) and the wall toggle — re-select among committed plans across
+        their whole range for the default corridor; the r_passR variant's off-default corridor (pass 9, lift 7)
+        also ships its full grade sweep, so its grade slider stays backed too. The pass/lift columns are pinned
+        by their param_specs (min==max), so only the committed corridors are reachable. An off-grid geometry has
+        no committed plan, which is a native-plan miss (it would need OR-Tools/NetworkX, absent in the worker) —
+        reported honestly.
         """
         key = _plan_key(grid, grade, pass_col, lift_col, barrier)
         plan = PLANS.get(key)
-        if plan is None:  # pragma: no cover - guarded by pinned geometry param_specs
+        if plan is None:  # pragma: no cover - guarded by committed corridor grade×wall grids + pinned pass/lift
             raise RuntimeError(
                 f"s07_haul: no committed plan for geometry '{key}'. The OR-Tools/NetworkX route plan is "
                 f"native (no WASM build); regenerate plans offline with `python -m simlab.scenarios._haul_plan`."

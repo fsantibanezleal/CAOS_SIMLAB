@@ -69,7 +69,7 @@ tick. Mesa is the engine that runs that loop with first-class agent/space abstra
 **S03 runs in the LIVE lane.** Verified in the committed manifest (`manifests/s03_sir.json` → `"lane":
 "live"`, `engine: "mesa"`, `wheel_closure: ["numpy", "mesa"]`).
 
-The lab's **3-gate rule** (`classify_lane` in
+The lab's **4-gate** (`classify_lane` in
 [`simlab/core/scenario.py`](../../../simlab/core/scenario.py)) admits a scenario to the live lane only if it
 is **pure-Python AND** finishes a run in-Worker in **< 3 s AND** its trace is **< ~1 MB AND** its wheel
 closure ⊆ `LIVE_WHEELS`. S03 sets `pure_python = True` and `wheels = ["numpy", "mesa"]`, and **both** wheels

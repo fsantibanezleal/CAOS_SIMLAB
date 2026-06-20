@@ -124,7 +124,7 @@ From `tr.kpis` in [`s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo
 | `final_mean` | `W̄_N`, the final running mean (the headline estimate of `Wq`) |
 | `ci_halfwidth` | `h_N`, the 95% CI half-width at the final replication |
 | `theory_Wq` | the Erlang-C `Wq` (null when `ρ ≥ 1`) |
-| `rel_error_pct` | `100·|W̄_N − Wq| / Wq` — relative error vs theory (null when unstable) |
+| `rel_error_pct` | `100·|W̄_N − Wq| / Wq` — relative error vs theory (null when there is no positive theory `Wq` to compare against: the unstable regime `ρ ≥ 1` where `Wq` is itself null, or the degenerate `Wq = 0` case) |
 | `n_reps` | `N`, the replication budget |
 | `rho` | the utilization `ρ` |
 

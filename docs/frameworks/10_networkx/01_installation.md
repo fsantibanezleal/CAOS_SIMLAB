@@ -43,7 +43,7 @@ Why **precompute** and not **core**:
 
 > The pure-Python shortest-path code shown in [`02_usage.md`](./02_usage.md) is exactly the kind of
 > small graph work that *could* also run in the live Pyodide tier; whether a given scenario runs it
-> live or replays a precomputed trace is decided per-scenario by the 3-gate rule
+> live or replays a precomputed trace is decided per-scenario by the 4-gate rule
 > (see [`../../architecture.md`](../../architecture.md)), not by NetworkX itself.
 
 ## Key transitive dependencies

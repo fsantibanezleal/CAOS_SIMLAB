@@ -57,8 +57,10 @@ upgrade trap, the `mesa>=3.0` pin in [01_installation.md](./01_installation.md) 
 `model.rng` (a NumPy `Generator`). Routing *all* randomness through these makes the whole run reproducible.
 
 > In 3.5.1 the older `seed=` keyword still works but emits a `FutureWarning` ("use `rng` instead"). The
-> example passes `rng=` to stay clean. This determinism is **the** property the precompute lane depends on:
-> compute once, commit the trace, replay forever (see [03_applying.md](./03_applying.md)).
+> example passes `rng=` to stay clean. This determinism is **the** load-bearing property for both lanes: the
+> live Mesa re-run in Pyodide reproduces the same trajectory (same `rng=` ⇒ same draws), and the seeded
+> headless run commits the canonical first-paint trace — compute once, replay forever
+> (see [03_applying.md](./03_applying.md)).
 
 ---
 
@@ -68,6 +70,14 @@ The full script is [`example.py`](./example.py). It is a small Schelling segrega
 households live on a grid; a household is **happy** if at least `HOMOPHILY` of its 8 (Moore) neighbors
 share its type, otherwise it **relocates to a random empty cell**. Nobody programs "segregation" — it
 **emerges**.
+
+> **This is the *generic* Mesa idiom, not the shipped scenario.** The example below uses a `torus=True`
+> grid, an **integer** homophily threshold, and per-agent `Agent.step()` activated with
+> `self.agents.shuffle_do("step")`. The shipped `simlab/scenarios/s02_schelling.py` deliberately differs: a
+> **non-torus** grid, a **fractional `tolerance`** threshold, a fixed **50/50** group split, and a manual
+> **batch update** (all unhappy agents are decided against the start-of-step configuration, then relocated
+> one-by-one) instead of `Agent.step()`/`shuffle_do`. Both are real Mesa 3; the example teaches the canonical
+> idiom, the scenario records the lab's canonical trace.
 
 ### 2.1 The agent — state + one local rule
 
@@ -181,7 +191,8 @@ at step 7 (0.9379 → 0.9348): relocation is not monotone, because moving one un
 a previously-happy neighbor unhappy. The trajectory is a *settling* process, not a straight climb.
 
 **Reproducibility.** Re-running prints the *identical* trajectory (same seed -> same RNG draws -> same
-relocations). This is the property the precompute lane depends on: compute once locally, commit the trace,
+relocations). This is the property both lanes depend on: the live Mesa re-run in Pyodide reproduces this
+exact trajectory, and the seeded headless run commits the canonical first-paint trace — compute once,
 replay forever.
 
 ---
@@ -198,5 +209,5 @@ replay forever.
 ## Grounding / references
 
 - ABM problem-type guide: [../../problem-types/02_agent-based-modeling.md](../../problem-types/02_agent-based-modeling.md)
-- Research: `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`
+- Research: the project's internal ABM-frameworks research note
 - Mesa docs: <https://mesa.readthedocs.io/latest/> · Schelling tutorial in the Mesa examples.

@@ -6,7 +6,7 @@ Learn how to model a system from zero — *define a case → write the rules →
 across worked scenarios you can tune and watch run, with a companion web app and a from-scratch
 curriculum.
 
-> **Status:** v0.15.002 — live. All **11 scenarios** ship and run in the
+> **Status:** v0.17.000 — live. All **11 scenarios** ship and run in the
 > [web app](https://simlab.fasl-work.com) (S01–S11), eight of them **live in the browser**. The shared
 > engine, the deterministic-replay viewer, and the Theory/Methodology pages (Queueing · DES · ABM ·
 > Optimization) are all in. Built in the open — see the [changelog](CHANGELOG.md).
@@ -33,8 +33,9 @@ not guessed**:
   local pipeline into a compact, **seeded trace**, which the app **replays** with a timeline scrubber under
   a clear *"precomputed due to cost"* banner. The full recipe lives in this repo.
 
-A scenario qualifies for the live lane only if it is **pure-Python AND runs in < 3 s AND its trace is
-< ~1 MB** (the [3-gate rule](simlab/core/scenario.py)). The verdict, with the measured numbers, is
+A scenario qualifies for the live lane only if it is **pure-Python AND its wheel closure loads in the
+browser (⊆ `LIVE_WHEELS`) AND runs in < 3 s AND its trace is < ~1 MB** (the
+[4-gate rule](simlab/core/scenario.py)). The verdict, with the measured numbers, is
 recorded in each scenario's manifest. Because a run is fully determined by `(params, seed)`, **the trace
 is the source of truth and replay is exact** — live and precomputed render through one code path.
 
@@ -70,14 +71,14 @@ A progression from a 30-line live queue to map-scale optimize-then-simulate. All
 | S01 | Bank / Clinic Queue (M/M/c) | DES | live | arrivals, servers, queue, ρ, Little's Law, **validation vs theory** |
 | S02 | Schelling Segregation | ABM | live | emergence from simple local rules |
 | S03 | SIR Epidemic | ABM | live | contagion, R₀, epidemic peak, herd immunity |
-| S04 | Emergency Department Patient Flow | DES | live | priority triage, non-stationary (hour-of-day) arrivals, multi-stage flow |
+| S04 | Emergency Department Patient Flow | DES | live | FCFS triage + non-preemptive priority treatment, a fixed daytime surge window, multi-stage flow |
 | S05 | Beer Game (Supply-Chain Bullwhip) | ABM | live | feedback + lead time amplify oscillations |
 | S06 | Job-Shop Scheduling (CP-SAT) | optimization | precomputed | combinatorial scheduling — what an optimizer does |
-| S07 | Construction Haul Routing | hybrid | live | optimize-then-simulate: the OR-Tools/NetworkX plan is precomputed + committed, the SimPy stochastic replay runs **live** over it (sliders mutate the replay) |
+| S07 | Construction Haul Routing | hybrid | live | optimize-then-simulate: the OR-Tools/NetworkX plan is precomputed + committed, the SimPy replay (deterministic in the shipped variants — fixed load/dump times, breakdown pinned to 0) runs **live** over it (sliders mutate the replay) |
 | S08 | Vehicle Routing (VRP) | optimization | precomputed | routing & fleet sizing with OR-Tools |
-| S09 | Ambulance Dispatch | hybrid | live | stochastic demand over a city graph; coverage |
+| S09 | Ambulance Dispatch | DES | live | stochastic demand over a city graph; coverage |
 | S10 | Monte-Carlo Replication / CI Study | hybrid | live | replications, confidence intervals, finite-run bias |
-| S11 | Mine Multi-Destination Haul | optimization + DES | precomputed | blend LP → fixed-fleet haul DES; plan-vs-fleet grade slip |
+| S11 | Mine Multi-Destination Haul | hybrid | precomputed | blend LP → fixed-fleet haul DES; plan-vs-fleet grade slip |
 
 ## How it's organized
 

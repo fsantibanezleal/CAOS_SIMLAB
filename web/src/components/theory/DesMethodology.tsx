@@ -654,11 +654,11 @@ export function DesMethodology({ es }: { es: boolean }) {
 
           <p>
             {es
-              ? "Con los resúmenes de réplicas formas la media muestral X̄ y la varianza muestral s², y reportas un intervalo de confianza en vez de un estimador puntual desnudo. Con Xᵢ aproximadamente normal, el IC exacto al 100(1−α)% usa el valor crítico t de Student con n−1 grados de libertad; cuando n es grande (los regímenes de este laboratorio usan cientos de réplicas), t_{n−1} ≈ z y la aproximación normal con z_{1−α/2} es indistinguible —es la que implementa el laboratorio (z=1.96 al 95%):"
-              : "From the replication summaries you form the sample mean X̄ and sample variance s², and report a confidence interval rather than a bare point estimate. For approximately normal Xᵢ, the exact 100(1−α)% CI uses the Student-t critical value with n−1 degrees of freedom; when n is large (this lab's regimes use hundreds of replications), t_{n−1} ≈ z and the normal approximation with z_{1−α/2} is indistinguishable — and is what the lab implements (z=1.96 at 95%):"}
+              ? "Con los resúmenes de réplicas formas la media muestral X̄ y la varianza muestral s², y reportas un intervalo de confianza en vez de un estimador puntual desnudo. Con Xᵢ aproximadamente normal, el IC exacto al 100(1−α)% usa el valor crítico t de Student con n−1 grados de libertad; cuando n es grande (los regímenes de este laboratorio usan cientos de réplicas), t_{n−1} ≈ z y la aproximación normal con z_{1−α/2} es indistinguible —es la que implementa el laboratorio, que calcula z = scipy.stats.norm.ppf(0.975) ≈ 1.96 (el valor crítico normal bilateral exacto al 95%), no el 1.96 escrito a mano:"
+              : "From the replication summaries you form the sample mean X̄ and sample variance s², and report a confidence interval rather than a bare point estimate. For approximately normal Xᵢ, the exact 100(1−α)% CI uses the Student-t critical value with n−1 degrees of freedom; when n is large (this lab's regimes use hundreds of replications), t_{n−1} ≈ z and the normal approximation with z_{1−α/2} is indistinguishable — and is what the lab implements, computing z = scipy.stats.norm.ppf(0.975) ≈ 1.96 (the exact two-sided 95% normal critical value), not the literal 1.96:"}
           </p>
           <Equation
-            tex={String.raw`\bar X \;\pm\; z_{1-\alpha/2}\,\frac{s}{\sqrt{n}}\qquad(\text{normal approx; } z_{0.975}=1.96),`}
+            tex={String.raw`\bar X \;\pm\; z_{1-\alpha/2}\,\frac{s}{\sqrt{n}}\qquad(\text{normal approx; } z_{0.975}=\text{norm.ppf}(0.975)\approx 1.96),`}
             caption={es ? "Intervalo de confianza al 100(1−α)% por aproximación normal (válida para n grande)." : "100(1−α)% confidence interval via the normal approximation (valid for large n)."}
           />
           <p>
@@ -814,8 +814,8 @@ export function DesMethodology({ es }: { es: boolean }) {
 
           <Callout variant="strong" title={es ? "La tesis del laboratorio" : "The lab's thesis"}>
             {es
-              ? "Un simulador en el que puedes confiar porque reproduce una respuesta analítica conocida. Los 12 regímenes cubren ρ de carga ligera a saturación (uno inestable, sin objetivo finito); la figura muestra el W_q simulado con su IC superpuesto sobre la curva suave Erlang-C en los 11 regímenes estables: la prueba visual de la validación."
-              : "A simulator you can trust because it reproduces a known analytic answer. The 12 regimes span ρ from light to saturation (one unstable, with no finite target); the figure shows the simulated W_q with its CI overlaid on the smooth Erlang-C curve across the 11 stable regimes — the visual proof of validation."}
+              ? "Un simulador en el que puedes confiar porque reproduce una respuesta analítica conocida. Los 12 regímenes cubren ρ de carga ligera a saturación (uno inestable, sin objetivo finito); la figura muestra el W_q medio replicado con su IC del 95% —del estudio replicado (verificación cruzada de Ciw + Monte-Carlo S10), no de la corrida única de S01 en SimPy— superpuesto sobre la curva suave Erlang-C en los 11 regímenes estables: la prueba visual de la validación. El W_q simulado de la corrida única de S01 es un punto sin barra de error."
+              : "A simulator you can trust because it reproduces a known analytic answer. The 12 regimes span ρ from light to saturation (one unstable, with no finite target); the figure shows the replicated mean W_q with its 95% CI — from the replicated study (Ciw cross-check + S10 Monte-Carlo), not from S01's single SimPy run — overlaid on the smooth Erlang-C curve across the 11 stable regimes, the visual proof of validation. S01's single-run simulated W_q is a point estimate with no error bar."}
           </Callout>
 
           <div className="assume">
@@ -887,8 +887,8 @@ export function DesMethodology({ es }: { es: boolean }) {
               role="img"
               aria-label={
                 es
-                  ? "Validación: el W_q medio simulado con barras de error de intervalo de confianza a través de doce regímenes de carga cae sobre la curva Erlang-C en forma cerrada, que sube abruptamente cuando la utilización se acerca a 1."
-                  : "Validation: simulated mean wait W_q with confidence-interval error bars across twelve load regimes lie on the closed-form Erlang-C curve, which rises steeply as utilization approaches 1."
+                  ? "Validación: el W_q medio replicado (verificación cruzada de Ciw + Monte-Carlo S10) con barras de error de intervalo de confianza al 95% a través de los regímenes de carga estables cae sobre la curva Erlang-C en forma cerrada, que sube abruptamente cuando la utilización se acerca a 1. La corrida única de S01 en SimPy aporta el W_q puntual sin barra de error."
+                  : "Validation: the replicated mean wait W_q (Ciw cross-check + S10 Monte-Carlo) with 95% confidence-interval error bars across the stable load regimes lies on the closed-form Erlang-C curve, which rises steeply as utilization approaches 1. S01's single SimPy run supplies the point W_q with no error bar."
               }
             >
               <line stroke="var(--color-fg)" strokeWidth="1.5" x1="60" y1="270" x2="690" y2="270" />
@@ -919,8 +919,8 @@ export function DesMethodology({ es }: { es: boolean }) {
             </svg>
             <figcaption className="fig-cap">
               {es
-                ? "Validación contra la verdad de terreno: el W_q simulado con barras de error de IC sigue la curva Erlang-C en forma cerrada a través de los 11 regímenes estables; las barras se ensanchan al acercarse ρ→1 (mayor varianza). El régimen inestable (ρ≥1) no tiene objetivo finito."
-                : "Validation against ground truth: simulated W_q with CI error bars tracks the closed-form Erlang-C curve across the 11 stable regimes; error bars widen as ρ→1 (higher variance). The unstable regime (ρ≥1) has no finite target."}
+                ? "Validación contra la verdad de terreno: el W_q medio replicado (verificación cruzada de Ciw + Monte-Carlo S10) con barras de error de IC sigue la curva Erlang-C en forma cerrada a través de los 11 regímenes estables; las barras se ensanchan al acercarse ρ→1 (mayor varianza). La corrida única de S01 en SimPy da el punto sin IC. El régimen inestable (ρ≥1) no tiene objetivo finito."
+                : "Validation against ground truth: the replicated mean W_q (Ciw cross-check + S10 Monte-Carlo) with CI error bars tracks the closed-form Erlang-C curve across the 11 stable regimes; error bars widen as ρ→1 (higher variance). S01's single SimPy run gives the point with no CI. The unstable regime (ρ≥1) has no finite target."}
             </figcaption>
           </figure>
 

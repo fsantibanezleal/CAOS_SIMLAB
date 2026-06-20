@@ -60,7 +60,7 @@ replications → mean + verifiable CI, as one fused kernel with no Python loop.
   (the only scenario JAX touches; its default driver is CPU joblib, JAX is the
   documented vectorized-functional alternative to the GPU exhibit).
 - **Lane contract:** [GPU-lane guide](../guides/03_gpu-lane.md) — local-only,
-  precompute-only, CPU-fallback; off the live web path and the VPS / Pages deploy.
+  precompute-only, CPU-fallback; off the live web path and the GitHub Pages deploy runtime.
 
 ## Siblings & alternatives
 

@@ -44,10 +44,11 @@ single run.
 ## How to solve it: the lab pattern (simulate-then-replay, precompute lane)
 
 JuPedSim sits in the **precompute** lane. It is native, CPU-bound and heavier than the live
-scenarios, so we never run it in the browser. The pattern:
+scenarios, so we never run it in the browser. The pattern a spatial-egress variant *would*
+follow (none ships today):
 
-1. **Build the geometry** for the space (ED waiting room + corridor + exits) and
-   parametrise the crowd (number of patients / visitors, desired speeds, exit
+1. **Build the geometry** for the space (e.g. a waiting room + corridor + exits) and
+   parametrise the crowd (number of occupants, desired speeds, exit
    configuration).
 2. **Run headless** locally, writing per-step trajectories with `SqliteTrajectoryWriter`
    (or a custom writer).
@@ -71,21 +72,24 @@ process; the DES output sets JuPedSim's crowd parameters offline.)
 
 ## Which CAOS_SIMLAB scenario(s) use it
 
-Per the scenario → tool map ([../../README.md](../../README.md)) and the ABM problem-type
-page ([../../problem-types/02_agent-based-modeling/04_tools.md](../../problem-types/02_agent-based-modeling/04_tools.md#4-crowd--pedestrian-flow-jupedsim)),
-JuPedSim is the engine for the **ED crowd / evacuation flow** scenario:
+**No shipped scenario uses JuPedSim today.** This is the honest OSMnx pattern: JuPedSim is the
+*documented engine* for a **future spatial-egress variant**, not a layer behind any current
+scenario. The runnable [example.py](example.py) is a verified smoke-test, but it backs no
+committed lab trace.
 
-- **Emergency-Department egress / room evacuation** — the spatial counterpart to the
-  **Hospital ED Patient-Flow DES scenario (S04)**. The DES scenario (SimPy) models the
-  *care pathway* (arrival → triage → treatment → disposition) as resource queues — see the
+If a spatial-egress variant were added, JuPedSim *would supply* the pedestrian-physics layer:
+
+- **A future Emergency-Department egress / room-evacuation variant** *would be* the spatial
+  counterpart to the **Hospital ED Patient-Flow DES scenario (S04)**. S04 (SimPy) models the
+  *care pathway* (arrival → triage → treatment → discharge) as resource queues — see the
   DES problem-type page ([../../problem-types/01_discrete-event-simulation.md](../../problem-types/01_discrete-event-simulation.md)).
-  JuPedSim models the *physical clearance* of the ED waiting area and corridors under an
-  evacuation order: how exit width and crowd size drive total evacuation time and where
-  people pile up. Together they make the point the lab teaches — **pick the dedicated tool
-  for the question**: queueing / DES for throughput and waiting, a microscopic pedestrian
-  ABM for spatial egress.
+  A JuPedSim variant *would* model the *physical clearance* of the ED waiting area and
+  corridors under an evacuation order: how exit width and crowd size drive total evacuation
+  time and where people pile up. Together they *would* make the point the lab teaches —
+  **pick the dedicated tool for the question**: queueing / DES for throughput and waiting, a
+  microscopic pedestrian ABM for spatial egress.
 
-The interactive readouts the scenario exposes (and that the verified example already
+The interactive readouts such a variant *would* expose (and that the verified example already
 demonstrates in miniature): **total evacuation time**, the **remaining-agents-over-time**
 curve, and **exit flow / density**, all reacting to controls for exit width, agent count and
 desired speed.
@@ -99,13 +103,13 @@ From the ABM-frameworks dimension and the architecture audits:
   drops into our pipeline,"** installable from a pip wheel, whereas Vadere is **Java with a
   GUI** and adds toolchain friction. For a Python-first, scripted precompute pipeline,
   JuPedSim wins on integration cost. Vadere remains a valid reference.
-- **Why JuPedSim and not Mesa for this scenario.** Mesa
+- **Why JuPedSim and not Mesa for a pedestrian-physics use case.** Mesa
   ([../04_mesa.md](../04_mesa.md)) is the lab's *canonical ABM teaching framework*, but it is grid /
   network / cell-space ABM, not a calibrated *continuous-space pedestrian-dynamics* engine.
   Crowd egress with collision-free movement and realistic densities is exactly what
   JuPedSim's operational models were built and validated for; reproducing that faithfully in
   Mesa would be reinventing a specialist tool. So: Mesa for emergence-from-simple-rules
-  teaching, JuPedSim for the pedestrian-physics scenario.
+  teaching, JuPedSim for the pedestrian-physics use case (if such a variant is added).
 - **CPU-only, no GPU.** JuPedSim does not use CUDA. Its sweet spot is
   hundreds-to-low-thousands of agents on CPU — comfortably enough for an ED floor.
   *Million-agent, city-scale* crowd egress is a different lane entirely (FLAME GPU 2 in the

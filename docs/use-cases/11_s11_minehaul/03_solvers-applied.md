@@ -41,8 +41,10 @@ This is exactly the GLOP usage pattern documented in the OR-Tools wiki node — 
 table). The output `plan_x` becomes the **flows** the fleet must realize.
 
 **Why GLOP and not CP-SAT or Routing.** The other two OR-Tools solvers in the lab fit different shapes:
-**CP-SAT** is for discrete scheduling (S06 job-shop), **Routing** is for vehicle routing (S07/S08/S09).
-The blend is continuous and linear, so the LP simplex is the natural — and fastest — fit.
+**CP-SAT** is for discrete scheduling (S06 job-shop, and the offline S07 haul-plan certificate), and the
+OR-Tools **Routing** layer is for vehicle routing — used by **S08** only (S07 routes with NetworkX Dijkstra
+plus an offline CP-SAT plan, and S09 uses no OR-Tools at all). The blend is continuous and linear, so the
+LP simplex is the natural — and fastest — fit.
 
 ## 2) The execution — SimPy
 

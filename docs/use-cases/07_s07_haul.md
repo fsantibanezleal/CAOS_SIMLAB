@@ -29,4 +29,7 @@ and the closed haul cycle is replayed as a real **SimPy** discrete-event simulat
   [OR-Tools](../frameworks/08_ortools.md) (CP-SAT cost certificate) ·
   [SimPy](../frameworks/01_simpy.md) (DES replay)
 - Problem-type guide: [Optimization & Routing](../problem-types/03_optimization-routing.md)
-- Pipeline: [Precompute pipeline](../guides/01_precompute-pipeline.md)
+- Lanes: the native NetworkX+OR-Tools route plan is built once by the
+  [precompute pipeline](../guides/01_precompute-pipeline.md) and committed as data; the SimPy DES replay over
+  that plan then runs in the [live (Pyodide) lane](../guides/02_live-lane-pyodide.md)
+  (`lane: "live"`, `wheels = ["numpy", "simpy"]`).

@@ -54,6 +54,6 @@ next to the obvious entries.
 
 ## Read next
 
-- [03_the-gate.md](./03_the-gate.md) — the four-part rule these measurements feed.
+- [03_the-gate.md](./03_the-gate.md) — the 4-gate rule these measurements feed.
 - [04_live-lane-pyodide.md](./04_live-lane-pyodide.md) — the worker that loads exactly this closure.
 - [../guides/02_live-lane-pyodide.md](../guides/02_live-lane-pyodide.md) — the runtime how-to (cold start, sources).

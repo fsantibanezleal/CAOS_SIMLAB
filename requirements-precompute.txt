@@ -1,5 +1,8 @@
-# Precompute lane — the dedicated, SOTA engines used OFFLINE (in the local .venv) to generate the committed
-# seeded traces the web app replays. NONE of these is loaded by the browser; they are native and/or heavy.
+# Precompute lane — the dedicated, SOTA engines used in the local .venv to generate the committed seeded
+# traces the web app replays. Several of these ALSO run LIVE in the Pyodide browser worker (mesa, ciw,
+# networkx, scipy, joblib, simpy — see simlab/core/scenario.py LIVE_WHEELS); only the NATIVE OR-Tools
+# solvers (S06/S08/S11) are truly precompute-only (no WASM build). They are installed here so the offline
+# pipeline can precompute every scenario's committed trace regardless of lane.
 # Install:  pip install -r requirements-precompute.txt   (Python 3.13, verified on Windows 2026-06-19)
 #
 # Versions are PINNED to what is installed + verified to import & run here. The full per-framework guides,
@@ -11,12 +14,12 @@ ciw==3.2.7            # dedicated queueing-network lib; S01 analytic M/M/c (Erla
 salabim==26.0.6       # DES teaching chapter + offline mp4/gif render (tkinter desktop; NOT web-embeddable)
 
 # --- Agent-Based Modeling (ABM) ---
-mesa==3.5.1           # canonical Python ABM framework — S02 Schelling, S03 SIR, S05 Beer Game (headless precompute)
-mesa-geo==0.9.3       # GeoAgents for map-based ABM (geospatial haul/ambulance variants)
-jupedsim==1.4.2       # pedestrian / ED crowd flow (social-force / collision-free-speed)
+mesa==3.5.1           # canonical Python ABM framework — S02 Schelling, S03 SIR, S05 Beer Game; runs LIVE in the Pyodide worker (also installed here for offline trace precompute)
+mesa-geo==0.9.3       # GeoAgents for map-based ABM — documented engine for a FUTURE geospatial variant (no shipped scenario yet)
+jupedsim==1.4.2       # pedestrian crowd flow (social-force / collision-free-speed) — documented engine for a FUTURE egress variant (no shipped scenario yet)
 
 # --- Optimization & routing ---
-ortools==9.15.6755    # CP-SAT (S06), Routing (S07/S08/S09), GLOP LP (S11) — native, never live
+ortools==9.15.6755    # CP-SAT (S06 + the S07 route-plan builder), Routing (S08), GLOP LP (S11) — native, never live
 pyvrp==0.13.4         # SOTA Hybrid Genetic Search VRP — S08 "what good looks like" contrast vs OR-Tools
 networkx==3.6.1       # graph algorithms (Dijkstra/A*/k-shortest) for the routing scenarios
 osmnx==2.1.0          # OSM road graphs — commit RENDERED GEOMETRY only, never raw .graphml (ODbL; see ATTRIBUTION.md)

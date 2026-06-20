@@ -74,7 +74,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 670.7,
+        "run_ms": 642.8,
         "trace_bytes": 35803,
         "reasons": []
       },
@@ -121,7 +121,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 779.8,
+        "run_ms": 782.1,
         "trace_bytes": 35467,
         "reasons": []
       },
@@ -168,7 +168,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 828.2,
+        "run_ms": 825.1,
         "trace_bytes": 35348,
         "reasons": []
       },
@@ -215,7 +215,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 842.3,
+        "run_ms": 839.4,
         "trace_bytes": 35253,
         "reasons": []
       },
@@ -262,7 +262,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 910.6,
+        "run_ms": 927.5,
         "trace_bytes": 35234,
         "reasons": []
       },
@@ -309,7 +309,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.7,
+        "run_ms": 2.4,
         "trace_bytes": 35143,
         "reasons": []
       },
@@ -353,7 +353,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 483.0,
+        "run_ms": 478.9,
         "trace_bytes": 35889,
         "reasons": []
       },
@@ -400,7 +400,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 469.3,
+        "run_ms": 466.7,
         "trace_bytes": 35874,
         "reasons": []
       },
@@ -447,7 +447,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 776.7,
+        "run_ms": 775.3,
         "trace_bytes": 35591,
         "reasons": []
       },
@@ -494,7 +494,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 851.4,
+        "run_ms": 866.8,
         "trace_bytes": 35108,
         "reasons": []
       },
@@ -541,7 +541,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 1032.2,
+        "run_ms": 1047.4,
         "trace_bytes": 35003,
         "reasons": []
       },
@@ -588,7 +588,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 712.8,
+        "run_ms": 756.4,
         "trace_bytes": 35473,
         "reasons": []
       },

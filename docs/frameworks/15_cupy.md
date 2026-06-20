@@ -7,8 +7,8 @@ thousands of CUDA cores in parallel. The appeal is that code written for `xp = n
 available. CuPy is **MIT-licensed**, pinned here at `cupy-cuda12x==14.1.1`.
 
 In CAOS_SIMLAB, CuPy is an **optional GPU exhibit, never a runtime dependency**. It lives only in the
-[`gpu` requirements lane](../guides/03_gpu-lane.md) — out of the browser/Pyodide live lane and off the VPS/Pages
-deploy path — behind a **CUDA-detect-with-CPU-fallback** probe, so a GPU-less learner can clone and run the
+[`gpu` requirements lane](../guides/03_gpu-lane.md) — out of the browser/Pyodide live lane and off the
+GitHub Pages deploy runtime — behind a **CUDA-detect-with-CPU-fallback** probe, so a GPU-less learner can clone and run the
 whole lab unchanged. The one scenario that uses it is **S10 (Monte-Carlo CI Study)**, where the *default*
 driver is CPU [joblib](./12_joblib.md) and CuPy is the "and here's the GPU version" appendix: the same batch of
 thousands of seeded replications, drawn and reduced as array columns on the device, returning only a small

@@ -37,7 +37,7 @@ Per the scenario→tool map, OR-Tools is the optimization engine in five scenari
 | Scenario | Sub-solver | What it optimises | Module |
 |---|---|---|---|
 | **S06 — Job-Shop** | **CP-SAT** | Operation start times that minimise the makespan (disjunctive scheduling). | `simlab/scenarios/s06_jobshop.py` |
-| **S07 — Construction haul routing** | **CP-SAT** | A min-cost single-unit-flow ILP that **certifies the route cost** of the cheapest loaded haul (the route itself is found with NetworkX Dijkstra). Paired with a **deterministic** SimPy haul DES. *(No OSMnx; no Routing solver.)* | `simlab/scenarios/s07_haul.py` |
+| **S07 — Construction haul routing** | **CP-SAT** | A min-cost single-unit-flow ILP that **certifies the route cost** of the cheapest loaded haul (the route itself is found with NetworkX Dijkstra). Both live in the **offline** plan builder `_haul_plan.py`; the live module `s07_haul.py` loads the committed plan and runs a **deterministic** SimPy haul DES only. *(No OSMnx; no Routing solver.)* | `simlab/scenarios/_haul_plan.py` (offline plan) · `simlab/scenarios/s07_haul.py` (live SimPy replay) |
 | **S08 — Vehicle routing (VRP)** | **Routing** (`pywrapcp`) | CVRP plan; OR-Tools is the *teaching default*, [PyVRP](../09_pyvrp.md) the SOTA contrast. Deterministic head-to-head; **no SimPy**. | `simlab/scenarios/s08_vrp.py` |
 | **S11 — Mine multi-destination haul** | **GLOP** (LP) | The plant-**blend** linear program: mix phase tonnages to hit a target grade subject to supply caps. Paired with a **deterministic** SimPy fleet DES. | `simlab/scenarios/s11_minehaul.py` |
 
@@ -92,14 +92,15 @@ covers routing and constraint programming"* — maximum didactic surface for min
   building it (OSMnx all-pairs on a big graph) dominates cost. The lab caps "live" routing instances small
   (≤~20–30 stops) and precomputes matrices for anything larger.
 - **Native code → precompute only.** OR-Tools cannot run in the browser (Pyodide). Everything it produces is
-  computed offline and committed as a compact trace; the VPS serves only the FastAPI API + replay artifacts.
-  This is by design, not a limitation of the lab.
+  computed offline and committed as a compact trace; the static site (GitHub Pages, no backend) serves only the
+  built SPA + the committed replay artifacts. This is by design, not a limitation of the lab.
 - **Determinism must be forced.** CP-SAT multi-worker search and stochastic metaheuristics are
   non-deterministic. For reproducible committed traces, pin a single worker and a fixed `random_seed`, and
   seed the SimPy RNG too. (Our demo and S06 both pin `num_search_workers=1, random_seed=42`.)
 - **Don't over-claim what a variant demonstrates.** The S06 and S11 adversarial audits found narrative claims
   contradicted by the committed data (e.g. an S06 variant labelled "short makespan" was actually the
-  second-longest; an S11 "plan met" variant read 66.7% adherence). The OR machinery was correct; the *prose
+  second-longest; the S11 6-truck "base" variant labelled near-target actually read 63.3% adherence with
+  `in_band=0`). The OR machinery was correct; the *prose
   around it* over-reached. Lesson for applying OR-Tools didactically: verify every claim against the actual
   solved numbers before shipping the explanation.
 
@@ -118,7 +119,8 @@ covers routing and constraint programming"* — maximum didactic surface for min
   for light scenarios.
 - **OSRM / VROOM (precompute only).** Heavy Dockerised engines for fast all-pairs matrices and out-of-box VRP
   on large, geography-real instances. Excellent but black-box; keep them in the local pipeline, ship only
-  their JSON output. Never host on the GPU-less VPS (OSM preprocessing is RAM/disk heavy and stateful).
+  their JSON output. Never put them on the deploy runtime — the site is static GitHub Pages with no backend
+  (OSM preprocessing is RAM/disk heavy and stateful).
 - **Deprecated, do not use:** AgentPy and desmod are unmaintained and are *not* used anywhere in this lab.
   Mentioned only so nobody reintroduces them.
 

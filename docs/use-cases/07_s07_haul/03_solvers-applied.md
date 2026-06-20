@@ -2,15 +2,21 @@
 
 S07 is the *optimize-then-simulate* archetype, and it genuinely **uses the three frameworks it documents** —
 no hand-rolled NumPy graph or event loop. Each tool owns one well-defined part of the pipeline:
-**graph → route geometry (NetworkX) → cost certificate (OR-Tools) → DES replay (SimPy)**. All code references
-are to [`simlab/scenarios/s07_haul.py`](../../../simlab/scenarios/s07_haul.py).
+**graph → route geometry (NetworkX) → cost certificate (OR-Tools) → DES replay (SimPy)**. The work is split
+across **two** modules, and that split is the whole point of the lane design (see §"Live vs precompute lane"
+below): the native **NetworkX + OR-Tools** route-planning runs **offline** in the plan builder
+[`simlab/scenarios/_haul_plan.py`](../../../simlab/scenarios/_haul_plan.py) and is committed as data in
+[`s07_plans.py`](../../../simlab/scenarios/s07_plans.py); the **SimPy** replay runs **live** in
+[`simlab/scenarios/s07_haul.py`](../../../simlab/scenarios/s07_haul.py)'s `run()`, which loads the committed
+plan and never imports OR-Tools or NetworkX.
 
 ## NetworkX — the route geometry (the *optimize* step's shape)
 
-**What it does.** `build_road_graph(net, cost)` constructs a real `nx.DiGraph` over the shared graded
-`GridNetwork` terrain (same nodes/edges/elevation/blocked cells as `_geo.py`), adding one directed arc per
-segment in each direction with `weight = cost(a, b)`. `nx_route(net, cost, src, dst)` then calls
-`nx.dijkstra_path(g, src, dst, weight="weight")`. It is called three ways in `run()`:
+**What it does.** In the offline plan builder (`_haul_plan.py`), `build_road_graph(net, cost)` constructs a
+real `nx.DiGraph` over the shared graded `GridNetwork` terrain (same nodes/edges/elevation/blocked cells as
+`_geo.py`), adding one directed arc per segment in each direction with `weight = cost(a, b)`.
+`nx_route(net, cost, src, dst)` then calls `nx.dijkstra_path(g, src, dst, weight="weight")`. It is called
+three ways while building each committed plan:
 
 - the **loaded climb** `up_path` — weighted by `loaded_cost` (the graded cost);
 - the **empty return** `down_path` — weighted by plain `net.dist`;
@@ -34,12 +40,14 @@ path as a **min-cost single-unit-flow ILP**:
   `Σ round(cost(a,b)·CP_SCALE)·x[a,b]`, with `CP_SCALE = 1000` (mm) keeping CP-SAT exact on a real-valued
   cost.
 
-The run computes the NetworkX path cost (`up_cost_nx`) and asserts CP-SAT's optimum agrees within
+The plan builder computes the NetworkX path cost (`up_cost_nx`) and asserts CP-SAT's optimum agrees within
 `CP_COST_TOL = 0.01` (≥ the `1/CP_SCALE` quantization), raising `RuntimeError` if they disagree.
 
-**Why OR-Tools, and why it certifies cost but not geometry.** CP-SAT is the lab's native optimizer; using it
-is what correctly makes the scenario `pure_python = False` (native C++ → precompute). Multiple **equal-cost**
-optimal routes exist (e.g. `r_switch`, `r_passR`, `r_wall`), so CP-SAT may tie-break the **path** arbitrarily
+**Why OR-Tools, and why it certifies cost but not geometry.** CP-SAT is the lab's native optimizer; because
+it is native C++ that cannot run in WASM, it is confined to the **offline plan builder** — which is exactly
+why the *plan* is precomputed while the SimPy *replay* (`pure_python = True`) stays live. Multiple
+**equal-cost** optimal routes exist (e.g. `r_switch`, `r_passR`, `r_wall`), so CP-SAT may tie-break the
+**path** arbitrarily
 — only the **cost** is well-defined. Therefore the **path geometry comes from NetworkX** (byte-stable,
 matches `_geo`), while CP-SAT **certifies the optimum cost** the planner commits to. Determinism is forced
 with `num_search_workers = 1`, `random_seed = 42` (`CP_RANDOM_SEED`), and a bounded
@@ -63,9 +71,10 @@ It accumulates `loads`, `busy_time` and `wait_time`, and the per-truck `legs` th
 **Why SimPy.** The shared loader is the binding resource; with one loader, adding trucks only lengthens the
 queue, so throughput saturates at the loader rate exactly as the machine-repair / `M/M/1//N` model predicts.
 SimPy is the "simulate" leg of the optimize-then-simulate hybrids — *the optimizer proposes, the simulator
-disposes*. Here the FIFO `Resource` exactly reproduces an earliest-free-loader policy, and with **no
-stochastic variates** the trace is a pure function of (params, seed). See
-[SimPy framework node](../../frameworks/01_simpy.md).
+disposes*. Here the FIFO `Resource` exactly reproduces an earliest-free-loader policy; at the canonical
+`breakdown = 0.0` there are **no stochastic variates** and the trace is a pure function of (params, seed)
+(when `breakdown > 0`, per-truck stoppages are drawn from a single seeded NumPy RNG, so the trace stays
+reproducible for a fixed seed). See [SimPy framework node](../../frameworks/01_simpy.md).
 
 ## Live vs precompute lane — a native PLAN + a live REPLAY
 

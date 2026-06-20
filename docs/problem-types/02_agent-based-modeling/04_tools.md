@@ -25,8 +25,8 @@ engine.
 
 Mesa's only first-class visualization is **SolaraViz**, which is a *stateful Python (Solara) server bound to a
 localhost port*. That is excellent for local teaching and notebooks and **wrong** for a public static site: it
-would be **one live Python process per visitor** on a GPU-less, few-vCPU host — a scaling and abuse hazard.
-**Do not run SolaraViz behind nginx for public users.**
+would be **one live Python process per visitor** — impossible on the static deploy (GitHub Pages, no backend), and a scaling and abuse hazard anywhere.
+**Do not run SolaraViz as a public live server.**
 
 So Mesa is used in **two roles**, never as a live public server:
 
@@ -95,13 +95,13 @@ Pedestrian flow is a **precompute** scenario (trajectories → replay), never a 
 
 When a model genuinely needs **10⁵–10⁸ agents**, object-per-agent Mesa is the wrong tool and you move to a
 vectorized or GPU engine. The research evaluated three; all are **precompute-only** (they produce artifacts the
-lab replays — none ever runs on the public host). The full write-up is the
+lab replays — none ever runs on the live (Pages) deploy). The full write-up is the
 **[GPU-ABM chapter](../../frameworks/18_gpu-abm-chapter.md)**:
 
 - **FLAME GPU 2** — CUDA message-passing on a single GPU, Python bindings, million-agent scale. The most
   powerful but the most brittle (CUDA/driver pinning required; documented 8 GB-VRAM OOM on laptop-class GPUs).
   It is **cut from the v1 runtime stack and kept as a teaching chapter** — its results, if used, must ship as
-  fully reproducible committed artifacts because the host can never recompute them.
+  fully reproducible committed artifacts because the static deploy (GitHub Pages, no backend) can never recompute them.
 - **ABMax (JAX)** — vectorized `vmap` + JIT; a lighter GPU/CPU alternative when CUDA setup is painful.
 - **AMBER (Polars)** — columnar **CPU** accelerator (reported up to ~1000× Mesa on large SIR); big sims
   without a GPU at all.

@@ -5,7 +5,7 @@
 netlogoweb.org), **export it to a self-contained HTML file** with the engine inlined, and that file runs the
 simulation **entirely in the visitor's browser**. In this lab it owns the **LIVE on-ramp lane**: a visitor
 lands on a scenario page and a real, animated simulator is *already running* — sliders, plots, a 2-D view —
-served as a static file by a no-GPU VPS that does **zero compute**. It is the only engine here that
+served as a static file by GitHub Pages, which does **zero compute**. It is the only engine here that
 simulates live in the browser without Pyodide (native JS, smaller cold-start), which is precisely why it
 carries the "enter → a running simulator, instantly" promise.
 
@@ -57,4 +57,4 @@ HTML and looking at the animated card (see
 - The Python ABM lane (build-it-yourself / scale-up): [`./04_mesa.md`](./04_mesa.md)
 - Beyond-the-browser scale (millions of agents): [`./18_gpu-abm-chapter.md`](./18_gpu-abm-chapter.md)
 - Live-lane runtime guide (NetLogo Web vs Pyodide): [`../guides/02_live-lane-pyodide.md`](../guides/02_live-lane-pyodide.md)
-- Research (decision + trade-offs + license nuance): `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`
+- Research (decision + trade-offs + license nuance): the project's internal ABM-frameworks research note

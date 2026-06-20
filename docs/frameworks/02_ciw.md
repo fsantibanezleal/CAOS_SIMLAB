@@ -12,7 +12,7 @@ Reach for Ciw when the problem **is** a queueing network *and* you want to **val
 simulation against queueing theory**. That is its distinguishing strength: the classical
 queues it simulates (M/M/1, M/M/c, Jackson networks) have **closed-form** answers, so a
 Ciw run can be checked against the math side-by-side. In CAOS_SIMLAB that powers the
-**queueing-theory teaching block**: in scenario **S01** the live, animated M/M/c teller
+**queueing-theory teaching block**: in scenario **S01** the live, animated M/M/c
 queue runs on [SimPy](./01_simpy.md) (a single ~300-customer run), and Ciw is the
 **in-run cross-check** — a short replicated study (10 capped, warmed-up replications)
 whose mean wait is compared back to the closed-form Erlang-C `Wq`. The cross-check
@@ -46,7 +46,7 @@ queueing-network studies that exceed the live gate.
 
 ## Scenarios that use it
 
-- **S01 — Bank / Clinic Teller Queue (M/M/c)** — SimPy is the live, animated engine; Ciw is
+- **S01 — Bank / Clinic Queue (M/M/c)** — SimPy is the live, animated engine; Ciw is
   the in-run cross-check (10 capped, warmed-up replications → `theory_in_ci` + `rel_err`)
   against the closed-form Erlang-C `Wq`, run inside the live gate. Module:
   `simlab/scenarios/s01_queue.py`.

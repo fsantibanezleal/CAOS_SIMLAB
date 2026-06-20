@@ -16,9 +16,11 @@ the lab uses it:** NetworkX is stage 1 of the signature *optimize-then-simulate*
 pipeline — `graph → matrix → optimize → simulate`. It is the road layer behind **S07** (construction
 haul routing, grade-weighted) and **S09** (ambulance dispatch, distance-weighted), where its edge
 weights mirror the lab's graded `_geo` grid byte-for-byte so the seeded routing trace replays exactly
-("replay = truth"). The k-shortest-paths capability is what makes route *fragility* visible: when the
-two cheapest routes are a near-tie, a tiny stochastic delay flips which one actually wins — the lesson
-the downstream SimPy replay drives home.
+("replay = truth"). The k-shortest-paths capability is what makes route *fragility* legible: when the two
+cheapest routes are a near-tie, a small change in edge weights (e.g. a barrier or a grade shift) flips which
+one wins — in S07 the grade slider and wall toggle re-select among committed plans to show exactly that
+switch. (The shipped SimPy replays are deterministic; the fragility is shown by re-selecting plans, not by
+injecting random delay.)
 
 ## Read in order
 
@@ -38,10 +40,17 @@ the downstream SimPy replay drives home.
 
 ## Scenarios that use it
 
-- **S07 — Construction Haul Routing** and **S09 — Ambulance Dispatch**, both in the
-  [Optimization & Routing problem type](../problem-types/03_optimization-routing.md). NetworkX builds the
-  graph and computes the shortest paths / matrix; OR-Tools optimizes on top; **SimPy** stress-tests
-  the plan under stochastic delays.
+Both scenarios are in the
+[Optimization & Routing problem type](../problem-types/03_optimization-routing.md). NetworkX is the road
+layer in each, but the rest of the pipeline differs:
+
+- **S07 — Construction Haul Routing.** NetworkX (`nx.dijkstra_path`) finds the haul route on the graded road
+  graph; **OR-Tools CP-SAT** certifies that route's cost (offline); the committed plan is then replayed by a
+  **deterministic** SimPy haul DES whose saturation comes from the shared finite loader.
+- **S09 — Ambulance Dispatch.** NetworkX (`nx.single_source_dijkstra` over the in-repo road graph) supplies
+  the shortest paths, and **SimPy** replays the seeded Poisson call stream with exact **nearest-available**
+  (closed-form argmin) dispatch and deterministic per-leg service — **no OR-Tools**, no stochastic
+  stress-test.
 
 ## Companion & alternative frameworks
 
@@ -49,5 +58,5 @@ the downstream SimPy replay drives home.
   source; same path API). *(Mind OSM's ODbL attribution — see [`../../ATTRIBUTION.md`](../../ATTRIBUTION.md).)*
 - [OR-Tools](./08_ortools.md) · [PyVRP](./09_pyvrp.md) — the fleet/vehicle-routing optimizers that
   *consume* the NetworkX travel-time matrix.
-- [SimPy](./01_simpy.md) — the discrete-event simulator that replays the optimized routing plan under
-  uncertainty.
+- [SimPy](./01_simpy.md) — the discrete-event simulator that replays the routing plan (the deterministic
+  S07 haul DES; the seeded nearest-available S09 dispatch).

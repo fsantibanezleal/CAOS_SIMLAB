@@ -45,7 +45,7 @@ No backend, no VPS. See [07_deploy.md](./07_deploy.md).
 
 ## What decides which plane a scenario uses
 
-The split is not a matter of taste — it is **measured**. A scenario runs live only if a four-part gate holds
+The split is not a matter of taste — it is **measured**. A scenario runs live only if a 4-gate holds
 (pure-Python, wheel closure loadable in the browser, run < 3 s, trace < ~1 MB); otherwise it is precomputed.
 The verdict and the numbers behind it are recorded in each scenario's manifest, and CI fails the build if
 anything tagged "live" breaches a gate — so "live mislabeling" cannot ship. The gate is the subject of

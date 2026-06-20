@@ -75,7 +75,7 @@ for the contract every offline lane obeys.
 
 It is **not** the live lane ([NetLogo Web](../07_netlogo-web/01_installation.md) / Pyodide-Mesa). A
 heavy-ABM run is, by definition, too costly to run per-visitor in a browser — it fails the
-[live-lane](../../guides/02_live-lane-pyodide.md) 3-gate rule on the first gate.
+[live-lane](../../guides/02_live-lane-pyodide.md) 4-gate rule on the first gate.
 
 ---
 

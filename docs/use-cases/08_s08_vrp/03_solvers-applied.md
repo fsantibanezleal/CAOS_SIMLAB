@@ -14,7 +14,7 @@ competition-grade one:
 | Engine | Role | What it minimizes | Where it lands in the trace |
 |---|---|---|---|
 | **OR-Tools** routing (Google) | **primary** plan | total distance **+** a global-span penalty (balanced routes) | `routes` / `agents` / `kpis` — rendered exactly as the app already does |
-| **PyVRP** (Hybrid Genetic Search) | **SOTA contrast** | **pure** total distance | the free-form `analytic` slot — overlaid/toggled, no schema change |
+| **PyVRP** (Hybrid Genetic Search) | **SOTA contrast** | **pure** total distance | the free-form `analytic` slot — committed for a future overlay/toggle UI (not yet rendered), no schema change |
 
 Both engines see one instance from one seeded RNG; distances are the integer-scaled grid shortest paths
 ([01 · Assumptions](./01_assumptions.md)), so the comparison is fair and the run reproducible.
@@ -44,8 +44,8 @@ programming. The concrete approach in the code:
 - **Deterministic stop**: `sp.solution_limit = 200` (`OR_SOLUTION_LIMIT`) — a **solution-count** limit, not
   a wall-clock `time_limit`. This is deliberate: a wall-clock limit makes the optimum machine-dependent (a
   faster laptop explores more), whereas a count limit makes the committed trace **byte-stable on any
-  machine** — the *"replay = truth"* contract. (The Experiments Context prose describes the stop as a
-  3-second time limit; the **code uses `solution_limit` instead**, and the code is authoritative.)
+  machine** — the *"replay = truth"* contract. (The Experiments Context states the same stop —
+  `solution_limit = 200`, explicitly **not a wall-clock limit** — so code, web and docs agree.)
 - **Reading the solution**: walk each vehicle's chain from `routing.Start(vh)` via `sol.Value(NextVar(...))`
   to the end, collecting `manager.IndexToNode(idx)`, and append the depot to close the tour →
   per-vehicle `special`-index sequences.
@@ -93,9 +93,9 @@ checks the OR-Tools plan (all customers served, manifest lane) but does not yet 
 
 ## Live vs. precompute lane
 
-S08 is **precompute-only — never live**. Per the lab's 3-gate rule, the **engine gate** requires pure
-Python to run in the browser (Pyodide). **Both** engines fail it: OR-Tools is native C++ with a Python
-wrapper, and PyVRP is a C++ core wrapped in Python — neither compiles to WASM. So:
+S08 is **precompute-only — never live**. Per the lab's [4-gate](../../architecture/03_the-gate.md),
+the **engine gate** requires pure Python to run in the browser (Pyodide). **Both** engines fail it: OR-Tools
+is native C++ with a Python wrapper, and PyVRP is a C++ core wrapped in Python — neither compiles to WASM. So:
 
 - both solvers run **offline** in the local `.venv` (they are lazily imported inside the solve functions,
   marked *"precompute-only"*), emit a **seeded JSON trace + manifest**, and the front end only **replays**

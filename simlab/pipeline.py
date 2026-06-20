@@ -33,6 +33,9 @@ def precompute(scenario_id: str, seed: int = 42, out_root: Path | str = REPO_ROO
     entries: list[dict[str, Any]] = []
     for var in sc.variants():
         params = sc.coerce(var.params)
+        # run_ms here is an OFFLINE CPython measurement (perf_counter in the local .venv), used as a
+        # conservative PROXY for the gate — NOT the in-browser time. The real in-Worker runtime is measured
+        # separately, live, in web's pyodide.worker.ts and shown in the live badge.
         t0 = time.perf_counter()
         trace = sc.run(params, seed)
         run_ms = (time.perf_counter() - t0) * 1000.0

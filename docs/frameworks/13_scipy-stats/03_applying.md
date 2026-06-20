@@ -4,8 +4,10 @@
 simulations. The division of labour in CAOS_SIMLAB is deliberate:
 
 - **NumPy** (and the seeded `Generator`) draws the randomness for one replication.
-- **joblib** (CPU) — and optionally **CuPy / Numba CUDA** (GPU) — fan thousands of independent,
-  seeded replications across cores/threads.
+- **joblib** (CPU) fans thousands of independent, seeded replications across cores/threads. This is the
+  shipped driver in every scenario — **no shipped scenario imports CuPy or Numba**; the GPU variants
+  (CuPy / Numba CUDA) live only as standalone appendices in the relevant frameworks' `example.py`, wired
+  into no scenario.
 - **`scipy.stats`** reduces that resulting sample to an honest **confidence interval**.
 
 This is the standard *replicate-then-summarise* pattern: generate i.i.d. KPI observations, then estimate
@@ -34,18 +36,21 @@ That is exactly the shape `scipy.stats` solves with `stats.sem`, `stats.t.interv
 ## 2. The pattern: replicate → summarise
 
 ```
-seeded sampler (NumPy)  ──►  many replications (joblib / CuPy)  ──►  CI (scipy.stats)
-   one noisy KPI               K i.i.d. KPI observations              X̄ ± t·s/√K
+seeded sampler (NumPy)  ──►  many replications (joblib, CPU)  ──►  CI (scipy.stats)
+   one noisy KPI               K i.i.d. KPI observations             X̄ ± z·s/√K
 ```
 
 1. Define the replication as a pure function of `(params, seed)` returning one KPI.
-2. Run `K` replications with **independent, non-overlapping** seeds (S10's plan is `make_rng(seed + r)`).
+2. Run `K` replications with **independent, non-overlapping** seeds. S10 fans them with joblib
+   (`delayed(mmc_mean_wait)(..., int(seed) + r)` for `r` in `range(reps)`); each replication builds its own
+   stream inside the worker with `np.random.default_rng(int(seed) + r)`, so the result is identical on any
+   worker count.
 3. Pass the resulting array to `scipy.stats`: `stats.sem(sample)` for the standard error, then
    `stats.t.interval(0.95, K-1, loc=mean, scale=sem)` for the interval.
 
-In CAOS_SIMLAB this happens **offline in the precompute pipeline**; only the resulting numbers (mean, CI
-bounds, half-width) are committed into the trace and the static site replays them. The browser never
-imports SciPy (see [`01_installation.md`](./01_installation.md)).
+In CAOS_SIMLAB this runs **live in the browser**: `scipy` is in `LIVE_WHEELS` and the Pyodide worker loads
+it, so S10 computes its CIs in-browser with `scipy.stats` (the same study is also committed as a seed-42
+trace for the deterministic gallery). See [`01_installation.md`](./01_installation.md).
 
 ## 3. Which scenario uses it
 
@@ -59,18 +64,22 @@ S10 is the methodology backbone scenario — see
 hence the only one that pins `scipy`. (Other scenarios *consume* the lesson — any KPI in the lab could be
 wrapped in a CI — but S10 is where it is taught and exercised.)
 
-A note on the shipped S10 code: it currently computes the CI inline with the **normal approximation**
-(`1.96 · s/√k`) because S10's variants run hundreds of replications, where z and t agree to within ~2% (at
-`K=200`, `df=199`, `t.ppf(0.975)=1.972` vs `z=1.960`). `scipy.stats` is the reference implementation the
-methodology page points to, and the small-`K` regime — where the choice actually matters and you should
-prefer Student-t — is exactly what [`example.py`](./example.py) demonstrates.
+A note on the shipped S10 code: it computes its intervals **through `scipy.stats`, never a hand-typed
+critical value**. The running 95% band uses the **exact** normal critical value
+`scipy.stats.norm.ppf(0.975)` (≈ `1.959964`, *not* the rounded `1.96`) over the running sample sd
+(`ddof=1`), and the headline CI is built with `scipy.stats.sem` + `scipy.stats.norm.interval(0.95, …)` — so
+the lab uses the statistics framework it teaches rather than re-deriving the formula by hand. It uses the
+**normal approximation** (z, not Student-t) because S10's variants run hundreds of replications, where z and
+t agree to within ~2% (at `K=200`, `df=199`, `t.ppf(0.975)=1.972` vs `z≈1.960`). `scipy.stats` is the
+reference implementation the methodology page points to, and the small-`K` regime — where the choice
+actually matters and you should prefer Student-t — is exactly what [`example.py`](./example.py) demonstrates.
 
 ## 4. Choosing the interval: z vs t
 
 | Situation | Pick | Why |
 |---|---|---|
 | Small `K` (rule of thumb `K < 30`), variance estimated from the sample | **Student-t** (`stats.t.interval`) | the t-critical value is larger, widening the interval to admit we don't know the variance — it never under-covers |
-| Large `K` and a roughly normal sampling distribution | normal-approx (`stats.norm.interval`) is fine | z and t are within ~2% by `K ≈ 30`; the cheaper constant `1.96` is acceptable |
+| Large `K` and a roughly normal sampling distribution | normal-approx (`stats.norm.interval`) is fine | z and t are within ~2% by `K ≈ 30`; the constant `1.96` (the *rounded* `norm.ppf(0.975)`≈`1.959964`) is acceptable — though the lab still calls `scipy.stats` rather than hand-typing it |
 | **Default when unsure** | **Student-t** | it costs nothing extra and converges to z anyway; the lab's honest default is "use t unless you have a genuinely large `K`" |
 
 ## 5. Honest trade-offs (grounded in the research)
@@ -89,17 +98,19 @@ type — make several points that constrain how `scipy.stats` should be applied:
   tails) report quantiles (p90/p95) and *their* intervals too. `scipy.stats` supports distribution-aware
   estimators, but the lab's default CI is for the *mean* — know when that's not what operations care about.
 - **`1/√K` is a hard wall.** Halving a CI costs 4× the replications. This is why the *generation* step is
-  parallelised (joblib, then GPU); `scipy.stats` is microseconds and never the bottleneck. Per research
-  07, GPUs help by running **thousands of replications at once** (the highest-ROI GPU use in this product),
-  not by speeding up the summary — the summary is always cheap CPU SciPy.
+  the one to parallelise — in the shipped scenarios via **joblib (CPU)**; `scipy.stats` is microseconds and
+  never the bottleneck. Per research 07, a GPU *would* help by running **thousands of replications at once**
+  (the highest-ROI place a GPU could go), not by speeding up the summary — but that GPU path is a standalone
+  framework appendix (CuPy / Numba CUDA in `example.py`), wired into **no shipped scenario**; the summary is
+  always cheap CPU SciPy.
 
 ## 6. When to pick `scipy.stats` vs alternatives
 
 - **vs hand-rolled formula math.** Don't. Typing `1.96` and a `t`-table value invites copy errors and
   ddof mistakes. `scipy.stats` is the canonical, tested implementation; the lab rule is to call it.
 - **vs `statsmodels`.** `statsmodels` is excellent for regression and richer inference, but it is a much
-  larger dependency for what is, here, three function calls. `scipy.stats` is already in the precompute
-  venv (pulled by Mesa/scikit-learn) and sufficient for means and standard CIs.
+  larger dependency for what is, here, three function calls. `scipy` is already pinned directly
+  (`scipy==1.18.0`) and loaded into the live worker, and is sufficient for means and standard CIs.
 - **vs bootstrap (`scipy.stats.bootstrap`).** When the sampling distribution is *not* approximately
   normal and you want a distribution-free interval (e.g. for a quantile or a ratio), `scipy.stats.bootstrap`
   is the right tool — and it lives in the same package, so adopting it costs no new dependency. For the

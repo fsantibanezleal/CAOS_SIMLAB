@@ -137,14 +137,14 @@ The routing dimension defines a clear ladder; pick by **instance size and where 
 | Use… | When | Why |
 |---|---|---|
 | **OSMnx + NetworkX** (this tool) | small "light" instances (≤ ~20–30 stops); the *teaching* road layer; building drawable geometry | Pure Python, MIT, no server, fully inspectable, highest didactic clarity. Can even run in the live/Pyodide tier for tiny graphs. |
-| **OSRM** (BSD-2, Docker) | large, geography-real instances needing a fast all-pairs `Table` matrix | Compiled C++ engine; preprocessing OSM is RAM/disk-heavy and stateful — **precompute pipeline only, never the host/VPS**; commit only its JSON output. |
+| **OSRM** (BSD-2, Docker) | large, geography-real instances needing a fast all-pairs `Table` matrix | Compiled C++ engine; preprocessing OSM is RAM/disk-heavy and stateful — **precompute pipeline only, never the live (Pages) deploy**; commit only its JSON output. |
 | **VROOM** (BSD-2, Docker) | want an out-of-the-box VRP engine that wraps OSRM | Solves CVRP/VRPTW in ms, but a *black box* relative to OR-Tools/PyVRP — teaches less; keep it as a precompute convenience, not the primary teaching tool. |
 | **synthetic `GridNetwork`** (in-repo) | you want zero external data, perfect determinism, and no ODbL exposure | The repo's current default; mimics the OSMnx graph contract so OSMnx is a drop-in upgrade. |
 
 Rule of thumb from the research: **keep live instances small with OSMnx/NetworkX; precompute the
 matrix with OSRM for anything larger, and commit the JSON.** Both OSRM and VROOM are
-**local-precompute backends** — neither belongs on the host (the public site is static, no app
-server). The compatible permissive licenses (OSMnx/NetworkX MIT, OR-Tools Apache-2.0, PyVRP MIT,
+**local-precompute backends** — neither belongs on the live deploy (the public site is static
+GitHub Pages, no app server). The compatible permissive licenses (OSMnx/NetworkX MIT, OR-Tools Apache-2.0, PyVRP MIT,
 OSRM/VROOM BSD-2) make mixing them safe; the **ODbL on the underlying OSM data** is the only
 share-alike obligation to manage.
 

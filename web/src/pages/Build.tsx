@@ -100,11 +100,12 @@ export default function Build() {
             <h3>{es ? "6 · Decidir el carril y el manifest" : "6 · Decide the lane & manifest"}</h3>
             <p>
               {es
-                ? "Mide la corrida: si es Python puro, su cierre de wheels cabe en el worker del navegador (numpy, simpy, ciw), corre en < 3 s y el trace pesa < 1 MB, puede ejecutarse en vivo; si no, se precomputa y se reproduce. El veredicto, con los números medidos, queda en el manifest del escenario — auditable."
-                : "Measure the run: if it's pure-Python, its wheel closure fits the browser worker (numpy, simpy, ciw), runs in < 3 s and the trace is < 1 MB, it can run live; otherwise it's precomputed and replayed. The verdict, with the measured numbers, is recorded in the scenario manifest — auditable."}
+                ? "Mide la corrida: si es Python puro, su cierre de wheels cabe en el worker del navegador (LIVE_WHEELS: numpy, simpy, ciw, mesa, pandas, scipy, networkx, sqlite3, joblib), corre en < 3 s y el trace pesa < 1 MB, puede ejecutarse en vivo; si no, se precomputa y se reproduce. El veredicto, con los números medidos, queda en el manifest del escenario — auditable."
+                : "Measure the run: if it's pure-Python, its wheel closure fits the browser worker (LIVE_WHEELS: numpy, simpy, ciw, mesa, pandas, scipy, networkx, sqlite3, joblib), runs in < 3 s and the trace is < 1 MB, it can run live; otherwise it's precomputed and replayed. The verdict, with the measured numbers, is recorded in the scenario manifest — auditable."}
             </p>
             <Callout variant="note" title={es ? "La regla de compuertas" : "The gate rule"}>
-              <p className="mono small">live ⇔ pure_python AND wheels ⊆ &#123;numpy, simpy, ciw&#125; AND run_ms &lt; 3000 AND trace_bytes &lt; 1_000_000</p>
+              <p className="mono small">live ⇔ pure_python AND wheels ⊆ LIVE_WHEELS AND run_ms &lt; 3000 AND trace_bytes &lt; 1_000_000</p>
+              <p className="mono small">LIVE_WHEELS = &#123;numpy, simpy, ciw, mesa, pandas, scipy, networkx, sqlite3, joblib&#125;</p>
             </Callout>
           </li>
           <li>

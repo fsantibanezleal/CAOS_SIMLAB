@@ -136,7 +136,7 @@ HTML carries its own copy of the engine.
 ### 3c. As a React component in the Vite SPA
 
 In the actual SPA (React 19 + Vite 6), wrap the iframe in a small component and resolve the asset through
-Vite's `BASE_URL` (the app is served under a base path on GitHub Pages / the VPS):
+Vite's `BASE_URL` (the app is served under a base path on GitHub Pages):
 
 ```tsx
 // web/src/components/sim/NetLogoCard.tsx
@@ -218,7 +218,7 @@ NetLogo's own documentation rather than asserted from memory:
 ## 6. Grounding / references
 
 - ABM-frameworks research (LIVE-lane decision + the chrome-strip + iframe embed pattern):
-  `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`.
+  the project's internal ABM-frameworks research note.
 - Tortoise (NetLogo → JS compiler + runtime): <https://github.com/NetLogo/Tortoise>
 - Galapagos (netlogoweb.org front-end / session API): <https://github.com/NetLogo/Galapagos>
 - NetLogo Web: <https://netlogoweb.org>
