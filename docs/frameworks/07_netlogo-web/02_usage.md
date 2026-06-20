@@ -120,7 +120,7 @@ This is the path the research recommends ("embed via iframe / the `netlogo-engin
 ```html
 <!-- Plain HTML version of the live card -->
 <iframe
-  src="/netlogo/s02-schelling.html"
+  src="/netlogo/schelling.html"
   title="Schelling segregation — live (NetLogo Web)"
   width="640" height="560"
   loading="lazy"
@@ -145,7 +145,7 @@ const BASE = import.meta.env.BASE_URL; // e.g. "/" locally, "/simlab/" in prod
 type Props = { model: string; title: string; ratio?: string };
 
 /** A LIVE NetLogo Web card: client-side ABM, zero server compute.
- *  `model` is a file under web/public/netlogo/, e.g. "s02-schelling.html". */
+ *  `model` is a file under web/public/netlogo/, e.g. "schelling.html". */
 export function NetLogoCard({ model, title, ratio = "8 / 7" }: Props) {
   return (
     <iframe
@@ -161,8 +161,8 @@ export function NetLogoCard({ model, title, ratio = "8 / 7" }: Props) {
 
 ```tsx
 // usage in a scenario page
-<NetLogoCard model="s02-schelling.html" title="S02 — Schelling segregation (live)" />
-<NetLogoCard model="s03-sir.html"      title="S03 — SIR epidemic (live)" />
+<NetLogoCard model="schelling.html" title="S02 — Schelling segregation (live)" />
+{/* An S03 SIR card is a documented future addition — no sir.html ships yet. */}
 ```
 
 ### 3d. Advanced: the raw runtime (no iframe)

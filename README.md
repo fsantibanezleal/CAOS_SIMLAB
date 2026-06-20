@@ -6,10 +6,14 @@ Learn how to model a system from zero — *define a case → write the rules →
 across worked scenarios you can tune and watch run, with a companion web app and a from-scratch
 curriculum.
 
-> **Status:** v0.17.000 — live. All **11 scenarios** ship and run in the
-> [web app](https://simlab.fasl-work.com) (S01–S11), eight of them **live in the browser**. The shared
-> engine, the deterministic-replay viewer, and the Theory/Methodology pages (Queueing · DES · ABM ·
-> Optimization) are all in. Built in the open — see the [changelog](CHANGELOG.md).
+**▶ Live app: [simlab.fasl-work.com](https://simlab.fasl-work.com)**  ·  📖 [Docs / wiki](docs/README.md)  ·  📝 [Changelog](CHANGELOG.md)
+
+[![CAOS_SIMLAB — the Experiments page running the Schelling segregation model live in the browser](docs/assets/hero.png)](https://simlab.fasl-work.com)
+
+> **Status:** live. All **11 scenarios** ship and run in the [web app](https://simlab.fasl-work.com)
+> (S01–S11), eight of them **live in the browser** (Pyodide). The shared engine, the deterministic-replay
+> viewer, and the Theory/Methodology pages (Queueing · DES · ABM · Optimization) are all in. Built in the
+> open — see the [changelog](CHANGELOG.md) for the current version.
 
 ## Why this exists
 

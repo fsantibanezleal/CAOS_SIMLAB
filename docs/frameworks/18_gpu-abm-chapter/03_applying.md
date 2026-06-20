@@ -2,7 +2,7 @@
 
 This is the judgement layer for the heavy-ABM chapter: **when** million-agent scale genuinely justifies
 FLAME GPU 2 / ABMax / AMBER, the pattern they fit, the research's honest trade-offs, and — the punchline —
-**why none of CAOS_SIMLAB's ten scenarios reaches for them**. The whole point of this chapter is to teach
+**why none of CAOS_SIMLAB's eleven scenarios reaches for them**. The whole point of this chapter is to teach
 the *discipline of not over-reaching for a GPU* as clearly as the rest of the lab teaches reaching for the
 right dedicated tool.
 
@@ -161,7 +161,7 @@ comparison as viable heavy engines; they are listed across the lab only so they 
 
 **Rule of thumb.** Reach for a heavy-ABM engine only when you are *provably* above ~10⁵ agents **and** the
 model is vectorizable **and** the arithmetic dwarfs the overhead — and even then prefer the path that ships a
-reproducible trace and carries a permissive license. For CAOS_SIMLAB's ten scenarios, **none of those
+reproducible trace and carries a permissive license. For CAOS_SIMLAB's eleven scenarios, **none of those
 conditions is met**, so all three stay in this chapter and the work ships on Mesa (ABM) and joblib
 (replications) on plain CPU.
 

@@ -18,7 +18,7 @@ already legible at Mesa scale, and the one genuinely "heavy" scenario, **S10**, 
 study* (thousands of cheap independent seeded runs) that is embarrassingly parallel on plain CPU cores via
 [joblib](./12_joblib.md). The chapter's punchline, straight from the research: **replications, not population
 size, is the high-ROI parallel workload here** — reach for a heavy-ABM engine only when you are *provably*
-above ~10⁵ agents, the model is vectorizable, and the arithmetic dwarfs the overhead. For our ten scenarios,
+above ~10⁵ agents, the model is vectorizable, and the arithmetic dwarfs the overhead. For our eleven scenarios,
 none of those conditions holds.
 
 ## Read in order

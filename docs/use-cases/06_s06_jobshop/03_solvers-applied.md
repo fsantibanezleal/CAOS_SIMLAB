@@ -69,9 +69,9 @@ job-shop on `ft06` (verified makespan 55) alongside a GLOP LP.
 never runs in the Pyodide live lane. The scenario declares `pure_python = False`, which fails the engine
 gate of the lab's [4-gate](../../architecture/03_the-gate.md) (`live` requires pure-Python *and*
 `wheels ⊆ LIVE_WHEELS` *and* `run_ms < 3000` *and* `trace_bytes < ~1 MB`). The committed manifest records
-`lane = precomputed` with the reason *"not pure-Python (cannot run in Pyodide/WASM)"*; for `ft06` the
-measured gate timing is well under the 3 s cap (`run_ms` ≈ 39.5 ms in the committed manifest — a few tens of
-ms; note S06 fails the lane on the engine gate, not on time) and `trace_bytes ≈ 1954`.
+`lane = precomputed` with the reason *"not pure-Python (cannot run in Pyodide/WASM)"*. S06 fails the lane on
+the **engine gate** (native OR-Tools cannot run in WASM), so the exact CP-SAT solve `run_ms` — measured and
+recorded in the manifest, host-dependent — is moot for the lane decision; the trace is tiny (`trace_bytes ≈ 1954`).
 
 Concretely:
 

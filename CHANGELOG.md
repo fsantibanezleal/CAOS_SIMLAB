@@ -3,6 +3,21 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.17.002] - 2026-06-20
+### Fixed — adversarial round-6 tail + presentation
+- **Drift-proof run-time docs:** stopped citing specific non-deterministic `gate.run_ms` millisecond figures in
+  the S01/S02/S06 lane prose (they vary 2–9× per regen with host load) — anchored the argument on the stable
+  trace-size + engine gates and "see the manifest's measured `gate.run_ms`". For S06, made explicit it fails the
+  lane on the **engine gate** (native OR-Tools, no WASM), not on time.
+- AbmTheory: scoped the `Model.step()` claim to S03/S05 and noted S02 Schelling uses a direct batch `relocate()`
+  pass over the same AgentSet (it defines no `step()`); joblib live note corrected to `threading` only (loky
+  needs subprocesses WASM can't spawn). 18_gpu-abm-chapter "ten scenarios" → "eleven". NetLogo docs reference
+  the actually-shipped `schelling.html` (the SIR card is marked future).
+- **README presentation:** added a hero screenshot of the live app + prominent app/docs/changelog links, and a
+  drift-resistant status line.
+- Note: the 11 per-scenario consistency auditors in round 6 could not run (transient API 529 overload); the four
+  cross-cutting auditors (coverage/depth/reality/live) completed and their findings are remediated above.
+
 ## [0.17.001] - 2026-06-20
 ### Fixed — 5-layer consistency (multi-round adversarial remediation) + functional
 - Removed the stale v0.16 "Mesa/joblib/SciPy = precompute-only" lane lie from every surface (it had survived on
@@ -22,7 +37,7 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
   honestly out of band; drifted numbers aligned to the manifests across docs + web.
 - Reframed the Mesa-Geo / JuPedSim "applying" docs to the honest future-variant pattern (no fabricated
   scenarios); added the PyVRP citation (Wouda, Lan & Kool 2024) + wired the VRP refs; corrected stale
-  deploy-architecture prose (static GitHub Pages, no VPS/backend); removed internal `wip/` path citations from
+  deploy-architecture prose (static GitHub Pages, no VPS/backend); removed internal working-state path citations from
   the public docs; unified the gate name to **4-gate**.
 - CI: `deploy-pages` also triggers on `simlab/**` (the live Pyodide bundle inlines `simlab/**/*.py`).
 
@@ -382,8 +397,9 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 ## [0.01.000] - 2026-06-18
 ### Added
 - Project foundation (Phase 0): the shared `simlab` engine — RNG seeding (`core/rng.py`), the trace
-  schema (`core/trace.py`), the `Scenario` interface + the 3-gate live/precompute classifier
-  (`core/scenario.py`), and the manifest builder (`core/manifest.py`).
+  schema (`core/trace.py`), the `Scenario` interface + the live/precompute classifier — then 3 gates,
+  later the 4-gate once the wheel-closure gate was added (`core/scenario.py`) — and the manifest builder
+  (`core/manifest.py`).
 - **S01 — Bank / Clinic Queue (M/M/c)**: a SimPy DES with a closed-form Erlang-C reference for
   validation; the live-lane landing scenario.
 - The local precompute pipeline + CLI (`python -m simlab.pipeline`), writing compact seeded traces to

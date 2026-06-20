@@ -165,7 +165,7 @@ the heavy engines absent, `orbax` present (the dependency behind ABMax's Windows
 
 - [`02_usage.md`](./02_usage.md) — the *idiom* each engine uses (message-passing / `vmap` / columnar), with
   illustrative snippets.
-- [`03_applying.md`](./03_applying.md) — when million-agent scale justifies them, and why our ten scenarios
+- [`03_applying.md`](./03_applying.md) — when million-agent scale justifies them, and why our eleven scenarios
   do not reach for them.
 - [`agent-based-modeling.md`](../../problem-types/02_agent-based-modeling.md) §2.6 — the heavy/GPU lane in the
   ABM curriculum.
