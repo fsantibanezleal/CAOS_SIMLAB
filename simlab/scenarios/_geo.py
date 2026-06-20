@@ -75,17 +75,19 @@ class GridNetwork:
                 elev[n] = ridge * notch + base_tilt * y / denom
             return elev
         if terrain == "hills":
-            # A richly varied landscape: a sum of Gaussian bumps (peaks) at given centres. Graded haul
-            # routes wind through the valleys between peaks, so spread-out interior O-D pairs get distinct,
-            # non-border routes. `bumps` = [(cx, cy, amp)] in grid coords; deterministic, no RNG.
-            bumps = opts.get("bumps", [(0.35, 0.55, 1.5), (0.65, 0.40, 1.3), (0.5, 0.8, 1.1),
-                                       (0.78, 0.62, 1.2), (0.25, 0.3, 1.0)])
-            sig = opts.get("sigma", 2.2)
+            # A richly varied landscape: a sum of Gaussian bumps (peaks, or basins when amp<0) at given
+            # centres, each with its OWN width. Graded haul routes wind through the saddles between peaks,
+            # so spread O-D pairs get distinct, irregular routes everywhere. `bumps` = [(cx, cy, amp)] or
+            # [(cx, cy, amp, sigma)] in grid coords; deterministic, no RNG.
+            bumps = opts.get("bumps", [(0.35, 0.55, 1.5), (0.65, 0.40, 1.3), (0.5, 0.8, 1.1)])
+            default_sig = opts.get("sigma", 2.2)
             elev = {}
             for n, (x, y) in self.coords.items():
                 e = 0.0
-                for cx, cy, amp in bumps:
-                    e += amp * math.exp(-((x - cx) ** 2 + (y - cy) ** 2) / (2 * sig * sig))
+                for bp in bumps:
+                    cx, cy, amp = bp[0], bp[1], bp[2]
+                    s = bp[3] if len(bp) > 3 else default_sig
+                    e += amp * math.exp(-((x - cx) ** 2 + (y - cy) ** 2) / (2 * s * s))
                 elev[n] = e
             return elev
         raise ValueError(f"unknown terrain '{terrain}'")

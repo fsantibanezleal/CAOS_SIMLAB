@@ -3,6 +3,17 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.15.001] - 2026-06-19
+### Fixed
+- **S11 terrain made genuinely diverse.** The previous hills were clustered centrally, leaving flat
+  corridors so routes between (centrally-spread) stations were still straight. Now: the stations sit at
+  opposite **corners/edges** (only the stock stays interior), the hills field is **distributed and
+  irregular** — broad tall hills placed **on the corridors** between stations (a central wall + a
+  top-corridor + a right-corridor block), medium scattered bumps, and a **basin** (amp&lt;0) — and the
+  loaded-climb penalty was strengthened (`ROAD_GRADE` 2.5→6.0). Routes now visibly **wind** around the
+  relief (route/straight ≈ 1.03 → 1.15+), and each corner→plant flow takes a different path. The
+  plan-vs-fleet grade-slip lesson is unchanged (undertrucked 1.6 → overtrucked 2.86, in band).
+
 ## [0.15.000] - 2026-06-19
 ### Added
 - **Theory page completed — new "Optimization & routing" section** (the page had Queueing, DES, ABM but

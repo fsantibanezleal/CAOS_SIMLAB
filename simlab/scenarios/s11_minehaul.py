@@ -24,7 +24,7 @@ from ..core.routetrace import RouteTrace
 from ..core.scenario import ParamSpec, Scenario, Variant
 from ._geo import GridNetwork, timed_legs
 
-ROAD_GRADE = 2.5   # fixed terrain penalty on loaded climbs (the ore grade is a separate thing)
+ROAD_GRADE = 6.0   # fixed terrain penalty on loaded climbs (strong, so routes visibly wind around hills)
 TRUCK_CAP = 2.0    # tonnes per trip
 LOAD_TIME = 1.5
 TIP_TIME = 0.5
@@ -109,19 +109,28 @@ class MineHaulScenario(Scenario):
         def at(fx: float, fy: float) -> int:
             return int(round(fy * (g - 1))) * g + int(round(fx * (g - 1)))
 
-        plant_node = at(0.82, 0.80)
-        phase_nodes = [at(0.74, 0.26), at(0.26, 0.82), at(0.13, 0.13)]  # low (near), mid (near), high (FAR)
-        dump_node = at(0.50, 0.22)
-        stock_node = at(0.52, 0.56) if n_stocks else None
-        # a richly varied landscape (Gaussian hills); routes wind through the valleys between peaks
-        bumps = [(0.34 * (g - 1), 0.54 * (g - 1), 1.5), (0.64 * (g - 1), 0.40 * (g - 1), 1.4),
-                 (0.50 * (g - 1), 0.78 * (g - 1), 1.2), (0.80 * (g - 1), 0.58 * (g - 1), 1.2),
-                 (0.24 * (g - 1), 0.32 * (g - 1), 1.1), (0.44 * (g - 1), 0.44 * (g - 1), 1.3)]
-        sigma = 0.16 * (g - 1)
-        # a wall at a chokepoint on the high→plant line (forces a reroute) for the barrier variant
-        blocked = {at(0.45, 0.47), at(0.48, 0.51)} if barrier else set()
+        # Places sit at opposite CORNERS/edges (spread across the whole map) so haul routes are long and
+        # cross varied terrain; the high-grade phase is the FAR corner from the plant (it starves first).
+        plant_node = at(0.88, 0.84)        # top-right corner
+        phase_nodes = [at(0.14, 0.86), at(0.86, 0.16), at(0.10, 0.12)]  # low (top-left), mid (bot-right), high (FAR bot-left)
+        dump_node = at(0.50, 0.08)         # bottom edge
+        stock_node = at(0.30, 0.40) if n_stocks else None  # interior, off the central wall
+
+        # A DISTRIBUTED, irregular hills field. Broad TALL hills sit ON the corridors between the corner
+        # stations (a central wall + a top-corridor + a right-corridor block) so the straight line is
+        # expensive and each O-D pair winds a DIFFERENT way; medium scattered bumps + one basin (amp<0)
+        # add irregular relief everywhere. (fx, fy, amp, sigma) as grid-coord fractions.
+        raw_bumps = [
+            (0.52, 0.52, 2.3, 0.19), (0.54, 0.78, 1.7, 0.13), (0.80, 0.48, 1.6, 0.13),
+            (0.66, 0.28, 1.3, 0.11), (0.24, 0.66, 1.3, 0.12), (0.70, 0.70, 1.4, 0.12),
+            (0.40, 0.24, 1.1, 0.10), (0.64, 0.58, -1.3, 0.14), (0.20, 0.52, 1.1, 0.10),
+            (0.84, 0.70, 1.1, 0.10), (0.44, 0.66, 1.2, 0.11), (0.34, 0.16, 1.0, 0.10),
+        ]
+        bumps = [(fx * (g - 1), fy * (g - 1), amp, sf * (g - 1)) for fx, fy, amp, sf in raw_bumps]
+        # a wall at a chokepoint on the high→plant diagonal (forces a reroute) for the barrier variant
+        blocked = {at(0.40, 0.42), at(0.44, 0.46)} if barrier else set()
         net = GridNetwork(g, g, spacing=1.0, terrain="hills",
-                          terrain_opts={"bumps": bumps, "sigma": sigma}, blocked=blocked)
+                          terrain_opts={"bumps": bumps}, blocked=blocked)
 
         def loaded_cost(a: int, b: int) -> float:
             return net.dist(a, b) * (1.0 + ROAD_GRADE * max(0.0, net.elev[b] - net.elev[a]))
