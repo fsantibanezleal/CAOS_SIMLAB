@@ -147,7 +147,7 @@ def main() -> None:
     print("[2] GLOP linear program (maximise 3x + 5y)")
     st_lp, obj, x_opt, y_opt = solve_lp()
     print(f"    status = {st_lp}  optimum = {obj:.1f}  at  x* = {x_opt:.1f}, y* = {y_opt:.1f}")
-    print(f"    (textbook optimum = 36 at x*=2, y*=6)")
+    print("    (textbook optimum = 36 at x*=2, y*=6)")
 
 
 if __name__ == "__main__":

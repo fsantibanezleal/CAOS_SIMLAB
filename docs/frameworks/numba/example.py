@@ -109,8 +109,7 @@ def prob_all_busy_cpu(u: np.ndarray, pmf_cdf: np.ndarray, c: int) -> float:
 
 def mmc_stationary_cdf(lam: float, mu: float, c: int, max_n: int = 200) -> np.ndarray:
     """Closed-form stationary pmf of the number-in-system N of a stable M/M/c, as a CDF."""
-    a = lam / mu                       # offered load (Erlangs)
-    rho = a / c                        # per-server utilisation (< 1 for stability)
+    a = lam / mu                       # offered load (Erlangs); per-server utilisation rho = a/c (< 1 stable)
     # un-normalised stationary probabilities p_n
     p = np.zeros(max_n + 1)
     p[0] = 1.0
