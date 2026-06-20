@@ -25,7 +25,7 @@ plans so the lab can show the contrast:
 
 Both solvers see one instance built from one seeded NumPy RNG; distances are shortest paths on the grid,
 scaled to integers so both integer engines stay exact. Deterministic from (params, seed): re-running yields
-the same trace. Reference: ``docs/frameworks/pyvrp/example.py`` (the verified PyVRP Model API).
+the same trace. Reference: ``docs/frameworks/09_pyvrp/example.py`` (the verified PyVRP Model API).
 """
 from __future__ import annotations
 

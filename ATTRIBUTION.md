@@ -37,6 +37,30 @@ Notes:
   log. Routes are shortest paths (Dijkstra) on a procedurally generated grid graph; the elevation field is a
   deterministic analytic surface (ramp / ridge / hills) — see `_geo.py`.
 
+## NetLogo Web (live ABM lane) — engine + embedded models
+
+The live in-browser ABM lane embeds **NetLogo Web (Tortoise engine)** as a self-contained
+standalone HTML under `web/public/netlogo/`. The page compiles and runs the model entirely
+client-side (zero server compute, zero network calls — fonts + analytics are stripped at
+build time). Build pipeline: `tools/netlogo/build_standalone.py`.
+
+| Asset | Source / provenance | License | How we handle it |
+|---|---|---|---|
+| NetLogo Web engine + compiler + Galapagos UI (inlined in the standalone HTML) | `netlogoweb.org/standalone` template (NLW commit `be116725`, fetched 2026-06-20) | **GPL-2.0-or-later** (NetLogo / Tortoise / Galapagos) | Redistributed inside the standalone HTML, unmodified except for removing the Google Fonts `<link>`s and neutralizing the Google Analytics (gtag) bootstrap. GPL source: https://github.com/NetLogo/Tortoise , https://github.com/NetLogo/Galapagos |
+| **Schelling Segregation model** (`tools/netlogo/schelling.nlogo`) | **Our own** original NetLogo source authored for CAOS_SIMLAB | Ours (repo license) | Committed as source; injected into the standalone HTML at build. Deliberately authored from scratch so we do NOT depend on the Models Library `Segregation` model. |
+
+**Why we author our own model.** The official NetLogo **Models Library** is mixed-license:
+*Code Examples* are **CC0** (public domain), but most full models — including
+`Segregation` and `Virus on a Network` (SIR) — are **CC BY-NC-SA** (noncommercial, not an
+open-source license). To avoid the NC restriction on this public product, we write our own
+NetLogo models. If a future card embeds a Models-Library model verbatim, record its exact
+license from the model's Info tab here and prefer CC0 Code Examples.
+
+- NetLogo copyright/licenses: https://docs.netlogo.org/copyright · https://github.com/NetLogo/NetLogo/wiki/Licenses
+- The NetLogo engine being GPL means the standalone HTML (which inlines it) carries GPL; our
+  own `.nlogo` model source remains ours. Attribution "powered by NetLogo" is shown by the
+  exported page itself.
+
 ## OpenStreetMap (ODbL) — the share-alike trap (not yet relevant)
 
 **No scenario currently uses OpenStreetMap data**, so the ODbL obligation does not apply to anything in this

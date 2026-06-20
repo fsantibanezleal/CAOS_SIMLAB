@@ -64,12 +64,12 @@ graph dependency (no deck.gl, MapLibre, @xyflow/react, d3, three, uPlot).
 
 | Component | License | Use |
 |---|---|---|
-| NetLogo Web / Tortoise | GPL-2.0+ (engine) | optional client-side ABM cards. Model code is mixed CC0 / CC-BY-NC-SA — prefer CC0 examples or author our own; record each embedded model's license. See [docs/frameworks/netlogo-web/](docs/frameworks/netlogo-web/). |
+| NetLogo Web / Tortoise | GPL-2.0+ (engine) | optional client-side ABM cards. Model code is mixed CC0 / CC-BY-NC-SA — prefer CC0 examples or author our own; record each embedded model's license. See [docs/frameworks/07_netlogo-web.md](docs/frameworks/07_netlogo-web.md). |
 
 ## Reference-only — documented, NOT installed or shipped
 
 - **FLAME GPU 2** — AGPL-3.0, CUDA-coupled, no PyPI wheel. Million-agent GPU-ABM; teaching chapter only
-  ([docs/frameworks/gpu-abm-chapter/](docs/frameworks/gpu-abm-chapter/)). The shipped GPU exhibit uses
+  ([docs/frameworks/18_gpu-abm-chapter.md](docs/frameworks/18_gpu-abm-chapter.md)). The shipped GPU exhibit uses
   CuPy/Numba (permissive) instead.
 - **ABMax** (JAX-ABM), **AMBER** (Polars) — reference only (ABMax does not pip-install on this Windows box).
 - **JaamSim** (Apache-2.0, Java desktop), **AnyLogic** (proprietary) — conceptual references, not Python deps.

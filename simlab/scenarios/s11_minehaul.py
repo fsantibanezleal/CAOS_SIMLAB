@@ -8,11 +8,11 @@ framework:
   1. PLANT BLEND (LP, **OR-Tools GLOP**, precompute) — choose how many tonnes to draw from each source so
      the blended feed hits the plant grade target within demand. The sources' grades straddle the target,
      so a single phase can't satisfy it: the plan is a genuine blend. Solved with ``pywraplp``'s GLOP
-     simplex (``docs/frameworks/ortools``), the same LP engine the OR-Tools docs example uses.
+     simplex (``docs/frameworks/08_ortools``), the same LP engine the OR-Tools docs example uses.
   2. EXECUTION (**SimPy** discrete-event sim) — a FIXED fleet runs haul cycles (drive → load → graded climb
      → tip → return), dispatching each free truck to whichever planned flow is furthest behind. Each truck
      is a real ``simpy`` process and each load point is a shared ``simpy.Resource`` loader, so two trucks
-     aimed at the same phase queue for it (``docs/frameworks/simpy``) — no hand-rolled event heap. The far,
+     aimed at the same phase queue for it (``docs/frameworks/01_simpy``) — no hand-rolled event heap. The far,
      high-grade phase needs longer hauls, so an under-sized fleet can't deliver its planned tonnage in the
      shift — and the achieved plant blend SLIPS off target. An optimal plan is necessary but not sufficient.
 

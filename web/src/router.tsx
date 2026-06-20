@@ -4,6 +4,7 @@ import Introduction from "@/pages/Introduction";
 import Experiments from "@/pages/Experiments";
 import Theory from "@/pages/Theory";
 import Build from "@/pages/Build";
+import NetLogoSandbox from "@/pages/NetLogoSandbox";
 import NotFound from "@/pages/NotFound";
 
 export default function AppRouter() {
@@ -17,6 +18,8 @@ export default function AppRouter() {
           <Route path="/introduction" element={<Introduction />} />
           <Route path="/theory" element={<Theory />} />
           <Route path="/build" element={<Build />} />
+          {/* Isolated NetLogo Web live-ABM prototype (not in nav). */}
+          <Route path="/sandbox/netlogo" element={<NetLogoSandbox />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>

@@ -62,7 +62,7 @@
       "kind": "int"
     }
   ],
-  "lane": "precomputed",
+  "lane": "live",
   "gate_thresholds": {
     "max_run_ms": 3000.0,
     "max_trace_bytes": 1000000
@@ -81,14 +81,12 @@
         "n_customers": 600,
         "n_reps": 50
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 389.3,
+        "run_ms": 356.6,
         "trace_bytes": 2374,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 0.4889,
@@ -120,14 +118,12 @@
         "n_customers": 600,
         "n_reps": 200
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 62.5,
+        "run_ms": 69.2,
         "trace_bytes": 6036,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 0.4493,
@@ -159,14 +155,12 @@
         "n_customers": 600,
         "n_reps": 500
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 229.9,
+        "run_ms": 145.6,
         "trace_bytes": 13436,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 0.4412,
@@ -198,14 +192,12 @@
         "n_customers": 600,
         "n_reps": 200
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 139.2,
+        "run_ms": 57.9,
         "trace_bytes": 6024,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 0.1592,
@@ -237,14 +229,12 @@
         "n_customers": 600,
         "n_reps": 200
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 216.7,
+        "run_ms": 58.0,
         "trace_bytes": 6013,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 1.0723,
@@ -276,14 +266,12 @@
         "n_customers": 600,
         "n_reps": 200
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 236.7,
+        "run_ms": 65.1,
         "trace_bytes": 6032,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 2.2727,
@@ -315,14 +303,12 @@
         "n_customers": 600,
         "n_reps": 500
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 157.6,
+        "run_ms": 214.7,
         "trace_bytes": 13432,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 1.0468,
@@ -354,14 +340,12 @@
         "n_customers": 600,
         "n_reps": 500
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 143.5,
+        "run_ms": 187.8,
         "trace_bytes": 13444,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 2.2733,
@@ -393,14 +377,12 @@
         "n_customers": 600,
         "n_reps": 50
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 32.0,
+        "run_ms": 36.4,
         "trace_bytes": 2372,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 2.4852,
@@ -432,14 +414,12 @@
         "n_customers": 600,
         "n_reps": 500
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 154.1,
+        "run_ms": 152.0,
         "trace_bytes": 13420,
-        "reasons": [
-          "needs wheels ['joblib', 'scipy'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "final_mean": 0.1576,

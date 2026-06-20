@@ -3,6 +3,25 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.17.000] - 2026-06-20
+### Fixed — restore ALL 8 live modes (the v0.16 regression)
+- v0.16 wrongly demoted s02/s03/s05/s07/s09/s10 to precompute, removing their interactive Run. Restored every
+  one with its real tool: **s02/s03/s05 on real Mesa 3 live in Pyodide** (measured: loads with `sqlite3`,
+  ~3 s cold start), **s09** NetworkX+SimPy, **s10** joblib, and **s07** via the OR-Tools/NetworkX route plan
+  precomputed + committed (`s07_plans.py`) with the **SimPy stochastic replay running live** over it. Live now
+  matches v0.15 exactly: s01, s02, s03, s04, s05, s07, s09, s10; only the native OR-Tools solvers (s06/s08/s11)
+  stay precompute. Gate: live iff `pure_python AND wheels ⊆ LIVE_WHEELS AND <3s AND <1MB`; worker loads the
+  closure on demand. NetLogo Web card added as the alternate ABM live engine.
+### Added
+- Documentation rebuilt as a **numbered wiki**: `docs/frameworks/NN_<fw>/` (18, verified examples),
+  `docs/use-cases/NN_<scenario>/` (assumptions+formalization+solvers+results, 11), deep `docs/architecture/`
+  (7 files), granular problem-types/guides, master + section indexes.
+### Fixed — cross-layer consistency
+- Hard adversarial validation (15 independent auditors) found **83 defects**; all remediated — docs,
+  docstrings, in-code comments, web content and manifests aligned to the code+manifest truth (Mesa = live not
+  precompute; S01 = SimPy live + Ciw cross-check; replications/CI = S10 not S04; S10 = heap M/M/c + joblib).
+- 40 tests pass; ruff (whole repo) clean; tsc + vite build green.
+
 ## [0.16.000] - 2026-06-20
 ### Changed — major: every scenario now runs on its REAL dedicated tool (no more hand-rolled NumPy stand-ins)
 - **ABM → Mesa 3** (was hand-rolled NumPy): s02 Schelling, s03 SIR, s05 Beer Game now use `mesa.Agent` /

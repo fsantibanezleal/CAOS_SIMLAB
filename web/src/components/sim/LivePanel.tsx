@@ -28,11 +28,12 @@ function paramsMatch(a: Record<string, number>, b: Record<string, number>, specs
 }
 
 /** The Live (Pyodide) sub-tab: tune params, run the real scenario in-browser, replay the fresh trace with
- *  the same player, and optionally verify it against the committed trace. Scenarios the browser worker can't
- *  run — native engines (OR-Tools) OR heavy wheel closures (Mesa/joblib/scipy/networkx) outside LIVE_WHEELS —
- *  show a read-only explainer (no Run) so the runtime is never downloaded for them. The gate verdict
- *  (`gate.reasons` empty ⇔ live) is the single source of truth, matching simlab.core.scenario.classify_lane
- *  and simlab.live.live_lanes — never decide live from pure_python alone (Mesa is pure-Python but precompute). */
+ *  the same player, and optionally verify it against the committed trace. Mesa (ABM), joblib/scipy
+ *  (Monte-Carlo) and networkx (graphs) are all IN LIVE_WHEELS and run live; only scenarios the browser
+ *  worker can't run — native engines (OR-Tools, pure_python=false) — show a read-only explainer (no Run)
+ *  so the runtime is never downloaded for them. The gate verdict (`gate.reasons` empty ⇔ live) is the
+ *  single source of truth, matching simlab.core.scenario.classify_lane and simlab.live.live_lanes — never
+ *  decide live from pure_python alone (the wheel closure must also fit LIVE_WHEELS). */
 export function LivePanel({ manifest, variant }: { manifest: ScenarioManifest; variant: VariantEntry }) {
   const { t } = useTranslation();
   const lang = useLang();

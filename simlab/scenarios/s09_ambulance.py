@@ -8,12 +8,12 @@ fleet utilization — the canonical EMS fleet-sizing / station-siting question.
 
 This scenario USES the tools it documents — no hand-rolled NumPy event loop or graph search:
 
-* **NetworkX** (``docs/frameworks/networkx``) builds a real undirected road graph over the shared city
+* **NetworkX** (``docs/frameworks/10_networkx``) builds a real undirected road graph over the shared city
   ``GridNetwork`` in ``_geo.py`` (same nodes/edges/coordinates). Travel routes — base→scene, scene→hospital,
   hospital→base — are ``nx.dijkstra_path`` shortest paths on the distance-weighted graph, and the dispatch
   metric (earliest possible arrival across the fleet) reads ``nx`` path *lengths*. On the unit grid these
   reproduce the lab's previous Dijkstra byte-for-byte, so the committed trace is unchanged.
-* **SimPy** (``docs/frameworks/simpy``) replays the call stream + dispatch as a real discrete-event
+* **SimPy** (``docs/frameworks/01_simpy``) replays the call stream + dispatch as a real discrete-event
   simulation. A single arrival process injects each Poisson call at its event time; an instantaneous
   dispatcher then commits the nearest-available ambulance (the one with the earliest feasible scene arrival,
   honouring each unit's busy-until clock). Because dispatch consumes zero simulated time and the arrival

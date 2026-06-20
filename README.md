@@ -70,10 +70,10 @@ A progression from a 30-line live queue to map-scale optimize-then-simulate. All
 | S01 | Bank / Clinic Queue (M/M/c) | DES | live | arrivals, servers, queue, ρ, Little's Law, **validation vs theory** |
 | S02 | Schelling Segregation | ABM | live | emergence from simple local rules |
 | S03 | SIR Epidemic | ABM | live | contagion, R₀, epidemic peak, herd immunity |
-| S04 | Emergency Department Patient Flow | DES | live | priority triage, non-stationary arrivals, replications & CIs |
+| S04 | Emergency Department Patient Flow | DES | live | priority triage, non-stationary (hour-of-day) arrivals, multi-stage flow |
 | S05 | Beer Game (Supply-Chain Bullwhip) | ABM | live | feedback + lead time amplify oscillations |
 | S06 | Job-Shop Scheduling (CP-SAT) | optimization | precomputed | combinatorial scheduling — what an optimizer does |
-| S07 | Construction Haul Routing | hybrid | live | optimize-then-simulate; graded terrain drives cost |
+| S07 | Construction Haul Routing | hybrid | live | optimize-then-simulate: the OR-Tools/NetworkX plan is precomputed + committed, the SimPy stochastic replay runs **live** over it (sliders mutate the replay) |
 | S08 | Vehicle Routing (VRP) | optimization | precomputed | routing & fleet sizing with OR-Tools |
 | S09 | Ambulance Dispatch | hybrid | live | stochastic demand over a city graph; coverage |
 | S10 | Monte-Carlo Replication / CI Study | hybrid | live | replications, confidence intervals, finite-run bias |
