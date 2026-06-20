@@ -133,14 +133,16 @@ class HaulScenario(Scenario):
     def _load_plan(self, grid: int, grade: float, pass_col: int, lift_col: int, barrier: int) -> dict:
         """Fetch the COMMITTED plan for this geometry (built offline by NetworkX+OR-Tools).
 
-        Live mode tunes the fleet over a FIXED plan, so the geometry must match a committed one. The grade
-        slider re-selects among committed plans (the route flips live); other geometry knobs are pinned to
-        the committed defaults by their param_specs. An off-grid geometry has no committed plan, which is a
-        native-plan miss (it would need OR-Tools/NetworkX, absent in the worker) — reported honestly.
+        Live mode tunes the fleet over a FIXED plan, so the geometry must match a committed one. The two free
+        geometry sliders — grade (route flips live) and the wall toggle — both re-select among committed plans
+        across their whole range; the pass/lift columns are pinned to the committed defaults by their
+        param_specs (the r_passR variant's right-pass plan is committed and reached via the variant, not the
+        sliders). An off-grid geometry has no committed plan, which is a native-plan miss (it would need
+        OR-Tools/NetworkX, absent in the worker) — reported honestly.
         """
         key = _plan_key(grid, grade, pass_col, lift_col, barrier)
         plan = PLANS.get(key)
-        if plan is None:  # pragma: no cover - guarded by pinned geometry param_specs
+        if plan is None:  # pragma: no cover - guarded by committed grade×wall grid + pinned pass/lift columns
             raise RuntimeError(
                 f"s07_haul: no committed plan for geometry '{key}'. The OR-Tools/NetworkX route plan is "
                 f"native (no WASM build); regenerate plans offline with `python -m simlab.scenarios._haul_plan`."

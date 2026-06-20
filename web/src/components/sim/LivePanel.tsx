@@ -15,10 +15,6 @@ function fmt(spec: ParamSpec, v: number): string {
   return spec.step < 1 ? v.toFixed(2) : String(v);
 }
 
-function specDefaults(specs: ParamSpec[]): Record<string, number> {
-  return Object.fromEntries(specs.map((s) => [s.key, s.default]));
-}
-
 function paramsMatch(a: Record<string, number>, b: Record<string, number>, specs: ParamSpec[]): boolean {
   return specs.every((s) => {
     const av = s.kind === "int" ? Math.round(a[s.key]) : a[s.key];
@@ -149,7 +145,10 @@ export function LivePanel({ manifest, variant }: { manifest: ScenarioManifest; v
     setVerify(null);
   }
   function reset(): void {
-    setParams(specDefaults(specs));
+    // Reset returns to THIS variant's committed regime (not the scenario's spec defaults), so a variant whose
+    // params sit off the slider grid — e.g. s07 r_passR's pinned pass/lift columns — stays recoverable and the
+    // "matches the committed variant" verify path is reachable again after a reset.
+    setParams({ ...variant.params });
     setSeed(manifest.seed);
     setVerify(null);
   }

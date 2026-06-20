@@ -188,17 +188,19 @@ def build_plan(grid: int, grade: float, pass_col: int, lift_col: int, barrier: i
 
 
 def enumerate_plan_geometries() -> list[tuple[int, float, int, int, int]]:
-    """The deterministic set of geometries to precompute: every grade slider step at the default geometry
-    (so the route-flip lesson is fully live across the grade slider), plus the off-default geometries the
-    committed variants use (r_passR's right pass, r_wall's barrier). (grid, grade, pass_col, lift_col, barrier).
+    """The deterministic set of geometries to precompute: every grade slider step at the default geometry,
+    for BOTH wall states (barrier 0 and 1), so the two free geometry sliders — grade AND the wall toggle —
+    re-select among committed plans across their whole range with no live OR-Tools miss. Plus the off-default
+    pass column the r_passR variant uses. (grid, grade, pass_col, lift_col, barrier).
     """
     geoms: list[tuple[int, float, int, int, int]] = []
-    # grade slider: 0.0 .. 8.0 step 0.5 at the default geometry (grid 12, pass 2, lift 4, no wall)
-    for i in range(17):  # 0.0 .. 8.0 inclusive
-        geoms.append((12, round(i * 0.5, 1), 2, 4, 0))
-    # variant-specific geometries
-    geoms.append((12, 6.0, 9, 7, 0))   # r_passR — pass moved right
-    geoms.append((12, 1.0, 2, 4, 1))   # r_wall  — barrier on the direct climb
+    # grade slider 0.0 .. 8.0 step 0.5 at the default geometry (grid 12, pass 2, lift 4), wall off AND on —
+    # so toggling the barrier slider at ANY grade always hits a committed plan (no native-plan miss live).
+    for barrier in (0, 1):
+        for i in range(17):  # 0.0 .. 8.0 inclusive
+            geoms.append((12, round(i * 0.5, 1), 2, 4, barrier))
+    # variant-specific geometry: r_passR — pass moved right (r_wall's barrier plan is already in the grid above)
+    geoms.append((12, 6.0, 9, 7, 0))
     # de-dup, preserve order
     seen: set[tuple[int, float, int, int, int]] = set()
     out: list[tuple[int, float, int, int, int]] = []
