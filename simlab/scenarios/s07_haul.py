@@ -1,22 +1,113 @@
-"""S07 — Construction haul routing: a closed finite-source queue (optimize-then-simulate).
+"""S07 — Construction haul routing: optimize-then-simulate on three real frameworks.
 
 A fixed fleet recirculates between a LOAD point (bottom) and a DUMP (top), separated by a RIDGE of high
 ground with a low PASS. Elevation drives the loaded cost, so the optimal haul route is a genuine
 trade-off: going straight over the crest is short but climbs hard; detouring to the pass is longer but
 nearly flat. Because only climbing is penalized, the optimal route SWITCHES at a critical grade — below
 it the direct climb wins, above it the route flips to the pass (a barrier can reroute it independent of
-grade). The route is solved exactly with Dijkstra (the *optimize* step); a seeded discrete-event loop then
-*simulates* the cycle. The shared LOADER is the binding resource: trucks are a finite calling population
-(machine-repair / M/M/1//N queue), so throughput saturates at the loader rate — match the fleet to the
-loader (the "match factor").
+grade). The shared LOADER is the binding resource: trucks are a finite calling population (machine-repair
+/ M/M/1//N queue), so throughput saturates at the loader rate — match the fleet to the loader (the "match
+factor").
+
+This scenario USES the tools it documents — no hand-rolled NumPy graph or event loop:
+
+* **NetworkX** (``docs/frameworks/networkx``) builds a real directed road graph over the shared graded
+  ``GridNetwork`` terrain in ``_geo.py`` (same nodes/edges/elevation/blocked cells) and finds the haul
+  route with ``nx.dijkstra_path`` over the grade-weighted edges — the *optimize* step's geometry.
+* **OR-Tools** CP-SAT (``docs/frameworks/ortools``) independently re-solves the SAME shortest path as a
+  min-cost single-unit-flow ILP and confirms the route cost the optimizer commits to. CP-SAT is native
+  code, so this scenario is precomputed (``pure_python = False``); the solver is made reproducible with a
+  single worker + a fixed ``random_seed`` and a deterministic stopping rule, and its optimum cost is
+  STABLE across runs (the path geometry is taken from NetworkX, which is byte-stable, because equal-cost
+  optimal routes let the ILP tie-break arbitrarily).
+* **SimPy** (``docs/frameworks/simpy``) replays the cycle as a real discrete-event simulation: each truck
+  is a process that requests a shared ``simpy.Resource`` (the loaders), loads, hauls up the planned route,
+  dumps, hauls back, and re-enters the queue — the *simulate* step. The closed finite-source queue makes
+  throughput saturate at the loader rate exactly as the machine-repair model predicts.
+
+Determinism: the route is a unique shortest path on a fixed graph (NetworkX) confirmed by a seeded CP-SAT
+solve (OR-Tools); the DES has no stochastic variates in this variant family, so the replay is a fully
+deterministic function of (params, seed) — the same input yields the same trace byte-for-byte. The emitted
+artifact is the existing routetrace format (routes/agents/barriers/legend/kpis/analytic); nothing in the
+trace schema or the frontend contract changes.
 """
 from __future__ import annotations
 
-import heapq
+from typing import TYPE_CHECKING, Callable
 
 from ..core.routetrace import RouteTrace
 from ..core.scenario import ParamSpec, Scenario, Variant
 from ._geo import GridNetwork, timed_legs
+
+if TYPE_CHECKING:  # type-checking only: NetworkX is a heavy dep absent under Pyodide, imported lazily below
+    import networkx as nx
+
+# OR-Tools CP-SAT confirmation of the optimal route cost. Native code => precompute lane.
+CP_SCALE = 1000          # integer edge-cost scaling (mm) so CP-SAT stays exact on a real-valued cost
+CP_RANDOM_SEED = 42      # fixed solver seed => reproducible search (machine-independent)
+CP_TIME_LIMIT_S = 10.0   # deterministic stop guard; the ILP solves to OPTIMAL well inside this
+CP_COST_TOL = 0.01       # NetworkX vs CP-SAT optimum agreement tolerance (>= 1/CP_SCALE quantization)
+
+
+def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.DiGraph:
+    """A real NetworkX directed road graph over the shared GridNetwork terrain.
+
+    One directed arc per (undirected) road segment in each direction; the weight is the supplied edge cost
+    (plain distance for an empty return, grade-penalised distance for a loaded climb). Nodes/edges mirror
+    ``_geo`` exactly, so ``nx.dijkstra_path`` reproduces the lab's graded shortest path byte-for-byte.
+    """
+    import networkx as nx  # lazy: only needed to RUN (not to import the registry under Pyodide)
+
+    g = nx.DiGraph()
+    g.add_nodes_from(net.coords)
+    for a, b in net.edges:
+        g.add_edge(a, b, weight=cost(a, b))
+        g.add_edge(b, a, weight=cost(b, a))
+    return g
+
+
+def nx_route(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst: int) -> list[int]:
+    """The cheapest haul route src->dst on the graded road graph (NetworkX Dijkstra)."""
+    import networkx as nx  # lazy: only needed to RUN (not to import the registry under Pyodide)
+
+    g = build_road_graph(net, cost)
+    return nx.dijkstra_path(g, src, dst, weight="weight")
+
+
+def ortools_route_cost(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst: int) -> float:
+    """Confirm the optimal route COST with OR-Tools CP-SAT (a min-cost single-unit flow).
+
+    Decision : x[a,b] in {0,1} selects each directed arc. Constraint: unit flow conservation — out-in is
+    +1 at the source, -1 at the destination, 0 elsewhere, so the selected arcs form a single src->dst path.
+    Objective: minimise the (integer-scaled) total route cost. Single worker + fixed ``random_seed`` make
+    the optimum reproducible; equal-cost routes let CP-SAT tie-break the *path* arbitrarily, so the path
+    geometry comes from NetworkX (byte-stable) while CP-SAT certifies the cost the optimizer committed to.
+    """
+    from ortools.sat.python import cp_model  # lazy: native, precompute-only
+
+    arcs: list[tuple[int, int]] = []
+    for a, b in net.edges:
+        arcs.append((a, b))
+        arcs.append((b, a))
+
+    model = cp_model.CpModel()
+    x = {arc: model.new_bool_var(f"x_{arc[0]}_{arc[1]}") for arc in arcs}
+    out_arcs: dict[int, list[tuple[int, int]]] = {n: [] for n in net.coords}
+    in_arcs: dict[int, list[tuple[int, int]]] = {n: [] for n in net.coords}
+    for arc in arcs:
+        out_arcs[arc[0]].append(arc)
+        in_arcs[arc[1]].append(arc)
+    for n in net.coords:
+        rhs = 1 if n == src else (-1 if n == dst else 0)
+        model.add(sum(x[a] for a in out_arcs[n]) - sum(x[a] for a in in_arcs[n]) == rhs)
+    model.minimize(sum(int(round(cost(a, b) * CP_SCALE)) * x[(a, b)] for (a, b) in arcs))
+
+    solver = cp_model.CpSolver()
+    solver.parameters.num_search_workers = 1        # single worker => reproducible
+    solver.parameters.random_seed = CP_RANDOM_SEED
+    solver.parameters.max_time_in_seconds = CP_TIME_LIMIT_S
+    solver.solve(model)
+    return solver.objective_value / CP_SCALE
 
 
 class HaulScenario(Scenario):
@@ -25,9 +116,9 @@ class HaulScenario(Scenario):
     method = "hybrid"
     tier = 3
     viz = "route"
-    engine = "numpy"
-    pure_python = True
-    wheels = ["numpy"]
+    engine = "ortools"          # OR-Tools certifies the route; NetworkX geometry + SimPy DES replay
+    pure_python = False         # CP-SAT is native code -> precompute lane (matches the docs)
+    wheels = []                 # native solver: no live wheel closure
     param_specs = [
         ParamSpec("grid", "Grid size", 12, 10, 14, 1, kind="int"),
         ParamSpec("n_trucks", "Trucks", 5, 1, 14, 1, kind="int"),
@@ -98,10 +189,16 @@ class HaulScenario(Scenario):
         def loaded_cost(a: int, b: int) -> float:
             return net.dist(a, b) * (1.0 + grade * max(0.0, net.elev[b] - net.elev[a]))
 
-        up_path, _ = net.shortest_path(load_node, dump_node, cost=loaded_cost)
-        down_path, _ = net.shortest_path(dump_node, load_node)  # empty: plain distance
+        # ── OPTIMIZE: the haul route (NetworkX geometry, OR-Tools CP-SAT cost certificate) ──
+        up_path = nx_route(net, loaded_cost, load_node, dump_node)        # loaded climb (graded)
+        down_path = nx_route(net, net.dist, dump_node, load_node)          # empty return (plain distance)
         if up_path[0] != load_node or up_path[-1] != dump_node:
             raise RuntimeError("haul: dump unreachable from load (barrier disconnected the graph)")
+        # CP-SAT certifies the optimum the planner commits to (stable across runs; geometry from NetworkX).
+        up_cost_nx = sum(loaded_cost(a, b) for a, b in zip(up_path, up_path[1:]))
+        up_cost_or = ortools_route_cost(net, loaded_cost, load_node, dump_node)
+        if abs(up_cost_or - up_cost_nx) > CP_COST_TOL:
+            raise RuntimeError(f"haul: OR-Tools route cost {up_cost_or:.4f} disagrees with NetworkX {up_cost_nx:.4f}")
 
         tr = RouteTrace(self.id, self.title, self.method, int(seed), p, bounds=net.bounds())
         tr.nodes = net.nodes_list(kinds={load_node: "load", dump_node: "dump"})
@@ -113,33 +210,10 @@ class HaulScenario(Scenario):
             {"code": "load", "label_en": "load point", "label_es": "carguío", "color": "var(--color-good)"},
             {"code": "dump", "label_en": "dump", "label_es": "botadero", "color": "var(--color-warn)"},
         ]
-        agents = [{"id": k, "kind": "truck", "color": "var(--color-accent)", "legs": []} for k in range(nt)]
-        loader_free = [0.0] * nl
-        heapq.heapify(loader_free)
-        evq = [(0.02 * k, k) for k in range(nt)]  # slight stagger
-        heapq.heapify(evq)
-        loads = 0
-        busy_time = 0.0
-        wait_time = 0.0
-        while evq:
-            t_arr, truck = heapq.heappop(evq)
-            f = heapq.heappop(loader_free)
-            start_load = max(t_arr, f)
-            if start_load + load_time > horizon:
-                heapq.heappush(loader_free, f)
-                continue
-            wait_time += start_load - t_arr
-            load_end = start_load + load_time
-            heapq.heappush(loader_free, load_end)
-            loads += 1
-            up_legs, t_dump = timed_legs(net, up_path, load_end, speed, cost=loaded_cost)
-            t_dump_end = t_dump + dump_time
-            down_legs, t_back = timed_legs(net, down_path, t_dump_end, speed)
-            agents[truck]["legs"].extend(up_legs)
-            agents[truck]["legs"].extend(down_legs)
-            busy_time += (t_back - start_load)
-            if t_back < horizon:
-                heapq.heappush(evq, (t_back, truck))
+
+        # ── SIMULATE: the closed finite-source haul cycle as a real SimPy DES ──
+        agents, loads, busy_time, wait_time = self._simulate(
+            net, nt, nl, horizon, up_path, down_path, loaded_cost, load_time, dump_time, speed)
 
         # analytic: where the route switches direct↔pass, and which way THIS variant routed
         def path_LC(path: list[int]) -> tuple[float, float]:
@@ -147,9 +221,9 @@ class HaulScenario(Scenario):
             climb = sum(max(0.0, net.elev[b] - net.elev[a]) for a, b in zip(path, path[1:]))
             return length, climb
 
-        direct, _ = net.shortest_path(load_node, dump_node, cost=net.dist)          # grade 0
-        detour, _ = net.shortest_path(load_node, dump_node,
-                                      cost=lambda a, b: net.dist(a, b) * (1.0 + 50.0 * max(0.0, net.elev[b] - net.elev[a])))
+        direct = nx_route(net, net.dist, load_node, dump_node)            # grade 0 reference
+        detour = nx_route(net, lambda a, b: net.dist(a, b) * (1.0 + 50.0 * max(0.0, net.elev[b] - net.elev[a])),
+                          load_node, dump_node)
         l_dir, c_dir = path_LC(direct)
         l_det, c_det = path_LC(detour)
         switch = (l_det - l_dir) / (c_dir - c_det) if (c_dir - c_det) > 1e-6 else None
@@ -183,3 +257,55 @@ class HaulScenario(Scenario):
             "lift_col": lift_col,
         }
         return tr
+
+    @staticmethod
+    def _simulate(net: GridNetwork, nt: int, nl: int, horizon: float, up_path: list[int],
+                  down_path: list[int], loaded_cost: Callable[[int, int], float],
+                  load_time: float, dump_time: float, speed: float):
+        """SimPy discrete-event replay of the closed finite-source haul cycle.
+
+        Each truck is a SimPy process competing for a shared ``Resource`` of ``nl`` loaders. A truck joins
+        the loader queue, holds a loader for ``load_time``, hauls up the planned (loaded) route, dumps,
+        hauls back the (empty) route, and re-enters the queue — until starting a load would run past the
+        shift ``horizon``. The shared loader is the binding resource: with one loader, adding trucks only
+        lengthens the queue, so throughput saturates at the loader rate (the machine-repair / M/M/1//N
+        result). Fully deterministic from the fixed plan + the staggered start; the route trace's per-truck
+        legs and the throughput/cycle/wait KPIs are a pure function of (params, seed).
+        """
+        import simpy
+
+        env = simpy.Environment()
+        loaders = simpy.Resource(env, capacity=nl)
+        agents = [{"id": k, "kind": "truck", "color": "var(--color-accent)", "legs": []} for k in range(nt)]
+        stats = {"loads": 0, "busy": 0.0, "wait": 0.0}
+
+        def truck(k: int):
+            yield env.timeout(0.02 * k)  # slight stagger so the fleet doesn't hit the loader in lockstep
+            while True:
+                t_arr = env.now
+                with loaders.request() as req:
+                    yield req                         # WAIT for a free loader (FIFO over the finite fleet)
+                    start_load = env.now
+                    if start_load + load_time > horizon:
+                        break                          # no time left to load before the shift ends
+                    stats["wait"] += start_load - t_arr
+                    yield env.timeout(load_time)       # HOLD the loader for the load
+                    load_end = env.now
+                    stats["loads"] += 1
+                # loaded haul up the planned route, dump, then empty haul back
+                up_legs, t_dump = timed_legs(net, up_path, load_end, speed, cost=loaded_cost)
+                yield env.timeout(t_dump - load_end)
+                yield env.timeout(dump_time)
+                t_dump_end = env.now
+                down_legs, t_back = timed_legs(net, down_path, t_dump_end, speed)
+                yield env.timeout(t_back - t_dump_end)
+                agents[k]["legs"].extend(up_legs)
+                agents[k]["legs"].extend(down_legs)
+                stats["busy"] += t_back - start_load
+                if env.now >= horizon:
+                    break
+
+        for k in range(nt):
+            env.process(truck(k))
+        env.run()
+        return agents, stats["loads"], stats["busy"], stats["wait"]

@@ -4,14 +4,15 @@
   "title": "Schelling Segregation",
   "method": "ABM",
   "tier": 1,
-  "engine": "numpy",
+  "engine": "mesa",
   "seed": 42,
   "viz": {
     "renderer": "agent-grid",
     "dimensionality": "2d"
   },
   "wheel_closure": [
-    "numpy"
+    "numpy",
+    "mesa"
   ],
   "param_specs": [
     {
@@ -51,7 +52,7 @@
       "kind": "int"
     }
   ],
-  "lane": "live",
+  "lane": "precomputed",
   "gate_thresholds": {
     "max_run_ms": 3000.0,
     "max_trace_bytes": 1000000
@@ -69,17 +70,19 @@
         "tolerance": 0.3,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 9.3,
-        "trace_bytes": 31808,
-        "reasons": []
+        "run_ms": 755.1,
+        "trace_bytes": 15287,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.7305,
+        "final_segregation": 0.7396,
         "final_happy_frac": 1.0,
-        "steps_run": 16,
+        "steps_run": 7,
         "tolerance": 0.3
       },
       "analytic": {},
@@ -97,17 +100,19 @@
         "tolerance": 0.375,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 3.2,
-        "trace_bytes": 50171,
-        "reasons": []
+        "run_ms": 12.5,
+        "trace_bytes": 18959,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.773,
+        "final_segregation": 0.7352,
         "final_happy_frac": 1.0,
-        "steps_run": 26,
+        "steps_run": 9,
         "tolerance": 0.375
       },
       "analytic": {},
@@ -125,17 +130,19 @@
         "tolerance": 0.45,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 1.8,
-        "trace_bytes": 26299,
-        "reasons": []
+        "run_ms": 24.9,
+        "trace_bytes": 40992,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.8669,
+        "final_segregation": 0.8805,
         "final_happy_frac": 1.0,
-        "steps_run": 13,
+        "steps_run": 21,
         "tolerance": 0.45
       },
       "analytic": {},
@@ -153,17 +160,19 @@
         "tolerance": 0.5,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 1.8,
-        "trace_bytes": 26297,
-        "reasons": []
+        "run_ms": 25.1,
+        "trace_bytes": 40990,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.8669,
+        "final_segregation": 0.8805,
         "final_happy_frac": 1.0,
-        "steps_run": 13,
+        "steps_run": 21,
         "tolerance": 0.5
       },
       "analytic": {},
@@ -181,17 +190,19 @@
         "tolerance": 0.55,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 5.3,
-        "trace_bytes": 64850,
-        "reasons": []
+        "run_ms": 32.6,
+        "trace_bytes": 53837,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.943,
+        "final_segregation": 0.9402,
         "final_happy_frac": 1.0,
-        "steps_run": 34,
+        "steps_run": 28,
         "tolerance": 0.55
       },
       "analytic": {},
@@ -209,16 +220,18 @@
         "tolerance": 0.625,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 6.3,
-        "trace_bytes": 94235,
-        "reasons": []
+        "run_ms": 52.1,
+        "trace_bytes": 94238,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.9787,
-        "final_happy_frac": 0.9963,
+        "final_segregation": 0.9709,
+        "final_happy_frac": 0.9853,
         "steps_run": 50,
         "tolerance": 0.625
       },
@@ -233,20 +246,22 @@
       "note_es": "Tan exigente que los agentes casi no se asientan.",
       "params": {
         "size": 30,
-        "empty": 0.12,
+        "empty": 0.1,
         "tolerance": 0.7,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 7.1,
-        "trace_bytes": 94228,
-        "reasons": []
+        "run_ms": 55.8,
+        "trace_bytes": 94229,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.9869,
-        "final_happy_frac": 0.9911,
+        "final_segregation": 0.9438,
+        "final_happy_frac": 0.9389,
         "steps_run": 50,
         "tolerance": 0.7
       },
@@ -265,17 +280,19 @@
         "tolerance": 0.5,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.2,
-        "trace_bytes": 33644,
-        "reasons": []
+        "run_ms": 19.7,
+        "trace_bytes": 31802,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.8643,
+        "final_segregation": 0.86,
         "final_happy_frac": 1.0,
-        "steps_run": 17,
+        "steps_run": 16,
         "tolerance": 0.5
       },
       "analytic": {},
@@ -293,17 +310,19 @@
         "tolerance": 0.5,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 1.7,
-        "trace_bytes": 24466,
-        "reasons": []
+        "run_ms": 13.8,
+        "trace_bytes": 26302,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.9019,
+        "final_segregation": 0.8879,
         "final_happy_frac": 1.0,
-        "steps_run": 12,
+        "steps_run": 13,
         "tolerance": 0.5
       },
       "analytic": {},
@@ -321,17 +340,19 @@
         "tolerance": 0.5,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.0,
-        "trace_bytes": 29975,
-        "reasons": []
+        "run_ms": 10.3,
+        "trace_bytes": 18956,
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
-        "final_segregation": 0.9049,
+        "final_segregation": 0.923,
         "final_happy_frac": 1.0,
-        "steps_run": 15,
+        "steps_run": 9,
         "tolerance": 0.5
       },
       "analytic": {},

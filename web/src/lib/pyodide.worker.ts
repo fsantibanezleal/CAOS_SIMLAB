@@ -12,7 +12,7 @@ declare function loadPyodide(opts: { indexURL: string }): Promise<PyodideAPI>;
 
 interface PyodideAPI {
   loadPackage(names: string | string[]): Promise<void>;
-  pyimport(name: string): { install(pkg: string): Promise<void> };
+  pyimport(name: string): { install(pkg: string | string[]): Promise<void> };
   runPython(code: string): unknown;
   globals: { set(name: string, value: unknown): void };
 }
@@ -54,9 +54,12 @@ async function init(sourcesUrl: string): Promise<void> {
   importScripts(PYODIDE_JS_URL);
   pyodide = await loadPyodide({ indexURL: PYODIDE_INDEX_URL });
   post({ type: "progress", phase: "loading-packages" });
-  await pyodide.loadPackage(["numpy", "micropip"]);
+  // Live wheel closure (must match simlab.core.scenario.LIVE_WHEELS): numpy + simpy (DES) + ciw (queueing
+  // validation). networkx is loaded because ciw needs it. Heavy engines (mesa, ortools, joblib, scipy) are
+  // precompute-only and never loaded here — those scenarios replay a committed trace instead.
+  await pyodide.loadPackage(["numpy", "networkx", "micropip"]);
   const micropip = pyodide.pyimport("micropip");
-  await micropip.install("simpy");
+  await micropip.install(["simpy", "ciw"]);
   post({ type: "progress", phase: "loading-simlab" });
   const res = await fetch(sourcesUrl);
   if (!res.ok || !(res.headers.get("content-type") ?? "").includes("json")) {

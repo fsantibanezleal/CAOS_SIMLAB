@@ -2,4 +2,7 @@
 # closure the browser (Pyodide) must load, so every dependency here costs cold-start time.
 numpy>=1.26
 simpy>=4.1
-# mesa>=3.0   # added when the ABM scenarios (S02 Schelling, S03 SIR) land in Phase 1
+# No Mesa: the ABM scenarios (S02 Schelling, S03 SIR) are hand-rolled on NumPy to keep the Pyodide
+# wheel closure minimal and the agent rules fully visible in-repo.
+# OR-Tools (CP-SAT, routing, GLOP) is a PRECOMPUTE-only dependency — it is native, so it never enters the
+# browser wheel closure. Install it in the local pipeline venv: see requirements-precompute.txt.

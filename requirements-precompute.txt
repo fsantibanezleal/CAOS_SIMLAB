@@ -1,11 +1,31 @@
-# Precompute lane — heavier engines used OFFLINE to generate committed traces for scenarios that fail the
-# live gate (native code and/or large/slow). NOT loaded by the browser and NOT needed for the live MVP.
-# Installed on demand for the pipeline:  pip install -r requirements-precompute.txt
+# Precompute lane — the dedicated, SOTA engines used OFFLINE (in the local .venv) to generate the committed
+# seeded traces the web app replays. NONE of these is loaded by the browser; they are native and/or heavy.
+# Install:  pip install -r requirements-precompute.txt   (Python 3.13, verified on Windows 2026-06-19)
 #
-ortools>=9.10       # S06 job-shop (CP-SAT) — native, precompute-only (also S08 VRP later)
-# pyvrp>=0.9        # S08 SOTA VRP contrast
-# networkx>=3.2     # graph algorithms
-# osmnx>=1.9        # local road graphs (commit RENDERED GEOMETRY only — never raw .graphml; see ATTRIBUTION.md)
-# ciw>=3.1          # open queueing-network teaching (S04/S05 chapters)
-# mesa>=3.0         # ABM precompute + local SolaraViz (local-only, never served)
-# joblib>=1.4       # CPU-parallel replications (S10 Monte-Carlo / CI study)
+# Versions are PINNED to what is installed + verified to import & run here. The full per-framework guides,
+# install notes and runnable examples live in docs/frameworks/<tool>/.
+
+# --- Discrete-Event Simulation (DES) ---
+simpy==4.1.2          # also in requirements.txt (live core); the DES engine for S01, S04 + DES legs
+ciw==3.2.7            # dedicated queueing-network lib; S01 analytic M/M/c (Erlang-C) validation
+salabim==26.0.6       # DES teaching chapter + offline mp4/gif render (tkinter desktop; NOT web-embeddable)
+
+# --- Agent-Based Modeling (ABM) ---
+mesa==3.5.1           # canonical Python ABM framework — S02 Schelling, S03 SIR, S05 Beer Game (headless precompute)
+mesa-geo==0.9.3       # GeoAgents for map-based ABM (geospatial haul/ambulance variants)
+jupedsim==1.4.2       # pedestrian / ED crowd flow (social-force / collision-free-speed)
+
+# --- Optimization & routing ---
+ortools==9.15.6755    # CP-SAT (S06), Routing (S07/S08/S09), GLOP LP (S11) — native, never live
+pyvrp==0.13.4         # SOTA Hybrid Genetic Search VRP — S08 "what good looks like" contrast vs OR-Tools
+networkx==3.6.1       # graph algorithms (Dijkstra/A*/k-shortest) for the routing scenarios
+osmnx==2.1.0          # OSM road graphs — commit RENDERED GEOMETRY only, never raw .graphml (ODbL; see ATTRIBUTION.md)
+geopandas==1.1.3      # (osmnx/mesa-geo dependency; geospatial dataframes)
+shapely==2.1.2        # (osmnx/mesa-geo dependency; geometry)
+
+# --- Monte-Carlo / statistics (CPU) ---
+joblib==1.5.3         # CPU-parallel seeded replications — S10 Monte-Carlo / CI study (v1 default)
+scipy==1.18.0         # scipy.stats — confidence intervals, distributions
+
+# Deprecated, intentionally NOT used (the ABM scenarios are real Mesa, not these): agentpy, desmod.
+# GPU engines (CuPy/Numba/Taichi/JAX) live in requirements-gpu.txt.

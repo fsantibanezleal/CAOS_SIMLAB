@@ -9,19 +9,27 @@ from __future__ import annotations
 
 import json
 
+from .core.scenario import LIVE_WHEELS
 from .registry import SCENARIOS, get_scenario
 
 
+def _is_live(sc) -> bool:
+    """A scenario runs live only if its engine is pure-Python AND its wheel closure is one the browser
+    worker actually loads (LIVE_WHEELS). Native engines (OR-Tools) and heavy closures (mesa, joblib,
+    scipy, networkx) are precompute-only and replayed."""
+    return sc.pure_python and set(sc.wheels) <= LIVE_WHEELS
+
+
 def live_lanes() -> list[str]:
-    """Scenario ids the browser is allowed to run live (pure-Python engines only)."""
-    return [sid for sid, sc in SCENARIOS.items() if sc.pure_python]
+    """Scenario ids the browser is allowed to run live (matches the manifest lane verdict)."""
+    return [sid for sid, sc in SCENARIOS.items() if _is_live(sc)]
 
 
 def run_trace_json(scenario_id: str, params: dict, seed: int) -> str:
     """Run one scenario and return its compact trace JSON (identical bytes to the committed trace)."""
     sc = get_scenario(scenario_id)
-    if not sc.pure_python:  # defence in depth: the UI also gates this
-        raise RuntimeError(f"{scenario_id} is precompute-only (native engine, cannot run in WASM)")
+    if not _is_live(sc):  # defence in depth: the UI also gates this
+        raise RuntimeError(f"{scenario_id} is precompute-only (engine/wheels not in the live worker)")
     coerced = sc.coerce(params)
     tr = sc.run(coerced, int(seed))
     return tr.to_json()

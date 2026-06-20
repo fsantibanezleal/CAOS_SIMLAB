@@ -4,14 +4,15 @@
   "title": "Beer Game (Supply-Chain Bullwhip)",
   "method": "ABM",
   "tier": 2,
-  "engine": "numpy",
+  "engine": "mesa",
   "seed": 42,
   "viz": {
     "renderer": "chart",
     "dimensionality": "2d"
   },
   "wheel_closure": [
-    "numpy"
+    "numpy",
+    "mesa"
   ],
   "param_specs": [
     {
@@ -60,7 +61,7 @@
       "kind": "int"
     }
   ],
-  "lane": "live",
+  "lane": "precomputed",
   "gate_thresholds": {
     "max_run_ms": 3000.0,
     "max_trace_bytes": 1000000
@@ -79,12 +80,14 @@
         "step": 4.0,
         "pattern": 0
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 8.0,
+        "run_ms": 0.9,
         "trace_bytes": 2678,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 19.36,
@@ -109,12 +112,14 @@
         "step": 4.0,
         "pattern": 0
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.7,
         "trace_bytes": 2684,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 101.92,
@@ -139,12 +144,14 @@
         "step": 4.0,
         "pattern": 0
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.6,
         "trace_bytes": 2689,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 382.0,
@@ -169,12 +176,14 @@
         "step": 4.0,
         "pattern": 0
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.2,
+        "run_ms": 0.6,
         "trace_bytes": 2686,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 1202.53,
@@ -199,12 +208,14 @@
         "step": 4.0,
         "pattern": 0
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.2,
+        "run_ms": 0.6,
         "trace_bytes": 2726,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 10.67,
@@ -229,12 +240,14 @@
         "step": 4.0,
         "pattern": 0
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.2,
+        "run_ms": 0.5,
         "trace_bytes": 2684,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 101.92,
@@ -259,12 +272,14 @@
         "step": 4.0,
         "pattern": 0
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.5,
         "trace_bytes": 2656,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 1555.1,
@@ -289,12 +304,14 @@
         "step": 8.0,
         "pattern": 0
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.2,
+        "run_ms": 0.6,
         "trace_bytes": 2687,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 99.14,
@@ -319,12 +336,14 @@
         "step": 8.0,
         "pattern": 1
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.5,
         "trace_bytes": 2462,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 555.24,
@@ -349,12 +368,14 @@
         "step": 5.0,
         "pattern": 2
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.6,
         "trace_bytes": 2697,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "bullwhip_factory": 160.47,

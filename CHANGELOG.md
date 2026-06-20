@@ -3,6 +3,27 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.16.000] - 2026-06-20
+### Changed — major: every scenario now runs on its REAL dedicated tool (no more hand-rolled NumPy stand-ins)
+- **ABM → Mesa 3** (was hand-rolled NumPy): s02 Schelling, s03 SIR, s05 Beer Game now use `mesa.Agent` /
+  `mesa.Model` / AgentSet activation. The earlier docs/Theory claim of "uses Mesa" is now TRUE.
+- **DES → SimPy** (real): s01 Bank/Clinic queue + a real **Ciw** M/M/c (Erlang-C) cross-validation; s04 ED.
+- **Optimization/routing → OR-Tools** (CP-SAT/Routing/GLOP) for s06/s07/s09/s11, **PyVRP** SOTA contrast for
+  s08, **NetworkX/OSMnx** road graphs for s07/s09.
+- **Monte-Carlo → joblib** (CPU-parallel seeded replications) + **scipy.stats** confidence intervals (s10),
+  replacing the hand-rolled NumPy loop.
+### Added
+- Documentation rebuilt: `docs/problem-types/` (DES/ABM/optimization/Monte-Carlo) and `docs/frameworks/<tool>/`
+  for 18 tools (installation/usage/applying + a verified `example.py` actually run in the .venv), plus
+  `docs/guides/` (precompute/live/gpu) and a docs index. `requirements-precompute.txt`/`requirements-gpu.txt`
+  pinned to verified versions; setup scripts install the precompute lane.
+### Fixed
+- **Live plane:** heavy scenario imports made lazy so `import simlab.registry` loads under Pyodide; new gate
+  criterion `wheels ⊆ {numpy, simpy, ciw}`. LIVE = s01, s04 (SimPy/Ciw); everything heavier (Mesa ABM,
+  OR-Tools, joblib/scipy, networkx) is precompute + replay. Worker loads numpy+networkx+simpy+ciw.
+- LICENSES/ATTRIBUTION/ARCHITECTURE/README and the Theory/Methodology content corrected to the real stack.
+- All 38 tests pass; ruff clean; web build green; traces deterministic (byte-identical reruns).
+
 ## [0.15.002] - 2026-06-19
 ### Fixed
 - **Adversarial truth-audit remediation.** A full audit (equations vs code, citations web-verified, each

@@ -12,6 +12,7 @@
   },
   "wheel_closure": [
     "simpy",
+    "ciw",
     "numpy"
   ],
   "param_specs": [
@@ -73,8 +74,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 9.3,
-        "trace_bytes": 35643,
+        "run_ms": 717.6,
+        "trace_bytes": 35803,
         "reasons": []
       },
       "kpis": {
@@ -90,7 +91,18 @@
         "p_wait": 0.0909,
         "Wq": 0.0455,
         "Lq": 0.0455,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 6000.0,
+          "warmup": 200.0,
+          "Wq_ciw": 0.045,
+          "ci95_half": 0.0024,
+          "rel_err": 0.01,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/light-seed42.json"
     },
@@ -109,8 +121,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 3.6,
-        "trace_bytes": 35304,
+        "run_ms": 868.7,
+        "trace_bytes": 35467,
         "reasons": []
       },
       "kpis": {
@@ -126,7 +138,18 @@
         "p_wait": 0.4444,
         "Wq": 0.4444,
         "Lq": 0.8889,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 4200.0,
+          "warmup": 200.0,
+          "Wq_ciw": 0.4414,
+          "ci95_half": 0.0202,
+          "rel_err": 0.0067,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/moderate-seed42.json"
     },
@@ -145,8 +168,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.3,
-        "trace_bytes": 35185,
+        "run_ms": 929.5,
+        "trace_bytes": 35348,
         "reasons": []
       },
       "kpis": {
@@ -162,7 +185,18 @@
         "p_wait": 0.6472,
         "Wq": 1.0787,
         "Lq": 2.5888,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 3533.3,
+          "warmup": 200.0,
+          "Wq_ciw": 1.1009,
+          "ci95_half": 0.1197,
+          "rel_err": 0.0205,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/busy-seed42.json"
     },
@@ -181,8 +215,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.3,
-        "trace_bytes": 35090,
+        "run_ms": 927.6,
+        "trace_bytes": 35253,
         "reasons": []
       },
       "kpis": {
@@ -198,7 +232,18 @@
         "p_wait": 0.8171,
         "Wq": 2.7235,
         "Lq": 7.3535,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 3163.0,
+          "warmup": 200.0,
+          "Wq_ciw": 2.4967,
+          "ci95_half": 0.2741,
+          "rel_err": 0.0833,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/heavy-seed42.json"
     },
@@ -217,8 +262,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.3,
-        "trace_bytes": 35071,
+        "run_ms": 987.2,
+        "trace_bytes": 35234,
         "reasons": []
       },
       "kpis": {
@@ -234,7 +279,18 @@
         "p_wait": 0.907,
         "Wq": 6.0467,
         "Lq": 17.2332,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 3007.0,
+          "warmup": 200.0,
+          "Wq_ciw": 6.6646,
+          "ci95_half": 1.6428,
+          "rel_err": 0.1022,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/saturated-seed42.json"
     },
@@ -253,8 +309,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.4,
-        "trace_bytes": 35039,
+        "run_ms": 3.0,
+        "trace_bytes": 35143,
         "reasons": []
       },
       "kpis": {
@@ -270,7 +326,15 @@
         "p_wait": null,
         "Wq": null,
         "Lq": null,
-        "stable": false
+        "stable": false,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": false,
+          "reps": 0,
+          "Wq_ciw": null,
+          "ci95_half": null,
+          "rel_err": null
+        }
       },
       "trace": "data/artifacts/s01_queue/unstable-seed42.json"
     },
@@ -289,8 +353,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.2,
-        "trace_bytes": 35726,
+        "run_ms": 551.5,
+        "trace_bytes": 35889,
         "reasons": []
       },
       "kpis": {
@@ -306,7 +370,18 @@
         "p_wait": 0.8,
         "Wq": 4.0,
         "Lq": 3.2,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 6000.0,
+          "warmup": 200.0,
+          "Wq_ciw": 4.1384,
+          "ci95_half": 0.3593,
+          "rel_err": 0.0346,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/mm1-seed42.json"
     },
@@ -325,8 +400,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 3.6,
-        "trace_bytes": 35711,
+        "run_ms": 538.2,
+        "trace_bytes": 35874,
         "reasons": []
       },
       "kpis": {
@@ -342,7 +417,18 @@
         "p_wait": 0.9,
         "Wq": 9.0,
         "Lq": 8.1,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 6000.0,
+          "warmup": 200.0,
+          "Wq_ciw": 8.6511,
+          "ci95_half": 0.6512,
+          "rel_err": 0.0388,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/mm1_busy-seed42.json"
     },
@@ -361,8 +447,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.2,
-        "trace_bytes": 35428,
+        "run_ms": 872.2,
+        "trace_bytes": 35591,
         "reasons": []
       },
       "kpis": {
@@ -378,7 +464,18 @@
         "p_wait": 0.7111,
         "Wq": 1.7778,
         "Lq": 2.8444,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 5200.0,
+          "warmup": 200.0,
+          "Wq_ciw": 1.8666,
+          "ci95_half": 0.2477,
+          "rel_err": 0.0499,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/c2-seed42.json"
     },
@@ -397,8 +494,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.3,
-        "trace_bytes": 34945,
+        "run_ms": 977.5,
+        "trace_bytes": 35108,
         "reasons": []
       },
       "kpis": {
@@ -414,7 +511,18 @@
         "p_wait": 0.5541,
         "Wq": 0.5541,
         "Lq": 2.2165,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 2200.0,
+          "warmup": 200.0,
+          "Wq_ciw": 0.5447,
+          "ci95_half": 0.0557,
+          "rel_err": 0.0169,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/c5-seed42.json"
     },
@@ -433,8 +541,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 3.0,
-        "trace_bytes": 34840,
+        "run_ms": 1151.3,
+        "trace_bytes": 35003,
         "reasons": []
       },
       "kpis": {
@@ -450,7 +558,18 @@
         "p_wait": 0.4092,
         "Wq": 0.2046,
         "Lq": 1.6367,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 1200.0,
+          "warmup": 200.0,
+          "Wq_ciw": 0.2195,
+          "ci95_half": 0.0248,
+          "rel_err": 0.0727,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/c10-seed42.json"
     },
@@ -469,8 +588,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.3,
-        "trace_bytes": 35310,
+        "run_ms": 801.6,
+        "trace_bytes": 35473,
         "reasons": []
       },
       "kpis": {
@@ -486,7 +605,18 @@
         "p_wait": 0.3333,
         "Wq": 0.1667,
         "Lq": 0.3333,
-        "stable": true
+        "stable": true,
+        "ciw_xcheck": {
+          "engine": "ciw",
+          "applicable": true,
+          "reps": 10,
+          "max_time": 4200.0,
+          "warmup": 200.0,
+          "Wq_ciw": 0.1681,
+          "ci95_half": 0.0084,
+          "rel_err": 0.0082,
+          "theory_in_ci": true
+        }
       },
       "trace": "data/artifacts/s01_queue/fast-seed42.json"
     }

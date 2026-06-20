@@ -2,23 +2,31 @@
 
 A mine sends ore from several PHASES (load points, each with an ore grade) to three destination KINDS:
 a PLANT (final sink with a target grade), a DUMP (waste sink) and intermediate STOCKS (a node that is a
-sink AND, once it holds material, a source for later trips). Two coupled OR problems:
+sink AND, once it holds material, a source for later trips). Two coupled OR problems, each on its REAL
+framework:
 
-  1. PLANT BLEND (LP, OR-Tools GLOP, precompute) — choose how many tonnes to draw from each source so the
-     blended feed hits the plant grade target within demand. The sources' grades straddle the target, so a
-     single phase can't satisfy it: the plan is a genuine blend.
-  2. EXECUTION (seeded discrete-event sim) — a FIXED fleet runs haul cycles (load → graded climb → tip →
-     return), dispatching to whichever planned flow is furthest behind. The far, high-grade phase needs
-     longer hauls, so an under-sized fleet can't deliver its planned tonnage in the shift — and the
-     achieved plant blend SLIPS off target. An optimal plan is necessary but not sufficient.
+  1. PLANT BLEND (LP, **OR-Tools GLOP**, precompute) — choose how many tonnes to draw from each source so
+     the blended feed hits the plant grade target within demand. The sources' grades straddle the target,
+     so a single phase can't satisfy it: the plan is a genuine blend. Solved with ``pywraplp``'s GLOP
+     simplex (``docs/frameworks/ortools``), the same LP engine the OR-Tools docs example uses.
+  2. EXECUTION (**SimPy** discrete-event sim) — a FIXED fleet runs haul cycles (drive → load → graded climb
+     → tip → return), dispatching each free truck to whichever planned flow is furthest behind. Each truck
+     is a real ``simpy`` process and each load point is a shared ``simpy.Resource`` loader, so two trucks
+     aimed at the same phase queue for it (``docs/frameworks/simpy``) — no hand-rolled event heap. The far,
+     high-grade phase needs longer hauls, so an under-sized fleet can't deliver its planned tonnage in the
+     shift — and the achieved plant blend SLIPS off target. An optimal plan is necessary but not sufficient.
 
 Stocks rise as trucks tip into them and fall as trucks draw from them (fill bars in the viz). OR-Tools is
-native, so this is a precompute-lane scenario (no live lane) — the committed trace replays the plan + the
-fleet realizing a degraded version of it.
+native, so this is a precompute-lane scenario (no live lane) — the committed trace replays the GLOP plan +
+the SimPy fleet realizing a degraded version of it.
+
+Determinism: the LP is solved by GLOP's deterministic simplex; the DES has no stochastic variates (the
+fleet's stagger and the dispatch policy are fixed functions of the inputs), so the whole run is a pure
+function of (params, seed) — the same input yields the same trace byte-for-byte. The emitted artifact is
+the existing routetrace format (nodes/edges/agents/routes/barriers/gauges/legend/kpis/analytic); nothing
+in the trace schema or the frontend contract changes.
 """
 from __future__ import annotations
-
-import heapq
 
 from ..core.routetrace import RouteTrace
 from ..core.scenario import ParamSpec, Scenario, Variant
@@ -38,9 +46,9 @@ class MineHaulScenario(Scenario):
     method = "hybrid"
     tier = 3
     viz = "route"
-    engine = "ortools"
-    pure_python = False
-    wheels = []
+    engine = "ortools"          # GLOP solves the blend LP; SimPy replays the fleet DES
+    pure_python = False         # OR-Tools GLOP is native code -> precompute lane (matches the docs)
+    wheels = []                 # native solver: no live wheel closure
     param_specs = [
         ParamSpec("grid", "Grid size", 14, 12, 18, 1, kind="int"),
         ParamSpec("n_trucks", "Trucks", 6, 1, 16, 1, kind="int"),
@@ -194,26 +202,32 @@ class MineHaulScenario(Scenario):
         flows.append({"src": phase_nodes[0], "dst": dump_node, "grade": PHASE_GRADES[0],
                       "target": dump_target, "kind": "dump", "from_stock": False, "done": 0.0})
 
-        # ── EXECUTION DES ──
-        agents = [{"id": k, "kind": "truck", "color": "var(--color-accent)", "legs": [], "node": plant_node} for k in range(n_trucks)]
-        loader_free: dict[int, float] = {}
-        stock_level = init_stock
-        stock_frames: list[list[float]] = [[0.0, round(init_stock, 2)]] if stock_node is not None else []
-        plant_tons = 0.0
-        plant_grade_accum = 0.0
-        loads_by_kind = {"plant": 0, "dump": 0, "stock": 0}
-        busy_time = 0.0
-        total_graded = 0.0
+        # ── EXECUTION DES (real SimPy) ──
+        import simpy
 
-        evq = [(0.03 * k, k) for k in range(n_trucks)]
-        heapq.heapify(evq)
+        agents = [{"id": k, "kind": "truck", "color": "var(--color-accent)", "legs": [], "node": plant_node} for k in range(n_trucks)]
+        # one shared loader per load point (a phase or the stock when it sources): a real simpy.Resource,
+        # so two trucks aimed at the same source genuinely queue for it. Built lazily as flows reveal
+        # their sources, keyed by node id.
+        env = simpy.Environment()
+        loaders: dict[int, simpy.Resource] = {}
+
+        def loader_for(node: int) -> simpy.Resource:
+            if node not in loaders:
+                loaders[node] = simpy.Resource(env, capacity=1)
+            return loaders[node]
+
+        stock = {"level": init_stock}  # boxed so the truck processes can mutate it
+        stock_frames: list[list[float]] = [[0.0, round(init_stock, 2)]] if stock_node is not None else []
+        acc = {"plant_tons": 0.0, "plant_grade": 0.0}
+        loads_by_kind = {"plant": 0, "dump": 0, "stock": 0}
 
         def feasible(fl: dict) -> bool:
             if fl["done"] >= fl["target"] - 1e-9:
                 return False
-            if fl["from_stock"] and stock_level < TRUCK_CAP - 1e-9:
+            if fl["from_stock"] and stock["level"] < TRUCK_CAP - 1e-9:
                 return False  # a stock can only source once it holds material
-            if fl["dst"] == stock_node and stock_level + TRUCK_CAP > stock_cap + 1e-9:
+            if fl["dst"] == stock_node and stock["level"] + TRUCK_CAP > stock_cap + 1e-9:
                 return False  # stock full
             return True
 
@@ -255,44 +269,69 @@ class MineHaulScenario(Scenario):
                 return min(cands, key=lambda fl: (reach_time(cur, fl), flows.index(fl)))
             return None
 
-        while evq:
-            t_arr, truck = heapq.heappop(evq)
-            if t_arr >= horizon:
-                continue
+        def truck_proc(truck: int):
+            """One truck's life-story as a real SimPy process: repeatedly pick the most-behind planned
+            flow, drive empty to its source, queue for and hold that source's shared loader, haul the load
+            (graded) to the destination, tip, and re-decide — until no time is left to finish a load before
+            the shift ``horizon``. The dispatch decision (``pick_flow``) and the claim of the flow's
+            ``done`` happen the instant the truck becomes free (``env.now``), so a truck deciding later sees
+            an up-to-date plan; the loader contention is a genuine shared ``simpy.Resource`` queued in
+            arrival order. ``stock`` drains on a stock-source load and fills on a stock-bound tip."""
+            yield env.timeout(0.03 * truck)  # staggered release so the fleet doesn't decide in lockstep
             a = agents[truck]
-            fl = pick_flow(a["node"], "aux" if truck < n_aux else "plant")
-            if fl is None:
-                continue
-            # drive to the source (empty, plain distance)
-            to_src, _ = path(a["node"], fl["src"], loaded=False)
-            src_legs, t_at_src = timed_legs(net, to_src, t_arr, SPEED)
-            lf = loader_free.get(fl["src"], 0.0)
-            start_load = max(t_at_src, lf)
-            if start_load + LOAD_TIME >= horizon:
-                continue
-            load_end = start_load + LOAD_TIME
-            loader_free[fl["src"]] = load_end
-            if fl["from_stock"]:
-                stock_level -= TRUCK_CAP
-                stock_frames.append([round(load_end, 2), round(stock_level, 2)])
-            # loaded haul to the destination (graded)
-            to_dst, dcost = path(fl["src"], fl["dst"], loaded=True)
-            total_graded += dcost
-            haul_legs, t_at_dst = timed_legs(net, to_dst, load_end, SPEED, cost=loaded_cost)
-            a["legs"].extend(src_legs + haul_legs)
-            a["node"] = fl["dst"]
-            fl["done"] += TRUCK_CAP
-            loads_by_kind[fl["kind"]] += 1
-            if fl["kind"] == "plant":
-                plant_tons += TRUCK_CAP
-                plant_grade_accum += TRUCK_CAP * fl["grade"]
-            elif fl["dst"] == stock_node:
-                stock_level += TRUCK_CAP
-                stock_frames.append([round(t_at_dst, 2), round(stock_level, 2)])
-            busy_time += t_at_dst - t_arr
-            t_done = t_at_dst + TIP_TIME
-            if t_done < horizon:
-                heapq.heappush(evq, (t_done, truck))
+            duty = "aux" if truck < n_aux else "plant"
+            while env.now < horizon:
+                t_arr = env.now
+                fl = pick_flow(a["node"], duty)
+                if fl is None:
+                    return
+                # commit the flow + any stock-source drain at the decision instant, so the most-behind
+                # tiers stay consistent across trucks deciding in the same window (the original loop
+                # committed atomically per event; a later retire on the horizon guard undoes the claim).
+                fl["done"] += TRUCK_CAP
+                if fl["from_stock"]:
+                    stock["level"] -= TRUCK_CAP
+                # drive empty to the source (plain distance), then queue for its shared loader
+                to_src, _ = path(a["node"], fl["src"], loaded=False)
+                src_legs, t_at_src = timed_legs(net, to_src, t_arr, SPEED)
+                yield env.timeout(t_at_src - t_arr)
+                with loader_for(fl["src"]).request() as req:
+                    yield req                              # WAIT for the shared loader (FIFO by arrival)
+                    start_load = env.now
+                    if start_load + LOAD_TIME >= horizon:  # no time to finish a load this shift: undo + retire
+                        fl["done"] -= TRUCK_CAP
+                        if fl["from_stock"]:
+                            stock["level"] += TRUCK_CAP
+                        return
+                    if fl["from_stock"]:
+                        stock_frames.append([round(start_load + LOAD_TIME, 2), round(stock["level"], 2)])
+                    yield env.timeout(LOAD_TIME)           # HOLD the loader for the load
+                    load_end = env.now
+                # loaded haul to the destination (graded cost)
+                to_dst, _ = path(fl["src"], fl["dst"], loaded=True)
+                haul_legs, t_at_dst = timed_legs(net, to_dst, load_end, SPEED, cost=loaded_cost)
+                yield env.timeout(t_at_dst - load_end)
+                a["legs"].extend(src_legs + haul_legs)
+                a["node"] = fl["dst"]
+                loads_by_kind[fl["kind"]] += 1
+                if fl["kind"] == "plant":
+                    acc["plant_tons"] += TRUCK_CAP
+                    acc["plant_grade"] += TRUCK_CAP * fl["grade"]
+                elif fl["dst"] == stock_node:
+                    stock["level"] += TRUCK_CAP
+                    stock_frames.append([round(t_at_dst, 2), round(stock["level"], 2)])
+                yield env.timeout(TIP_TIME)  # tip, then loop to re-decide at t_at_dst + TIP_TIME
+
+        for k in range(n_trucks):
+            env.process(truck_proc(k))
+        # drain all events (no `until`): each truck's own `horizon` guards stop it from STARTING a new
+        # load past the shift, but a cycle already begun is recorded in full — matching the original loop,
+        # which processed any event dispatched before the horizon to completion.
+        env.run()
+
+        plant_tons = acc["plant_tons"]
+        plant_grade_accum = acc["plant_grade"]
+        stock_level = stock["level"]
 
         # ── trace + KPIs ──
         tr = RouteTrace(self.id, self.title, self.method, int(seed), p, bounds=net.bounds())

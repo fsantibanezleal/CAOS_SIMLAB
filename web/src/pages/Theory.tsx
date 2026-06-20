@@ -24,8 +24,8 @@ export default function Theory() {
       <div className="page-head">
         <h1>{t("nav.theory")}</h1>
         <p className="lede">{es
-          ? "Los fundamentos, con rigor y referencias: la teoría de colas que el simulador valida, la metodología completa del estudio de simulación, y los modelos basados en agentes — con ecuaciones, diagramas y bibliografía con DOI."
-          : "The foundations, with rigor and references: the queueing theory the simulator validates, the full simulation-study methodology, and agent-based models — with equations, diagrams, and a DOI'd bibliography."}</p>
+          ? "Los fundamentos, con rigor y referencias: la teoría de colas que el simulador valida, la metodología completa del estudio de simulación, los modelos basados en agentes, y la optimización y el ruteo — con ecuaciones, diagramas y bibliografía con DOI."
+          : "The foundations, with rigor and references: the queueing theory the simulator validates, the full simulation-study methodology, agent-based models, and optimization and routing — with equations, diagrams, and a DOI'd bibliography."}</p>
       </div>
       <Tabs tabs={topTabs} ariaLabel={t("nav.theory")} />
     </div>
