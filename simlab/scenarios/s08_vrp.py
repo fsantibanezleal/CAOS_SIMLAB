@@ -10,8 +10,9 @@ plans so the lab can show the contrast:
 
 * **OR-Tools routing** (Google) — the *primary* plan, carried in the trace's ``routes``/``agents``/``kpis``
   exactly as the app already renders. Configured with ``PATH_CHEAPEST_ARC`` + ``GUIDED_LOCAL_SEARCH`` and,
-  critically, a *deterministic* stopping rule (a fixed ``solution_limit`` and a fixed ``random_seed``)
-  rather than a wall-clock ``time_limit``. A wall-clock limit makes the optimum machine-dependent (a fast
+  critically, a *deterministic* stopping rule — a fixed ``solution_limit`` on a single search thread (the
+  OR-Tools Routing layer exposes no generic random_seed; determinism comes from single-thread GLS + the
+  solution-count cap) — rather than a wall-clock ``time_limit``. A wall-clock limit makes the optimum machine-dependent (a fast
   laptop explores more); a solution-count limit makes the committed trace byte-stable on any machine —
   the "replay = truth" contract the lab depends on. OR-Tools also carries a *global-span* cost so it
   balances route lengths (it minimises the longest route, keeping every vehicle busy).
@@ -44,7 +45,7 @@ VEHICLE_COLORS = [
 SCALE = 100  # integer scaling so both solvers' integer engines stay exact and reproducible
 OR_SOLUTION_LIMIT = 200  # deterministic OR-Tools stop (machine-independent, unlike a wall-clock limit)
 PYVRP_ITERS = 200        # deterministic PyVRP stop (MaxIterations, not MaxRuntime)
-SOLVER_SEED = 42         # fixed solver seed for both engines → reproducible search
+SOLVER_SEED = 42         # fixed solver seed for PyVRP (HGS is stochastic); OR-Tools determinism comes from single-thread GLS + solution_limit
 
 
 @dataclass

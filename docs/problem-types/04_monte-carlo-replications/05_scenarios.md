@@ -4,32 +4,35 @@
 > Prev: [04 — Tools](./04_tools.md).
 
 This methodology is not confined to one exhibit. There is a dedicated worked scenario (S10) that *is* the
-Monte-Carlo curriculum, and a **results-honesty beat** — single run vs `n` replications + CI, plus warm-up —
+Monte-Carlo curriculum, and a **results-honesty beat** — single run vs `n` replications + CI —
 that is a first-class part of every stochastic scenario in the lab.
 
 ## S10 — the dedicated worked exhibit
 
 The dedicated worked exhibit is [**S10 — Monte-Carlo Replication / CI Study**](../../use-cases/10_s10_montecarlo.md):
 
-- **Reuses** the [S01 bank/clinic M/M/c](../../use-cases/01_s01_queue.md) and
-  [S04 emergency-department](../../use-cases/04_s04_ed.md) models as the base sampler — no new model logic,
-  just the methodology layered on top.
-- **Default engine:** [joblib](../../frameworks/12_joblib.md) CPU-parallel replications. **Optional:**
-  [CuPy](../../frameworks/15_cupy.md) / [Numba CUDA](../../frameworks/14_numba.md) GPU batch with a CPU
-  fallback, so every result is reproducible without a GPU.
-- **Shows the wrong-vs-right contrast:** the naive single-run / one-seed / no-warm-up answer beside the
-  replicated, warm-up-corrected, CI-banded answer — the bias and the noise removed in the same view. The CI
-  is compared against the closed-form Erlang-C reference.
-- **Exposed presets:** number of replications, warm-up cut length, which base model (S01 or S04), confidence
-  level.
-- **Doubles as the "When does GPU actually help?" teaching page** — including the decision table in
-  [02 — When to use it](./02_when-to-use.md), with the GPU-is-slower-on-small-DES result presented as a
-  feature of the curriculum, not an omission.
+- **Replicates** the [S01 bank/clinic M/M/c](../../use-cases/01_s01_queue.md) model class as the base sampler —
+  but ships its **own** fast estimator (`mmc_mean_wait`, an O(n log c) NumPy earliest-free-server heap), not
+  S01's SimPy engine, so a many-replication study stays inside the 3 s live gate.
+- **Default engine:** [joblib](../../frameworks/12_joblib.md) CPU-parallel replications (`threading` backend,
+  the only one that holds under Pyodide), with the running CI built by
+  [`scipy.stats`](../../frameworks/13_scipy-stats.md). The GPU batch is **intentionally out of scope** here —
+  an embarrassingly-parallel replication study maps cleanly onto CPU cores, so no CuPy/Numba path ships.
+- **Shows the wrong-vs-right contrast:** the naive single-run / one-seed answer beside the replicated,
+  CI-banded answer — the run-to-run noise collapsed in the same view, with the CI narrowing like `1/√n`. The
+  CI is compared against the closed-form Erlang-C reference.
+- **Teaches the finite-run bias rather than hiding it:** each replication is the *full-run* average with **no
+  warm-up deletion** — by design. At light load the running mean lands on the Erlang-C value; at high load
+  (ρ≈0.9, ~600 customers/run) a ~16% initialisation bias drags the CI below Erlang-C, so the interval
+  converges tightly around a *biased* estimate. The CI measures precision, not accuracy — that is the lesson.
+- **Exposed parameters:** the real `param_specs` are `lam` (arrival rate λ), `mu` (service rate μ), `c`
+  (servers), `n_customers` (customers per run), and `n_reps` (replications). The confidence level is fixed at
+  95% (`scipy.stats.norm.ppf(0.975)` / `norm.interval(0.95)`).
 
 ## The house standard across every stochastic scenario
 
-The methodology is not confined to S10. The **results-honesty beat** — single run vs `n` replications + CI,
-plus warm-up — is a first-class part of the [S04 emergency-department](../../use-cases/04_s04_ed.md) flagship
+The methodology is not confined to S10. The **results-honesty beat** — single run vs `n` replications + CI —
+is a first-class part of the [S04 emergency-department](../../use-cases/04_s04_ed.md) flagship
 as well, and the [lab scenario map](../../README.md#scenario--tool-map) treats "report an interval, not a
 point" as the **house standard** across every stochastic scenario.
 

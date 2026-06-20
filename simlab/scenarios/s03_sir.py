@@ -8,8 +8,11 @@ of recovered.
 
 This scenario is built on the real **Mesa 3** ABM framework — ``mesa.Model`` for the world, ``mesa.Agent``
 for the cells, ``mesa.space.SingleGrid`` for the fully-occupied lattice, and the model's ``AgentSet``
-(``self.agents``) for activation — rather than a hand-rolled NumPy sweep. It follows the s02 Schelling
-template exactly. All randomness flows through Mesa's seeded RNG (``Model(rng=seed)`` seeds ``self.random``),
+(``self.agents``) for activation — rather than a hand-rolled NumPy sweep. It reuses the s02 Schelling
+STRUCTURAL template (Mesa Agent/Model/SingleGrid/AgentSet, lazy ``_models()``, GridTrace emission); the
+per-step update differs by design — S03 is a TRUE SYNCHRONOUS sweep (all S→I and I→R decided against the
+start-of-step board, applied together), whereas S02 relocates unhappy agents one-by-one into a growing empty
+pool. All randomness flows through Mesa's seeded RNG (``Model(rng=seed)`` seeds ``self.random``),
 so a run is fully reproducible from (params, seed): the same input yields the same trace byte-for-byte — the
 "replay = truth" contract the lab depends on.
 

@@ -2,16 +2,17 @@
 
 ← back to [Agent-Based Modeling](../02_agent-based-modeling.md)
 
-The catalog assigns **three** scenarios to ABM. Each links its live engine and its in-repo Mesa equivalent, so
-the two-engine setup teaches engine-independence rather than confusing the learner. Together they cover the ABM
-canon — emergence, threshold dynamics, feedback/delay — without redundancy (see
-[03 · Methods & KPIs](./03_methods-and-kpis.md)).
+The catalog assigns **three** scenarios to ABM. All three run live on **Mesa 3 in Pyodide** (`engine = "mesa"`),
+each backed by a committed trace for instant first paint; S02 additionally has a standalone NetLogo Web card
+(off-nav, linked from its page) so a second engine can show the same problem and teach engine-independence
+rather than confusing the learner. Together the three cover the ABM canon — emergence, threshold dynamics,
+feedback/delay — without redundancy (see [03 · Methods & KPIs](./03_methods-and-kpis.md)).
 
 | # | Scenario | Engine(s) | Method | Lane | Use-case node |
 |---|---|---|---|---|---|
-| **S02** | Schelling Segregation | NetLogo Web (live) + Mesa 3 (repo) | emergence from preference | live | [02_s02_schelling](../../use-cases/02_s02_schelling.md) |
-| **S03** | SIR / SEIR Epidemic | NetLogo Web (live) + Mesa 3 (repo) | contact / threshold | live | [03_s03_sir](../../use-cases/03_s03_sir.md) |
-| **S05** | Beer Game (bullwhip) | Mesa 3 (policy/feedback) | feedback / delay | live | [05_s05_beergame](../../use-cases/05_s05_beergame.md) |
+| **S02** | Schelling Segregation | Mesa 3 (live in Pyodide) · + standalone NetLogo Web card | emergence from preference | live | [02_s02_schelling](../../use-cases/02_s02_schelling.md) |
+| **S03** | SIR / SEIR Epidemic | Mesa 3 (live in Pyodide) | contact / threshold | live | [03_s03_sir](../../use-cases/03_s03_sir.md) |
+| **S05** | Beer Game (bullwhip) | Mesa 3 (live in Pyodide, policy/feedback) | feedback / delay | live | [05_s05_beergame](../../use-cases/05_s05_beergame.md) |
 
 ---
 
@@ -21,9 +22,11 @@ The canonical emergence model: households with a mild same-group preference relo
 match; a *global* segregation pattern emerges that *no individual intended*.
 
 - **Tunable:** tolerance threshold, fraction empty, group ratio, grid size.
-- **Engine:** [NetLogo Web](../../frameworks/07_netlogo-web.md) for the live card (or Pyodide-Mesa replaying
-  frames to Canvas2D); a [Mesa](../../frameworks/04_mesa.md) equivalent in the repo teaches engine-
-  independence. A ~50×50 grid stepping at 5–10 Hz needs only Canvas2D (no Pixi).
+- **Engine:** the scenario itself runs on [Mesa 3](../../frameworks/04_mesa.md) **live in Pyodide**
+  (`engine = "mesa"`), replaying a committed trace for instant first paint; a standalone
+  [NetLogo Web](../../frameworks/07_netlogo-web.md) Schelling card (off-nav `/sandbox/netlogo`, linked from this
+  scenario's page) shows the same problem in a second engine and teaches engine-independence. A ~50×50 grid
+  stepping at 5–10 Hz needs only Canvas2D (no Pixi).
 - **Source / manifest:** [`s02_schelling.py`](../../../simlab/scenarios/s02_schelling.py) ·
   [`s02_schelling.json`](../../../manifests/s02_schelling.json).
 - **Full node:** [S02 · Schelling Segregation](../../use-cases/02_s02_schelling.md).
@@ -36,8 +39,9 @@ exactly that contrast). Teaches R₀, the epidemic peak, the herd-immunity thres
 
 - **Tunable:** infection probability, recovery time, initial infected, contact radius, (optional) latent
   period.
-- **Engine:** [NetLogo Web](../../frameworks/07_netlogo-web.md) live + [Mesa](../../frameworks/04_mesa.md) in
-  the repo.
+- **Engine:** [Mesa 3](../../frameworks/04_mesa.md) **live in Pyodide** (`engine = "mesa"`), replaying a
+  committed trace for instant first paint. **No NetLogo SIR card ships** — there is no SIR `.nlogo`/HTML in the
+  repo; NetLogo SIR is only "same problem, other tool" (see [03_s03_sir](../../use-cases/03_s03_sir.md)).
 - **Source / manifest:** [`s03_sir.py`](../../../simlab/scenarios/s03_sir.py) ·
   [`s03_sir.json`](../../../manifests/s03_sir.json).
 - **Full node:** [S03 · SIR Epidemic](../../use-cases/03_s03_sir.md).
@@ -85,8 +89,9 @@ When you build a real ABM scenario in this lab:
    series directly (what the lab's scenarios do, e.g. S05); either way that series **is** your trace. See
    [the trace contract](../../architecture/02_determinism-and-trace.md).
 6. **Seed the RNG** so `(params, seed)` reproduces exactly — the trace is the source of truth.
-7. **Pair live with Mesa** — give each live card its Mesa equivalent in the repo so the two engines teach
-   engine-independence instead of confusing the learner.
+7. **Run on Mesa, optionally pair a NetLogo card** — the lab's ABM scenarios run live on Mesa 3 in Pyodide;
+   where a second engine adds teaching value, ship a standalone NetLogo Web card (as S02 does) so the two
+   engines teach engine-independence instead of confusing the learner. NetLogo is optional, not per-scenario.
 8. **Record licenses** — every embedded NetLogo model and any dataset goes into
    [ATTRIBUTION.md](../../../ATTRIBUTION.md) / [LICENSES.md](../../../LICENSES.md); prefer CC0; author your own
    model when a license is restrictive.

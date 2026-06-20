@@ -10,7 +10,8 @@ framework:
      so a single phase can't satisfy it: the plan is a genuine blend. Solved with ``pywraplp``'s GLOP
      simplex (``docs/frameworks/08_ortools``), the same LP engine the OR-Tools docs example uses.
   2. EXECUTION (**SimPy** discrete-event sim) — a FIXED fleet runs haul cycles (drive → load → graded climb
-     → tip → return), dispatching each free truck to whichever planned flow is furthest behind. Each truck
+     → tip → return) with a TIERED dispatch: plant-duty trucks take the plant flow they can reach soonest,
+     while auxiliary trucks take whichever housekeeping flow (dump or stock) is furthest behind. Each truck
      is a real ``simpy`` process and each load point is a shared ``simpy.Resource`` loader, so two trucks
      aimed at the same phase queue for it (``docs/frameworks/01_simpy``) — no hand-rolled event heap. The far,
      high-grade phase needs longer hauls, so an under-sized fleet can't deliver its planned tonnage in the
@@ -270,8 +271,9 @@ class MineHaulScenario(Scenario):
             return None
 
         def truck_proc(truck: int):
-            """One truck's life-story as a real SimPy process: repeatedly pick the most-behind planned
-            flow, drive empty to its source, queue for and hold that source's shared loader, haul the load
+            """One truck's life-story as a real SimPy process: repeatedly pick a flow via the tiered
+            pick_flow policy (plant trucks: the reachable-soonest plant flow; aux trucks: the most-behind
+            housekeeping flow), drive empty to its source, queue for and hold that source's shared loader, haul the load
             (graded) to the destination, tip, and re-decide — until no time is left to finish a load before
             the shift ``horizon``. The dispatch decision (``pick_flow``) and the claim of the flow's
             ``done`` happen the instant the truck becomes free (``env.now``), so a truck deciding later sees

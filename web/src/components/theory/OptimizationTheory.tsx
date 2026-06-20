@@ -507,8 +507,8 @@ g<g^{*}\Rightarrow\text{direct},\ \ g>g^{*}\Rightarrow\text{pass}.`}
                   ? "El match factor es un cociente de tiempos medios — una guía de dimensionamiento, no una garantía de rendimiento; ignora la variabilidad que hace que MF≈1 aún tenga algo de cola (la rodilla de Kingman aplica)."
                   : "The match factor is a ratio of mean times — a sizing guide, not a throughput guarantee; it ignores the variability that makes MF≈1 still queue a little (Kingman's knee applies).",
                 es
-                  ? "S11 asume suministro de fases generoso y dispatch al flujo más atrasado; otras políticas de despacho darían otra adherencia al plan con la misma flota."
-                  : "S11 assumes generous phase supply and dispatch-to-furthest-behind; other dispatch policies would give different plan adherence with the same fleet.",
+                  ? "S11 asume suministro de fases generoso y un despacho por niveles (los camiones de planta toman el flujo de planta que alcanzan más pronto; los auxiliares, el flujo de aseo más atrasado); otras políticas de despacho darían otra adherencia al plan con la misma flota."
+                  : "S11 assumes generous phase supply and a tiered dispatch (plant trucks take the plant flow reachable-soonest; auxiliary trucks the most-behind housekeeping flow); other dispatch policies would give different plan adherence with the same fleet.",
                 es
                   ? "“La ley se desliza primero” es un resultado de esta geometría (fase rica lejana); reubicar las fases cambiaría qué restricción cede antes."
                   : "“Grade slips first” is a result of this geometry (rich phase far away); relocating the phases would change which constraint gives first.",

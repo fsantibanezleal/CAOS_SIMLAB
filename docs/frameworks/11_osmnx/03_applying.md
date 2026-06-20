@@ -105,6 +105,15 @@ The lesson the learner takes away — straight from the research — is *"an opt
 fragile under uncertainty."* OSMnx makes step 1–2 *real geography* instead of an abstract matrix,
 and step 5 *visible* instead of a number.
 
+> **Honest scope of step 4 in this repo.** The stochastic stress described above (travel-time noise,
+> missed time windows, queueing, breakdowns degrading "the optimal plan") is the **general technique**
+> the pattern teaches — it is **not** what the shipped scenarios currently instantiate. The two routing
+> scenarios that *do* run a SimPy leg ship it **deterministically**: S07's haul DES has its breakdown
+> stream pinned to 0 in every committed variant, and S09's call stream is one fixed seeded Poisson draw —
+> neither models **time windows** (no scenario in the repo does), and **no scenario ingests OSMnx** at all
+> (S07/S08/S09 run on the synthetic `_geo` grid). Read step 4 as the documented method, not as a feature
+> of the current traces.
+
 ---
 
 ## 5. Honest trade-offs (from the research)

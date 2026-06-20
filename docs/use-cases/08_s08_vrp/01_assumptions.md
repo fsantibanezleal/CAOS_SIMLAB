@@ -79,9 +79,12 @@ This is **pure combinatorial optimization** — one instance, solved once. There
   the readable `GridNetwork.shortest_path` (Dijkstra), shared across the routing scenarios.
 - **Integer-scaled distances (`×100`)**: both OR-Tools Routing and PyVRP operate on integer costs; scaling
   preserves enough precision while keeping every committed number exact across machines.
-- **Deterministic stopping rule + fixed solver seed (42)** for both engines: this is the lab's *"replay =
-  truth"* contract — a solution-count / iteration-count stop is machine-independent, unlike a wall-clock
-  `time_limit` where a faster CPU would explore more and produce a different "optimum".
+- **Deterministic stopping rule** for both engines: this is the lab's *"replay = truth"* contract — a
+  solution-count / iteration-count stop is machine-independent, unlike a wall-clock `time_limit` where a
+  faster CPU would explore more and produce a different "optimum". PyVRP additionally takes a **fixed solver
+  seed (42)** for its randomized Hybrid Genetic Search; OR-Tools Routing is **not** seeded — its determinism
+  comes from the single-threaded `GUIDED_LOCAL_SEARCH` plus the fixed `solution_limit`, which fully pin the
+  search on the small instances here.
 
 ## Where the numbers live
 
