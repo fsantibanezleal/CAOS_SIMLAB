@@ -49,7 +49,7 @@ topologies you will meet, in increasing realism:
 | **Geo** (real coordinates) | spatial proximity on a real map | anything where geography is the model | map scenarios (haul/dispatch) |
 
 Mesa ships grid, network and a newer **cell-space** abstraction first-class. For **real maps** you add
-**[Mesa-Geo](../frameworks/mesa-geo.md)**, which gives you **GeoAgents** backed by Shapely/GeoPandas
+**[Mesa-Geo](../frameworks/mesa-geo/usage.md)**, which gives you **GeoAgents** backed by Shapely/GeoPandas
 geometry over a Leaflet map. NetLogo uses *patches* (a grid of cells) plus *links* for networks.
 
 > A frequent beginner mistake is reaching for geo space when a grid is enough. For abstract emergence
@@ -86,7 +86,7 @@ is a first-class modeling choice, not an implementation detail.
 > In Mesa 3 you drive activation directly on the model's `AgentSet` — e.g. `self.agents.shuffle_do("step")`
 > for random activation, or `do("step")` for fixed-order, and you compose stages explicitly. Tutorials
 > written against the `time.RandomActivation` API are pre-3.0 and will not run. The *concepts* above are
-> unchanged; only the call site moved into the `AgentSet` API. See [frameworks/mesa.md](../frameworks/mesa.md).
+> unchanged; only the call site moved into the `AgentSet` API. See [frameworks/mesa](../frameworks/mesa/usage.md).
 
 ### 1.5 Data collection (the output)
 
@@ -112,7 +112,7 @@ lives with the trade-offs the research surfaced.
 
 ### 2.1 The default: Mesa 3 (Python)
 
-**[Mesa 3](../frameworks/mesa.md)** is the canonical Python teaching framework and the lab's default ABM
+**[Mesa 3](../frameworks/mesa/usage.md)** is the canonical Python teaching framework and the lab's default ABM
 engine.
 
 - **License:** Apache-2.0. **Maturity:** the de-facto Python standard, actively maintained, JOSS-published
@@ -138,7 +138,7 @@ So in this lab Mesa is used in **two roles**, never as a live public server:
 ### 2.2 The live-in-browser engine: NetLogo Web (Tortoise)
 
 For scenarios that must **run live in the visitor's browser** with editable sliders and real-time
-animation, the lab uses **[NetLogo Web](../frameworks/netlogo-web.md)** (the *Tortoise* engine).
+animation, the lab uses **[NetLogo Web](../frameworks/netlogo-web/usage.md)** (the *Tortoise* engine).
 
 - **Why it fits the architecture perfectly:** NetLogo compiles its Logo-family DSL **to JavaScript** and
   runs **entirely client-side**. You export a model to standalone HTML / the `netlogo-engine.js` runtime,
@@ -185,17 +185,17 @@ than confuses.
 ### 2.4 Real maps: Mesa-Geo
 
 When geography is part of the model — agents on a real road network, demand over a city — use
-**[Mesa-Geo](../frameworks/mesa-geo.md)** (Apache-2.0). It adds **GeoAgents** with real geometry
+**[Mesa-Geo](../frameworks/mesa-geo/usage.md)** (Apache-2.0). It adds **GeoAgents** with real geometry
 (Shapely/GeoPandas) and a Leaflet/Solara map. Like Mesa, it is a **precompute** engine here: run it
 headless, commit the rendered paths, and the SPA replays them on a deck.gl/MapLibre map. The same
 non-public-server caveat applies (it shares Mesa's Solara visualization model). For the routing/dispatch
-scenarios, the *spatial graph* work is typically done with [NetworkX/OSMnx](../frameworks/networkx-osmnx.md)
-and the agent layer kept simple — see [Optimization](./optimization.md).
+scenarios, the *spatial graph* work is typically done with [NetworkX/OSMnx](../frameworks/networkx/usage.md)
+and the agent layer kept simple — see [Optimization](./optimization-routing.md).
 
 ### 2.5 Crowd / pedestrian flow: JuPedSim
 
 For **pedestrian and crowd dynamics** — emergency-department crowding, evacuation, flow through a floor
-plan — use **[JuPedSim](../frameworks/jupedsim.md)** (LGPLv3, pip-installable). It implements validated
+plan — use **[JuPedSim](../frameworks/jupedsim/usage.md)** (LGPLv3, pip-installable). It implements validated
 **social-force** and **collision-free-speed** pedestrian models behind a clean **Python API**, so it drops
 straight into the offline pipeline: run it headless, emit trajectories, replay them. It was chosen over
 Vadere specifically because Vadere is a Java/GUI tool with integration friction, whereas JuPedSim is a
@@ -253,21 +253,21 @@ The canonical emergence model: households with a mild same-group preference relo
 neighbors match; a *global* segregation pattern emerges that *no individual intended*. Tunable: tolerance
 threshold, fraction empty, group ratio, grid size. **Engine:** NetLogo Web for the live card (or
 Pyodide-Mesa replaying frames to Canvas2D); a **Mesa** equivalent in the repo teaches engine-independence.
-A ~50×50 grid stepping at 5–10 Hz needs only Canvas2D (no Pixi). → [Schelling scenario](../scenarios/s02-schelling.md).
+A ~50×50 grid stepping at 5–10 Hz needs only Canvas2D (no Pixi). → See [scenario map](../README.md) for S02 Schelling.
 
 ### S03 — SIR / SEIR Epidemic · live
 Spatial agents infect neighbors stochastically; the live grid animates **beside** a real-time S/I/R curve,
 so the learner sees the agent-level mechanism *and* the aggregate compartment view together (the didactic
 hook is exactly that contrast). Teaches R₀, the epidemic peak, herd-immunity threshold. Tunable: infection
 probability, recovery time, initial infected, contact radius, (optional) latent period. **Engine:** NetLogo
-Web live + **Mesa** in the repo. → [SIR scenario](../scenarios/s03-sir.md).
+Web live + **Mesa** in the repo. → See [scenario map](../README.md) for S03 SIR.
 
 ### S05 — Beer Game (Supply-Chain Bullwhip) · ABM policy / feedback
 Four echelons (retailer → wholesaler → distributor → factory) each run a local **ordering policy** under
 shipping/information **delays**; small demand changes amplify into upstream oscillations — the **bullwhip
 effect**. This is modeled as **ABM (policy / feedback loop)**, not a DES queue clone: the object of study
 is the feedback dynamic. **Engine:** **Mesa** (policy/feedback). Tunable: base-stock / target inventory,
-lead time, demand-shock size/timing, number of echelons. → [Beer Game scenario](../scenarios/s05-beer-game.md).
+lead time, demand-shock size/timing, number of echelons. → See [scenario map](../README.md) for S05 Beer Game.
 
 > **Why these three are good ABM on-ramps:** Schelling teaches emergence from preference; SIR teaches
 > thresholds and the agent↔compartment bridge; the Beer Game teaches feedback and delay. Together they
@@ -304,11 +304,10 @@ When you build a real ABM scenario in this lab:
 This guide is grounded in the project's research and stack decisions. Tool-to-scenario mapping and the
 two-lane fit follow the synthesis documents; the framework verdicts follow the ABM-frameworks research.
 
-- **Frameworks (forward links):** [Mesa](../frameworks/mesa.md) · [Mesa-Geo](../frameworks/mesa-geo.md) ·
-  [NetLogo Web](../frameworks/netlogo-web.md) · [JuPedSim](../frameworks/jupedsim.md) ·
-  [NetworkX / OSMnx](../frameworks/networkx-osmnx.md)
-- **Scenarios:** [S02 Schelling](../scenarios/s02-schelling.md) · [S03 SIR](../scenarios/s03-sir.md) ·
-  [S05 Beer Game](../scenarios/s05-beer-game.md)
+- **Frameworks (forward links):** [Mesa](../frameworks/mesa/usage.md) · [Mesa-Geo](../frameworks/mesa-geo/usage.md) ·
+  [NetLogo Web](../frameworks/netlogo-web/usage.md) · [JuPedSim](../frameworks/jupedsim/usage.md) ·
+  [NetworkX / OSMnx](../frameworks/networkx/usage.md)
+- **Scenarios:** See [scenario map](../README.md) for S02 Schelling, S03 SIR, and S05 Beer Game.
 - **Architecture:** [ARCHITECTURE.md](../ARCHITECTURE.md) (two-lane design, 3-gate rule, trace contract).
 - **Sibling problem-types:** [Discrete-Event Simulation](./discrete-event-simulation.md) ·
   [Optimization](./optimization.md).

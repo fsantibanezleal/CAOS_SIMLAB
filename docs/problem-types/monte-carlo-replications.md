@@ -12,8 +12,8 @@ they are measurably *slower*. That asymmetry is itself a lesson, and we teach it
 
 This document is the conceptual reference. The runnable per-tool guides live under
 [`docs/frameworks/`](../frameworks/) and the worked scenario is
-[S10 — Monte-Carlo Replication / CI Study](../scenarios/s10-monte-carlo-ci.md), which runs replications
-over the S01 bank-queue and S04 emergency-department base models.
+[S10 — Monte-Carlo Replication / CI Study](../README.md), which runs replications
+over the S01 bank-queue and S04 emergency-department base models (see the scenario map).
 
 ---
 
@@ -98,7 +98,7 @@ We do **not** type critical values from a table or reimplement the formula. The 
 **`scipy.stats`** — `scipy.stats.norm.ppf` / `scipy.stats.t.ppf` for the critical values, or
 `scipy.stats.t.interval(confidence, df, loc=mean, scale=sem)` and `scipy.stats.sem` for the standard
 error directly. This is the canonical, tested implementation; see
-[`docs/frameworks/scipy-stats.md`](../frameworks/scipy-stats.md).
+[`docs/frameworks/scipy-stats`](../frameworks/scipy-stats/usage.md).
 
 ### Honesty caveats the curriculum insists on
 
@@ -268,13 +268,13 @@ tools below.** Do **not** treat "NumPy by hand" as a methodology, and do **not**
 
 | Concern | Tool | License | Role in CAOS_SIMLAB | Guide |
 |---|---|---|---|---|
-| **CPU-parallel replications** | **joblib** | BSD-3 | **The v1 default** replication driver — fan replications across CPU cores; embarrassingly parallel, no GPU needed | [`docs/frameworks/joblib.md`](../frameworks/joblib.md) |
-| **GPU array Monte-Carlo** | **CuPy** | MIT | Optional GPU exhibit — drop-in NumPy on GPU, cuRAND-backed; draw whole replication batches as array columns | [`docs/frameworks/cupy.md`](../frameworks/cupy.md) |
-| **GPU custom kernels + per-thread RNG** | **Numba CUDA** | BSD | Optional GPU exhibit — one replication per thread via `create_xoroshiro128p_states` (`xoroshiro128p`, period 2¹²⁸−1, BigCrush); CUDA-detect with CPU fallback | [`docs/frameworks/numba-cuda.md`](../frameworks/numba-cuda.md) |
-| **Confidence-interval math** | **SciPy (`scipy.stats`)** | BSD | The CI / `t` / `z` math — `t.interval`, `t.ppf`, `norm.ppf`, `sem`; never hand-roll critical values | [`docs/frameworks/scipy-stats.md`](../frameworks/scipy-stats.md) |
-| **Grid / cellular-automata GPU** | **Taichi** | Apache-2.0 | Niche — particle/field/CA grids (diffusion, fire, traffic CA); portable CUDA/Vulkan/Metal | [`docs/frameworks/taichi.md`](../frameworks/taichi.md) |
-| **Large-N GPU-ABM (reference only)** | **FLAME GPU 2** | AGPL-3.0-only | **Reference chapter, not a dependency** — the canonical million-agent GPU-ABM engine; cut from runtime (copyleft, brittle CUDA, 8 GB OOM) | [`docs/frameworks/flamegpu2.md`](../frameworks/flamegpu2.md) |
-| Base DES models being replicated | **SimPy** (+ **Ciw** for M/M/c analytics) | MIT | The S01 / S04 models that S10 replicates; run on CPU (live or precompute), never on GPU | [`docs/frameworks/simpy.md`](../frameworks/simpy.md), [`docs/frameworks/ciw.md`](../frameworks/ciw.md) |
+| **CPU-parallel replications** | **joblib** | BSD-3 | **The v1 default** replication driver — fan replications across CPU cores; embarrassingly parallel, no GPU needed | [`docs/frameworks/joblib`](../frameworks/joblib/usage.md) |
+| **GPU array Monte-Carlo** | **CuPy** | MIT | Optional GPU exhibit — drop-in NumPy on GPU, cuRAND-backed; draw whole replication batches as array columns | [`docs/frameworks/cupy`](../frameworks/cupy/usage.md) |
+| **GPU custom kernels + per-thread RNG** | **Numba CUDA** | BSD | Optional GPU exhibit — one replication per thread via `create_xoroshiro128p_states` (`xoroshiro128p`, period 2¹²⁸−1, BigCrush); CUDA-detect with CPU fallback | [`docs/frameworks/numba`](../frameworks/numba/usage.md) |
+| **Confidence-interval math** | **SciPy (`scipy.stats`)** | BSD | The CI / `t` / `z` math — `t.interval`, `t.ppf`, `norm.ppf`, `sem`; never hand-roll critical values | [`docs/frameworks/scipy-stats`](../frameworks/scipy-stats/usage.md) |
+| **Grid / cellular-automata GPU** | **Taichi** | Apache-2.0 | Niche — particle/field/CA grids (diffusion, fire, traffic CA); portable CUDA/Vulkan/Metal | [`docs/frameworks/taichi`](../frameworks/taichi/usage.md) |
+| **Large-N GPU-ABM (reference only)** | **FLAME GPU 2** | AGPL-3.0-only | **Reference chapter, not a dependency** — the canonical million-agent GPU-ABM engine; cut from runtime (copyleft, brittle CUDA, 8 GB OOM) | [`docs/frameworks/gpu-abm-chapter`](../frameworks/gpu-abm-chapter/usage.md) |
+| Base DES models being replicated | **SimPy** (+ **Ciw** for M/M/c analytics) | MIT | The S01 / S04 models that S10 replicates; run on CPU (live or precompute), never on GPU | [`docs/frameworks/simpy`](../frameworks/simpy/usage.md), [`docs/frameworks/ciw`](../frameworks/ciw/usage.md) |
 
 **Do not use:** **AgentPy**, **desmod** — both deprecated; mentioned only so they are not adopted by
 mistake.
@@ -287,7 +287,7 @@ confidence interval (with warm-up deletion applied first) → commit the CI-enve
 
 ## 10. Where this is exercised — S10 and the rest of the lab
 
-The dedicated worked exhibit is **[S10 — Monte-Carlo Replication / CI Study](../scenarios/s10-monte-carlo-ci.md)**:
+The dedicated worked exhibit is **S10 — Monte-Carlo Replication / CI Study** (see [scenario map](../README.md)):
 
 - **Reuses** the S01 bank/clinic M/M/c and S04 emergency-department models as the base sampler — no new
   model logic, just the methodology layered on top.
@@ -302,7 +302,7 @@ The dedicated worked exhibit is **[S10 — Monte-Carlo Replication / CI Study](.
 
 But the methodology is not confined to S10. The **results-honesty beat** — single run vs `n` replications
 + CI, plus warm-up — is a first-class part of the S04 ED flagship as well, and the
-[scenarios catalog](../scenarios/README.md) treats "report an interval, not a point" as the house standard
+[scenario map](../README.md) treats "report an interval, not a point" as the house standard
 across every stochastic scenario.
 
 ---
@@ -326,4 +326,4 @@ across every stochastic scenario.
 
 *This page is part of the CAOS_SIMLAB teaching repo —
 <https://github.com/fsantibanezleal/CAOS_SIMLAB>. It is conceptual reference; the runnable code lives in
-the [framework guides](../frameworks/) and the [S10 scenario](../scenarios/s10-monte-carlo-ci.md).*
+the [framework guides](../frameworks/) and the S10 scenario (see [scenario map](../README.md)).*

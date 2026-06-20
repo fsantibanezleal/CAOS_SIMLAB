@@ -335,11 +335,11 @@ so the replayed run is reproducible — and carries a **STRESS-DES model card**.
 
 This page is the map; the implementation detail for each engine lives in its own guide:
 
-- [SimPy](../frameworks/simpy.md) — the process-interaction model, `Resource` / `PriorityResource`,
+- [SimPy](../frameworks/simpy/usage.md) — the process-interaction model, `Resource` / `PriorityResource`,
   emitting the event trace, seeding, and running live under Pyodide.
-- [Ciw](../frameworks/ciw.md) — building a queueing network, the closed-form M/M/c reference, and the
+- [Ciw](../frameworks/ciw/usage.md) — building a queueing network, the closed-form M/M/c reference, and the
   sim-vs-theory validation panel.
-- [Salabim](../frameworks/salabim.md) — the teaching counterpoint and the **offline** `.mp4` / `.gif`
+- [Salabim](../frameworks/salabim/usage.md) — the teaching counterpoint and the **offline** `.mp4` / `.gif`
   render pipeline (desktop/headless only — never the web build).
 
 ---
