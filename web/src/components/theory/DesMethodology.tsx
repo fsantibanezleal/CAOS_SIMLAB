@@ -814,8 +814,8 @@ export function DesMethodology({ es }: { es: boolean }) {
 
           <Callout variant="strong" title={es ? "La tesis del laboratorio" : "The lab's thesis"}>
             {es
-              ? "Un simulador en el que puedes confiar porque reproduce una respuesta analítica conocida. Los 12 regímenes cubren ρ de carga ligera a saturación (uno inestable, sin objetivo finito); la figura muestra el W_q simulado con su IC superpuesto sobre la curva suave Erlang-C en los 11 regímenes estables: la prueba visual de la validación."
-              : "A simulator you can trust because it reproduces a known analytic answer. The 12 regimes span ρ from light to saturation (one unstable, with no finite target); the figure shows the simulated W_q with its CI overlaid on the smooth Erlang-C curve across the 11 stable regimes — the visual proof of validation."}
+              ? "Un simulador en el que puedes confiar porque reproduce una respuesta analítica conocida. Los 12 regímenes cubren ρ de carga ligera a saturación (uno inestable, sin objetivo finito); la figura muestra el W_q medio replicado con su IC del 95% —del estudio replicado (verificación cruzada de Ciw + Monte-Carlo S10), no de la corrida única de S01 en SimPy— superpuesto sobre la curva suave Erlang-C en los 11 regímenes estables: la prueba visual de la validación. El W_q simulado de la corrida única de S01 es un punto sin barra de error."
+              : "A simulator you can trust because it reproduces a known analytic answer. The 12 regimes span ρ from light to saturation (one unstable, with no finite target); the figure shows the replicated mean W_q with its 95% CI — from the replicated study (Ciw cross-check + S10 Monte-Carlo), not from S01's single SimPy run — overlaid on the smooth Erlang-C curve across the 11 stable regimes, the visual proof of validation. S01's single-run simulated W_q is a point estimate with no error bar."}
           </Callout>
 
           <div className="assume">
@@ -887,8 +887,8 @@ export function DesMethodology({ es }: { es: boolean }) {
               role="img"
               aria-label={
                 es
-                  ? "Validación: el W_q medio simulado con barras de error de intervalo de confianza a través de doce regímenes de carga cae sobre la curva Erlang-C en forma cerrada, que sube abruptamente cuando la utilización se acerca a 1."
-                  : "Validation: simulated mean wait W_q with confidence-interval error bars across twelve load regimes lie on the closed-form Erlang-C curve, which rises steeply as utilization approaches 1."
+                  ? "Validación: el W_q medio replicado (verificación cruzada de Ciw + Monte-Carlo S10) con barras de error de intervalo de confianza al 95% a través de los regímenes de carga estables cae sobre la curva Erlang-C en forma cerrada, que sube abruptamente cuando la utilización se acerca a 1. La corrida única de S01 en SimPy aporta el W_q puntual sin barra de error."
+                  : "Validation: the replicated mean wait W_q (Ciw cross-check + S10 Monte-Carlo) with 95% confidence-interval error bars across the stable load regimes lies on the closed-form Erlang-C curve, which rises steeply as utilization approaches 1. S01's single SimPy run supplies the point W_q with no error bar."
               }
             >
               <line stroke="var(--color-fg)" strokeWidth="1.5" x1="60" y1="270" x2="690" y2="270" />
@@ -919,8 +919,8 @@ export function DesMethodology({ es }: { es: boolean }) {
             </svg>
             <figcaption className="fig-cap">
               {es
-                ? "Validación contra la verdad de terreno: el W_q simulado con barras de error de IC sigue la curva Erlang-C en forma cerrada a través de los 11 regímenes estables; las barras se ensanchan al acercarse ρ→1 (mayor varianza). El régimen inestable (ρ≥1) no tiene objetivo finito."
-                : "Validation against ground truth: simulated W_q with CI error bars tracks the closed-form Erlang-C curve across the 11 stable regimes; error bars widen as ρ→1 (higher variance). The unstable regime (ρ≥1) has no finite target."}
+                ? "Validación contra la verdad de terreno: el W_q medio replicado (verificación cruzada de Ciw + Monte-Carlo S10) con barras de error de IC sigue la curva Erlang-C en forma cerrada a través de los 11 regímenes estables; las barras se ensanchan al acercarse ρ→1 (mayor varianza). La corrida única de S01 en SimPy da el punto sin IC. El régimen inestable (ρ≥1) no tiene objetivo finito."
+                : "Validation against ground truth: the replicated mean W_q (Ciw cross-check + S10 Monte-Carlo) with CI error bars tracks the closed-form Erlang-C curve across the 11 stable regimes; error bars widen as ρ→1 (higher variance). S01's single SimPy run gives the point with no CI. The unstable regime (ρ≥1) has no finite target."}
             </figcaption>
           </figure>
 

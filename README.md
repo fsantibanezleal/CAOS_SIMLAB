@@ -34,7 +34,7 @@ not guessed**:
   a clear *"precomputed due to cost"* banner. The full recipe lives in this repo.
 
 A scenario qualifies for the live lane only if it is **pure-Python AND runs in < 3 s AND its trace is
-< ~1 MB** (the [3-gate rule](simlab/core/scenario.py)). The verdict, with the measured numbers, is
+< ~1 MB** (the [4-gate rule](simlab/core/scenario.py)). The verdict, with the measured numbers, is
 recorded in each scenario's manifest. Because a run is fully determined by `(params, seed)`, **the trace
 is the source of truth and replay is exact** — live and precomputed render through one code path.
 

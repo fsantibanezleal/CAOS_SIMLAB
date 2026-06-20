@@ -107,7 +107,7 @@ machinery wraps the model; S10 itself is **live** (numpy + joblib + scipy ⊆ `L
 Because SimPy is **pure Python**, light DES scenarios run **live in the Pyodide Web Worker**: move a
 slider, SimPy re-runs in the browser, the React queue-network animates. A scenario falls back to the
 **precompute lane** only when it breaches a gate (long horizon, large entity count, or many
-replications). The lab's **3-gate rule** (pure-Python AND < 3 s AND < ~1 MB trace) enforces this
+replications). The lab's **4-gate rule** (pure-Python AND < 3 s AND < ~1 MB trace) enforces this
 structurally — CI fails the build if a scenario tagged "live" breaches a gate, so a heavy run can never
 accidentally ship as live.
 

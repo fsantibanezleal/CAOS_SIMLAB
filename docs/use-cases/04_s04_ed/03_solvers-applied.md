@@ -77,13 +77,13 @@ and the [DES problem-type guide](../../problem-types/01_discrete-event-simulatio
 ## The lane: **live**
 
 S04 runs in the **live** lane — it computes in-browser in a Pyodide Web Worker; move a slider and SimPy
-re-runs and the flow re-animates. It clears all three gates of the lab's
-[3-gate rule](../../architecture.md):
+re-runs and the flow re-animates. It clears all four conditions of the lab's
+[4-gate](../../architecture/03_the-gate.md):
 
 - **pure-Python** — `pure_python = True`; SimPy + NumPy import under Pyodide;
 - **wheels ⊆ live set** — `wheels = ["simpy", "numpy"]`, both in `LIVE_WHEELS`;
-- **fast & small** — a few-hundred-patient shift finishes well under the 3 s run gate and emits a trace far
-  under the ~1 MB trace gate.
+- **fast** — a few-hundred-patient shift finishes well under the 3 s run gate;
+- **small** — it emits a trace far under the ~1 MB trace gate.
 
 The gate is structural (`classify_lane` in `simlab/core/scenario.py`) and CI enforces it, so S04 cannot
 silently ship as "live" if it ever breached a gate.

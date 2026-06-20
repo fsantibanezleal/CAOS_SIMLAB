@@ -74,9 +74,9 @@ there is no separate "solver" step — the iterated `step()` *is* the solve.
 
 ## 3. The lane for this scenario: **live**
 
-The lab classifies each scenario into a lane by a measured **3-gate AND rule** (`classify_lane` in
-`simlab/core/scenario.py`): a scenario is `live` only if it is **pure-Python**, **runs < 3 s** in the
-in-browser Worker, and emits a **< 1 MB** trace (and its wheel closure is in `LIVE_WHEELS`).
+The lab classifies each scenario into a lane by a measured **4-gate AND rule** (`classify_lane` in
+`simlab/core/scenario.py`): a scenario is `live` only if it is **pure-Python**, its **wheel closure is in
+`LIVE_WHEELS`**, it **runs < 3 s** in the in-browser Worker, and it emits a **< 1 MB** trace.
 
 **S05 passes the gate with huge margin and is tagged `live`** in
 [`manifests/s05_beergame.json`](../../../manifests/s05_beergame.json) (and on every variant). The recorded

@@ -109,5 +109,5 @@ heavy deps (NumPy only, which exists in the live worker). Because the seed plan 
 deterministic, **replay is truth**: the committed seed-42 trace and a fresh live run on seed 42 produce
 the same numbers. `wheels = ["numpy", "joblib", "scipy"]` declares what the live lane loads.
 
-See [architecture.md](../../architecture.md) for the two-lane deterministic-replay design and the 3-gate
-rule the `threading` backend is tuned against.
+See [architecture.md](../../architecture.md) for the two-lane deterministic-replay design and the
+[4-gate](../../architecture/03_the-gate.md) the `threading` backend is tuned against.

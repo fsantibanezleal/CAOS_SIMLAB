@@ -8,9 +8,11 @@
 ## Model class
 
 S08 is the **Capacitated Vehicle Routing Problem (CVRP)**, the canonical *optimize-then-route* problem and
-an **NP-hard** combinatorial optimization. It is cast as an **arc-flow MILP**. There is **no time
-dimension and no randomness** in the model itself — one instance is solved once. Two solvers attack the
-**same** instance with **two different objectives** (§Objective).
+an **NP-hard** combinatorial optimization. It is modeled *conceptually* as an **arc-flow MILP** (the
+formulation below), but neither shipped engine builds an explicit MILP: OR-Tools realizes it through its
+routing model (a circuit constraint plus a `Capacity` dimension) and PyVRP solves it with a hybrid genetic
+search (HGS). There is **no time dimension and no randomness** in the model itself — one instance is solved
+once. Two solvers attack the **same** instance with **two different objectives** (§Objective).
 
 ## Sets
 

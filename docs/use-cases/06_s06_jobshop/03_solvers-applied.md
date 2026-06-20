@@ -65,9 +65,11 @@ job-shop on `ft06` (verified makespan 55) alongside a GLOP LP.
 
 **Precompute, always.** OR-Tools is native C++ with a Python wrapper; it **cannot** compile to WASM and so
 never runs in the Pyodide live lane. The scenario declares `pure_python = False`, which fails the engine
-gate of the lab's [3-gate rule](../../architecture.md) (`live` requires pure-Python *and* `run_ms < 3000`
-*and* `trace_bytes < ~1 MB`). The committed manifest records `lane = precomputed` with the reason
-*"not pure-Python (cannot run in Pyodide/WASM)"*; measured `run_ms ≈ 1059`, `trace_bytes ≈ 1954` for `ft06`.
+gate of the lab's [4-gate](../../architecture/03_the-gate.md) (`live` requires pure-Python *and*
+`wheels ⊆ LIVE_WHEELS` *and* `run_ms < 3000` *and* `trace_bytes < ~1 MB`). The committed manifest records
+`lane = precomputed` with the reason *"not pure-Python (cannot run in Pyodide/WASM)"*; for `ft06` the
+measured gate timing is well under the 3 s cap (`run_ms` ≈ 36 ms in the committed manifest — note S06 fails
+the lane on the engine gate, not on time) and `trace_bytes ≈ 1954`.
 
 Concretely:
 

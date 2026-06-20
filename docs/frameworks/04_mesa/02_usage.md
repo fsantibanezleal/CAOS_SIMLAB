@@ -57,8 +57,10 @@ upgrade trap, the `mesa>=3.0` pin in [01_installation.md](./01_installation.md) 
 `model.rng` (a NumPy `Generator`). Routing *all* randomness through these makes the whole run reproducible.
 
 > In 3.5.1 the older `seed=` keyword still works but emits a `FutureWarning` ("use `rng` instead"). The
-> example passes `rng=` to stay clean. This determinism is **the** property the precompute lane depends on:
-> compute once, commit the trace, replay forever (see [03_applying.md](./03_applying.md)).
+> example passes `rng=` to stay clean. This determinism is **the** load-bearing property for both lanes: the
+> live Mesa re-run in Pyodide reproduces the same trajectory (same `rng=` ⇒ same draws), and the seeded
+> headless run commits the canonical first-paint trace — compute once, replay forever
+> (see [03_applying.md](./03_applying.md)).
 
 ---
 
@@ -181,7 +183,8 @@ at step 7 (0.9379 → 0.9348): relocation is not monotone, because moving one un
 a previously-happy neighbor unhappy. The trajectory is a *settling* process, not a straight climb.
 
 **Reproducibility.** Re-running prints the *identical* trajectory (same seed -> same RNG draws -> same
-relocations). This is the property the precompute lane depends on: compute once locally, commit the trace,
+relocations). This is the property both lanes depend on: the live Mesa re-run in Pyodide reproduces this
+exact trajectory, and the seeded headless run commits the canonical first-paint trace — compute once,
 replay forever.
 
 ---

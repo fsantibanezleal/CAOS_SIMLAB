@@ -25,7 +25,7 @@ question is "what pattern will these local rules produce?"
    Mesa-2→3 activation break you must not copy from old tutorials.
 2. [02_when-to-use.md](./02_agent-based-modeling/02_when-to-use.md) — when ABM is the right problem type and
    when it is not (DES vs. Optimization), the Beer-Game boundary case, and the two-lane (live vs. precompute)
-   decision with the 3-gate rule that drives everything.
+   decision with the 4-gate rule that drives everything.
 3. [03_methods-and-kpis.md](./02_agent-based-modeling/03_methods-and-kpis.md) — the canonical ABM methods
    (emergence, contact/threshold dynamics, feedback/delay), spatial topologies, activation regimes as a
    modeling choice, and the KPIs each method reads off the trace.

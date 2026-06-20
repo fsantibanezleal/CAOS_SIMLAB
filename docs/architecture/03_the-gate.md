@@ -1,6 +1,6 @@
 # 03 · The gate — the measured live/precompute decision (`classify_lane`)
 
-A scenario may run **live in the browser** only if a four-part gate holds; failing **any** part forces it to
+A scenario may run **live in the browser** only if a 4-gate holds; failing **any** part forces it to
 the **precompute + replay** lane. The gate is not a label a human types — it is computed **from
 measurement** by the pipeline and recorded in every manifest, and CI re-checks it. This is what prevents
 "live mislabeling" (e.g. tagging an OR-Tools scenario "live" when native code cannot run in WASM).

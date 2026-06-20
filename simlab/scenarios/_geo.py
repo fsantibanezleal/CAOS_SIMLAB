@@ -1,4 +1,4 @@
-"""Shared synthetic road network for the geospatial routing scenarios (S07/S08/S09).
+"""Shared synthetic road network for the geospatial routing scenarios (S07/S08/S09/S11).
 
 A self-contained grid-of-junctions graph (no OSM, no tiles) with coordinates + an elevation field, plus
 Dijkstra shortest paths (with a pluggable edge cost so haul trucks can be slowed uphill / when loaded) and

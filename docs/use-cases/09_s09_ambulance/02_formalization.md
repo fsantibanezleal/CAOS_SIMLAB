@@ -95,8 +95,11 @@ The **response time** of a call is the time from arrival to the unit reaching th
 R_k = t_{\mathrm{sc}} - t_k .
 ```
 
-Over the `n` served calls, the lab reports mean response, the **p90** (90th-percentile) response, and the
-**coverage** within the threshold — the fraction of calls reached within `τ`:
+Over the `n` served calls, the lab reports mean response, the **p90** response, and the
+**coverage** within the threshold — the fraction of calls reached within `τ`. The p90 is a
+**nearest-rank** estimate (`sorted_responses[min(n−1, ⌊0.9·n⌋)]`), **not** an interpolated percentile; for
+the small per-variant call counts here (e.g. `n = 10` → index 9) that index lands on the run's slowest
+response, so read it as "roughly the worst-case tail," not a smoothed quantile:
 
 ```math
 \mathrm{cov} = \frac{1}{n}\sum_{k=1}^{n} \mathbf{1}\{R_k \le \tau\}.

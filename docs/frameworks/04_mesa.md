@@ -12,7 +12,7 @@ real maps ([mesa-geo](./05_mesa-geo.md)), or an instant zero-server in-browser c
 ([netlogo-web](./07_netlogo-web.md)).
 
 **How this lab uses it.** Mesa **runs LIVE in the browser via Pyodide** — it was *measured* to satisfy the
-3-gate live rule (pure-Python, run < 3 s, trace < 1 MB) with `mesa ⊆ LIVE_WHEELS`, and the worker
+4-gate live rule (pure-Python, run < 3 s, trace < 1 MB) with `mesa ⊆ LIVE_WHEELS`, and the worker
 `micropip.install`s it (a `sqlite3` load for `mesa.experimental` and a ~3 s cold start are the cost). The
 three ABM scenarios — **S02 Schelling**, **S03 SIR**, **S05 Beer Game** — are classified `lane: "live"` in
 their manifests and expose a live Run button: move a slider and real Mesa 3 re-runs in the browser. The same

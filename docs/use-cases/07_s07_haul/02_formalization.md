@@ -9,8 +9,8 @@ discrete-event simulation of a closed finite-source queue (the cycle).
 
 - **Nodes** `n` of the `g × g` junction grid (`g = 12`), each carrying an elevation `elev(n)`.
 - A **load** node on the bottom edge and a **dump** node on the top edge, both in column `lift_col`.
-- **Directed arcs** `(a → b)`: one per undirected road segment in each direction (built in
-  `build_road_graph`); `A` denotes the arc set.
+- **Directed arcs** `(a → b)`: one per undirected road segment in each direction (built offline in
+  `build_road_graph`, in the plan builder `_haul_plan.py`); `A` denotes the arc set.
 
 ## Parameters
 

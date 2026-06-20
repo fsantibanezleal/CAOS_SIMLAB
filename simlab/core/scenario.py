@@ -2,8 +2,8 @@
 
 A Scenario declares its tunable parameters and knows how to `run(params, seed) -> Trace`. The gate
 (`classify_lane`) decides, FROM MEASUREMENT, whether a scenario may run live in the browser or must be
-precomputed. The rule is the 3-gate AND — ENGINE (pure-Python AND `wheels ⊆ LIVE_WHEELS`, so it imports in
-the browser worker) · TIME (run < 3 s) · TRACE (< 1 MB); failing any gate forces precompute. This is what
+precomputed. The rule is the 4-gate AND — (1) pure-Python · (2) `wheels ⊆ LIVE_WHEELS` (so it imports in the
+browser worker) · (3) run < 3 s · (4) trace < 1 MB; failing any gate forces precompute. This is what
 prevents "live mislabeling" (e.g. tagging an OR-Tools scenario live when native code cannot run in WASM).
 """
 from __future__ import annotations

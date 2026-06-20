@@ -93,7 +93,7 @@ classical queues it simulates have closed forms. Full rationale and API:
 
 ## 4. Live vs precompute lane (this scenario)
 
-S01 is a **live** scenario. The lab's [3-gate rule](../../architecture/03_the-gate.md)
+S01 is a **live** scenario. The lab's [4-gate](../../architecture/03_the-gate.md)
 (`classify_lane`) admits a scenario to the live Pyodide lane only when **all** hold: pure-Python AND
 `run < 3000 ms` AND `trace < 1 MB` AND its wheel closure ⊆ the live-worker set. S01 clears every gate:
 

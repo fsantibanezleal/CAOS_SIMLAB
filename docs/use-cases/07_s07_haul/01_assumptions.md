@@ -45,7 +45,9 @@ forcing a detour regardless of grade.
 
 The following are deliberately out of scope for this scenario:
 
-- **Variable truck speed or breakdowns** — speed is fixed at `1.0`, trucks never fail.
+- **Variable truck speed** — speed is fixed at `1.0`. (Truck **breakdowns** *are* available as a `breakdown`
+  parameter — a seeded per-truck stoppage stream — but the default/canonical variant family pins
+  `breakdown = 0.0`, so trucks never fail in the shipped variants.)
 - **Loaded descent** — only positive climb is penalized (`max(0, Δelev)`); going down is free of grade
   penalty.
 - **Multi-truck road congestion** — trucks share the loader but not the road; legs never interfere.
@@ -57,9 +59,13 @@ The following are deliberately out of scope for this scenario:
 ## Determinism
 
 The route is a **unique shortest path on a fixed graph** (NetworkX), confirmed by a seeded CP-SAT solve
-(OR-Tools). The DES has **no stochastic variates** in this variant family — service times are fixed
-(`load_time`, `dump_time`) and leg times are a deterministic function of the route — so the replay is a
-**fully deterministic function of (params, seed)**: the same input yields the same trace byte-for-byte. The
-`seed` is recorded in the trace as the reproducibility key, but it is **inert** here (there is no random
-sampling). This is what places the scenario in the deterministic-replay precompute lane — see
-[03 · Solvers applied](./03_solvers-applied.md).
+(OR-Tools). That route-finding and cost-certification step is done **offline** by the plan builder
+(`_haul_plan.py`) and its result is committed as data in `s07_plans.py`; the native OR-Tools/NetworkX engines
+are **never** imported by the scenario's `run()`. The default variant family pins `breakdown = 0.0`, so the
+SimPy DES that `run()` executes has **no stochastic variates** — service times are fixed (`load_time`,
+`dump_time`) and leg times are a deterministic function of the route — making the replay a **fully
+deterministic function of (params, seed)**: the same input yields the same trace byte-for-byte. The `seed` is
+recorded as the reproducibility key; with `breakdown = 0.0` it is effectively **inert** (no random sampling
+occurs), though the code does carry a seeded breakdown stream that activates when `breakdown > 0`. Because
+`run()` is pure-Python (SimPy + NumPy, both in `LIVE_WHEELS`), this scenario's lane is **live** — the SimPy
+replay over the committed native plan runs in the browser — see [03 · Solvers applied](./03_solvers-applied.md).

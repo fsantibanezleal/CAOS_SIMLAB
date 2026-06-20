@@ -49,7 +49,7 @@ gate, not by `requirements.txt`:
 
 > The browser worker loads the live wheels itself: it `loadPackage`s numpy/pandas/scipy/networkx/sqlite3 and
 > `micropip.install`s simpy/ciw/**mesa**/joblib. Because `mesa ⊆ LIVE_WHEELS` (`simlab/core/scenario.py`) and
-> the ABM scenarios are pure-Python and pass the 3-gate rule, **Mesa runs LIVE in Pyodide**. What Mesa cannot
+> the ABM scenarios are pure-Python and pass the 4-gate rule, **Mesa runs LIVE in Pyodide**. What Mesa cannot
 > serve is **SolaraViz** — its first-class visualization is a stateful Python (Solara) server bound to a
 > localhost port, fine for local teaching but wrong for a static SPA on a shared, no-GPU VPS. The lab's
 > React/SVG viewer owns the pixels instead; SolaraViz never runs in production, but the Mesa *engine* does.
@@ -83,7 +83,7 @@ precompute path this lab uses. The example in [02_usage.md](./02_usage.md) impor
   models, and all of which are documented as a reference chapter only
   ([../gpu-abm-chapter/](../18_gpu-abm-chapter.md)). There are therefore **no CUDA notes** for Mesa.
 - **Pyodide-shippable — and shipped live.** Mesa is pure Python; the browser worker `micropip.install`s it
-  (with pandas/networkx/sqlite3 loaded), and it was *measured* to clear the 3-gate live rule (~3 s cold
+  (with pandas/networkx/sqlite3 loaded), and it was *measured* to clear the 4-gate live rule (~3 s cold
   start). So the ABM scenarios run real Mesa 3 live in Pyodide — they do **not** fall back to a hand-rolled
   NumPy model. See [03_applying.md](./03_applying.md).
 

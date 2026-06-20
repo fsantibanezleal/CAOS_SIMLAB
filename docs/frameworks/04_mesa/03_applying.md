@@ -49,7 +49,7 @@ Mesa's `Agent` / `Model` / space / `AgentSet` abstractions map one-to-one onto t
 > `simlab/scenarios/s02_schelling.py`, `s03_sir.py` and `s05_beergame.py` all use `mesa.Agent` /
 > `mesa.Model` / `AgentSet` activation (engine = "mesa") and `import mesa`. All three carry
 > `lane: "live"` in their manifests; the browser worker `micropip.install`s `mesa` and it was *measured*
-> to clear the 3-gate rule (`mesa ⊆ LIVE_WHEELS`, run < 3 s after a ~3 s cold start, trace < 1 MB). The
+> to clear the 4-gate rule (`mesa ⊆ LIVE_WHEELS`, run < 3 s after a ~3 s cold start, trace < 1 MB). The
 > same seeded models are *also* run headless in the local pipeline to commit a canonical replay artifact
 > for instant first paint and byte-for-byte reproducibility.
 
