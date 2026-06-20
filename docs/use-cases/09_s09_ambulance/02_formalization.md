@@ -9,8 +9,12 @@ Symbols and equations below are kept consistent with the code; the canonical ins
 
 A **spatial multi-server queue with state-dependent service** — an EMS system of type **M/G/c**, where the
 "service" of one job is the *full* travel → treat → transport → return cycle, and the routing rule is
-**nearest-available**. There is no closed form for this (nearest-available, spatial, state-dependent), so it
-is solved as a seeded **discrete-event simulation**.
+**nearest-available**. The *per-call dispatch decision* itself **is** closed form (a one-line
+earliest-arrival argmin over the fleet — see [§ Dynamics](#dynamics--dispatch-and-the-service-cycle)); what
+has **no closed form** is the *system-level* behaviour these decisions generate (the response-time
+distribution, p90, coverage and offered load under this nearest-available, spatial, state-dependent
+discipline), so the KPIs are obtained from a seeded **discrete-event simulation** rather than an analytic
+queueing formula.
 
 ## Sets
 

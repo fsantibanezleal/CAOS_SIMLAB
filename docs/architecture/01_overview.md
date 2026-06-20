@@ -31,8 +31,9 @@ not hand-rolled stand-ins. To keep that promise *and* stay static, work is split
    animates the fresh trace. Zero server compute, effectively unbounded concurrency. The engines that live
    here are the ones whose wheel closure the worker can load and that clear the gate: **SimPy** (DES),
    **Ciw** (M/M/c validation), **Mesa 3** (ABM — measured to run in Pyodide, see
-   [04_live-lane-pyodide.md](./04_live-lane-pyodide.md)), **joblib** (Monte-Carlo replications), with
-   **NetLogo Web** as a zero-Python alternate ABM engine.
+   [04_live-lane-pyodide.md](./04_live-lane-pyodide.md)), **NetworkX** (the pure-Python graph + Dijkstra
+   layer — in `LIVE_WHEELS`, running live in the S07 haul replay and S09 ambulance dispatch),
+   **joblib** (Monte-Carlo replications), with **NetLogo Web** as a zero-Python alternate ABM engine.
 2. **Precompute plane (local `.venv`).** The heavy / native / SOTA engines run **offline** into a committed
    seeded trace + manifest, replayed in the app with a scrubber: **OR-Tools** (CP-SAT / Routing / GLOP),
    **PyVRP** (SOTA VRP), **NetworkX / OSMnx** (road graphs), **Mesa / Mesa-Geo** + **JuPedSim** (crowds),

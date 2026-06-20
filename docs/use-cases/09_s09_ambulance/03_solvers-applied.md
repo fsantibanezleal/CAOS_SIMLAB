@@ -56,8 +56,9 @@ dispatch loop that produce the response-time distribution, coverage and offered 
 
 The lab's optimization & routing family is the **optimize-then-simulate** pattern, with
 [08 · OR-Tools](../../frameworks/08_ortools.md) as the optimizer for its siblings (S07 haul routing, S08 VRP,
-S11 mine-haul). Some of the lab's broader index tables sketch S09 in that family ("OR-Tools + SimPy + graph"
-as the aspirational shape of an EMS dispatch/relocation *plan*). **The shipped S09 scenario does not call
+S11 mine-haul). Earlier drafts of the lab's index tables once sketched S09 in that family ("OR-Tools + SimPy +
+graph", the aspirational shape of an EMS dispatch/relocation *plan*); the current summaries no longer do —
+they list S09 as **SimPy + NetworkX**, matching the shipped code. **The shipped S09 scenario does not call
 OR-Tools.** Its dispatch rule is an **exact nearest-available argmin** over the fleet — a one-line optimum
 that needs no solver — and routing is NetworkX Dijkstra. The scenario declares
 `wheels = ["numpy", "simpy", "networkx"]` and contains no OR-Tools import; it is the only optimize-then-simulate

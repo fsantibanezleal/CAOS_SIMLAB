@@ -12,9 +12,9 @@ measurably *slower*. That asymmetry is itself a lesson, and we teach it rather t
 
 This node is the conceptual reference. The runnable per-tool guides live under
 [`docs/frameworks/`](../frameworks.md) and the worked scenario is
-[S10 — Monte-Carlo Replication / CI Study](../use-cases/10_s10_montecarlo.md), which runs replications over
-the [S01 bank-queue](../use-cases/01_s01_queue.md) and [S04 emergency-department](../use-cases/04_s04_ed.md)
-base models.
+[S10 — Monte-Carlo Replication / CI Study](../use-cases/10_s10_montecarlo.md), which replicates the
+[S01 bank-queue M/M/c](../use-cases/01_s01_queue.md) model class via its own fast NumPy heap estimator
+(not S01's SimPy engine).
 
 ## Read in order
 
@@ -42,8 +42,9 @@ base models.
   [14 — Numba](../frameworks/14_numba.md) · [15 — CuPy](../frameworks/15_cupy.md) (the optional GPU exhibit
   above the crossover) · [16 — Taichi](../frameworks/16_taichi.md) (niche grid/CA GPU) ·
   [18 — GPU-ABM chapter](../frameworks/18_gpu-abm-chapter.md) (FLAME GPU 2, reference only).
-- **Base models being replicated:** [SimPy](../frameworks/01_simpy.md) (+
-  [Ciw](../frameworks/02_ciw.md) for M/M/c analytics) — the S01 / S04 models S10 layers on top of.
+- **Base model being replicated:** the [S01 M/M/c queue](../use-cases/01_s01_queue.md) model class (+
+  [Ciw](../frameworks/02_ciw.md) for the Erlang-C cross-check) — S10 reimplements it as its own NumPy heap
+  estimator rather than re-running [SimPy](../frameworks/01_simpy.md).
 - **Sibling problem types:** [Discrete-Event Simulation](./01_discrete-event-simulation.md) ·
   [Agent-Based Modeling](./02_agent-based-modeling.md) · [Optimization & Routing](./03_optimization-routing.md).
 - **Lab map & architecture:** [docs README](../README.md) ·

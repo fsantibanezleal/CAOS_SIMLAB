@@ -43,8 +43,8 @@ results. Together they exercise every problem type and almost every framework in
    city graph, a spatial multi-server EMS queue; SimPy + NetworkX (closed-form nearest-available dispatch).
    *(DES · live)*
 10. [**10 · S10 — Monte-Carlo CI Study**](./use-cases/10_s10_montecarlo.md) — how many seeded replications to
-    match the Erlang-C answer; the running mean and 95% CI over the S01/S04 base models. joblib (threading
-    backend, live) + SciPy. *(Monte-Carlo · live)*
+    match the Erlang-C answer; the running mean and 95% CI over the S01 M/M/c model class (its own NumPy heap
+    estimator, not SimPy). joblib (threading backend, live) + SciPy. *(Monte-Carlo · live)*
 11. [**11 · S11 — Mine Multi-Destination Haul**](./use-cases/11_s11_minehaul.md) — a blend LP picks phase
     tonnages for a target grade, then a fixed fleet realizes the plan over haul roads; OR-Tools GLOP LP +
     SimPy. *(Optimization + DES · precompute)*
@@ -53,7 +53,7 @@ results. Together they exercise every problem type and almost every framework in
 
 | Problem type | Scenarios |
 |---|---|
-| [Discrete-Event Simulation](./problem-types/01_discrete-event-simulation.md) | S01, S04, S09 (live SimPy + NetworkX DES) (+ the SimPy replay legs of S07/S11, and S10's base models) |
+| [Discrete-Event Simulation](./problem-types/01_discrete-event-simulation.md) | S01, S04, S09 (live SimPy + NetworkX DES) (+ the SimPy replay legs of S07/S11; S10 replicates the S01 M/M/c model class via its own NumPy estimator, not SimPy) |
 | [Agent-Based Modeling](./problem-types/02_agent-based-modeling.md) | S02, S03, S05 |
 | [Optimization & Routing](./problem-types/03_optimization-routing.md) | S06, S07, S08, S11 (S09 is listed in the routing section as the closed-form **no-solver** exception — it is a live SimPy + NetworkX DES) |
 | [Monte-Carlo & Replications](./problem-types/04_monte-carlo-replications.md) | S10 (the dedicated exhibit; the methodology applies to every stochastic scenario) |

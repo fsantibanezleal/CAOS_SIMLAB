@@ -86,8 +86,9 @@ No backend, no runtime DB. See [07_deploy.md](./07_deploy.md).
 
 ## Per-scenario engines (summary)
 
-S01 SimPy + Ciw · S02/S03/S05 Mesa · S04 SimPy · S06 OR-Tools CP-SAT · S07 OR-Tools + SimPy + OSMnx ·
-S08 OR-Tools + PyVRP + SimPy · S09 SimPy + NetworkX (closed-form nearest-available dispatch, no OR-Tools) · S10 joblib (+ optional CuPy/Numba) + SciPy ·
+S01 SimPy + Ciw · S02/S03/S05 Mesa · S04 SimPy · S06 OR-Tools CP-SAT ·
+S07 NetworkX + OR-Tools CP-SAT (route plan, precomputed) + SimPy (replay, live) ·
+S08 OR-Tools + PyVRP (CVRP, no SimPy) · S09 SimPy + NetworkX (closed-form nearest-available dispatch, no OR-Tools) · S10 joblib (+ optional CuPy/Numba) + SciPy ·
 S11 OR-Tools GLOP + SimPy. Detail per problem type in [../problem-types/](../problem-types/) and per tool in
 [../frameworks/](../frameworks/).
 

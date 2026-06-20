@@ -97,8 +97,10 @@ For ABM there is a second live engine that needs **no Pyodide at all**: **NetLog
 compiled to JavaScript by the Tortoise runtime). A model is exported to a **self-contained HTML file**
 (`web/public/netlogo/…`, e.g. `schelling.html`) that simulates entirely in the browser as native JS — a
 smaller cold-start than the WASM runtime, which is why it carries the "enter → a running simulator, instantly"
-on-ramp. Each NetLogo card has a twin **Mesa** precompute-and-replay card, so the lesson is *the concept is
-engine-independent; NetLogo is for instant play, Python + Mesa is for how to build and trace it yourself*.
+on-ramp. The shipped NetLogo card is a standalone off-nav sandbox (Schelling only, linked from the S02 page);
+its Python twin, **Mesa**, runs **live in Pyodide** (not precompute-and-replay), so the lesson is *the concept
+is engine-independent; NetLogo is for instant native-JS play, Python + Mesa is the live real engine for how to
+build and trace it yourself*.
 NetLogo model licenses are mixed (Code Examples CC0; most Models-Library models CC BY-NC-SA), so the lab
 prefers CC0 or authors its own. Full detail:
 [../frameworks/07_netlogo-web.md](../frameworks/07_netlogo-web.md).

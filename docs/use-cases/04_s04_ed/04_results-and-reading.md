@@ -30,8 +30,9 @@ Three orthogonal axes are being swept:
   carried over from S01).
 - **Staffing (cₓ, cₜ): `understaffed` / `wellstaffed`** move the *bottleneck* bay count (one fewer tightens
   it, one more absorbs the busy load), and **`triage_bottleneck`** drops cₜ to 1 so contention also appears
-  *upstream* — the triage wait jumps ~12× (≈ 0.05 → 0.56), yet the treatment wait (≈ 1.52) still dominates
-  LOS; cutting triage adds an upstream delay on top of the bottleneck, it doesn't relocate the bottleneck.
+  *upstream* — the triage wait jumps several-fold, yet the treatment wait (≈ 1.52, the exported **Wait
+  treat.** KPI) still dominates LOS; cutting triage adds an upstream delay on top of the bottleneck, it
+  doesn't relocate the bottleneck.
 - **Urgent mix (pᵤ): `high_urgent` / `low_urgent`** change how often the priority discipline bites — with
   more urgents, priority reshapes *who* waits; with few, it barely shows.
 - **Surge (s): `surge`** turns on the mid-shift intensity spike to expose *transient* stress at the same
@@ -55,9 +56,9 @@ and **ρ treat.** Read them together:
   position. Crucially, priority **reorders** who waits, it doesn't add capacity — total mean LOS is driven
   by ρ, not by the mix.
 - **LOS (total) is the headline.** Total time-in-system rises with load and tightens with each removed bay;
-  `triage_bottleneck` shows that starving triage adds a real *upstream* delay — the triage wait jumps ~12×
-  (≈ 0.05 → 0.56) even though ρ_treat is unchanged — but the treatment wait (≈ 1.52) still dominates LOS, so
-  the contention surfaces in two places rather than moving wholesale to triage.
+  `triage_bottleneck` shows that starving triage adds a real *upstream* delay — the triage wait jumps
+  several-fold even though ρ_treat is unchanged — but the treatment wait (≈ 1.52, the exported **Wait treat.**
+  KPI) still dominates LOS, so the contention surfaces in two places rather than moving wholesale to triage.
 
 > **Honesty caveat.** Every number here is **one seeded run** — a single noisy draw, not the answer.
 > Re-seed and the means move. The honest, replicated-with-confidence-interval version of these same
@@ -78,7 +79,7 @@ The renderer is the lab's **flow** viz (`viz = "flow"`), driven by the `FlowTrac
 - **Queue length = where waiting accumulates.** The length of each station's queue tells you where the
   system is choking. Watch the **treatment** queue grow as you step from `calm` to `overloaded` (ρ → 1);
   switch to `triage_bottleneck` and a second queue now also builds **upstream** at triage (its wait jumps
-  ~12×), on top of the treatment queue that still carries most of the delay.
+  several-fold), on top of the treatment queue that still carries most of the delay.
 - **The HUD/KPIs tie it together.** As the animation runs, the LOS / LOS-urgent / LOS-standard / wait /
   ρ readouts update; cross-reading the growing treatment queue against rising ρ and Wait-treat is the
   intended "aha" — the bottleneck you *see* is the bottleneck the numbers *measure*.

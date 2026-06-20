@@ -67,13 +67,14 @@ JAX is **not the primary engine for any single scenario** — the scenario→too
 assigns concrete engines elsewhere (S01 SimPy live engine + Ciw cross-check;
 S02/S03/S05 Mesa live; S04 SimPy; S06 OR-Tools CP-SAT; S07 OR-Tools CP-SAT + NetworkX
 + deterministic SimPy; S08 OR-Tools Routing + PyVRP, no SimPy; S09 SimPy + NetworkX,
-no OR-Tools; S11 OR-Tools GLOP + deterministic SimPy; S10 joblib+CuPy/Numba+SciPy).
+no OR-Tools; S11 OR-Tools GLOP + deterministic SimPy; S10 joblib + SciPy, optional CuPy/Numba GPU exhibit, not shipped).
 JAX is the **vectorization primitive that backs the Monte-Carlo / batched-ABM
 *context*** that cuts across them:
 
-- **S10 — Monte-Carlo Replication / CI study** is the natural home. S10's v1 driver
-  is **[joblib](../12_joblib.md)** (CPU-parallel) with an optional
-  **[CuPy](../15_cupy.md) / Numba CUDA** GPU exhibit. **JAX is the documented
+- **S10 — Monte-Carlo Replication / CI study** is the natural home. S10's shipped driver
+  is **[joblib](../12_joblib.md)** (CPU-parallel) + **[`scipy.stats`](../13_scipy-stats.md)**; a
+  **[CuPy](../15_cupy.md) / Numba CUDA** GPU exhibit is documented but **not shipped** (a replication study
+  is embarrassingly parallel and maps cleanly onto CPU cores). **JAX is the documented
   vectorized-functional alternative** to that GPU exhibit: the same "thousands of
   independent seeded replications → mean + CI" computation, written as
   `jit(vmap(one_replication))`, runnable on the CPU backend today and on GPU/TPU

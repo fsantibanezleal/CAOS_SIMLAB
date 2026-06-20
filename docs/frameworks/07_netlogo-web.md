@@ -11,11 +11,14 @@ carries the "enter → a running simulator, instantly" promise.
 
 **When to use it:** modest-scale (~1e3–1e4 agents) ABM classics — Schelling segregation, SIR epidemics,
 Wolf-Sheep, Flocking — where the goal is *play first, understand later* with no server cost. **How the lab
-uses it:** it is a zero-server instant-play on-ramp, the JS half of a deliberate two-engine pairing. Each
-NetLogo card has a twin **Mesa 3** card (which runs **live in Pyodide**, backed by a committed canonical
-replay) so the lesson lands cleanly: *the concept is engine-independent; NetLogo runs instantly as compiled
-JS with no Pyodide load, Python + Mesa is the real engine — also live, plus the exact committed trace — for
-how to build and reproduce it yourself.* The difference is the runtime (native JS vs Pyodide-Python), not
+uses it today:** NetLogo Web is a **standalone, off-nav sandbox demo** — a single Schelling card at
+`/sandbox/netlogo` (`web/public/netlogo/schelling.html`, the only committed NetLogo model), **linked from the
+S02 page** as "the same problem in another tool." It is **not** a per-scenario embedded twin-card pairing:
+the lab's actual ABM scenarios (S02/S03/S05) run live on **Mesa 3 in Pyodide** (measured), each also backed by
+a committed trace for instant first paint. So the engine-independence lesson is made by *one* live NetLogo
+sandbox standing beside the Pyodide-Mesa scenarios — *the concept is engine-independent; NetLogo runs instantly
+as compiled JS with no Pyodide load, while Python + Mesa is the real engine for the scenarios — also live, plus
+the exact committed trace.* The difference is the runtime (native JS vs Pyodide-Python), not
 live-vs-precompute: both run live. For anything large (millions of agents) the lab routes to the GPU-ABM
 chapter (see below). The one hard compliance fact: NetLogo model
 licenses are **mixed** (Code Examples are CC0; most Models Library models are CC BY-NC-SA — *not* open
@@ -46,10 +49,10 @@ HTML and looking at the animated card (see
 
 ## Scenarios that use this framework
 
-| Scenario | NetLogo Web card (JS, this engine) | Python twin (Mesa 3 — runs live in Pyodide + committed replay) |
+| Scenario | NetLogo Web card (JS, this engine) | Live ABM scenario (Mesa 3 — runs live in Pyodide + committed replay) |
 |---|---|---|
-| **S02 — Schelling segregation** | segregation on a 2-D grid; sliders: `pct-similar-wanted`, `density` | `simlab/scenarios/s02_schelling.py` (`engine = "mesa"`) |
-| **S03 — SIR epidemic** | epidemic wave + S/I/R curves; sliders: infection prob., recovery, contacts | `simlab/scenarios/s03_sir.py` (`engine = "mesa"`) |
+| **S02 — Schelling segregation** | **shipped** — `web/public/netlogo/schelling.html`, the only committed NetLogo model; segregation on a 2-D grid with sliders, at the off-nav `/sandbox/netlogo` and linked from the S02 page | `simlab/scenarios/s02_schelling.py` (`engine = "mesa"`) |
+| **S03 — SIR epidemic** | **none shipped** — there is no SIR `.nlogo`/HTML in the repo and the web wires only the Schelling card; NetLogo SIR is only *"same problem, other tool"* (see [`use-cases/03_s03_sir.md`](../use-cases/03_s03_sir.md)) | `simlab/scenarios/s03_sir.py` (`engine = "mesa"`) |
 
 ## See also
 

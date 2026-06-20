@@ -3,6 +3,27 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.17.004] - 2026-06-20
+### Fixed — adversarial round-8 consistency tail (the loop's convergence batch)
+- **S10 monte-carlo guide (was badly out of sync):** S10 replicates only the S01 M/M/c model class (not S04),
+  via its own NumPy heap estimator `mmc_mean_wait` (not S01's SimPy); removed the false optional-CuPy/Numba-GPU,
+  the "warm-up-corrected" claim + warm-up/base-model presets (S10 does no warm-up by design — the finite-run
+  bias is the lesson), and corrected the preset list to the real param_specs (lam/mu/c/n_customers/n_reps, 95% CI).
+- **Mesa-live + NetLogo honesty:** `02_when-to-use.md` no longer says "Mesa is never served live" (Mesa runs
+  live in Pyodide for S02/S03/S05; only its SolaraViz *server* is never served) and now states the 4-gate (was
+  "three gates"); the NetLogo SIR card is marked **not shipped** (only the Schelling card ships, off-nav, linked
+  from S02) and the "twin card per scenario" overstatement softened to a standalone sandbox.
+- **Engine summaries:** architecture/05_precompute-pipeline.md — S07 = NetworkX + OR-Tools CP-SAT plan + live
+  SimPy replay (not "OSMnx"); S08 = OR-Tools + PyVRP, **no SimPy**; added NetworkX to the live-plane list.
+- **OR-Tools seed honesty:** OR-Tools Routing gets **no** random seed (determinism = single-thread GLS +
+  `solution_limit`); only PyVRP uses seed 42 — corrected the s08 docstring/comment, S08Desc, assumptions, and
+  the routing scenarios table.
+- Minor accuracy: S03 docstring scoped ("structural template", S03 synchronous vs S02 one-by-one); S11 tiered
+  dispatch (plant reachable-soonest, aux furthest-behind) across docstrings + S11Desc + OptimizationTheory;
+  S11 two_phase_rich structural undershoot noted; S04 triage-wait figures softened (not an exported KPI);
+  S09 "no closed form" disambiguated; jax/taichi inline S10 stack = joblib+SciPy (GPU not shipped).
+- Convergence: 8 adversarial rounds, **0 critical since round 4**; this batch closes the round-8 findings.
+
 ## [0.17.003] - 2026-06-20
 ### Fixed — adversarial round-7 (full 15-auditor pass) consistency tail
 - **S01 web/docs:** S01Desc now names **Ciw** as the independent second DES engine (was SimPy + Erlang-C only);

@@ -46,9 +46,11 @@ next to the obvious entries.
   replays instantly while Pyodide warms, and so every regime is comparable with zero compute. The live lane
   is an *enhancement* (slider responsiveness), never a single point of failure — if Pyodide fails to boot,
   the page still replays the committed trace.
-- **ABM has a second live engine.** Where Mesa-in-Pyodide is borderline or the instant on-ramp matters more
-  than build-it-yourself fidelity, the scenario ships a **NetLogo Web** live card (zero Python) paired with a
-  Mesa precompute-and-replay twin. Which one a scenario ships is an empirical call recorded in its manifest.
+- **ABM has a second live engine.** Where the instant native-JS on-ramp adds teaching value, the lab also
+  ships a standalone **NetLogo Web** live card (zero Python) alongside the Mesa-in-Pyodide scenarios — today
+  that is the Schelling card (`web/public/netlogo/schelling.html`, off-nav, linked from S02). This is an
+  editorial choice in the web app, not a manifest field: ABM manifests carry only `engine = "mesa"` and the
+  wheel closure — no manifest names a NetLogo engine.
 - **GPU is never required.** The GPU lane (CuPy/Numba/Taichi/JAX) is local-only and optional; every GPU
   scenario has a CPU path (S10 uses joblib on CPU, which is what CI runs — no CUDA on the runner).
 

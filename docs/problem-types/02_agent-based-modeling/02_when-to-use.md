@@ -58,37 +58,43 @@ execution modes, and each ABM scenario picks exactly one:
 
 | | **LIVE lane** | **PRECOMPUTE lane** |
 |---|---|---|
-| **Engine** | [NetLogo Web](../../frameworks/07_netlogo-web.md) (Tortoise), or Pyodide-Mesa | [Mesa 3](../../frameworks/04_mesa.md) (or [Mesa-Geo](../../frameworks/05_mesa-geo.md)) **headless** |
-| **Where it runs** | the visitor's browser (client-side JS/WASM) | offline, on the local box |
-| **What ships** | static HTML/JS the host serves | a committed **seeded trace** the SPA **replays** |
+| **Engine** | [Mesa 3](../../frameworks/04_mesa.md) **in Pyodide** (the lab's ABM scenarios S02/S03/S05 — measured live), or [NetLogo Web](../../frameworks/07_netlogo-web.md) (Tortoise) | [Mesa 3](../../frameworks/04_mesa.md) (or [Mesa-Geo](../../frameworks/05_mesa-geo.md)) **headless** for heavy/large-N/geo ABM |
+| **Where it runs** | the visitor's browser (Pyodide-WASM for Mesa, native JS for NetLogo) | offline, on the local box |
+| **What ships** | the scenario code Pyodide runs live + a committed trace for instant first paint; or static NetLogo HTML | a committed **seeded trace** the SPA **replays** |
 | **Server compute** | none | none (it only serves the trace) |
 | **Best for** | light, canonical models the learner tunes live | heavy / large-N / geo / crowd models too costly per-visitor |
 | **Gate** | must pass the 4-gate rule (below) | anything that fails a live gate |
 
 ### The 4-gate rule
 
-A scenario ships **live only if all three gates hold**; failing any one routes it to **precompute**. The gate
+A scenario ships **live only if all four gates hold**; failing any one routes it to **precompute**. The gate
 verdict and the *measured* numbers are recorded per-scenario, and CI rejects a "live" scenario that breaches a
-gate:
+gate (this is the `classify_lane` AND in `simlab/core/scenario.py`):
 
-1. **Pure-Python** (or NetLogo-JS) — the engine must run client-side (Pyodide wheels ⊆ the live closure, or a
-   NetLogo model compiled to JS).
-2. **< 3 s** — a single run completes within the live time budget in the browser.
-3. **trace < ~1 MB** — the artifact a learner would download/animate stays small.
+1. **Pure-Python** (`pure_python = True`) — the engine must run client-side; native-code engines (OR-Tools)
+   set this False because there is no WASM build (NetLogo Web is the JS alternative, off this Pyodide path).
+2. **wheels ⊆ `LIVE_WHEELS`** — every wheel the scenario needs must be loadable by the live worker. Mesa
+   qualifies: `mesa` (and `sqlite3`) are in `LIVE_WHEELS`, so the ABM scenarios import and run live.
+3. **< 3 s** — a single run completes within the live time budget in the browser.
+4. **trace < ~1 MB** — the artifact a learner would download/animate stays small.
 
 See [the gate](../../architecture/03_the-gate.md) for the exact `classify_lane` check and the live wheel
 closure (including the measured fact that Mesa itself runs in Pyodide with `sqlite3`).
 
 ### The restatement that resolves the most common confusion
 
-> *Mesa is never served live.* Mesa runs **headless → trace → replay**. NetLogo Web runs **live in the
-> browser**. **Both put zero simulation compute on the server.**
+> *Mesa's **SolaraViz server** is never served live* — what's never served is the per-visitor Python
+> **process** SolaraViz would spawn. **Mesa itself runs live** in the visitor's browser via Pyodide-WASM (the
+> ABM scenarios S02/S03/S05 — measured, inside the 3 s gate), and **also** ships a committed trace for instant
+> first paint and offline replay. NetLogo Web is a second live engine (native JS, no Pyodide). Headless Mesa →
+> trace → replay is reserved for **heavy / large-N / geo / crowd** ABM that fails a live gate (Mesa-Geo,
+> JuPedSim). **All of these put zero simulation compute on the server.**
 
-The same model can appear in *both* lanes — an in-browser NetLogo card for instant play **and** a Mesa
-notebook in the repo for "how to build it yourself" — which reinforces that the concept is **engine-
-independent**. The house rule is to **pair each live card with its Mesa equivalent** so the two-engine setup
-*teaches* rather than confuses. (Why Mesa cannot be the live public server at all — the SolaraViz =
-one-Python-process-per-visitor hazard — is detailed in [04 · Tools](./04_tools.md).)
+The same problem can be reached by *both* engines — Pyodide-Mesa running the real Python scenario live, and the
+standalone NetLogo Web card for instant native-JS play (Schelling only today) — which reinforces that the
+concept is **engine-independent**. (Why Mesa cannot be the live public *server* — the SolaraViz =
+one-Python-process-per-visitor hazard, which is about the server, not the engine — is detailed in
+[04 · Tools](./04_tools.md).)
 
 ---
 
