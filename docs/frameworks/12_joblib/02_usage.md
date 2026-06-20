@@ -53,6 +53,10 @@ Key parameters:
 > (an event loop over customers), which is bound by Python's GIL. Threads would serialise on the GIL and
 > give ~no speedup; separate processes each get their own interpreter and run truly in parallel. Use
 > `backend="threading"` only when the inner work releases the GIL (e.g. heavy NumPy/BLAS) or is I/O-bound.
+> The shipped **S10** scenario does exactly this: it overrides the default with `backend="threading"` because
+> its inner loop is GIL-releasing NumPy *and* because threading is the only joblib backend that runs under
+> Pyodide/WASM (loky needs subprocesses the browser can't spawn) — so the same code serves the live lane. `loky`
+> remains the generic CPU default for the offline pipeline.
 
 ## Minimal runnable example, walked through
 

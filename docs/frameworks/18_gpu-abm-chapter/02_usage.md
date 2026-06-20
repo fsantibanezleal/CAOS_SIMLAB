@@ -160,7 +160,7 @@ in *how* they vectorize (GPU threads + messages / `vmap` over arrays / dataframe
 blunt verdict, recorded in the [ABM guide §2.6](../../problem-types/02_agent-based-modeling.md) and the
 [Monte-Carlo verdict](../../problem-types/04_monte-carlo-replications.md): **the highest-ROI parallel use in
 this lab is thousands of independent seeded replications, not one giant population** — and that runs in
-seconds on CPU cores via [joblib](../12_joblib/02_usage.md). Our ten scenarios sit at ≤10⁵ agents, well
+seconds on CPU cores via [joblib](../12_joblib/02_usage.md). Our eleven scenarios sit at ≤10⁵ agents, well
 inside headless Mesa's comfort zone, so none of these three is needed for v1.
 
 > **Deprecated — do not use, and not to be confused with these:** **AgentPy** and **desmod** are

@@ -92,8 +92,8 @@ and needs no build wiring; the raw-artifact path is documented only for the adva
 Drop the exported file under the web app's public assets so Vite serves it verbatim:
 
 ```text
-web/public/netlogo/s02-schelling.html
-web/public/netlogo/s03-sir.html
+web/public/netlogo/schelling.html      # S02 Schelling — the one card that ships today
+# (an S03 SIR card, e.g. sir.html, is a documented future addition — not yet shipped)
 ```
 
 Vite copies `web/public/**` to the build output untouched, so each model is reachable at
@@ -123,7 +123,7 @@ and opening it:
 
 ```bash
 # from web/ — any static server works; example using the project's web dev server:
-npm run dev    # then open http://localhost:5173/netlogo/s02-schelling.html
+npm run dev    # then open http://localhost:5173/netlogo/schelling.html
 ```
 
 A correct export shows the NetLogo **view** animating with **Setup/Go** buttons and sliders responding —
