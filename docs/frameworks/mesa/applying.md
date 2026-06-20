@@ -100,7 +100,7 @@ Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
 | To **learn/teach** ABM in Python; build small–medium models (≤1e5 agents) | **Mesa 3** | the standard; abstractions = curriculum |
 | **Real maps / GIS** in an ABM | **Mesa-Geo** | GeoAgents over Shapely/GeoPandas, Leaflet |
 | An **instant, zero-server in-browser** animated classic (Schelling, SIR, Wolf-Sheep) | **NetLogo Web** (Tortoise) | compiles to JS, runs fully client-side, zero VPS compute |
-| **Tiny canonical model that must ship into the browser & stay readable** | **hand-rolled NumPy** | what S02/S03/S05 actually do — minimal wheel, visible rules |
+| A **throwaway ≤10-line demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab instead uses **Mesa 3** for S02/S03/S05 (precomputed + replayed) — real abstractions, reproducible |
 | **Millions of agents** | **FLAME GPU 2** / ABMax / AMBER | GPU / vectorized / columnar scale beyond Mesa's ceiling |
 | **Crowd / pedestrian flow** | **JuPedSim** | validated social-force / collision-free-speed, pip-installable |
 

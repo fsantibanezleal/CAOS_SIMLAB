@@ -26,7 +26,9 @@ routing and the heavy hybrids are always precomputed (native solvers; see
 ## How it works
 
 1. The Worker boots Pyodide (pinned UMD build) via `importScripts`.
-2. `numpy` is loaded with `pyodide.loadPackage`; `simpy` (and, where used live, `mesa`) via `micropip`.
+2. `numpy` and `networkx` are loaded with `pyodide.loadPackage`; `simpy` and `ciw` via `micropip` — the live
+   wheel closure (`LIVE_WHEELS`). Heavy engines (Mesa, OR-Tools, joblib/SciPy) never load here; their
+   scenarios are precomputed and replayed.
 3. The `simlab` Python sources are inlined into a generated `simlab-sources.json` and written into the
    Pyodide virtual filesystem, so the browser runs the **exact same engine code** as the local pipeline.
 4. A run posts state frames to the main thread; React animates them. The RNG is seeded, so a given

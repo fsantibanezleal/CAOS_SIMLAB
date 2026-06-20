@@ -123,7 +123,7 @@ For S02 and S03 specifically: both are trivial to author cleanly, so the lab's l
 | If you need… | Pick | Why |
 |---|---|---|
 | An **instant, zero-server, animated** in-browser ABM classic (Schelling, SIR, Wolf-Sheep) | **NetLogo Web** (Tortoise) | compiles to JS, runs fully client-side, no VPS compute |
-| A **tiny canonical model that ships into the browser AND stays readable** as Python | **hand-rolled NumPy** (Pyodide) | what S02/S03 *also* do — minimal wheel, rules visible in-repo |
+| A **throwaway ≤10-line Python demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab uses **Mesa 3** for S02/S03 (precomputed + replayed) |
 | To **learn/teach + build/scale** ABM in Python (≤1e5 agents), with `DataCollector` / `batch_run` | **Mesa 3** (offline → replay) | the Python standard; abstractions = curriculum |
 | **Real maps / GIS** in an ABM | **Mesa-Geo** | GeoAgents over Shapely/GeoPandas |
 | **Millions of agents** | **FLAME GPU 2** / ABMax / AMBER | GPU / vectorized / columnar scale beyond Mesa & the browser |
