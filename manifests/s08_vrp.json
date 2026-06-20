@@ -80,11 +80,11 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3042.3,
+        "run_ms": 3040.6,
         "trace_bytes": 3708,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
-          "run 3042ms > 3000ms gate"
+          "run 3041ms > 3000ms gate"
         ]
       },
       "kpis": {
@@ -113,11 +113,11 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3010.7,
+        "run_ms": 3012.6,
         "trace_bytes": 5114,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
-          "run 3011ms > 3000ms gate"
+          "run 3013ms > 3000ms gate"
         ]
       },
       "kpis": {
@@ -146,11 +146,11 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3007.6,
+        "run_ms": 3015.8,
         "trace_bytes": 5112,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
-          "run 3008ms > 3000ms gate"
+          "run 3016ms > 3000ms gate"
         ]
       },
       "kpis": {
@@ -179,11 +179,11 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3009.3,
+        "run_ms": 3010.2,
         "trace_bytes": 4778,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
-          "run 3009ms > 3000ms gate"
+          "run 3010ms > 3000ms gate"
         ]
       },
       "kpis": {
@@ -212,7 +212,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3005.9,
+        "run_ms": 3006.3,
         "trace_bytes": 5108,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
@@ -245,11 +245,11 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3011.4,
+        "run_ms": 3016.3,
         "trace_bytes": 6380,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
-          "run 3011ms > 3000ms gate"
+          "run 3016ms > 3000ms gate"
         ]
       },
       "kpis": {
@@ -278,11 +278,11 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3010.7,
+        "run_ms": 3022.2,
         "trace_bytes": 6383,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
-          "run 3011ms > 3000ms gate"
+          "run 3022ms > 3000ms gate"
         ]
       },
       "kpis": {
@@ -311,11 +311,11 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3024.4,
+        "run_ms": 3021.5,
         "trace_bytes": 8168,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
-          "run 3024ms > 3000ms gate"
+          "run 3022ms > 3000ms gate"
         ]
       },
       "kpis": {
@@ -344,11 +344,11 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3004.4,
+        "run_ms": 3009.2,
         "trace_bytes": 4115,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
-          "run 3004ms > 3000ms gate"
+          "run 3009ms > 3000ms gate"
         ]
       },
       "kpis": {
@@ -377,11 +377,11 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3010.5,
+        "run_ms": 3021.5,
         "trace_bytes": 8909,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)",
-          "run 3011ms > 3000ms gate"
+          "run 3021ms > 3000ms gate"
         ]
       },
       "kpis": {

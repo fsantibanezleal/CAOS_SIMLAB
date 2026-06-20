@@ -82,7 +82,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 16.1,
+        "run_ms": 16.5,
         "trace_bytes": 2374,
         "reasons": []
       },
@@ -119,7 +119,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 38.8,
+        "run_ms": 37.4,
         "trace_bytes": 6036,
         "reasons": []
       },
@@ -156,7 +156,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 93.6,
+        "run_ms": 94.3,
         "trace_bytes": 13436,
         "reasons": []
       },
@@ -193,7 +193,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 38.4,
+        "run_ms": 38.5,
         "trace_bytes": 6023,
         "reasons": []
       },
@@ -230,7 +230,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 36.2,
+        "run_ms": 37.1,
         "trace_bytes": 6015,
         "reasons": []
       },
@@ -255,8 +255,8 @@
       "id": "rep200_heavy",
       "label_en": "200 reps \u00b7 \u03c1\u22480.90",
       "label_es": "200 r\u00e9plicas \u00b7 \u03c1\u22480.90",
-      "note_en": "Heavy load: high variance \u2014 the CI is wide.",
-      "note_es": "Carga alta: alta varianza \u2014 el IC es ancho.",
+      "note_en": "Heavy load: ~600 customers/run is too short \u2014 a ~16% transient bias pulls the CI below Erlang-C.",
+      "note_es": "Carga alta: ~600 clientes/corrida es muy corto \u2014 un sesgo transitorio ~16% deja el IC bajo Erlang-C.",
       "params": {
         "lam": 2.7,
         "mu": 1.0,
@@ -267,7 +267,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 35.3,
+        "run_ms": 36.1,
         "trace_bytes": 6028,
         "reasons": []
       },
@@ -304,7 +304,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 91.4,
+        "run_ms": 93.9,
         "trace_bytes": 13432,
         "reasons": []
       },
@@ -329,8 +329,8 @@
       "id": "rep500_heavy",
       "label_en": "500 reps \u00b7 \u03c1\u22480.90",
       "label_es": "500 r\u00e9plicas \u00b7 \u03c1\u22480.90",
-      "note_en": "Even at \u03c1=0.9, 500 reps give a usable CI.",
-      "note_es": "Aun a \u03c1=0.9, 500 r\u00e9plicas dan un IC utilizable.",
+      "note_en": "More reps tighten the CI but can't fix bias: it converges precisely onto a ~16%-low value, outside Erlang-C.",
+      "note_es": "M\u00e1s r\u00e9plicas cierran el IC pero no corrigen el sesgo: converge con precisi\u00f3n a un valor ~16% bajo, fuera de Erlang-C.",
       "params": {
         "lam": 2.7,
         "mu": 1.0,
@@ -341,7 +341,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 89.3,
+        "run_ms": 91.4,
         "trace_bytes": 13438,
         "reasons": []
       },
@@ -378,7 +378,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 9.0,
+        "run_ms": 9.1,
         "trace_bytes": 2369,
         "reasons": []
       },
@@ -415,7 +415,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 94.0,
+        "run_ms": 95.7,
         "trace_bytes": 13418,
         "reasons": []
       },

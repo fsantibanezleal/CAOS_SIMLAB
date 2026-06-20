@@ -56,7 +56,7 @@ class SchellingScenario(Scenario):
             v("t50", "Tolerance 50% (classic)", "Tolerancia 50% (clásico)", 0.50, 0.10, "The classic case: strong segregation from a 'fair' rule.", "El caso clásico: fuerte segregación desde una regla 'justa'."),
             v("t55", "Tolerance 55%", "Tolerancia 55%", 0.55, 0.10, "Sharper segregation; more churn.", "Segregación más marcada; más movimiento."),
             v("t625", "Tolerance 62.5%", "Tolerancia 62.5%", 0.625, 0.10, "High demand for similarity.", "Alta exigencia de similitud."),
-            v("t70", "Tolerance 70%", "Tolerancia 70%", 0.70, 0.12, "So demanding that agents rarely settle.", "Tan exigente que los agentes casi no se asientan."),
+            v("t70", "Tolerance 70%", "Tolerancia 70%", 0.70, 0.10, "So demanding that agents rarely settle.", "Tan exigente que los agentes casi no se asientan."),
             v("dense", "Dense (5% empty)", "Densa (5% vacío)", 0.50, 0.05, "Few vacancies: hard to relocate, slow to segregate.", "Pocas vacantes: difícil reubicarse, segrega lento."),
             v("roomy", "Roomy (25% empty)", "Holgada (25% vacío)", 0.50, 0.25, "Plenty of room: fast, clean segregation.", "Mucho espacio: segregación rápida y nítida."),
             v("spacious", "Spacious (35% empty)", "Amplia (35% vacío)", 0.50, 0.35, "Very sparse board at the classic tolerance.", "Tablero muy disperso a la tolerancia clásica."),

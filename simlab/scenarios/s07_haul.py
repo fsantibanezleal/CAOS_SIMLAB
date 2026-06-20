@@ -153,6 +153,12 @@ class HaulScenario(Scenario):
         l_dir, c_dir = path_LC(direct)
         l_det, c_det = path_LC(detour)
         switch = (l_det - l_dir) / (c_dir - c_det) if (c_dir - c_det) > 1e-6 else None
+        # When a barrier is active, the "direct" reference path is itself forced onto a detour by the
+        # blocked cells, so it no longer represents the true crest geometry and the closed-form g*
+        # reference is ill-defined. The route flip is still correct; only the g* number is wrong, so
+        # report it as undefined (None) for barrier variants. Non-barrier g* is unaffected.
+        if barrier:
+            switch = None
         cross = min(up_path, key=lambda n: abs(net.coords[n][1] - ridge_row))
         via_col = int(round(net.coords[cross][0]))
         detoured = abs(via_col - lift_col) > 0.5

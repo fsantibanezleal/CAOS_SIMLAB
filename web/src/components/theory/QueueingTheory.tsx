@@ -682,8 +682,8 @@ export function QueueingTheory({ es }: { es: boolean }) {
             </p>
             <p>
               {es
-                ? "El mecanismo: con c servidores hay más formas de que un servidor libre absorba una llegada antes de que se forme cola, así que la probabilidad de todos ocupados C(c,a) cae con fuerza al crecer c a ρ fijo; y la espera condicionada se encoge porque el atasco se vacía a la tasa agrupada cμ en vez de μ. Ambos efectos se componen en W_q=C(c,a)/[cμ(1−ρ)]. Numéricamente, a ρ=0,8: una M/M/1 (c=1) tiene C(1,a)=ρ=0,8 y un W_q grande; duplicar a c=2 (con λ duplicada) recorta W_q a cerca de un tercio; en c=5 es un orden de magnitud menor; en c=10 aún menor. El beneficio marginal decrece (regla de personal raíz-cuadrada c≈a+β√a, que mantiene la probabilidad de retardo casi constante), pero la dirección es monótona: a igual presión ρ, los grupos mayores esperan menos. La salvedad clave es ρ fijo: el pooling ayuda porque aumenta la granularidad de la capacidad efectiva, no porque cambie la carga por servidor."
-                : "The mechanism: with c servers there are more ways for a free server to absorb an arrival before a queue forms, so the all-busy probability C(c,a) falls steeply with c at fixed ρ; and the conditional wait shrinks because the backlog clears at the pooled rate cμ rather than μ. Both effects compound in W_q=C(c,a)/[cμ(1−ρ)]. Numerically, at ρ=0.8: a single M/M/1 (c=1) has C(1,a)=ρ=0.8 and a large W_q; doubling to c=2 (with λ doubled) cuts W_q to roughly a third; at c=5 it is an order of magnitude smaller; at c=10 smaller still. The marginal benefit diminishes (square-root staffing — the square-root safety-staffing rule c≈a+β√a keeps the delay probability roughly constant), but the direction is monotone: for the same pressure ρ, bigger pools wait less. The crucial caveat is fixed ρ: pooling helps because it raises effective capacity granularity, not by changing the load per server."}
+                ? "El mecanismo: con c servidores hay más formas de que un servidor libre absorba una llegada antes de que se forme cola, así que la probabilidad de todos ocupados C(c,a) cae con fuerza al crecer c a ρ fijo; y la espera condicionada se encoge porque el atasco se vacía a la tasa agrupada cμ en vez de μ. Ambos efectos se componen en W_q=C(c,a)/[cμ(1−ρ)]. Numéricamente, a ρ=0,8: una M/M/1 (c=1) tiene C(1,a)=ρ=0,8 y un W_q grande; duplicar a c=2 (con λ duplicada) recorta W_q a poco menos de la mitad (1,78 vs 4,0); en c=5 a cerca de un séptimo (0,55); en c=10 a una vigésima parte (0,20). El beneficio marginal decrece (regla de personal raíz-cuadrada c≈a+β√a, que mantiene la probabilidad de retardo casi constante), pero la dirección es monótona: a igual presión ρ, los grupos mayores esperan menos. La salvedad clave es ρ fijo: el pooling ayuda porque aumenta la granularidad de la capacidad efectiva, no porque cambie la carga por servidor."
+                : "The mechanism: with c servers there are more ways for a free server to absorb an arrival before a queue forms, so the all-busy probability C(c,a) falls steeply with c at fixed ρ; and the conditional wait shrinks because the backlog clears at the pooled rate cμ rather than μ. Both effects compound in W_q=C(c,a)/[cμ(1−ρ)]. Numerically, at ρ=0.8: a single M/M/1 (c=1) has C(1,a)=ρ=0.8 and a large W_q; doubling to c=2 (with λ doubled) cuts W_q to a bit under half (1.78 vs 4.0); at c=5 to about a seventh (0.55); at c=10 to about a twentieth (0.20). The marginal benefit diminishes (square-root staffing — the square-root safety-staffing rule c≈a+β√a keeps the delay probability roughly constant), but the direction is monotone: for the same pressure ρ, bigger pools wait less. The crucial caveat is fixed ρ: pooling helps because it raises effective capacity granularity, not by changing the load per server."}
             </p>
           </div>
 
@@ -745,9 +745,9 @@ export function QueueingTheory({ es }: { es: boolean }) {
               {/* Bars: width 60, centered at x=130,230,330,430; h=270*Wq/4 */}
               {[
                 { cx: 130, h: 270, v: "4.000", c: "c=1", warn: true },
-                { cx: 230, h: 60, v: "0.889", c: "c=2", warn: false },
-                { cx: 330, h: 18.7, v: "0.277", c: "c=5", warn: false },
-                { cx: 430, h: 6.9, v: "0.102", c: "c=10", warn: false },
+                { cx: 230, h: 120, v: "1.778", c: "c=2", warn: false },
+                { cx: 330, h: 37.4, v: "0.554", c: "c=5", warn: false },
+                { cx: 430, h: 13.8, v: "0.205", c: "c=10", warn: false },
               ].map((b, i) => (
                 <g key={`bar-${i}`}>
                   <rect
@@ -766,7 +766,7 @@ export function QueueingTheory({ es }: { es: boolean }) {
               ))}
               {/* Trend overlay connecting bar tops */}
               <polyline
-                points="130,30 230,240 330,281.3 430,293.1"
+                points="130,30 230,180 330,262.6 430,286.2"
                 stroke="var(--color-accent)"
                 strokeWidth="1.5"
                 strokeDasharray="4 4"
@@ -779,8 +779,8 @@ export function QueueingTheory({ es }: { es: boolean }) {
             </svg>
             <figcaption className="fig-cap">
               {es
-                ? "Cuatro barras mostrando W_q colapsando al crecer c a ρ=0,8 y μ=1 fijos — la lección de economía de escala. Valores: 4.000, 0.8889, 0.2770, 0.1021 para c=1,2,5,10 (oráculo analítico vía recursión Erlang-B↔C)."
-                : "Four bars showing W_q collapsing as c grows at fixed ρ=0.8, μ=1 — the economy-of-scale lesson. Values: 4.000, 0.8889, 0.2770, 0.1021 for c=1,2,5,10 (analytic oracle via Erlang-B↔C recursion)."}
+                ? "Cuatro barras mostrando W_q colapsando al crecer c a ρ=0,8 y μ=1 fijos — la lección de economía de escala. Valores: 4.000, 1.778, 0.554, 0.205 para c=1,2,5,10 (oráculo analítico vía recursión Erlang-B↔C)."
+                : "Four bars showing W_q collapsing as c grows at fixed ρ=0.8, μ=1 — the economy-of-scale lesson. Values: 4.000, 1.778, 0.554, 0.205 for c=1,2,5,10 (analytic oracle via Erlang-B↔C recursion)."}
             </figcaption>
           </figure>
 

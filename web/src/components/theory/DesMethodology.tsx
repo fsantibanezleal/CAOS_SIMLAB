@@ -570,8 +570,8 @@ export function DesMethodology({ es }: { es: boolean }) {
           <h3>{es ? "Rol de modelado en este laboratorio" : "Modeling role in this lab"}</h3>
           <p>
             {es
-              ? "Los 12 regímenes M/M/c pre-simulados son reproducibles precisamente porque cada uno fue sembrado y la semilla es parte del manifiesto. El laboratorio expone un control de semilla para que un aprendiz confirme la reproducibilidad bit a bit, y la demo «comparar c=3 vs c=4» usa CRN: flujos idénticos de llegada/servicio en ambos, de modo que la diferencia en el tiempo de espera sea atribuible al servidor extra y no a la suerte del muestreo —una demostración visible y práctica de por qué importan los flujos."
-              : "The 12 pre-simulated M/M/c regimes are reproducible precisely because each was seeded and the seed is part of the manifest. The lab exposes a seed control so a learner can confirm bit-for-bit reproducibility, and the \"compare c=3 vs c=4\" demo uses CRN: identical arrival/service streams across both, so the difference in waiting time is attributable to the extra server rather than to sampling luck — a visible, hands-on demonstration of why streams matter."}
+              ? "Los 12 regímenes M/M/c pre-simulados son reproducibles precisamente porque cada uno fue sembrado y la semilla es parte del manifiesto. El generador del laboratorio es PCG64 (el motor por defecto de numpy.random.Generator); cada réplica r usa una semilla distinta —make_rng(seed+r)— sobre un mismo PCG64, cuyo enorme período hace que el solapamiento entre estos flujos sea despreciable en la práctica. El laboratorio expone un control de semilla para que un aprendiz confirme la reproducibilidad bit a bit. (Los números aleatorios comunes —CRN— descritos arriba son la técnica de referencia para comparar configuraciones como c=3 vs c=4; este laboratorio no incluye hoy un escenario de comparación con CRN, pero la teoría aplica directamente si se añadiera.)"
+              : "The 12 pre-simulated M/M/c regimes are reproducible precisely because each was seeded and the seed is part of the manifest. The lab's generator is PCG64 (numpy.random.Generator's default engine); each replication r uses a different seed — make_rng(seed+r) — on a single PCG64, whose enormous period makes overlap between these streams negligible in practice. The lab exposes a seed control so a learner can confirm bit-for-bit reproducibility. (Common random numbers — CRN — described above are the textbook technique for comparing configurations such as c=3 vs c=4; this lab does not currently include a CRN comparison scenario, but the theory applies directly were one added.)"}
           </p>
 
           <figure className="figure">
@@ -654,17 +654,17 @@ export function DesMethodology({ es }: { es: boolean }) {
 
           <p>
             {es
-              ? "Con los resúmenes de réplicas formas la media muestral X̄ y la varianza muestral s², y reportas un intervalo de confianza en vez de un estimador puntual desnudo. Con varianza desconocida y Xᵢ aproximadamente normal, el IC al 100(1−α)% usa el valor crítico t de Student con n−1 grados de libertad:"
-              : "From the replication summaries you form the sample mean X̄ and sample variance s², and report a confidence interval rather than a bare point estimate. For unknown variance and approximately normal Xᵢ, the 100(1−α)% CI uses the Student-t critical value with n−1 degrees of freedom:"}
+              ? "Con los resúmenes de réplicas formas la media muestral X̄ y la varianza muestral s², y reportas un intervalo de confianza en vez de un estimador puntual desnudo. Con Xᵢ aproximadamente normal, el IC exacto al 100(1−α)% usa el valor crítico t de Student con n−1 grados de libertad; cuando n es grande (los regímenes de este laboratorio usan cientos de réplicas), t_{n−1} ≈ z y la aproximación normal con z_{1−α/2} es indistinguible —es la que implementa el laboratorio (z=1.96 al 95%):"
+              : "From the replication summaries you form the sample mean X̄ and sample variance s², and report a confidence interval rather than a bare point estimate. For approximately normal Xᵢ, the exact 100(1−α)% CI uses the Student-t critical value with n−1 degrees of freedom; when n is large (this lab's regimes use hundreds of replications), t_{n−1} ≈ z and the normal approximation with z_{1−α/2} is indistinguishable — and is what the lab implements (z=1.96 at 95%):"}
           </p>
           <Equation
-            tex={String.raw`\bar X \;\pm\; t_{n-1,\,1-\alpha/2}\,\frac{s}{\sqrt{n}}.`}
-            caption={es ? "Intervalo de confianza t de Student al 100(1−α)%." : "100(1−α)% Student-t confidence interval."}
+            tex={String.raw`\bar X \;\pm\; z_{1-\alpha/2}\,\frac{s}{\sqrt{n}}\qquad(\text{normal approx; } z_{0.975}=1.96),`}
+            caption={es ? "Intervalo de confianza al 100(1−α)% por aproximación normal (válida para n grande)." : "100(1−α)% confidence interval via the normal approximation (valid for large n)."}
           />
           <p>
             {es
-              ? "La semiamplitud del IC, h=t_{n−1,1−α/2}·s/√n, es la expresión honesta de la precisión, y decrece como 1/√n —cuadruplicar las réplicas reduce la semiamplitud a la mitad. Esto da una receta secuencial: seguir añadiendo réplicas hasta que h baje de una meta h⋆ (o una meta relativa h/|X̄|), justo el bucle «¿más corridas?» del paso 9 del ciclo de vida. La normalidad de los Xᵢ suele ser razonable porque cada Xᵢ es a su vez un promedio de muchas observaciones dentro de la corrida (argumento del teorema central del límite), pero con n pequeño o métricas de cola pesada conviene verificarla."
-              : "The CI's half-width h=t_{n−1,1−α/2}·s/√n is the honest expression of precision, and it shrinks like 1/√n — quadrupling the replications halves the half-width. This gives a sequential recipe: keep adding replications until h drops below a target h⋆ (or a relative target h/|X̄|), exactly the step-9 \"more runs?\" loop of the lifecycle. The normality of Xᵢ is usually reasonable because each Xᵢ is itself an average of many within-run observations (a central-limit argument), but for small n or heavy-tailed metrics it should be checked."}
+              ? "La semiamplitud del IC, h≈z_{1−α/2}·s/√n (forma normal de muestra grande; con n moderado, h=t_{n−1,1−α/2}·s/√n), es la expresión honesta de la precisión, y decrece como 1/√n —cuadruplicar las réplicas reduce la semiamplitud a la mitad. Esto da una receta secuencial: seguir añadiendo réplicas hasta que h baje de una meta h⋆ (o una meta relativa h/|X̄|), justo el bucle «¿más corridas?» del paso 9 del ciclo de vida. La normalidad de los Xᵢ suele ser razonable porque cada Xᵢ es a su vez un promedio de muchas observaciones dentro de la corrida (argumento del teorema central del límite), pero con n pequeño o métricas de cola pesada conviene verificarla."
+              : "The CI's half-width h≈z_{1−α/2}·s/√n (the large-sample normal form; for moderate n, h=t_{n−1,1−α/2}·s/√n) is the honest expression of precision, and it shrinks like 1/√n — quadrupling the replications halves the half-width. This gives a sequential recipe: keep adding replications until h drops below a target h⋆ (or a relative target h/|X̄|), exactly the step-9 \"more runs?\" loop of the lifecycle. The normality of Xᵢ is usually reasonable because each Xᵢ is itself an average of many within-run observations (a central-limit argument), but for small n or heavy-tailed metrics it should be checked."}
           </p>
 
           <p>
@@ -703,10 +703,10 @@ export function DesMethodology({ es }: { es: boolean }) {
             tex={String.raw`\bar X=\frac1n\sum_{i=1}^{n}X_i,\qquad s^2=\frac{1}{n-1}\sum_{i=1}^{n}(X_i-\bar X)^2 .`}
             caption={es ? "Media muestral y varianza muestral de los resúmenes por réplica." : "Sample mean and sample variance of the per-replication summaries."}
           />
-          <p>{es ? "Intervalo de confianza al 100(1−α)% (varianza desconocida, t de Student):" : "100(1−α)% confidence interval (unknown variance, Student-t):"}</p>
+          <p>{es ? "Intervalo de confianza al 100(1−α)% (aproximación normal de muestra grande, la implementada; el factor t de Student exacto en el límite de n pequeño):" : "100(1−α)% confidence interval (large-sample normal approximation, as implemented; the exact Student-t factor in the small-n limit):"}</p>
           <Equation
-            tex={String.raw`\bar X \;\pm\; t_{n-1,\,1-\alpha/2}\,\frac{s}{\sqrt{n}},\qquad h=t_{n-1,\,1-\alpha/2}\,\frac{s}{\sqrt{n}} .`}
-            caption={es ? "IC y su semiamplitud h." : "The CI and its half-width h."}
+            tex={String.raw`\bar X \;\pm\; z_{1-\alpha/2}\,\frac{s}{\sqrt{n}},\qquad h=z_{1-\alpha/2}\,\frac{s}{\sqrt{n}} \quad\xrightarrow[\;n\text{ small}\;]{}\quad t_{n-1,\,1-\alpha/2}\,\frac{s}{\sqrt{n}} .`}
+            caption={es ? "IC y su semiamplitud h (normal para n grande; t de Student para n pequeño)." : "The CI and its half-width h (normal for large n; Student-t for small n)."}
           />
           <p>
             {es
@@ -732,8 +732,8 @@ export function DesMethodology({ es }: { es: boolean }) {
               role="img"
               aria-label={
                 es
-                  ? "n medias por réplica forman una distribución muestral de la media global; la banda sombreada es el intervalo de confianza X̄ más/menos t·s/√n, y el valor analítico cae dentro de ella."
-                  : "n per-replication means form a sampling distribution of the grand mean; the shaded band is the confidence interval X-bar plus or minus t times s over root n, and the analytic value lies inside it."
+                  ? "n medias por réplica forman una distribución muestral de la media global; la banda sombreada es el intervalo de confianza X̄ más/menos z·s/√n (aproximación normal), y el valor analítico cae dentro de ella."
+                  : "n per-replication means form a sampling distribution of the grand mean; the shaded band is the confidence interval X-bar plus or minus z times s over root n (normal approximation), and the analytic value lies inside it."
               }
             >
               <line stroke="var(--color-fg)" strokeWidth="1.5" x1="60" y1="250" x2="690" y2="250" />
@@ -766,7 +766,7 @@ export function DesMethodology({ es }: { es: boolean }) {
               <text fill="var(--color-fg-faint)" fontSize="11" x="470" y="120">{es ? "valor Erlang-C θ₀ (dentro del IC)" : "Erlang-C value θ₀ (inside CI)"}</text>
               <text fill="var(--color-fg-faint)" fontSize="11" x="330" y="258">X̄ − h</text>
               <text fill="var(--color-fg-faint)" fontSize="11" x="420" y="258">X̄ + h</text>
-              <text fill="var(--color-fg-faint)" fontSize="11" textAnchor="middle" x="375" y="270">h = t₍ₙ₋₁,1−α/2₎ · s/√n</text>
+              <text fill="var(--color-fg-faint)" fontSize="11" textAnchor="middle" x="375" y="270">h = z₍1−α/2₎ · s/√n</text>
             </svg>
             <figcaption className="fig-cap">
               {es
@@ -808,14 +808,14 @@ export function DesMethodology({ es }: { es: boolean }) {
 
           <p>
             {es
-              ? "Este laboratorio goza de ese patrón oro. La cola M/M/c es uno de los pocos modelos realistas con solución de estado estacionario en forma cerrada, la fórmula Erlang-C, que da la probabilidad exacta de que un cliente que llega deba esperar y, a partir de ella, el número medio exacto en cola L_q y la espera media W_q. El protocolo de validación es por tanto inequívoco y totalmente trabajado: simular cada uno de los 12 regímenes con muchas réplicas independientes, calcular el IC de W_q (Sub-pestaña 5) y confirmar que el valor analítico Erlang-C cae dentro del intervalo. Cuando lo hace en los 12 regímenes —y la distribución simulada del número en el sistema coincide con la teórica— el simulador queda validado contra la verdad de terreno, y cualquier discrepancia es un error a cazar (verificación), no un juicio de modelado. Finalmente, todo el estudio se reporta según las guías STRESS (Monks et al., 2019): objetivos, la lógica exacta del modelo, todas las distribuciones y parámetros, el software y su versión, las semillas aleatorias, el calentamiento y la longitud de corrida, y el número de réplicas —para que un tercero pueda regenerar cada número."
-              : "This lab enjoys that gold standard. The M/M/c queue is one of the few realistic models with a closed-form steady-state solution, the Erlang-C formula, which gives the exact probability that an arriving customer must wait, and from it the exact mean number in queue L_q and mean wait W_q. The validation protocol is therefore unambiguous and fully worked: simulate each of the 12 regimes with many independent replications, compute the CI for W_q (Sub-tab 5), and confirm the analytic Erlang-C value falls inside the interval. When it does across all 12 regimes — and the simulated number-in-system distribution matches the theoretical one — the simulator is validated against ground truth, and any discrepancy is a bug to hunt (verification) rather than a modeling judgment call. Finally, the whole study is reported per the STRESS guidelines (Monks et al., 2019): objectives, the exact model logic, all distributions and parameters, the software and version, the random seeds, the warm-up and run length, and the number of replications — so a third party can regenerate every number."}
+              ? "Este laboratorio goza de ese patrón oro. La cola M/M/c es uno de los pocos modelos realistas con solución de estado estacionario en forma cerrada, la fórmula Erlang-C, que da la probabilidad exacta de que un cliente que llega deba esperar y, a partir de ella, el número medio exacto en cola L_q y la espera media W_q. El protocolo de validación es por tanto inequívoco y totalmente trabajado: simular cada uno de los 12 regímenes con muchas réplicas independientes, calcular el IC de W_q (Sub-pestaña 5) y confirmar que el valor analítico Erlang-C cae dentro del intervalo. Cuando lo hace en los 11 regímenes estables —y la distribución simulada del número en el sistema coincide con la teórica— el simulador queda validado contra la verdad de terreno, y cualquier discrepancia es un error a cazar (verificación), no un juicio de modelado. El régimen inestable (ρ≥1) no tiene W_q de estado estacionario finito, así que no hay objetivo analítico que contrastar; sirve en cambio como prueba de condición extrema. Finalmente, todo el estudio se reporta según las guías STRESS (Monks et al., 2019): objetivos, la lógica exacta del modelo, todas las distribuciones y parámetros, el software y su versión, las semillas aleatorias y el número de réplicas —para que un tercero pueda regenerar cada número."
+              : "This lab enjoys that gold standard. The M/M/c queue is one of the few realistic models with a closed-form steady-state solution, the Erlang-C formula, which gives the exact probability that an arriving customer must wait, and from it the exact mean number in queue L_q and mean wait W_q. The validation protocol is therefore unambiguous and fully worked: simulate each of the 12 regimes with many independent replications, compute the CI for W_q (Sub-tab 5), and confirm the analytic Erlang-C value falls inside the interval. When it does across all 11 stable regimes — and the simulated number-in-system distribution matches the theoretical one — the simulator is validated against ground truth, and any discrepancy is a bug to hunt (verification) rather than a modeling judgment call. The unstable regime (ρ≥1) has no finite steady-state W_q, so there is no analytic target to check against; it instead serves as an extreme-condition test. Finally, the whole study is reported per the STRESS guidelines (Monks et al., 2019): objectives, the exact model logic, all distributions and parameters, the software and version, the random seeds, and the number of replications — so a third party can regenerate every number."}
           </p>
 
           <Callout variant="strong" title={es ? "La tesis del laboratorio" : "The lab's thesis"}>
             {es
-              ? "Un simulador en el que puedes confiar porque reproduce una respuesta analítica conocida. Los 12 regímenes cubren ρ de carga ligera a casi-saturación; la figura muestra el W_q simulado con su IC superpuesto sobre la curva suave Erlang-C: la prueba visual de la validación."
-              : "A simulator you can trust because it reproduces a known analytic answer. The 12 regimes span ρ from light to near-saturation; the figure shows the simulated W_q with its CI overlaid on the smooth Erlang-C curve — the visual proof of validation."}
+              ? "Un simulador en el que puedes confiar porque reproduce una respuesta analítica conocida. Los 12 regímenes cubren ρ de carga ligera a saturación (uno inestable, sin objetivo finito); la figura muestra el W_q simulado con su IC superpuesto sobre la curva suave Erlang-C en los 11 regímenes estables: la prueba visual de la validación."
+              : "A simulator you can trust because it reproduces a known analytic answer. The 12 regimes span ρ from light to saturation (one unstable, with no finite target); the figure shows the simulated W_q with its CI overlaid on the smooth Erlang-C curve across the 11 stable regimes — the visual proof of validation."}
           </Callout>
 
           <div className="assume">
@@ -865,19 +865,19 @@ export function DesMethodology({ es }: { es: boolean }) {
           />
           <p>
             {es
-              ? "Puerta de validación (validez operacional): para cada régimen el W_q^Erlang analítico debe caer en el IC simulado,"
-              : "Validation gate (operational validity): for each regime the analytic W_q^Erlang must lie in the simulated CI,"}
+              ? "Puerta de validación (validez operacional): para cada régimen estable el W_q^Erlang analítico debe caer en el IC simulado (semiamplitud por aproximación normal, la implementada),"
+              : "Validation gate (operational validity): for each stable regime the analytic W_q^Erlang must lie in the simulated CI (half-width via the implemented normal approximation),"}
           </p>
           <Equation
-            tex={String.raw`W_q^{\text{Erlang}} \in \Bigl[\bar X_{W_q}-h,\;\bar X_{W_q}+h\Bigr],\qquad h=t_{n-1,\,1-\alpha/2}\,\frac{s}{\sqrt n}.`}
+            tex={String.raw`W_q^{\text{Erlang}} \in \Bigl[\bar X_{W_q}-h,\;\bar X_{W_q}+h\Bigr],\qquad h=z_{1-\alpha/2}\,\frac{s}{\sqrt n}.`}
             caption={es ? "Puerta de validación: el valor analítico debe caer dentro del IC simulado." : "Validation gate: the analytic value must lie inside the simulated CI."}
           />
 
           <h3>{es ? "Rol de modelado en este laboratorio" : "Modeling role in this lab"}</h3>
           <p>
             {es
-              ? "Esta es la tesis de CAOS_SIMLAB: un simulador en el que puedes confiar porque reproduce una respuesta analítica conocida. Los 12 regímenes cubren ρ de ligero a casi-saturación; la figura muestra el W_q simulado con su IC superpuesto sobre la curva suave Erlang-C, la prueba visual de validación. La misma pantalla lleva la tarjeta de reporte STRESS (semilla, versión, calentamiento, longitud de corrida, réplicas) para que la demostración sea ella misma reproducible."
-              : "This is the thesis of CAOS_SIMLAB: a simulator you can trust because it reproduces a known analytic answer. The 12 regimes span ρ from light to near-saturation; the figure shows the simulated W_q with its CI overlaid on the smooth Erlang-C curve, the visual proof of validation. The same screen carries the STRESS report card (seed, version, warm-up, run length, replications) so the demonstration is itself reproducible."}
+              ? "Esta es la tesis de CAOS_SIMLAB: un simulador en el que puedes confiar porque reproduce una respuesta analítica conocida. Los 12 regímenes cubren ρ de ligero a saturación (el inestable carece de objetivo finito); la figura muestra el W_q simulado con su IC superpuesto sobre la curva suave Erlang-C en los 11 regímenes estables, la prueba visual de validación. La misma pantalla lleva la tarjeta de reporte STRESS (semilla, versión, clientes por corrida, réplicas) para que la demostración sea ella misma reproducible."
+              : "This is the thesis of CAOS_SIMLAB: a simulator you can trust because it reproduces a known analytic answer. The 12 regimes span ρ from light to saturation (the unstable one has no finite target); the figure shows the simulated W_q with its CI overlaid on the smooth Erlang-C curve across the 11 stable regimes, the visual proof of validation. The same screen carries the STRESS report card (seed, version, customers per run, replications) so the demonstration is itself reproducible."}
           </p>
 
           <figure className="figure">
@@ -919,8 +919,8 @@ export function DesMethodology({ es }: { es: boolean }) {
             </svg>
             <figcaption className="fig-cap">
               {es
-                ? "Validación contra la verdad de terreno: el W_q simulado con barras de error de IC sigue la curva Erlang-C en forma cerrada a través de los 12 regímenes; las barras se ensanchan al acercarse ρ→1 (mayor varianza)."
-                : "Validation against ground truth: simulated W_q with CI error bars tracks the closed-form Erlang-C curve across the 12 regimes; error bars widen as ρ→1 (higher variance)."}
+                ? "Validación contra la verdad de terreno: el W_q simulado con barras de error de IC sigue la curva Erlang-C en forma cerrada a través de los 11 regímenes estables; las barras se ensanchan al acercarse ρ→1 (mayor varianza). El régimen inestable (ρ≥1) no tiene objetivo finito."
+                : "Validation against ground truth: simulated W_q with CI error bars tracks the closed-form Erlang-C curve across the 11 stable regimes; error bars widen as ρ→1 (higher variance). The unstable regime (ρ≥1) has no finite target."}
             </figcaption>
           </figure>
 
@@ -1018,8 +1018,8 @@ export function DesMethodology({ es }: { es: boolean }) {
           <h3>{es ? "Rol de modelado en este laboratorio" : "Modeling role in this lab"}</h3>
           <p>
             {es
-              ? "Los regímenes M/M/c se corren como estado estacionario: cada réplica arranca vacía y ociosa, así que el laboratorio aplica un calentamiento de Welch antes de calcular W_q y L —de lo contrario los valores simulados quedarían por debajo de la curva Erlang-C (sesgo de inicialización), y la validación (Sub-pestaña 6) fallaría falsamente. La figura del calentamiento permite al aprendiz alternar la región descartada sombreada y ver cómo la estimación se mueve hacia la línea analítica, haciendo tangible el sesgo de inicialización."
-              : "The M/M/c regimes are run as steady-state: each replication starts empty-and-idle, so the lab applies a Welch warm-up before computing W_q and L — otherwise the simulated values would sit below the Erlang-C curve (initialization bias), and validation (Sub-tab 6) would falsely fail. The warm-up figure lets the learner toggle the shaded discarded region and watch the estimate move onto the analytic line, making initialization bias tangible."}
+              ? "Los regímenes M/M/c se corren contra el objetivo de estado estacionario Erlang-C: cada réplica arranca vacía y ociosa, lo que introduce sesgo de inicialización. Este laboratorio no aplica un calentamiento explícito; en cambio, toma n (clientes por corrida) lo bastante grande como para que el sesgo de inicialización sea despreciable frente a la media de toda la corrida, de modo que la estimación cae igualmente dentro del IC alrededor de la curva Erlang-C. La figura ilustra el método general de Welch (suavizar el promedio de conjunto, localizar el aplanamiento ℓ, descartar el transitorio), no un control del laboratorio: muestra por qué un arranque vacío sesga a la baja y cómo se corregiría con truncamiento si se necesitara."
+              : "The M/M/c regimes are run against the Erlang-C steady-state target: each replication starts empty-and-idle, which introduces initialization bias. This lab applies no explicit warm-up; instead it takes n (customers per run) large enough that the initialization bias is negligible relative to the whole-run mean, so the estimate still lands inside the CI around the Erlang-C curve. The figure illustrates the general Welch method (smooth the ensemble average, locate the flattening ℓ, discard the transient), not a lab control: it shows why an empty start biases low and how truncation would correct it if needed."}
           </p>
 
           <figure className="figure">
