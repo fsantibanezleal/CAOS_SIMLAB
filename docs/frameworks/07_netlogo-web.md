@@ -57,4 +57,4 @@ HTML and looking at the animated card (see
 - The Python ABM lane (build-it-yourself / scale-up): [`./04_mesa.md`](./04_mesa.md)
 - Beyond-the-browser scale (millions of agents): [`./18_gpu-abm-chapter.md`](./18_gpu-abm-chapter.md)
 - Live-lane runtime guide (NetLogo Web vs Pyodide): [`../guides/02_live-lane-pyodide.md`](../guides/02_live-lane-pyodide.md)
-- Research (decision + trade-offs + license nuance): the project's internal ABM-frameworks research note
+- ABM frameworks (decision + trade-offs + license nuance): [`../problem-types/02_agent-based-modeling.md`](../problem-types/02_agent-based-modeling.md)

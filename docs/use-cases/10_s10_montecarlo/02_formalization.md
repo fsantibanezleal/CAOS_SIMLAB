@@ -89,6 +89,9 @@ sem          = scipy.stats.sem(Wq^(1..N))                     # = s_N / sqrt(N),
 ci_halfwidth = (hi − lo) / 2                                  # == h_N
 ```
 
+The emitted KPI `final_mean` is the final running-mean point `run_mean[-1]` (the same sample mean,
+rounded to 4 dp); the **unrounded** `mean(Wq^(1..N))` is what centers the CI above.
+
 ## The oracle (closed-form Erlang-C)
 
 With offered load `a = λ/μ` (Erlangs) and `ρ = λ/(c·μ)`, the Erlang-C delay probability and the mean wait:

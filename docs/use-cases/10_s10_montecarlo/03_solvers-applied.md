@@ -101,8 +101,11 @@ when `ρ ≥ 1`). It is the ground truth the Monte-Carlo estimate is judged agai
 
 | Lane | What runs | How the tools appear |
 |---|---|---|
-| **Precompute** (committed gallery) | the offline `.venv` runs `joblib + scipy` to generate the seed-42 CI sweep; the result is committed as a deterministic chart trace for instant first paint | full native joblib (`threading`) + full `scipy.stats` |
+| **Offline trace generation** (committed gallery) | the offline `.venv` runs `joblib + scipy` to generate the seed-42 CI sweep; the result is committed as a deterministic chart trace for instant first paint | full native joblib (`threading`) + full `scipy.stats` |
 | **Live** (Pyodide, in-browser) | the **same** joblib + scipy engines run on demand (S10 is a `live` scenario) | `joblib` + `scipy` are heavy native deps, so they are **imported lazily inside `run()`** (never at module import) — the registry import and the whole live lane work even before they load; the `threading` backend is the only one that works under WASM, so the browser runs the real engines, not a fallback |
+
+S10's lane is **live**; the committed seed-42 trace is only the first-paint replay, not a separate
+precompute lane — the same joblib + scipy engines re-run in the browser on demand.
 
 The module-level scenario definition (the `Scenario` subclass, `variants()`, `param_specs`) needs **zero**
 heavy deps (NumPy only, which exists in the live worker). Because the seed plan and SciPy reduction are

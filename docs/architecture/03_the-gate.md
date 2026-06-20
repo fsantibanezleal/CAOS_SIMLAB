@@ -12,9 +12,13 @@ The gate lives in [`simlab/core/scenario.py`](../../simlab/core/scenario.py) as 
 ```
 live  iff  pure_python
       AND  wheels ⊆ LIVE_WHEELS
-      AND  run_ms < 3000          (GATE_MAX_RUN_MS)
-      AND  trace_bytes < 1_000_000 (GATE_MAX_TRACE_BYTES, ~1 MB)
+      AND  run_ms <= 3000          (GATE_MAX_RUN_MS — the code fails only when run_ms > 3000)
+      AND  trace_bytes <= 1_000_000 (GATE_MAX_TRACE_BYTES, ~1 MB — fails only when > 1 MB)
 ```
+
+The relation is non-strict: `classify_lane` records a *failure* reason only when `run_ms > 3000` or
+`trace_bytes > 1_000_000`, so a variant sitting exactly **at** the boundary (3000 ms, ~1 MB) is still
+live-eligible.
 
 ```python
 GATE_MAX_RUN_MS = 3000.0          # must finish a run in-Worker on a mid laptop in < 3 s
@@ -70,13 +74,13 @@ registry:
 | S06 job-shop | `[]` (OR-Tools) | ✗ | n/a → precompute (fails part 1) |
 | S11 mine-haul | `[]` (OR-Tools GLOP) | ✗ | n/a → precompute (fails part 1) |
 
-### 3. `run_ms < 3000` — does a single run finish fast enough?
+### 3. `run_ms <= 3000` (fails only when `> 3000`) — does a single run finish fast enough?
 
 The pipeline times the actual `scenario.run(params, seed)` wall-clock per variant. If any variant exceeds the
 3 s in-Worker budget, the scenario is precomputed. The 3 s number is the threshold for "edit a slider →
 animation, with no perceptible stall" on a mid laptop.
 
-### 4. `trace_bytes < ~1 MB` — is the animatable artifact small enough?
+### 4. `trace_bytes <= ~1 MB` (fails only when `> ~1 MB`) — is the animatable artifact small enough?
 
 `Trace.write` returns the on-disk byte count; if a variant's compact trace exceeds ~1 MB it would be both
 slow to ship and slow to animate, so the scenario is precomputed. This is why the trace schema is so

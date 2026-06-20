@@ -3,6 +3,26 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.17.003] - 2026-06-20
+### Fixed — adversarial round-7 (full 15-auditor pass) consistency tail
+- **S01 web/docs:** S01Desc now names **Ciw** as the independent second DES engine (was SimPy + Erlang-C only);
+  the lane prose corrected to "comfortable headroom (heaviest c10 ~1 s, ~1/3 of the cap)" — a prior edit had
+  overstated it as "close to the cap".
+- **S02:** fixed the wrong web figure `S≈0.99` → `S≈0.94` (t70; peak ≈0.97 at t625). Scoped "simultaneous
+  activation" to S03 only — S02 is a sequential relocate, S05 a fixed-order serial cascade (AbmTheory + docs).
+- **S05:** removed non-existent tunables ("number of echelons", "base-stock/target inventory") and the
+  inventory/backlog agent-state + inventory-series KPI from the ABM guide and the s05 docstring (the model
+  carries no on-hand stock; it emits the demand + four order series; no DataCollector).
+- **LP theory:** GLOP is simplex-only — interior-point is OR-Tools' separate PDLP solver (was "GLOP exposes
+  both"); added the S11 `D_eff = min(D, Σaᵢ)` blend caveat.
+- **Accuracy:** S07 route uses a single grade-weighted `nx.dijkstra_path` + two separate Dijkstra runs for g*
+  (not k-shortest/Yen's); no scenario imports CuPy/Numba (doc-only GPU appendix); S09 has no OR-Tools (fixed
+  the architecture + CHANGELOG lines); s06 `j4m6` note corrected (makespan stays long); gate boundary stated
+  as `<=` (live passes at the boundary); S10 = same M/M/c class as S01 via a NumPy estimator, not S01's SimPy.
+- **Robustness:** pinned the Pyodide worker's micropip installs to the precompute versions
+  (`simpy==4.1.2, ciw==3.2.7, mesa==3.5.1, joblib==1.5.3`) so the in-browser run keeps byte-matching the
+  committed traces. README hero/links unchanged from 0.17.002.
+
 ## [0.17.002] - 2026-06-20
 ### Fixed — adversarial round-6 tail + presentation
 - **Drift-proof run-time docs:** stopped citing specific non-deterministic `gate.run_ms` millisecond figures in
@@ -66,8 +86,8 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 - **ABM → Mesa 3** (was hand-rolled NumPy): s02 Schelling, s03 SIR, s05 Beer Game now use `mesa.Agent` /
   `mesa.Model` / AgentSet activation. The earlier docs/Theory claim of "uses Mesa" is now TRUE.
 - **DES → SimPy** (real): s01 Bank/Clinic queue + a real **Ciw** M/M/c (Erlang-C) cross-validation; s04 ED.
-- **Optimization/routing → OR-Tools** (CP-SAT/Routing/GLOP) for s06/s07/s09/s11, **PyVRP** SOTA contrast for
-  s08, **NetworkX/OSMnx** road graphs for s07/s09.
+- **Optimization/routing → OR-Tools** (CP-SAT/Routing/GLOP) for s06/s07/s11, **PyVRP** SOTA contrast for
+  s08, **NetworkX/OSMnx** road graphs for s07/s09 (s09 dispatch is a closed-form nearest-available argmin — no OR-Tools).
 - **Monte-Carlo → joblib** (CPU-parallel seeded replications) + **scipy.stats** confidence intervals (s10),
   replacing the hand-rolled NumPy loop.
 ### Added

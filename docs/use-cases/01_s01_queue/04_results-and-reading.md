@@ -92,11 +92,12 @@ Three numbers are meant to be read **together**: `Wq_sim` (SimPy), `Wq` (Erlang-
 
 ## 4. Lane & performance (committed run)
 
-S01 ships **live** (`seed = 42`) and every variant clears the 3 s run-time gate — but the heaviest *stable*
-variants (the multi-server pools such as `c10`, plus `saturated`/`c5`) run in the low-seconds range and sit
-close to the cap, so the gate is *cleared*, not cleared with room to spare. The exact per-variant `gate.run_ms`
-is measured and recorded in the manifest (it varies with host load, so the lane is recomputed from a real run,
-never hard-coded). Each trace is ≈ **35 KB**, far inside the 1 MB gate. Note that most of every
+S01 ships **live** (`seed = 42`) and every stable variant clears the 3 s gate with comfortable headroom — the
+heaviest (the multi-server pool `c10`) runs at the order of ~1 s, roughly a third of the cap. Run-time is the
+*relatively* binding gate versus trace size (which sits at ~3–4% of its own cap), but it is still well under
+the threshold. The exact per-variant `gate.run_ms` is measured and recorded in the manifest (it varies with
+host load, so the lane is recomputed from a real run, never hard-coded). Each trace is ≈ **35 KB**, far inside
+the 1 MB gate. Note that most of every
 *stable* variant's run time is the **Ciw cross-check** (10
 seeded M/M/c replications), not the SimPy animation: the SimPy run itself is cheap (~a few ms for 300
 customers). The `unstable` variant is fast for exactly that reason — it does **not** short-circuit the

@@ -70,7 +70,7 @@ class GateResult:
 def classify_lane(
     pure_python: bool, run_ms: float, trace_bytes: int, wheels: list[str] | tuple[str, ...] = ()
 ) -> GateResult:
-    """Apply the gate (AND rule). live iff pure-Python AND run<3s AND trace<1MB AND wheels ⊆ LIVE_WHEELS."""
+    """Apply the gate (AND rule). live iff pure-Python AND run_ms<=3000 AND trace_bytes<=1MB AND wheels ⊆ LIVE_WHEELS (boundary values pass — the checks below fail only on strict `>`)."""
     reasons: list[str] = []
     if not pure_python:
         reasons.append("not pure-Python (cannot run in Pyodide/WASM)")

@@ -34,16 +34,20 @@ hand-rolled) — see
 
 ---
 
-## Which scenario uses it
+## Which pattern uses it (and why no scenario imports it)
 
-- **S10 — Monte-Carlo Replication / CI Study → the GPU exhibit.** S10 runs `N` independent, seeded
+- **S10 — Monte-Carlo Replication / CI Study → the GPU pattern.** S10 runs `N` independent, seeded
   replications of the S01 M/M/c queue and turns them into a running mean + 95% CI (and, at high load, the
-  finite-run-bias lesson). Its **default driver is CPU** (the running mean / CI converges in milliseconds to
-  seconds on the laptop's CPU cores via [joblib](../12_joblib.md)), and CuPy is the **optional "and here's the
-  GPU version" appendix**: the same replication batch, drawn and reduced as array columns on the device. The
-  scenario code lives at [`../../../simlab/scenarios/s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo.py).
+  finite-run-bias lesson). Its **default and only shipped driver is CPU** (the running mean / CI converges in
+  milliseconds to seconds on the laptop's CPU cores via [joblib](../12_joblib.md)). CuPy is the
+  **documentation-only optional GPU appendix** for that pattern — the same replication batch, drawn and
+  reduced as array columns on the device — sketched only in this framework's [`example.py`](./example.py),
+  **wired into no scenario**. The shipped scenario
+  [`s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo.py) imports **no** CuPy (its `wheels`
+  closure is `["numpy", "joblib", "scipy"]`).
 
-S10 is the **only** scenario in the lab that uses CuPy. Every other scenario is CPU by design:
+**No shipped scenario imports CuPy** — a grep of `simlab/` finds zero CuPy references. CuPy is an optional
+GPU exhibit only, exactly like [Numba](../14_numba.md). Every scenario is CPU by design:
 [SimPy](../01_simpy/02_usage.md) live engine + [Ciw](../02_ciw.md) cross-check (S01), Mesa 3 ABM (S02/S03/S05),
 SimPy (S04), [OR-Tools](../08_ortools.md) (S06/S07/S11) + [PyVRP](../09_pyvrp/02_usage.md) (S08), and
 [NetworkX](../10_networkx.md) + SimPy (S07/S09) — none of which a GPU helps (see the trade-offs below).
@@ -52,7 +56,8 @@ SimPy (S04), [OR-Tools](../08_ortools.md) (S06/S07/S11) + [PyVRP](../09_pyvrp/02
 > a [reference chapter](../18_gpu-abm-chapter/02_usage.md), not a runtime dependency — AGPL-3.0-only (copyleft),
 > CUDA-version coupled, with documented 8 GB-VRAM OOM on the RTX 4070-Laptop class. **[Numba CUDA](../14_numba.md)**
 > is the sibling exhibit for *custom per-thread kernels* (one replication per thread, `xoroshiro128p` RNG).
-> **CuPy is the simplest, permissively-licensed (MIT) array option** and the one wired into S10.
+> **CuPy is the simplest, permissively-licensed (MIT) array option** for the S10 GPU appendix — documented,
+> not wired into any scenario.
 
 ---
 
@@ -100,7 +105,7 @@ for a GPU.
 - **…but the CPU already delivers the *lesson*.** Adversarial critique 04 is blunt: 10k replications of a cheap
   model run in **seconds on the laptop's CPU cores via joblib**, and the *didactic* point (variance, CIs,
   design-of-experiments) is **identical**. **The GPU adds speed, not understanding.** That is precisely why S10
-  ships CPU-default and CuPy is an appendix.
+  ships CPU-only and CuPy stays a documentation-only appendix imported by no scenario.
 - **The 8 GB VRAM ceiling is real.** Use `float32` over `float64` for the largest batches, cap batch size, and
   chunk very large replication counts. Documented CUDA-OOM reports exist for this exact 4070-Laptop-8GB class.
 - **Determinism vs animation.** GPU thread-scheduling is non-deterministic; for any replayed trace, fix the

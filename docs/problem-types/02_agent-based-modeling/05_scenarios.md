@@ -49,7 +49,9 @@ shipping/information **delays**; small demand changes amplify into upstream osci
 effect**. This is modeled as **ABM (policy / feedback loop)**, *not* a DES queue clone: the object of study is
 the feedback dynamic (see the boundary case in [02 · When to use](./02_when-to-use.md)).
 
-- **Tunable:** base-stock / target inventory, lead time, demand-shock size/timing, number of echelons.
+- **Tunable:** demand level (base + shock size), demand pattern (step / spike / AR(1) noise) and its timing,
+  lead time L, forecast smoothing θ, horizon (weeks). The chain is **fixed at four echelons**; the order-up-to
+  target S = (L+1)·forecast is *derived* from those params, not a separate slider.
 - **Engine:** [Mesa](../../frameworks/04_mesa.md) (policy/feedback).
 - **Source / manifest:** [`s05_beergame.py`](../../../simlab/scenarios/s05_beergame.py) ·
   [`s05_beergame.json`](../../../manifests/s05_beergame.json).
@@ -79,7 +81,8 @@ When you build a real ABM scenario in this lab:
    [04 · Tools](./04_tools.md).
 4. **Use the Mesa 3 `AgentSet` API** for activation (`shuffle_do` / `do` / staged), not the removed pre-3.0
    `Scheduler` classes. See [Mesa usage](../../frameworks/04_mesa/02_usage.md).
-5. **Collect both levels** of data (model + agent) via `DataCollector`; that series **is** your trace. See
+5. **Record both levels** of data (model + agent) — Mesa offers a `DataCollector`, or record the per-tick
+   series directly (what the lab's scenarios do, e.g. S05); either way that series **is** your trace. See
    [the trace contract](../../architecture/02_determinism-and-trace.md).
 6. **Seed the RNG** so `(params, seed)` reproduces exactly — the trace is the source of truth.
 7. **Pair live with Mesa** — give each live card its Mesa equivalent in the repo so the two engines teach

@@ -54,7 +54,9 @@ end-customer demand is **amplified** into ever-larger order swings upstream — 
 Padmanabhan & Whang, 1997). This is **policy/feedback ABM**, not a DES queue clone (see the boundary case in
 [02 · When to use](./02_when-to-use.md)).
 
-- **Tunable:** base-stock / target inventory, lead time, demand-shock size/timing, number of echelons.
+- **Tunable:** demand level + shock size, demand pattern (step / spike / AR(1) noise) and its timing, lead time
+  L, forecast smoothing θ, horizon (weeks). The chain is **fixed at four echelons**; the order-up-to target
+  S = (L+1)·forecast is *derived*, not a slider.
 - **Space:** a serial chain (line graph). **Activation:** a fixed-order serial cascade over the four echelons
   (downstream → upstream); each echelon runs its observe → forecast → order rule in turn — a single ordered
   pass over the AgentSet, not a synchronous batch.
@@ -95,14 +97,15 @@ pre-3.0 `Scheduler` classes — see [Mesa usage](../../frameworks/04_mesa/02_usa
 
 ## 4. KPIs — what each method reads off the trace
 
-ABM KPIs come in two levels (both collected every tick via Mesa's `DataCollector`; see
-[01 · What it is §5](./01_what-it-is.md)):
+ABM KPIs come in two levels (model-level and agent-level; see [01 · What it is §5](./01_what-it-is.md)). Mesa
+offers a `DataCollector` for both; the lab's scenarios record the per-tick series directly — e.g. S05 has each
+echelon append to its own order list and computes the KPIs post-hoc with NumPy (no `DataCollector`):
 
 | Method | Model-level KPI(s) | Agent-level KPI(s) |
 |---|---|---|
 | **Schelling** | segregation index *S* (mean fraction of like-neighbors), fraction unhappy, steps to convergence | per-household happiness, number of moves |
 | **SIR** | infected count I(t), **peak height & time**, **attack rate** (final fraction recovered), did-it-take-off | per-cell time-to-infection / time-to-recovery |
-| **Beer Game** | per-echelon **bullwhip ratio** Bᵢ = Var(oᵢ)/Var(d) (retailer/wholesaler/distributor/factory) + peak factory order | per-echelon inventory & order series over time |
+| **Beer Game** | per-echelon **bullwhip ratio** Bᵢ = Var(oᵢ)/Var(d) (retailer/wholesaler/distributor/factory) + peak factory order | per-echelon **order series** over time (the four emitted-order traces) |
 
 Because every KPI is computed over the **committed seeded trace**, the numbers are **reproducible**: a given
 `(params, seed)` always yields the same KPIs, and the viewer reads them back exactly. For confidence intervals

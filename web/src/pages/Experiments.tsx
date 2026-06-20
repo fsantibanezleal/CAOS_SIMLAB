@@ -152,7 +152,7 @@ function S01Desc({ lang }: { lang: string }) {
     <>
       <h2>El problema: una cola con varios servidores en paralelo (M/M/c)</h2>
       <p>
-        <strong>El problema.</strong> Clientes llegan a un banco o una clínica y esperan a que se libere uno de <em>c</em> servidores idénticos que comparten una sola fila por orden de llegada (FCFS). Las llegadas siguen un proceso de Poisson de tasa <InlineMath tex={String.raw`\lambda`} /> y cada servicio es exponencial de tasa <InlineMath tex={String.raw`\mu`} /> por servidor. Es el "hola mundo" de la simulación de eventos discretos: la <strong>instancia canónica</strong> del banco/clínica donde la pregunta es cuánto se espera y por qué. El simulador (SimPy) se valida contra la solución cerrada de Erlang-C.
+        <strong>El problema.</strong> Clientes llegan a un banco o una clínica y esperan a que se libere uno de <em>c</em> servidores idénticos que comparten una sola fila por orden de llegada (FCFS). Las llegadas siguen un proceso de Poisson de tasa <InlineMath tex={String.raw`\lambda`} /> y cada servicio es exponencial de tasa <InlineMath tex={String.raw`\mu`} /> por servidor. Es el "hola mundo" de la simulación de eventos discretos: la <strong>instancia canónica</strong> del banco/clínica donde la pregunta es cuánto se espera y por qué. El simulador (SimPy) se valida de dos formas: contra la solución cerrada de Erlang-C y contra un segundo motor DES independiente, <strong>Ciw</strong> (un estudio de 10 réplicas M/M/c sembradas cuyo W_q medio se contrasta con la teoría).
       </p>
 
       <h3>Componentes y variables</h3>
@@ -200,7 +200,7 @@ function S01Desc({ lang }: { lang: string }) {
     <>
       <h2>The problem: a queue with several parallel servers (M/M/c)</h2>
       <p>
-        <strong>The problem.</strong> Customers arrive at a bank or clinic and wait for one of <em>c</em> identical servers that share a single first-come-first-served (FCFS) line. Arrivals follow a Poisson process of rate <InlineMath tex={String.raw`\lambda`} /> and each service is exponential of rate <InlineMath tex={String.raw`\mu`} /> per server. It is the "hello world" of discrete-event simulation: the <strong>canonical bank/clinic instance</strong> where the question is how long people wait and why. The simulator (SimPy) is validated against the closed-form Erlang-C solution.
+        <strong>The problem.</strong> Customers arrive at a bank or clinic and wait for one of <em>c</em> identical servers that share a single first-come-first-served (FCFS) line. Arrivals follow a Poisson process of rate <InlineMath tex={String.raw`\lambda`} /> and each service is exponential of rate <InlineMath tex={String.raw`\mu`} /> per server. It is the "hello world" of discrete-event simulation: the <strong>canonical bank/clinic instance</strong> where the question is how long people wait and why. The simulator (SimPy) is validated two ways: against the closed-form Erlang-C solution and against an independent second DES engine, <strong>Ciw</strong> (a 10-replication seeded M/M/c cross-check whose mean W_q is compared to theory).
       </p>
 
       <h3>Components &amp; variables</h3>
@@ -335,7 +335,7 @@ function S02Desc({ lang }: { lang: string }) {
         <InlineMath tex={String.raw`\tau`} /> exigida); <em>37.5%</em> y <em>45%</em> trepan hacia el punto de quiebre; <em>50% (clásico)</em> es
         el caso célebre — fuerte segregación desde una regla &ldquo;justa&rdquo; (en esta semilla <em>45%</em> y <em>50%</em> alcanzan un
         estado convergido idéntico; ver el ensemble); <em>55%</em> y <em>62.5%</em> la agudizan con más movimiento; y{" "}
-        <em>70%</em> es tan exigente que el sistema sigue agitándose y agota el tope de pasos (<InlineMath tex={String.raw`S\approx0.99`} /> a
+        <em>70%</em> es tan exigente que el sistema sigue agitándose y agota el tope de pasos (<InlineMath tex={String.raw`S\approx0.94`} /> a
         50 pasos). El barrido de densidad fija <InlineMath tex={String.raw`\tau=0.5`} /> y
         varía el vacío: <em>Densa (5%)</em> apenas tiene vacantes — segrega lento; <em>Holgada (25%)</em> da espacio para una segregación rápida y
         nítida; <em>Amplia (35%)</em> es un tablero muy disperso. Juntas separan el efecto de la <em>preferencia</em> del efecto del{" "}
@@ -441,7 +441,7 @@ function S02Desc({ lang }: { lang: string }) {
         <InlineMath tex={String.raw`\tau`} />); <em>37.5%</em> and <em>45%</em> climb toward the tipping point; <em>50% (classic)</em> is the
         famous case — strong segregation from a &ldquo;fair&rdquo; rule (on this seed <em>45%</em> and <em>50%</em> reach an identical
         converged state; see the ensemble); <em>55%</em> and <em>62.5%</em> sharpen it with more churn; and <em>70%</em> is so demanding
-        that the system keeps churning, hitting the step cap (<InlineMath tex={String.raw`S\approx0.99`} /> at 50 steps). The density sweep
+        that the system keeps churning, hitting the step cap (<InlineMath tex={String.raw`S\approx0.94`} /> at 50 steps). The density sweep
         fixes <InlineMath tex={String.raw`\tau=0.5`} /> and varies vacancy: <em>Dense (5%)</em> has
         few vacancies — slow to segregate; <em>Roomy (25%)</em> gives room for fast, clean segregation; <em>Spacious (35%)</em> is a very sparse
         board. Together they separate the effect of <em>preference</em> from the effect of <em>available space</em>.
@@ -1322,7 +1322,7 @@ function S10Desc({ lang }: { lang: string }) {
       </h2>
       <p>
         <strong>The problem.</strong> A stochastic simulation is a <em>random experiment</em>: a single
-        run of the M/M/c (the S01 model) returns a noisy number for the mean wait in queue{" "}
+        run of the M/M/c model (the same model class as S01, via a fast NumPy estimator — not S01's SimPy engine) returns a noisy number for the mean wait in queue{" "}
         <InlineMath tex={String.raw`W_q`} />, and two seeds give two different answers. The{" "}
         <em>output-analysis</em> question is: how many independent replications do I need, and at what
         precision, for my estimator to match the closed-form Erlang-C answer? This case runs{" "}

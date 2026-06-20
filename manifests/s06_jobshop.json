@@ -347,8 +347,8 @@
       "id": "j4m6",
       "label_en": "4 jobs \u00d7 6 machines",
       "label_es": "4 trabajos \u00d7 6 m\u00e1quinas",
-      "note_en": "More machines than jobs: short makespan.",
-      "note_es": "M\u00e1s m\u00e1quinas que trabajos: makespan corto.",
+      "note_en": "More machines than jobs, yet the makespan stays long \u2014 a single critical path dominates.",
+      "note_es": "M\u00e1s m\u00e1quinas que trabajos y aun as\u00ed el makespan se mantiene largo \u2014 domina una \u00fanica ruta cr\u00edtica.",
       "params": {
         "instance": 0,
         "n_jobs": 4,
