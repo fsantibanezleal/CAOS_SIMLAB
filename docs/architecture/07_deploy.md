@@ -45,8 +45,10 @@ the gate is recomputed from a real run, not trusted.
 
 **`guards`** (public-repo hygiene): fails the build if a real `.env` is tracked (only `.env.example` is
 allowed), if any raw/heavy data is tracked (`.graphml/.osm/.pbf/.h5/.nc/.parquet` — commit rendered artifacts
-only), or if a **local machine path** leaked into a tracked file (`D:\_Repos`, `/d/_Repos`, `C:\Users\`). The
-guard excludes the `.github/**` tree (so the guard's own pattern strings don't trip it).
+only), or if a **local machine path** leaked into a tracked file (Windows repo-checkout paths, their
+Git-Bash equivalents, or a user-home path — the exact regex lives in
+[`.github/workflows/ci.yml`](../../.github/workflows/ci.yml)). The guard excludes the `.github/**` tree, and
+this prose deliberately omits the literal patterns, so the guard's own example strings don't trip it.
 
 ## The full chain, end to end
 
