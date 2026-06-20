@@ -18,7 +18,7 @@ this page is the practitioner's "when and how".
   same replication batch, drawn and reduced as array columns on the device.
 
 S10 is the **only** scenario in the lab that uses CuPy. Every other scenario is CPU by design:
-SimPy + Ciw (S01), hand-rolled NumPy ABM (S02/S03/S05), SimPy (S04), and OR-Tools / PyVRP / OSMnx
+SimPy + Ciw (S01), Mesa 3 ABM (S02/S03/S05), SimPy (S04), and OR-Tools / PyVRP / NetworkX
 (S06–S09, S11) — none of which a GPU helps (see the trade-offs below).
 
 > **Reference-only neighbours.** For *large-N* GPU work the canonical engine is **FLAME GPU 2**, but it is

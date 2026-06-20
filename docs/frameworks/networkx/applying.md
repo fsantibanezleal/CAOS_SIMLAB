@@ -22,12 +22,12 @@ this folder we generate the grid directly, so no OSMnx and no OSM attribution ar
 | **S07 — Construction Haul Routing** | Shortest path across a graded junction grid; the edge cost encodes **grade × elevation gain**, so the "cheapest" haul route bends around steep climbs. k-shortest paths expose the near-tie between the direct climb and the longer-but-flatter detour (the route "flips" past a critical grade). | **SimPy** DES replay under stochastic load/dump/queue delays; 2D grade overlay |
 | **S09 — Ambulance Dispatch** | Shortest path on a city junction grid to compute travel time from each station to each call, which drives the nearest-available-ambulance dispatch decision. Shortest-path lengths feed the response-time and coverage KPIs. | **SimPy** DES with stochastic Poisson call arrivals over many runs |
 
-> **Implementation note (honesty):** the *current* S07/S09 code in the lab ships a small hand-rolled
-> Dijkstra in `simlab/scenarios/_geo.py` (a teaching-transparent ~25-line `heapq` loop). NetworkX is
-> documented here as the **library-grade, canonical equivalent** of that same computation — the tool
-> you reach for the moment you outgrow the toy grid (real OSM graphs, A\* on large networks, k-shortest
-> alternatives, all-pairs matrices). The algorithm and results are the same; NetworkX gives you the
-> battle-tested, feature-complete implementation and the OSMnx on-ramp to real data.
+> **Implementation note:** S07 and S09 build a real **NetworkX** graph over the shared graded `_geo` grid
+> and route with `nx.dijkstra_path` (S07, grade-weighted `DiGraph`) and `nx.single_source_dijkstra` /
+> `nx.dijkstra_path` (S09, distance-weighted `Graph`). The edge weights mirror `_geo` exactly, so the
+> NetworkX result matches the lab's grid Dijkstra byte-for-byte — the seeded trace is reproducible. NetworkX
+> gives the battle-tested, feature-complete implementation and the OSMnx on-ramp to real OSM graphs (A\* on
+> large networks, k-shortest alternatives, all-pairs matrices) the moment you outgrow the toy grid.
 
 ## The pattern: graph → matrix → optimize → simulate
 
