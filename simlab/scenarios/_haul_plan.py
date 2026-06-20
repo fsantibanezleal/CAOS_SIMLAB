@@ -194,13 +194,16 @@ def enumerate_plan_geometries() -> list[tuple[int, float, int, int, int]]:
     pass column the r_passR variant uses. (grid, grade, pass_col, lift_col, barrier).
     """
     geoms: list[tuple[int, float, int, int, int]] = []
-    # grade slider 0.0 .. 8.0 step 0.5 at the default geometry (grid 12, pass 2, lift 4), wall off AND on —
-    # so toggling the barrier slider at ANY grade always hits a committed plan (no native-plan miss live).
-    for barrier in (0, 1):
-        for i in range(17):  # 0.0 .. 8.0 inclusive
-            geoms.append((12, round(i * 0.5, 1), 2, 4, barrier))
-    # variant-specific geometry: r_passR — pass moved right (r_wall's barrier plan is already in the grid above)
-    geoms.append((12, 6.0, 9, 7, 0))
+    # The two load/dump corridors any variant pins: the default (pass 2, lift 4) and r_passR's right pass
+    # (pass 9, lift 7). For each corridor commit the FULL free-slider grid — grade 0.0..8.0 step 0.5 × wall
+    # off/on — so the only sliders a learner can move (grade + the wall toggle) always hit a committed plan at
+    # every position, for every variant, with no live OR-Tools miss. (pass/lift columns are pinned in the
+    # param_specs, so no other corridor is reachable.)
+    corridors = [(2, 4), (9, 7)]
+    for pass_col, lift_col in corridors:
+        for barrier in (0, 1):
+            for i in range(17):  # 0.0 .. 8.0 inclusive
+                geoms.append((12, round(i * 0.5, 1), pass_col, lift_col, barrier))
     # de-dup, preserve order
     seen: set[tuple[int, float, int, int, int]] = set()
     out: list[tuple[int, float, int, int, int]] = []

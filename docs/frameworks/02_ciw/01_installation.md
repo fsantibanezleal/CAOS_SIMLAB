@@ -112,7 +112,7 @@ The full walk-through of that output is in [02 · Usage](./02_usage.md).
 
 | Scenario | Role of Ciw |
 |---|---|
-| **S01** (Bank / Clinic Teller Queue) | Analytic **M/M/c cross-check** — SimPy drives the live, animated queue; Ciw is the in-run cross-check (`ciw_xcheck`, 10 capped warmed-up replications) comparing the mean wait to the closed-form Erlang-C `Wq` and recording `theory_in_ci` + `rel_err`. Both run in the live lane; Ciw provides the theory anchor. |
+| **S01** (Bank / Clinic Queue) | Analytic **M/M/c cross-check** — SimPy drives the live, animated queue; Ciw is the in-run cross-check (`ciw_xcheck`, 10 capped warmed-up replications) comparing the mean wait to the closed-form Erlang-C `Wq` and recording `theory_in_ci` + `rel_err`. Both run in the live lane; Ciw provides the theory anchor. |
 
 Deprecated engines **AgentPy** and **desmod** are *not* used anywhere in this lab — they
 appear only as a "deprecated, don't use" signpost. For DES use **SimPy / Ciw / Salabim**

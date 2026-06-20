@@ -142,14 +142,17 @@ The LP's **objective** is the blend deviation `d⁺ + d⁻` (minimized on paper)
   `demand_eff`, `stock_peak`, `stock_end`.
 
 The headline reading: **an optimal plan is necessary but not sufficient** — fleet size, not the LP, decides
-whether the band is hit. The 6-truck `base` fleet *closes much of the gap but still misses spec*: it reaches
-`ĝ = 2.547` against the `g* = 2.9` target (`grade_dev = 0.353`, ≈ 2.3× the `τ = 0.15` tolerance), with
-`plan_adherence = 63.3%` and `in_band = 0` — the LP plan is optimal, yet the fleet cannot haul enough of the
-far high-grade phase before the shift ends. Only a **larger fleet** lands `ĝ` inside `g* ± τ`: the ~12-truck
-`overtrucked` variant reaches `ĝ = 2.86` (`grade_dev = 0.04`, `adherence = 100%`, `in_band = 1`), and
-`surge12` (16 trucks) is likewise in-band; a `low_target` variant (looser target) also fits with the 6-truck
-fleet. The genuinely **under-sized** 3-truck `undertrucked` case starves the far high-grade phase hardest —
-`ĝ = 1.78`, `adherence = 33.3%`, far below the band — even though its LP plan was optimal.
+whether the band is hit, and the **base 6-truck fleet does NOT land in band**. With `g* = 2.9`, `τ = 0.15`
+the band is `[2.75, 3.05]`; the 6-truck `base` reaches only `ĝ = 2.547` (`grade_dev = 0.353`, ≈ 2.5× the
+`τ = 0.15` tolerance — well outside the band), with `plan_adherence = 63.3%` and **`in_band = 0`**. The
+realized blend (`ĝ = 2.547`) falls short of the plan's blend (`plan_grade = 2.9`) by **2.547 vs 2.9**: the
+LP plan is optimal, yet the fleet cannot haul enough of the far high-grade phase before the shift ends, so
+the executed mix is poorer than the plan. Only a **larger (over-trucked) fleet** lands `ĝ` inside `g* ± τ`:
+the ~12-truck `overtrucked` variant reaches `ĝ = 2.86` (`grade_dev = 0.04`, `adherence = 100%`,
+`in_band = 1`), and `surge12` (16 trucks) is likewise in-band; a `low_target` variant (looser target) also
+fits with the 6-truck fleet. The genuinely **under-sized** 3-truck `undertrucked` case starves the far
+high-grade phase hardest — `ĝ = 1.78`, `adherence = 33.3%`, far below the band — even though its LP plan was
+optimal.
 
 ## Next
 

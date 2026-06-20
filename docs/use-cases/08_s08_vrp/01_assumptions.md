@@ -66,9 +66,9 @@ This is **pure combinatorial optimization** — one instance, solved once. There
 - **No proven MILP optimality certificate.** Both engines stop on a **deterministic count** (OR-Tools:
   `solution_limit = 200`; PyVRP: `MaxIterations(200)`), not a wall-clock limit and not an optimality gap of
   zero. On these small instances the result is high-quality / near-optimal, but it is the *committed*
-  solution, not a certified optimum. (The Experiments Context describes the stop in wall-clock terms — "a
-  3-second time limit"; the code uses the machine-independent **`solution_limit`** instead precisely so the
-  committed trace is byte-stable on any machine. Where the two disagree, the code is authoritative.)
+  solution, not a certified optimum. The Experiments Context states the same machine-independent stop —
+  `solution_limit = 200`, **not a wall-clock limit** — so code, web and docs agree: the committed trace is
+  byte-stable on any machine because the search ends on a fixed solution count, never on elapsed time.
 - An **unused vehicle** — one whose route is just depot→depot — is **dropped** and does not appear in the
   rendered plan or the `vehicles_used` KPI.
 

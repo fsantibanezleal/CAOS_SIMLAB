@@ -44,8 +44,8 @@ programming. The concrete approach in the code:
 - **Deterministic stop**: `sp.solution_limit = 200` (`OR_SOLUTION_LIMIT`) — a **solution-count** limit, not
   a wall-clock `time_limit`. This is deliberate: a wall-clock limit makes the optimum machine-dependent (a
   faster laptop explores more), whereas a count limit makes the committed trace **byte-stable on any
-  machine** — the *"replay = truth"* contract. (The Experiments Context prose describes the stop as a
-  3-second time limit; the **code uses `solution_limit` instead**, and the code is authoritative.)
+  machine** — the *"replay = truth"* contract. (The Experiments Context states the same stop —
+  `solution_limit = 200`, explicitly **not a wall-clock limit** — so code, web and docs agree.)
 - **Reading the solution**: walk each vehicle's chain from `routing.Start(vh)` via `sol.Value(NextVar(...))`
   to the end, collecting `manager.IndexToNode(idx)`, and append the depot to close the tour →
   per-vehicle `special`-index sequences.

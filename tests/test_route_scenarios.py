@@ -63,6 +63,30 @@ def test_haul_route_switches_with_grade():
     assert wall.analytic["cross_col"] != wall.analytic["lift_col"] and wall.barriers
 
 
+def test_haul_every_variant_slider_stop_has_a_committed_plan():
+    """Live-lane guard: every s07 variant × every reachable grade/wall slider stop must resolve to a committed
+    plan, so toggling the free sliders (grade, wall) in the browser never raises a native-plan miss. This would
+    have caught the r_passR-corridor gap where only one grade was committed for the off-default pass/lift."""
+    from simlab.scenarios.s07_haul import PLANS, _plan_key
+
+    sc = HaulScenario()
+    specs = {s.key: s for s in sc.param_specs}
+    grade, barrier = specs["grade"], specs["barrier"]
+
+    def stops(spec):  # every slider position min..max inclusive
+        n = int(round((spec.max - spec.min) / spec.step))
+        return [round(spec.min + i * spec.step, 1) for i in range(n + 1)]
+
+    grades, barriers = stops(grade), [int(b) for b in stops(barrier)]
+    # pass/lift columns are pinned (min==max), so the only reachable corridors are the variants' own (pass,lift)
+    for v in sc.variants():
+        p = v.params
+        for g in grades:
+            for b in barriers:
+                key = _plan_key(int(p["grid"]), g, int(p["pass_col"]), int(p["lift_col"]), b)
+                assert key in PLANS, f"s07 {v.id}: no committed plan for grade={g}, barrier={b} ({key})"
+
+
 def test_haul_route_tie_stable():
     """A route-shape variant must not flip under tiny (±1e-9) cost noise — no near-ties (critique)."""
     from simlab.scenarios._geo import GridNetwork

@@ -54,9 +54,11 @@ precomputed and replayed (S11) or when it breaches a gate.
 
 - **S01 — Bank / Clinic Queue (M/M/c)** — primary live engine: arrivals, server pool, FIFO queue, ρ,
   Little's Law; paired with [Ciw](./02_ciw.md) for the closed-form analytic overlay. *(live)*
-- **S04 — Emergency Department Patient Flow** — synthetic homogeneous Poisson arrivals with one fixed
-  daytime surge window, priority triage, multi-stage resource-limited flow; no closed form → replications +
-  CI + warm-up. *(live)*
+- **S04 — Emergency Department Patient Flow** — synthetic **non-stationary (Lewis–Shedler thinned) Poisson**
+  arrivals with one fixed surge window over the middle of the shift (`[0.30H, 0.60H)`, where λ doubles);
+  **FCFS triage** (`simpy.Resource`) then a **non-preemptive priority treatment** station
+  (`simpy.PriorityResource`), multi-stage resource-limited flow; no closed form → replications + CI +
+  warm-up. *(live)*
 - **S07 — Construction Haul Routing** *(DES leg)* — a **deterministic** SimPy DES of the closed
   finite-source haul cycle (fixed load/dump times, inert seed) over the route certified by
   [OR-Tools](./08_ortools.md) CP-SAT; saturation comes from the shared finite loader, not random variates.

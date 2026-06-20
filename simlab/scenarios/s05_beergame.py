@@ -11,9 +11,10 @@ Each echelon is a real :class:`mesa.Agent` holding its own forecast/order-positi
 exactly the activation pattern the S02 Schelling template establishes — only the space is dropped. Within a
 week the model activates the echelons **downstream → upstream**, so the order an agent places this tick is
 the demand its upstream neighbour sees this same tick; information ripples up the chain one activation at a
-time. That tick-by-tick cascade is mathematically identical to the original whole-horizon NumPy sweep (each
-stage's order at week *t* still depends only on its incoming order at week *t*), so the emitted trace is
-byte-for-byte unchanged.
+time. Each stage's order at week *t* still depends only on its incoming order at week *t*. When this scenario
+was ported from its earlier whole-horizon NumPy implementation to this Mesa agent-step form, that property
+was used to verify the migration: the per-tick agent cascade was checked to reproduce the prior NumPy trace
+before the old code path was retired (a one-time equivalence check — only the Mesa model exists now).
 
 Determinism flows from Mesa's seeded RNG: ``Model(rng=int(seed))`` seeds ``self.rng`` (a NumPy Generator
 identical to ``np.random.default_rng(seed)``), the only source of randomness (the AR(1) noisy-demand

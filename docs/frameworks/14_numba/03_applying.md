@@ -51,25 +51,28 @@ Numba fits the lab's standard offline pattern, specialised for Monte-Carlo:
 This mirrors the lab architecture ([`docs/architecture.md`](../../architecture.md)):
 deterministic core is the truth, the front end only renders it. Pinning the seed +
 xoroshiro states makes the "precomputed on local GPU" artifact regenerable by anyone — the
-reproducibility promise the research insists on. The worked code for all four steps is
-[`example.py`](./example.py) (steps 1–3) and the scenario driver
-[`s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo.py) (the full
-precompute-and-commit).
+reproducibility promise the research insists on. The worked Numba code for steps 1–3 lives **only** in
+this framework's [`example.py`](./example.py) — a standalone GPU/CPU kernel appendix wired into no
+scenario. The shipped Monte-Carlo scenario driver
+[`s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo.py) imports **no** Numba: its replication
+driver is **joblib + SciPy** on the CPU (the full precompute-and-commit). Numba would only enter S10 as
+the optional GPU lane sketched in `example.py`, never as a runtime dependency.
 
-## Where it is used: S10 (GPU exhibit)
+## Where it fits: the optional GPU appendix for S10 (no scenario imports it)
 
 | Scenario | Role of Numba |
 |---|---|
-| **S10 — Monte-Carlo Replication / CI Study** | The **GPU exhibit**. The S10 model (replications of the S01 M/M/c queue, with running mean + 95% CI) runs **live on the CPU** today; Numba is the *optional GPU lane* that re-expresses the embarrassingly-parallel replication loop as `@njit` (CPU) and `@cuda.jit` (GPU) kernels, with per-thread `xoroshiro128p` RNG streams. Its job is to **measure** the GPU crossover, not to be on the hot path. |
+| **S10 — Monte-Carlo Replication / CI Study** | The **documented optional GPU lane**, wired into no scenario. The shipped S10 model (replications of the S01 M/M/c queue, with running mean + 95% CI) runs **live on the CPU** via **joblib + SciPy** and imports **no** Numba. Numba is the *appendix* — sketched only in this framework's [`example.py`](./example.py) — that re-expresses the embarrassingly-parallel replication loop as `@njit` (CPU) and `@cuda.jit` (GPU) kernels, with per-thread `xoroshiro128p` RNG streams. Its job is to **measure** the GPU crossover, never to be on the hot path. |
 
-S10 is the only scenario that uses Numba (source:
-[`../../../simlab/scenarios/s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo.py)).
-Every other scenario maps to a different dedicated tool — that mapping is the whole didactic
+**No shipped scenario imports Numba** — a grep of `simlab/` finds zero Numba/CuPy references. Numba lives
+only in this framework's [`example.py`](./example.py); S10's actual driver is joblib + SciPy on the CPU
+(source: [`../../../simlab/scenarios/s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo.py)).
+Every scenario maps to a different dedicated tool — that mapping is the whole didactic
 point of the lab:
 
 - S01 → SimPy (live engine) + Ciw (cross-check) · S02/S03/S05 → Mesa (live) · S04 → SimPy · S06 → OR-Tools CP-SAT
 - S07 → OR-Tools CP-SAT + NetworkX + SimPy (deterministic) · S08 → OR-Tools Routing + PyVRP (no SimPy)
-- S09 → SimPy + NetworkX (no OR-Tools) · **S10 → joblib + CuPy/Numba + SciPy** · S11 → OR-Tools GLOP + SimPy (deterministic)
+- S09 → SimPy + NetworkX (no OR-Tools) · **S10 → joblib + SciPy** (CuPy/Numba are an optional GPU appendix, imported by no scenario) · S11 → OR-Tools GLOP + SimPy (deterministic)
 
 Note S10's *default* replication driver is **[joblib](../12_joblib.md)** (CPU-parallel
 across cores). Numba + [CuPy](../15_cupy.md) are the **optional GPU appendix** layered on
@@ -124,7 +127,8 @@ this lab. If an older guide suggests them for ABM/DES, ignore it — Mesa (ABM) 
 
 ## One-paragraph takeaway
 
-Reach for Numba in CAOS_SIMLAB only for the S10 GPU exhibit, and only to *demonstrate* the
+Reach for Numba in CAOS_SIMLAB only for the optional GPU appendix attached to S10's Monte-Carlo theme
+(no scenario imports it; S10 itself runs on joblib + SciPy), and only to *demonstrate* the
 Monte-Carlo crossover: `@njit` makes a CPU replication loop fast, `@cuda.jit` +
 `xoroshiro128p` makes thousands of independent replications run at once on a GPU, and
 `cuda.is_available()` keeps the whole thing optional so the repo runs without a GPU. The

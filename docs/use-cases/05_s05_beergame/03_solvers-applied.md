@@ -53,9 +53,11 @@ def step(self) -> None:
 
 That fixed downstream→upstream order is the activation regime the Beer Game *needs*: a downstream echelon
 must place its order before its upstream neighbour acts on it, so `incoming` carries the freshly-placed
-order one stage up per iteration. Because each stage's order at week `t` still depends only on its incoming
-order at week `t`, this tick-by-tick cascade is mathematically identical to a whole-horizon vectorized
-sweep — the emitted trace is byte-for-byte unchanged.
+order one stage up per iteration. Each stage's order at week `t` still depends only on its incoming order at
+week `t`. When this scenario was **ported** from its earlier whole-horizon NumPy implementation to the Mesa
+agent-step form, that property let the migration be checked the rigorous way: the per-tick agent cascade was
+verified to reproduce the prior NumPy trace before the old code path was retired. (That equivalence was a
+one-time migration check, not a present-day parallel implementation — only the Mesa model ships today.)
 
 **Lazy Mesa import.** Mesa (and its closure: pandas/scipy/networkx) is heavy, so the `EchelonAgent` +
 `BeerGameModel` classes are built **lazily** inside `_models()` and cached, not at module top level.

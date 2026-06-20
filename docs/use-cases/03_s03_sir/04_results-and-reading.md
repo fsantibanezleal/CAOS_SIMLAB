@@ -34,8 +34,8 @@ All share `n = 38`, `steps = 80` and `i₀ = 0.02` except where noted. `peakI` =
    — `peakI = 0.018` (essentially the seed) at step 0, attack rate only **0.037**. threshold is just
    super-critical: still tiny (`peakI = 0.018`, attack **0.044**), a slow creep rather than a wave. The
    moment β rises into the wave regime, the attack rate jumps to ~0.98–1.0 — that discontinuity *is* the
-   threshold. (The in-app Context's illustrative "~0.05 / ~0.09" are rounded talking points; the committed
-   seeded numbers are 0.037 / 0.044.)
+   threshold. (The in-app Context block reports these same committed sub-critical attack rates, ~0.037 /
+   ~0.044.)
 2. **Peak height & timing vs β.** Across **mild → moderate → severe → explosive**, raising β makes the peak
    **taller and earlier**: `peakI` 0.27 → 0.32 → 0.45 → 0.55, and `peak step` 12 → 11 → 7 → 6. Faster, more
    transmissible epidemics burn through the population sooner.

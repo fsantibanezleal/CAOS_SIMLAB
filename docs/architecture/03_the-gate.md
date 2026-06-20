@@ -42,9 +42,14 @@ def classify_lane(pure_python, run_ms, trace_bytes, wheels=()) -> GateResult:
 ### 1. `pure_python` — can the engine even import in WASM?
 
 A `Scenario` declares `pure_python: bool`. Native-code engines set it `False`: OR-Tools is C++ with no WASM
-build, so S06 (CP-SAT), S07/S08/S09 (Routing) and S11 (GLOP) all carry `pure_python = False` and can never
-be live regardless of how fast they are. The same holds for the GPU lane (CUDA). This is the *cheapest*
-fail-fast check.
+build, so the scenarios whose **live closure** would import OR-Tools — S06 (CP-SAT), S08 (Routing + PyVRP)
+and S11 (GLOP) — all carry `pure_python = False` and can never be live regardless of how fast they are. The
+same holds for the GPU lane (CUDA). This is the *cheapest* fail-fast check. Note this fails **only** the
+scenarios that must import a native solver *in the run*: S07 (`pure_python = True`) runs **live** — its
+native NetworkX+OR-Tools route plan is precomputed offline and committed as data, then a pure-Python SimPy
+replay runs over it in the browser; and S09 (`pure_python = True`) runs **live** too (SimPy + NetworkX, no
+solver). So `pure_python = False` is **not** "anything that touches OR-Tools anywhere" — it is "the live run
+itself needs a native solver."
 
 ### 2. `wheels ⊆ LIVE_WHEELS` — is the dependency closure loadable in the browser?
 

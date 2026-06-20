@@ -15,8 +15,10 @@ This is where DES forms the "simulate" leg of the hybrid scenarios:
 
 - [**S07 (construction haul routing)**](../../use-cases/07_s07_haul.md) — a native route PLAN (NetworkX +
   OR-Tools CP-SAT, no WASM) is precomputed offline and committed as data; only the pure-Python **SimPy**
-  replay runs live, mutating fleet sliders and re-selecting among the committed grade×wall plans under
-  stochastic load/dump/delay to produce cycle-time distributions. The *DES leg* is pure SimPy.
+  replay runs live, mutating fleet sliders and re-selecting among the committed grade×wall plans. The
+  shipped variants are deterministic (fixed load/dump times; the optional breakdown stream is pinned to
+  0), so the cycle-time spread comes from loader contention across fleet sizes, not random delays. The
+  *DES leg* is pure SimPy.
 - [**S11 (mine multi-destination haul)**](../../use-cases/11_s11_minehaul.md) — a GLOP LP allocation is
   simulated under uncertainty so the realised outcomes (not just the LP's paper optimum) are what gets
   reported.
@@ -70,8 +72,8 @@ the [use-cases section](../../use-cases/01_s01_queue.md).
 | Scenario | DES engine | Validation / theory | Lane | What it teaches |
 |---|---|---|---|---|
 | [**S01 — Bank / Clinic Queue (M/M/c)**](../../use-cases/01_s01_queue.md) | **SimPy** (process-interaction) | **Ciw** closed-form M/M/c overlay (Erlang-C) | live | The DES "hello world": arrivals, a server pool, a queue, utilization ρ, Little's Law, and **sim-converges-to-theory** validation. Folds in the ρ→1 utilization blow-up. |
-| [**S04 — Emergency Department Patient Flow**](../../use-cases/04_s04_ed.md) | **SimPy** (multi-stage, priority queue) | no closed form → face validity + sensitivity | live | Synthetic homogeneous Poisson arrivals with one fixed daytime surge window, priority triage, resource-limited multi-stage flow (triage → treatment → discharge). One seeded run (the replications/CI honesty lesson is **S10**). |
-| [**S07 — Construction Haul Routing**](../../use-cases/07_s07_haul.md) *(DES replay)* | **SimPy** replay under stochastic load/dump/delay | — | live replay (native plan precomputed) | The *simulate* leg of optimize-then-simulate: the route plan is committed, the SimPy replay runs live; how a fixed plan degrades under uncertainty. |
+| [**S04 — Emergency Department Patient Flow**](../../use-cases/04_s04_ed.md) | **SimPy** (multi-stage; FCFS triage + non-preemptive priority treatment) | no closed form → face validity + sensitivity | live | Synthetic non-stationary (thinned, Lewis–Shedler) Poisson arrivals with one optional surge window over the middle 30%–60% of the shift, FCFS triage + a non-preemptive priority treatment station, resource-limited multi-stage flow (triage → treatment → discharge). One seeded run (the replications/CI honesty lesson is **S10**). |
+| [**S07 — Construction Haul Routing**](../../use-cases/07_s07_haul.md) *(DES replay)* | **SimPy** replay (deterministic shipped variants: fixed load/dump times; the optional breakdown stream is pinned to 0) | — | live replay (native plan precomputed) | The *simulate* leg of optimize-then-simulate: the route plan is committed, the SimPy replay runs live; how a fixed plan plays out under loader contention (and would degrade once breakdowns are switched on). |
 | [**S08 — Vehicle Routing (CVRP)**](../../use-cases/08_s08_vrp.md) | **OR-Tools + PyVRP** (no SimPy, no DES leg) | — | precomputed | Two SOTA solvers on the identical CVRP instance; the head-to-head total-distance gap (no stochastic replay). |
 | [**S09 — Ambulance Dispatch**](../../use-cases/09_s09_ambulance.md) | **SimPy + NetworkX**, closed-form nearest-available argmin dispatch (no solver) | — | live | One seeded Poisson call stream over an in-repo `GridNetwork`; response-time distributions and coverage, run live in the browser. |
 | [**S10 — Monte-Carlo Replication / CI Study**](../../use-cases/10_s10_montecarlo.md) | **heap-based M/M/c estimator** (numpy), replicated by **joblib** (`Parallel`, threading) | SciPy CI vs Erlang-C | live (joblib runs in Pyodide) | The non-negotiable curriculum: **replications, confidence intervals, finite-run (initial-transient) bias**, and the wrong-vs-corrected pitfall (single run, one seed). |

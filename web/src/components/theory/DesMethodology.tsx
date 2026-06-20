@@ -654,11 +654,11 @@ export function DesMethodology({ es }: { es: boolean }) {
 
           <p>
             {es
-              ? "Con los resúmenes de réplicas formas la media muestral X̄ y la varianza muestral s², y reportas un intervalo de confianza en vez de un estimador puntual desnudo. Con Xᵢ aproximadamente normal, el IC exacto al 100(1−α)% usa el valor crítico t de Student con n−1 grados de libertad; cuando n es grande (los regímenes de este laboratorio usan cientos de réplicas), t_{n−1} ≈ z y la aproximación normal con z_{1−α/2} es indistinguible —es la que implementa el laboratorio (z=1.96 al 95%):"
-              : "From the replication summaries you form the sample mean X̄ and sample variance s², and report a confidence interval rather than a bare point estimate. For approximately normal Xᵢ, the exact 100(1−α)% CI uses the Student-t critical value with n−1 degrees of freedom; when n is large (this lab's regimes use hundreds of replications), t_{n−1} ≈ z and the normal approximation with z_{1−α/2} is indistinguishable — and is what the lab implements (z=1.96 at 95%):"}
+              ? "Con los resúmenes de réplicas formas la media muestral X̄ y la varianza muestral s², y reportas un intervalo de confianza en vez de un estimador puntual desnudo. Con Xᵢ aproximadamente normal, el IC exacto al 100(1−α)% usa el valor crítico t de Student con n−1 grados de libertad; cuando n es grande (los regímenes de este laboratorio usan cientos de réplicas), t_{n−1} ≈ z y la aproximación normal con z_{1−α/2} es indistinguible —es la que implementa el laboratorio, que calcula z = scipy.stats.norm.ppf(0.975) ≈ 1.96 (el valor crítico normal bilateral exacto al 95%), no el 1.96 escrito a mano:"
+              : "From the replication summaries you form the sample mean X̄ and sample variance s², and report a confidence interval rather than a bare point estimate. For approximately normal Xᵢ, the exact 100(1−α)% CI uses the Student-t critical value with n−1 degrees of freedom; when n is large (this lab's regimes use hundreds of replications), t_{n−1} ≈ z and the normal approximation with z_{1−α/2} is indistinguishable — and is what the lab implements, computing z = scipy.stats.norm.ppf(0.975) ≈ 1.96 (the exact two-sided 95% normal critical value), not the literal 1.96:"}
           </p>
           <Equation
-            tex={String.raw`\bar X \;\pm\; z_{1-\alpha/2}\,\frac{s}{\sqrt{n}}\qquad(\text{normal approx; } z_{0.975}=1.96),`}
+            tex={String.raw`\bar X \;\pm\; z_{1-\alpha/2}\,\frac{s}{\sqrt{n}}\qquad(\text{normal approx; } z_{0.975}=\text{norm.ppf}(0.975)\approx 1.96),`}
             caption={es ? "Intervalo de confianza al 100(1−α)% por aproximación normal (válida para n grande)." : "100(1−α)% confidence interval via the normal approximation (valid for large n)."}
           />
           <p>

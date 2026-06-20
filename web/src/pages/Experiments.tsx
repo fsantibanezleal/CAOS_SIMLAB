@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 import { Tabs } from "@/components/content/Tabs";
 import { Equation, InlineMath } from "@/components/content/Equation";
 import { ScenarioExperiment, type GridKpiConfig } from "@/components/sim/ScenarioExperiment";
@@ -120,12 +121,12 @@ export default function Experiments() {
     { id: "s04", label: "S04 · " + L("Emergency dept.", "Urgencias"), content: <ScenarioExperiment manifestId="s04_ed" description={<S04Desc lang={lang} />} gridKpi={ED_KPI} /> },
     { id: "s05", label: "S05 · " + L("Beer Game (bullwhip)", "Beer Game (bullwhip)"), content: <ScenarioExperiment manifestId="s05_beergame" description={<S05Desc lang={lang} />} gridKpi={BEERGAME_KPI} /> },
     { id: "s06", label: "S06 · " + L("Job-shop (CP-SAT)", "Job-shop (CP-SAT)"), content: <ScenarioExperiment manifestId="s06_jobshop" description={<S06Desc lang={lang} />} gridKpi={JOBSHOP_KPI} /> },
-    // Monte-Carlo moved up after S06 so the geospatial routing cases group together at the end.
-    // Display numbers are sequential; internal manifestIds are unchanged (deep-links preserved).
-    { id: "s07", label: "S07 · " + L("Monte-Carlo / CI", "Monte-Carlo / IC"), content: <ScenarioExperiment manifestId="s10_montecarlo" description={<S10Desc lang={lang} />} gridKpi={MONTECARLO_KPI} /> },
-    { id: "s08", label: "S08 · " + L("Haul routing", "Ruteo de camiones"), content: <ScenarioExperiment manifestId="s07_haul" description={<S07Desc lang={lang} />} gridKpi={HAUL_KPI} /> },
-    { id: "s09", label: "S09 · " + L("Vehicle routing (VRP)", "Ruteo de vehículos (VRP)"), content: <ScenarioExperiment manifestId="s08_vrp" description={<S08Desc lang={lang} />} gridKpi={VRP_KPI} /> },
-    { id: "s10", label: "S10 · " + L("Ambulance dispatch", "Despacho ambulancias"), content: <ScenarioExperiment manifestId="s09_ambulance" description={<S09Desc lang={lang} />} gridKpi={AMBULANCE_KPI} /> },
+    // Tabs follow the canonical scenario id order (S07=Haul, S08=VRP, S09=Ambulance, S10=Monte-Carlo) so the
+    // displayed number always equals the scenario's id used in the docs, README, manifests and Theory tabs.
+    { id: "s07", label: "S07 · " + L("Haul routing", "Ruteo de camiones"), content: <ScenarioExperiment manifestId="s07_haul" description={<S07Desc lang={lang} />} gridKpi={HAUL_KPI} /> },
+    { id: "s08", label: "S08 · " + L("Vehicle routing (VRP)", "Ruteo de vehículos (VRP)"), content: <ScenarioExperiment manifestId="s08_vrp" description={<S08Desc lang={lang} />} gridKpi={VRP_KPI} /> },
+    { id: "s09", label: "S09 · " + L("Ambulance dispatch", "Despacho ambulancias"), content: <ScenarioExperiment manifestId="s09_ambulance" description={<S09Desc lang={lang} />} gridKpi={AMBULANCE_KPI} /> },
+    { id: "s10", label: "S10 · " + L("Monte-Carlo / CI", "Monte-Carlo / IC"), content: <ScenarioExperiment manifestId="s10_montecarlo" description={<S10Desc lang={lang} />} gridKpi={MONTECARLO_KPI} /> },
     { id: "s11", label: "S11 · " + L("Multi-destination mine haul", "Acarreo minero multidestino"), content: <ScenarioExperiment manifestId="s11_minehaul" description={<S11Desc lang={lang} />} gridKpi={MINEHAUL_KPI} /> },
   ];
 
@@ -282,7 +283,7 @@ function S02Desc({ lang }: { lang: string }) {
 
       <h3>Formalización</h3>
       <p>
-        Es un <strong>modelo basado en agentes (ABM) sobre retícula</strong> con activación asíncrona por reubicación. Para el agente{" "}
+        Es un <strong>modelo basado en agentes (ABM) sobre retícula</strong> con activación por <strong>actualización en bloque</strong> (batch update): cada paso, todos los agentes descontentos se deciden contra la configuración del inicio del paso y luego se reubican <em>uno a uno</em> en el pool de vacías que va creciendo. Para el agente{" "}
         <InlineMath tex={String.raw`i`} /> de tipo <InlineMath tex={String.raw`c_i`} />, sea <InlineMath tex={String.raw`N_i`} /> su conjunto de
         vecinos de Moore <em>ocupados</em>. La fracción de vecinos del mismo tipo es
       </p>
@@ -315,7 +316,7 @@ function S02Desc({ lang }: { lang: string }) {
           celda vacía <em>aleatoria</em>. Inicialización aleatoria con semilla fija → cada corrida es un sorteo reproducible.
         </li>
         <li>
-          <strong>Activación asíncrona, no markoviana en sentido estricto:</strong> el orden intra-paso (barajado) influye en la traza; las
+          <strong>Actualización en bloque, no markoviana en sentido estricto:</strong> el orden intra-paso (barajado de los descontentos y de las vacías) influye en la traza; las
           conclusiones cualitativas se sostienen sobre semillas, no sobre una corrida.
         </li>
         <li>
@@ -330,7 +331,7 @@ function S02Desc({ lang }: { lang: string }) {
 
       <p>
         <strong>Qué muestra cada variante.</strong> El barrido de tolerancia <em>Tolerancia 30% → 70%</em> recorre la transición: ya con{" "}
-        <em>30%</em> la segregación está muy por encima de la mezcla aleatoria (<InlineMath tex={String.raw`S\approx0.73`} />, ~2.4× la{" "}
+        <em>30%</em> la segregación está muy por encima de la mezcla aleatoria (<InlineMath tex={String.raw`S\approx0.74`} />, ~2.5× la{" "}
         <InlineMath tex={String.raw`\tau`} /> exigida); <em>37.5%</em> y <em>45%</em> trepan hacia el punto de quiebre; <em>50% (clásico)</em> es
         el caso célebre — fuerte segregación desde una regla &ldquo;justa&rdquo; (en esta semilla <em>45%</em> y <em>50%</em> alcanzan un
         estado convergido idéntico; ver el ensemble); <em>55%</em> y <em>62.5%</em> la agudizan con más movimiento; y{" "}
@@ -348,6 +349,10 @@ function S02Desc({ lang }: { lang: string }) {
         HUD/KPIs reportan <InlineMath tex={String.raw`S`} /> final, fracción contenta final, pasos ejecutados y la tolerancia{" "}
         <InlineMath tex={String.raw`\tau`} /> de la corrida. La señal clave: <InlineMath tex={String.raw`S`} /> final mucho mayor que{" "}
         <InlineMath tex={String.raw`\tau`} /> es la huella de la emergencia.
+      </p>
+      <p className="hint">
+        También disponible como modelo <strong>NetLogo Web</strong> interactivo que corre 100% en el navegador (motor Tortoise):{" "}
+        <Link to="/sandbox/netlogo">abrir la versión NetLogo de Schelling →</Link>
       </p>
     </>
   ) : (
@@ -384,7 +389,7 @@ function S02Desc({ lang }: { lang: string }) {
 
       <h3>Formalization</h3>
       <p>
-        This is a <strong>lattice agent-based model (ABM)</strong> with asynchronous relocation-driven activation. For agent{" "}
+        This is a <strong>lattice agent-based model (ABM)</strong> with a <strong>batch-update</strong> activation: each step, every unhappy agent is decided against the start-of-step configuration and then relocated <em>one by one</em> into the growing pool of empty cells. For agent{" "}
         <InlineMath tex={String.raw`i`} /> of type <InlineMath tex={String.raw`c_i`} />, let <InlineMath tex={String.raw`N_i`} /> be its set of{" "}
         <em>occupied</em> Moore neighbours. The same-type fraction is
       </p>
@@ -417,7 +422,7 @@ function S02Desc({ lang }: { lang: string }) {
           <em>random</em> empty cell. Seeded random initialization → each run is a reproducible draw.
         </li>
         <li>
-          <strong>Asynchronous activation, not strictly Markovian:</strong> the within-step (shuffled) order affects the trace; qualitative
+          <strong>Batch update, not strictly Markovian:</strong> the within-step (shuffled unhappy agents and shuffled empties) order affects the trace; qualitative
           conclusions rest on ensembles over seeds, not a single run.
         </li>
         <li>
@@ -432,7 +437,7 @@ function S02Desc({ lang }: { lang: string }) {
 
       <p>
         <strong>What each variant shows.</strong> The tolerance sweep <em>Tolerance 30% → 70%</em> walks the transition: even at <em>30%</em>{" "}
-        segregation is already well above the random-mix baseline (<InlineMath tex={String.raw`S\approx0.73`} />, ~2.4× the demanded{" "}
+        segregation is already well above the random-mix baseline (<InlineMath tex={String.raw`S\approx0.74`} />, ~2.5× the demanded{" "}
         <InlineMath tex={String.raw`\tau`} />); <em>37.5%</em> and <em>45%</em> climb toward the tipping point; <em>50% (classic)</em> is the
         famous case — strong segregation from a &ldquo;fair&rdquo; rule (on this seed <em>45%</em> and <em>50%</em> reach an identical
         converged state; see the ensemble); <em>55%</em> and <em>62.5%</em> sharpen it with more churn; and <em>70%</em> is so demanding
@@ -448,6 +453,10 @@ function S02Desc({ lang }: { lang: string }) {
         <InlineMath tex={String.raw`S`} /> rising and the <strong>happy fraction</strong> trending to 1. The HUD/KPIs report final{" "}
         <InlineMath tex={String.raw`S`} />, final happy fraction, steps run, and the run&rsquo;s tolerance <InlineMath tex={String.raw`\tau`} />. The
         key signal: a final <InlineMath tex={String.raw`S`} /> much larger than <InlineMath tex={String.raw`\tau`} /> is the fingerprint of emergence.
+      </p>
+      <p className="hint">
+        Also available as an interactive <strong>NetLogo Web</strong> model that runs 100% client-side (Tortoise engine):{" "}
+        <Link to="/sandbox/netlogo">open the NetLogo Schelling card →</Link>
       </p>
     </>
   );
@@ -548,7 +557,8 @@ function S03Desc({ lang }: { lang: string }) {
         </li>
         <li>
           <strong>Tiempo discreto y actualización síncrona;</strong> sembrado al inicio con una fracción aleatoria{" "}
-          <InlineMath tex={String.raw`i_0`} /> (o un único caso central si el sorteo no enciende ninguna celda).
+          <InlineMath tex={String.raw`i_0`} /> (o una única celda fija de índice plano{" "}
+          <InlineMath tex={String.raw`n^2/2`} />, la celda del borde izquierdo en la fila central —no el centro geométrico— si el sorteo no enciende ninguna celda).
         </li>
         <li>
           <strong>Inmunidad permanente:</strong> R es absorbente — no hay reinfección, ni nacimientos/muertes, ni
@@ -669,7 +679,8 @@ function S03Desc({ lang }: { lang: string }) {
         </li>
         <li>
           <strong>Discrete time and synchronous update;</strong> seeded at the start with a random fraction{" "}
-          <InlineMath tex={String.raw`i_0`} /> (or a single central case if the draw lights no cell).
+          <InlineMath tex={String.raw`i_0`} /> (or a single fixed cell at flat index{" "}
+          <InlineMath tex={String.raw`n^2/2`} />, the left-edge middle-row cell — not the geometric centre — if the draw lights no cell).
         </li>
         <li>
           <strong>Permanent immunity:</strong> R is absorbing — no reinfection, no births/deaths, no incubation (not
@@ -1110,6 +1121,8 @@ function S05Desc({ lang }: { lang: string }) {
       <p><strong>Qué muestra cada variante:</strong> <em>L1–L4</em> barren el lead time <InlineMath tex={String.raw`L \in \{1,2,3,4\}`} /> a <InlineMath tex={String.raw`\theta=0.4`} />: a mayor <InlineMath tex={String.raw`L`} />, el factor <InlineMath tex={String.raw`(L+1)`} /> del nivel objetivo amplifica más y <em>L4</em> produce oscilaciones upstream violentas. <em>theta20/theta40/theta70</em> fijan <InlineMath tex={String.raw`L=2`} /> y varían el suavizado: un pronóstico reactivo (<InlineMath tex={String.raw`\theta=0.7`} />) persigue cada movimiento y <strong>empeora</strong> el bullwhip, mientras que <InlineMath tex={String.raw`\theta=0.2`} /> lo calma a costa de reaccionar lento. <em>bigstep</em> escala el escalón (<InlineMath tex={String.raw`\Delta=8`} />) y muestra mayor sobre-pico; <em>spike</em> es un pico de una sola semana que igual repercute hacia arriba; <em>noisy</em> usa demanda AR(1) para ver la varianza amplificarse eslabón a eslabón sin un shock único.</p>
 
       <p><strong>Cómo leer la visualización:</strong> el gráfico de líneas traza, por semana, la demanda del cliente (gris punteada) y las órdenes de cada eslabón: minorista (verde), mayorista (acento), distribuidor (ámbar) y fábrica (magenta). Verás cada curva más arriba y con más sobre-pico que la anterior — esa separación creciente <em>es</em> el bullwhip. Los KPIs reportan la razón de bullwhip <InlineMath tex={String.raw`B_i`} /> de los cuatro eslabones (debe crecer minorista → fábrica) y el pico de órdenes de la fábrica; compáralos entre variantes para cuantificar cuánto empeoran <InlineMath tex={String.raw`L`} /> y <InlineMath tex={String.raw`\theta`} /> la amplificación.</p>
+
+      <p><strong>Motor:</strong> Mesa 3 (ABM real, <code>mesa.Agent</code>/<code>mesa.Model</code>); lane en vivo — Python puro y sembrado, vuelve a correr en el navegador vía Pyodide.</p>
     </>
   ) : (
     <>
@@ -1147,6 +1160,8 @@ function S05Desc({ lang }: { lang: string }) {
       <p><strong>What each variant shows:</strong> <em>L1–L4</em> sweep lead time <InlineMath tex={String.raw`L \in \{1,2,3,4\}`} /> at <InlineMath tex={String.raw`\theta=0.4`} />: larger <InlineMath tex={String.raw`L`} /> means the target's <InlineMath tex={String.raw`(L+1)`} /> factor amplifies more, and <em>L4</em> produces violent upstream swings. <em>theta20/theta40/theta70</em> fix <InlineMath tex={String.raw`L=2`} /> and vary smoothing: a reactive forecast (<InlineMath tex={String.raw`\theta=0.7`} />) chases every move and <strong>worsens</strong> the bullwhip, while <InlineMath tex={String.raw`\theta=0.2`} /> calms it at the cost of slow response. <em>bigstep</em> scales the step (<InlineMath tex={String.raw`\Delta=8`} />) for a larger overshoot; <em>spike</em> is a single-week spike that still ripples upstream; <em>noisy</em> uses AR(1) demand to watch variance amplify stage by stage without a single shock.</p>
 
       <p><strong>How to read the viz:</strong> the line chart plots, by week, customer demand (dashed grey) and each echelon's orders: retailer (green), wholesaler (accent), distributor (amber), and factory (magenta). Each curve sits higher and overshoots more than the one before — that growing separation <em>is</em> the bullwhip. The KPIs report the bullwhip ratio <InlineMath tex={String.raw`B_i`} /> for all four echelons (it should grow retailer → factory) and the factory's peak order; compare them across variants to quantify how much <InlineMath tex={String.raw`L`} /> and <InlineMath tex={String.raw`\theta`} /> worsen the amplification.</p>
+
+      <p><strong>Engine:</strong> Mesa 3 (real ABM, <code>mesa.Agent</code>/<code>mesa.Model</code>); lane live — pure-Python and seeded, it re-runs in the browser via Pyodide.</p>
     </>
   );
 }
@@ -1228,6 +1243,10 @@ function S10Desc({ lang }: { lang: string }) {
         el <strong>semiancho del IC del 95%</strong> (aproximación normal, <InlineMath tex={String.raw`z=1.96`} />) es:
       </p>
       <Equation tex={String.raw`h_k = z\,\frac{s_k}{\sqrt{k}} = 1.96\,\frac{s_k}{\sqrt{k}}\,,\qquad \text{IC}_{95\%} = \bigl[\,\bar{W}_k - h_k,\ \bar{W}_k + h_k\,\bigr].`} />
+      <p>
+        El <InlineMath tex={String.raw`1.96`} /> aquí es solo el valor <em>redondeado</em> de la narrativa: el código no lo escribe a mano sino que usa el valor crítico normal exacto <code>scipy.stats.norm.ppf(0.975)</code>{" "}
+        (<InlineMath tex={String.raw`\approx 1.959964`} />) para la banda corriente, y construye el IC de cabecera con <code>scipy.stats.sem</code> + <code>scipy.stats.norm.interval(0.95,…)</code>.
+      </p>
       <p>
         Por la ley de los grandes números <InlineMath tex={String.raw`\bar{W}_k \to W_q`} /> y el
         semiancho se cierra como <InlineMath tex={String.raw`h_k \propto 1/\sqrt{k}`} />: cuadruplicar
@@ -1371,6 +1390,10 @@ function S10Desc({ lang }: { lang: string }) {
       </p>
       <Equation tex={String.raw`h_k = z\,\frac{s_k}{\sqrt{k}} = 1.96\,\frac{s_k}{\sqrt{k}}\,,\qquad \text{CI}_{95\%} = \bigl[\,\bar{W}_k - h_k,\ \bar{W}_k + h_k\,\bigr].`} />
       <p>
+        The <InlineMath tex={String.raw`1.96`} /> here is only the <em>rounded</em> narrative value: the code does not hand-type it but uses the exact normal critical value <code>scipy.stats.norm.ppf(0.975)</code>{" "}
+        (<InlineMath tex={String.raw`\approx 1.959964`} />) for the running band, and builds the headline CI with <code>scipy.stats.sem</code> + <code>scipy.stats.norm.interval(0.95,…)</code>.
+      </p>
+      <p>
         By the law of large numbers <InlineMath tex={String.raw`\bar{W}_k \to W_q`} /> and the half-width
         shrinks like <InlineMath tex={String.raw`h_k \propto 1/\sqrt{k}`} />: quadrupling the replications
         halves the CI. The oracle is the closed-form Erlang-C wait with offered load{" "}
@@ -1454,7 +1477,7 @@ function S11Desc({ lang }: { lang: string }) {
         <li><strong>Destinos:</strong> el conjunto {"{"} planta, botadero, acopios {"}"} — la planta es un sumidero con meta de ley, el botadero un sumidero de estéril, y cada acopio un nodo sumidero-y-origen con nivel <InlineMath tex={String.raw`\ell(t)`} /> y capacidad.</li>
         <li><strong>Flota:</strong> <InlineMath tex={String.raw`K`} /> camiones (<code>n_trucks</code>) de <strong>capacidad</strong> fija <InlineMath tex={String.raw`q`} /> toneladas por viaje (<InlineMath tex={String.raw`q = 2`} /> en el código), con tiempos fijos de carga y descarga y un cargador compartido por origen.</li>
         <li><strong>Parámetros:</strong> demanda de planta <InlineMath tex={String.raw`D`} />, ley objetivo <InlineMath tex={String.raw`g^{*}`} /> y banda <InlineMath tex={String.raw`\pm\tau`} />; el costo de arista <em>graduado</em> por pendiente del terreno (penalización <InlineMath tex={String.raw`\rho`} /> al subir); y la capacidad y nivel inicial de cada acopio.</li>
-        <li><strong>Variables de decisión:</strong> el <strong>plan de mezcla</strong> <InlineMath tex={String.raw`x_i \ge 0`} /> (toneladas de cada origen a la planta), que resuelve el LP; y, en la simulación, qué <strong>flujo</strong> sirve cada camión en cada ciclo — la regla de <em>despacho</em> al trabajo factible alcanzable más pronto.</li>
+        <li><strong>Variables de decisión:</strong> el <strong>plan de mezcla</strong> <InlineMath tex={String.raw`x_i \ge 0`} /> (toneladas de cada origen a la planta), que resuelve el LP; y, en la simulación, qué <strong>flujo</strong> sirve cada camión en cada ciclo — la regla de <em>despacho</em> sirve el flujo <strong>más atrasado</strong> (menor razón <InlineMath tex={String.raw`\text{done}/\text{target}`} />), rompiendo empates por alcanzabilidad; solo el nivel de la <em>planta</em> usa la regla de <em>alcanzable más pronto</em>.</li>
       </ul>
 
       <h3>Formalización</h3>
@@ -1467,7 +1490,7 @@ function S11Desc({ lang }: { lang: string }) {
       </p>
       <Equation tex={String.raw`\text{costo}(a \to b) = \text{dist}(a,b)\,\bigl(1 + \rho \cdot \max(0,\; \text{elev}_b - \text{elev}_a)\bigr).`} />
       <p>
-        <strong>(3) Ejecución (DES).</strong> Los <InlineMath tex={String.raw`K`} /> camiones ciclan carga → acarreo graduado → descarga → retorno; el despacho elige el flujo factible <em>alcanzable más pronto</em> manteniendo la planta como prioridad. La <strong>ley lograda</strong> sobre lo realmente entregado a la planta y la <strong>adherencia al plan</strong> son:
+        <strong>(3) Ejecución (DES).</strong> Los <InlineMath tex={String.raw`K`} /> camiones ciclan carga → acarreo graduado → descarga → retorno. El despacho es por niveles: los camiones de <em>planta</em> sirven primero a la planta eligiendo el flujo factible <em>alcanzable más pronto</em>; los camiones <em>auxiliares</em> sirven las faenas de mantención (botadero + acopio) tomando el flujo <em>más atrasado</em> (menor razón <InlineMath tex={String.raw`\text{done}/\text{target}`} />), con empates por alcanzabilidad. La <strong>ley lograda</strong> sobre lo realmente entregado a la planta y la <strong>adherencia al plan</strong> son:
       </p>
       <Equation tex={String.raw`\hat{g} = \frac{\sum (\text{tons} \cdot g_{\text{src}})}{\sum \text{tons}}, \qquad \text{adherencia} = \frac{\sum_f \text{entregado}_f}{\sum_f \text{planificado}_f}.`} />
       <p>
@@ -1499,7 +1522,7 @@ function S11Desc({ lang }: { lang: string }) {
         <li><strong>Destinations:</strong> the set {"{"} plant, dump, stocks {"}"} — the plant is a sink with a grade target, the dump a waste sink, and each stock a sink-and-source node with level <InlineMath tex={String.raw`\ell(t)`} /> and capacity.</li>
         <li><strong>Fleet:</strong> <InlineMath tex={String.raw`K`} /> trucks (<code>n_trucks</code>) of fixed <strong>capacity</strong> <InlineMath tex={String.raw`q`} /> tonnes per trip (<InlineMath tex={String.raw`q = 2`} /> in the code), with fixed load/tip times and a shared loader per source.</li>
         <li><strong>Parameters:</strong> plant demand <InlineMath tex={String.raw`D`} />, grade target <InlineMath tex={String.raw`g^{*}`} /> with band <InlineMath tex={String.raw`\pm\tau`} />; the slope-<em>graded</em> edge cost (uphill penalty <InlineMath tex={String.raw`\rho`} />); and each stock's capacity and initial level.</li>
-        <li><strong>Decision variables:</strong> the <strong>blend plan</strong> <InlineMath tex={String.raw`x_i \ge 0`} /> (tonnes from each source to the plant), solved by the LP; and, in the simulation, which <strong>flow</strong> each truck serves per cycle — the <em>dispatch</em> rule to the reachable-soonest feasible job.</li>
+        <li><strong>Decision variables:</strong> the <strong>blend plan</strong> <InlineMath tex={String.raw`x_i \ge 0`} /> (tonnes from each source to the plant), solved by the LP; and, in the simulation, which <strong>flow</strong> each truck serves per cycle — the <em>dispatch</em> rule serves the flow <strong>furthest behind</strong> (lowest <InlineMath tex={String.raw`\text{done}/\text{target}`} /> ratio), ties broken by reachability; only the <em>plant</em> tier uses the <em>reachable-soonest</em> rule.</li>
       </ul>
 
       <h3>Formalization</h3>
@@ -1512,7 +1535,7 @@ function S11Desc({ lang }: { lang: string }) {
       </p>
       <Equation tex={String.raw`\text{cost}(a \to b) = \text{dist}(a,b)\,\bigl(1 + \rho \cdot \max(0,\; \text{elev}_b - \text{elev}_a)\bigr).`} />
       <p>
-        <strong>(3) Execution (DES).</strong> The <InlineMath tex={String.raw`K`} /> trucks cycle load → graded haul → tip → return; dispatch picks the feasible flow <em>reachable soonest</em> with the plant as priority. The <strong>achieved grade</strong> over what was actually delivered to the plant and the <strong>plan adherence</strong> are:
+        <strong>(3) Execution (DES).</strong> The <InlineMath tex={String.raw`K`} /> trucks cycle load → graded haul → tip → return. Dispatch is tiered: <em>plant</em> trucks serve the plant first by picking the feasible flow <em>reachable soonest</em>; <em>auxiliary</em> trucks serve the housekeeping flows (dump + stock) by taking the flow <em>furthest behind</em> (lowest <InlineMath tex={String.raw`\text{done}/\text{target}`} /> ratio), with ties broken by reachability. The <strong>achieved grade</strong> over what was actually delivered to the plant and the <strong>plan adherence</strong> are:
       </p>
       <Equation tex={String.raw`\hat{g} = \frac{\sum (\text{tons} \cdot g_{\text{src}})}{\sum \text{tons}}, \qquad \text{adherence} = \frac{\sum_f \text{delivered}_f}{\sum_f \text{planned}_f}.`} />
       <p>
@@ -1821,7 +1844,7 @@ function S09Desc({ lang }: { lang: string }) {
         </li>
         <li>
           <strong>Variables aleatorias:</strong> tiempos entre llegadas{" "}
-          <InlineMath tex={String.raw`\Delta_k \sim \text{Exp}(\lambda)`} /> y nodo del llamado{" "}
+          <InlineMath tex={String.raw`\Delta_k \sim \text{Exp}(\tfrac{\lambda}{60})`} /> y nodo del llamado{" "}
           <InlineMath tex={String.raw`c_k \sim \text{Unif}(V)`} />.
         </li>
         <li>
@@ -1940,7 +1963,7 @@ function S09Desc({ lang }: { lang: string }) {
         </li>
         <li>
           <strong>Random variables:</strong> inter-arrival times{" "}
-          <InlineMath tex={String.raw`\Delta_k \sim \text{Exp}(\lambda)`} /> and call node{" "}
+          <InlineMath tex={String.raw`\Delta_k \sim \text{Exp}(\tfrac{\lambda}{60})`} /> and call node{" "}
           <InlineMath tex={String.raw`c_k \sim \text{Unif}(V)`} />.
         </li>
         <li>

@@ -111,10 +111,10 @@
   "variants": [
     {
       "id": "base",
-      "label_en": "Matched fleet",
-      "label_es": "Flota equilibrada",
-      "note_en": "A matched fleet roughly realizes the plan: blend near target.",
-      "note_es": "Una flota equilibrada realiza el plan: mezcla cerca de la meta.",
+      "label_en": "6 trucks \u00b7 still off spec",
+      "label_es": "6 camiones \u00b7 a\u00fan fuera de especificaci\u00f3n",
+      "note_en": "A 6-truck fleet closes much of the gap but still misses spec: only ~63% plan adherence, blend 2.55 vs target 2.9 (dev ~2.3x the band) \u2014 out of band.",
+      "note_es": "Una flota de 6 camiones cierra buena parte de la brecha pero a\u00fan no cumple: solo ~63% de adherencia, mezcla 2.55 vs meta 2.9 (desv\u00edo ~2.3x la banda) \u2014 fuera de banda.",
       "params": {
         "grid": 14,
         "n_trucks": 6,
@@ -130,7 +130,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 14.1,
+        "run_ms": 15.9,
         "trace_bytes": 43045,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -183,7 +183,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 4.6,
+        "run_ms": 2.8,
         "trace_bytes": 28718,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -236,7 +236,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 6.3,
+        "run_ms": 3.6,
         "trace_bytes": 63572,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -289,7 +289,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 5.3,
+        "run_ms": 3.2,
         "trace_bytes": 43045,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -342,7 +342,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 5.7,
+        "run_ms": 3.0,
         "trace_bytes": 37379,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -395,7 +395,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 8.7,
+        "run_ms": 4.7,
         "trace_bytes": 105693,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -448,7 +448,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 4.9,
+        "run_ms": 2.7,
         "trace_bytes": 43807,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -502,7 +502,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 4.7,
+        "run_ms": 2.5,
         "trace_bytes": 33608,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -555,7 +555,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 5.6,
+        "run_ms": 3.0,
         "trace_bytes": 42890,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -608,7 +608,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 5.0,
+        "run_ms": 2.6,
         "trace_bytes": 36546,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -661,7 +661,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 4.7,
+        "run_ms": 2.9,
         "trace_bytes": 38633,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -714,7 +714,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 6.2,
+        "run_ms": 3.3,
         "trace_bytes": 49430,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"

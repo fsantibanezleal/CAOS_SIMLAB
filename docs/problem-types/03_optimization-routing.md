@@ -34,7 +34,9 @@ is paired with a simulator, is this:
    NetworkX + OSMnx, OSRM/VROOM), the mandatory OR-Tools routing configuration, the precompute-only gate,
    the deprecated tools to avoid, and the license/attribution summary.
 5. [05 · Scenarios](./03_optimization-routing/05_scenarios.md) — how the tools map onto the lab's
-   scenarios (S06, S07, S08, S09, S11), with links to each use-case node.
+   scenarios (S06, S07, S08, S09, S11), with links to each use-case node. S09 is the **closed-form
+   exception** — it carries no optimizer at all (nearest-available argmin + NetworkX Dijkstra), listed
+   here only because EMS dispatch is conventionally framed as routing.
 
 ## Sibling problem-type guides
 

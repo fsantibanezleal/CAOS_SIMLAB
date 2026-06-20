@@ -41,7 +41,7 @@ question is "what pattern will these local rules produce?"
 | # | Scenario | Tool(s) | Method | Lane |
 |---|---|---|---|---|
 | **S02** | [Schelling Segregation](../use-cases/02_s02_schelling.md) | Mesa 3 (+ NetLogo Web) | emergence from preference | live |
-| **S03** | [SIR / SEIR Epidemic](../use-cases/03_s03_sir.md) | Mesa 3 (+ NetLogo Web) | contact / threshold dynamics | live |
+| **S03** | [SIR Epidemic](../use-cases/03_s03_sir.md) | Mesa 3 (+ NetLogo Web) | contact / threshold dynamics | live |
 | **S05** | [Beer Game (bullwhip)](../use-cases/05_s05_beergame.md) | Mesa 3 | feedback / delay (policy) | live |
 
 ## Related nodes

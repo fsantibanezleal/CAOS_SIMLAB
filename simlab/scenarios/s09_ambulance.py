@@ -93,7 +93,7 @@ class RoadRouter:
 class AmbulanceScenario(Scenario):
     id = "s09_ambulance"
     title = "Ambulance Dispatch"
-    method = "des"
+    method = "DES"
     tier = 3
     viz = "route"
     engine = "simpy"            # SimPy DES drives the call stream + dispatch; NetworkX routes the network

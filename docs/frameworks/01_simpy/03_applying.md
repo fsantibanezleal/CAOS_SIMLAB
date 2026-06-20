@@ -107,9 +107,9 @@ making "one run lies" visible and quantified. The replication machinery wraps th
 Because SimPy is **pure Python**, light DES scenarios run **live in the Pyodide Web Worker**: move a
 slider, SimPy re-runs in the browser, the React queue-network animates. A scenario falls back to the
 **precompute lane** only when it breaches a gate (long horizon, large entity count, or many
-replications). The lab's **4-gate rule** (pure-Python AND < 3 s AND < ~1 MB trace) enforces this
-structurally — CI fails the build if a scenario tagged "live" breaches a gate, so a heavy run can never
-accidentally ship as live.
+replications). The lab's **4-gate rule** (pure-Python AND wheels ⊆ `LIVE_WHEELS` AND run < 3 s AND
+trace < ~1 MB) enforces this structurally — CI fails the build if a scenario tagged "live" breaches a gate,
+so a heavy run can never accidentally ship as live.
 
 - **Live (in-browser):** S01, S04, S09 (SimPy + NetworkX), **S07** (a live SimPy replay over a *committed*
   native plan — see below), and S10's replicated CI study (numpy + joblib + scipy all ⊆ `LIVE_WHEELS`).
@@ -151,7 +151,7 @@ The DES-frameworks and healthcare-DES research dimensions surface these honestly
 | Scenario | SimPy's role | Paired tools | Lane |
 |---|---|---|---|
 | **S01 — Bank / Clinic Queue (M/M/c)** | Live engine: arrivals, server pool, queue, ρ, Little's Law — a single ~300-customer run (no replications, no CI). The lab's "hello world" and the basis of [`example.py`](./example.py). | **Ciw** in-run cross-check (10 capped warmed-up reps → `theory_in_ci` + `rel_err` vs Erlang-C) | live |
-| **S04 — Emergency Department Patient Flow** | Live engine: synthetic homogeneous Poisson arrivals with one fixed daytime surge window, priority triage, multi-stage resource-limited flow (triage → treatment → discharge). No closed form. (A single seeded run; the replicated-CI lesson lives in **S10**, not here.) | — | live |
+| **S04 — Emergency Department Patient Flow** | Live engine: synthetic **non-stationary (Lewis–Shedler thinned) Poisson** arrivals with one fixed surge window over the middle of the shift (`[0.30H, 0.60H)`, λ doubled); **FCFS triage** (`simpy.Resource`) → **non-preemptive priority treatment** (`simpy.PriorityResource`) → discharge, multi-stage resource-limited flow. No closed form. (A single seeded run; the replicated-CI lesson lives in **S10**, not here.) | — | live |
 | **S07 — Construction Haul Routing** *(DES leg)* | The *simulate* leg of optimize-then-simulate: a **deterministic** SimPy DES of the closed finite-source haul cycle (fixed load/dump times, inert seed) over the CP-SAT-certified route. Saturation comes from the shared finite loader, not random variates. The native plan is precomputed + committed (`s07_plans.py`); the SimPy replay runs **live**. | **OR-Tools CP-SAT** (route-cost certificate) + NetworkX (graph) | live (SimPy replay over a committed native plan) |
 | **S08 — Last-Mile Delivery VRP** | **No SimPy leg.** A deterministic two-solver head-to-head (OR-Tools vs PyVRP) rendered from a committed trace with a scrubber. | **OR-Tools** + **PyVRP** (no SimPy) | precomputed |
 | **S09 — Ambulance Dispatch** | Live engine: one seeded Poisson call stream over a city graph drives nearest-available dispatch; response-time / coverage KPIs. The DES is the event-ordering mechanism (variates drawn up front), **not** replicated or a stochastic stress-test. No OR-Tools. | **NetworkX** (shortest paths) | **live** |
