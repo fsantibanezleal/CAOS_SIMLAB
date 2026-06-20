@@ -61,7 +61,7 @@
       "kind": "int"
     }
   ],
-  "lane": "precomputed",
+  "lane": "live",
   "gate_thresholds": {
     "max_run_ms": 3000.0,
     "max_trace_bytes": 1000000
@@ -80,14 +80,12 @@
         "init_infected": 0.02,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 43.8,
+        "run_ms": 36.2,
         "trace_bytes": 79749,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.018,
@@ -113,14 +111,12 @@
         "init_infected": 0.02,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 42.0,
+        "run_ms": 35.7,
         "trace_bytes": 79755,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.018,
@@ -146,14 +142,12 @@
         "init_infected": 0.02,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 30.4,
+        "run_ms": 26.3,
         "trace_bytes": 147158,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.2722,
@@ -179,14 +173,12 @@
         "init_infected": 0.02,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 25.3,
+        "run_ms": 22.6,
         "trace_bytes": 135433,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.3193,
@@ -212,14 +204,12 @@
         "init_infected": 0.02,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 22.4,
+        "run_ms": 18.0,
         "trace_bytes": 111987,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.4467,
@@ -245,14 +235,12 @@
         "init_infected": 0.02,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 42.8,
+        "run_ms": 42.3,
         "trace_bytes": 155829,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.5471,
@@ -278,14 +266,12 @@
         "init_infected": 0.02,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 21.6,
+        "run_ms": 18.5,
         "trace_bytes": 79749,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.2424,
@@ -311,14 +297,12 @@
         "init_infected": 0.02,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 34.2,
+        "run_ms": 28.4,
         "trace_bytes": 238020,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.545,
@@ -344,14 +328,12 @@
         "init_infected": 0.004,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 40.2,
+        "run_ms": 32.7,
         "trace_bytes": 196984,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.1911,
@@ -377,14 +359,12 @@
         "init_infected": 0.1,
         "steps": 80
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 18.3,
+        "run_ms": 17.3,
         "trace_bytes": 120783,
-        "reasons": [
-          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
-        ]
+        "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.5104,

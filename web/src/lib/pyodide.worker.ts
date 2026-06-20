@@ -54,12 +54,15 @@ async function init(sourcesUrl: string): Promise<void> {
   importScripts(PYODIDE_JS_URL);
   pyodide = await loadPyodide({ indexURL: PYODIDE_INDEX_URL });
   post({ type: "progress", phase: "loading-packages" });
-  // Live wheel closure (must match simlab.core.scenario.LIVE_WHEELS): numpy + simpy (DES) + ciw (queueing
-  // validation). networkx is loaded because ciw needs it. Heavy engines (mesa, ortools, joblib, scipy) are
-  // precompute-only and never loaded here — those scenarios replay a committed trace instead.
-  await pyodide.loadPackage(["numpy", "networkx", "micropip"]);
+  // Live wheel closure (must match simlab.core.scenario.LIVE_WHEELS). MEASURED, not assumed: Mesa 3 runs in
+  // Pyodide once `sqlite3` is loaded (it imports it via mesa.experimental). pandas/scipy/networkx are Mesa's
+  // (and ciw's) deps. So ABM runs LIVE on real Mesa here — not a stand-in. numpy+simpy for DES, ciw for the
+  // M/M/c validation, joblib for the Monte-Carlo replications. Only native engines (OR-Tools) stay precompute
+  // (those scenarios are pure_python=False and never reach this worker). Cold start is ~3-5 s, paid in the
+  // background while the first paint replays a committed trace.
+  await pyodide.loadPackage(["numpy", "pandas", "scipy", "networkx", "sqlite3", "micropip"]);
   const micropip = pyodide.pyimport("micropip");
-  await micropip.install(["simpy", "ciw"]);
+  await micropip.install(["simpy", "ciw", "mesa", "joblib"]);
   post({ type: "progress", phase: "loading-simlab" });
   const res = await fetch(sourcesUrl);
   if (!res.ok || !(res.headers.get("content-type") ?? "").includes("json")) {

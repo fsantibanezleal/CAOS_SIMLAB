@@ -110,7 +110,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 58.3,
+        "run_ms": 47.1,
         "trace_bytes": 20571,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -152,7 +152,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 59.4,
+        "run_ms": 48.1,
         "trace_bytes": 20541,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -194,7 +194,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 69.1,
+        "run_ms": 56.6,
         "trace_bytes": 22085,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -236,7 +236,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 57.7,
+        "run_ms": 48.5,
         "trace_bytes": 22085,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -278,7 +278,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 62.5,
+        "run_ms": 51.4,
         "trace_bytes": 22002,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -320,7 +320,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 50.8,
+        "run_ms": 42.8,
         "trace_bytes": 21828,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -362,7 +362,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 55.7,
+        "run_ms": 48.1,
         "trace_bytes": 15028,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -404,7 +404,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 55.1,
+        "run_ms": 46.8,
         "trace_bytes": 22378,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -446,7 +446,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 58.0,
+        "run_ms": 46.9,
         "trace_bytes": 25467,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -488,7 +488,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 58.8,
+        "run_ms": 47.7,
         "trace_bytes": 33398,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -530,7 +530,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 56.5,
+        "run_ms": 48.0,
         "trace_bytes": 33388,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -572,7 +572,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 58.0,
+        "run_ms": 48.2,
         "trace_bytes": 24230,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -614,7 +614,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 44.7,
+        "run_ms": 36.5,
         "trace_bytes": 22183,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"

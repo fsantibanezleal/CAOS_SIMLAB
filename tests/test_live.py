@@ -17,24 +17,21 @@ from simlab.registry import get_scenario
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def test_live_lanes_are_lightweight_pure_python_only():
+def test_live_lanes_are_pyodide_loadable_only():
     lanes = set(live_lanes())
-    # Live = pure-Python AND wheel closure ⊆ the browser worker's (numpy, simpy, ciw). Today that is exactly
-    # the SimPy DES scenarios. Everything heavier is precompute + replay: Mesa ABM (pandas/scipy closure too
-    # heavy for the live cold-start), OR-Tools (native, no WASM), joblib/scipy (s10), networkx (s09).
-    assert lanes == {"s01_queue", "s04_ed"}
-    assert {
-        "s02_schelling", "s03_sir", "s05_beergame", "s06_jobshop", "s07_haul",
-        "s08_vrp", "s09_ambulance", "s10_montecarlo", "s11_minehaul",
-    }.isdisjoint(lanes)
+    # Live = pure-Python AND every wheel is Pyodide-loadable (LIVE_WHEELS). MEASURED: Mesa 3 runs in Pyodide
+    # (with sqlite3), so the ABM scenarios run live on real Mesa; SimPy/Ciw/NetworkX/joblib also load. The
+    # ONLY thing that stays precompute is the native OR-Tools solver (s06/s07/s08/s11).
+    assert lanes == {"s01_queue", "s02_schelling", "s03_sir", "s04_ed", "s05_beergame", "s09_ambulance", "s10_montecarlo"}
+    assert {"s06_jobshop", "s07_haul", "s08_vrp", "s11_minehaul"}.isdisjoint(lanes)  # native OR-Tools → precompute
 
 
 def test_run_trace_json_refuses_precompute_only():
-    # native engine (OR-Tools) and heavy-closure (Mesa) scenarios must both be refused in WASM
+    # native OR-Tools scenarios must be refused in WASM (no WASM build); Mesa ABM is NOT refused (it runs live)
     with pytest.raises(RuntimeError):
         run_trace_json("s08_vrp", {}, 42)
     with pytest.raises(RuntimeError):
-        run_trace_json("s02_schelling", {}, 42)
+        run_trace_json("s11_minehaul", {}, 42)
 
 
 def test_run_trace_json_byte_matches_committed():

@@ -1,0 +1,4 @@
+# Project-scoped Playwright browser cache (never global) — do not commit
+.pw-browsers/
+# Local validation screenshots
+_shots/
