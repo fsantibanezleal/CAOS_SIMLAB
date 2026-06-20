@@ -74,7 +74,7 @@ class Scenario:
     tier: int = 1               # 1 intro · 2 core · 3 advanced
     viz: str = ""               # queue-network | agent-grid | geospatial-map | charts
     dimensionality: str = "2d"  # 2d | 3d
-    engine: str = ""            # simpy | mesa | ortools | ...
+    engine: str = ""            # simpy | numpy | ortools | ...
     # Can this scenario's engine run in Pyodide? Native-code engines (OR-Tools) set this False so the
     # gate forces precompute regardless of run time.
     pure_python: bool = True

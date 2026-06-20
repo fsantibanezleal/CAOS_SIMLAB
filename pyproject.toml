@@ -4,9 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "simlab"
-# PEP 440 form of the display version 0.01.000 (scheme X.XX.XXX — see CHANGELOG.md + simlab.__version__).
-version = "0.1.0"
-description = "CAOS_SIMLAB — a public, didactic Discrete-Event Simulation & Agent-Based Modeling lab."
+# PEP 440 form of the display version 0.15.002 (scheme X.XX.XXX — see CHANGELOG.md + simlab.__version__).
+version = "0.15.2"
+description = "CAOS_SIMLAB — a public, didactic Discrete-Event Simulation, Agent-Based Modeling & Optimization lab."
 readme = "README.md"
 requires-python = ">=3.11"
 license = { text = "MIT" }
