@@ -67,14 +67,27 @@ disposes*. Here the FIFO `Resource` exactly reproduces an earliest-free-loader p
 stochastic variates** the trace is a pure function of (params, seed). See
 [SimPy framework node](../../frameworks/01_simpy.md).
 
-## Live vs precompute lane
+## Live vs precompute lane — a native PLAN + a live REPLAY
 
-This scenario runs in the **precompute lane** (`pure_python = False`, `engine = "ortools"`, `wheels = []`):
-OR-Tools CP-SAT is native C++ and cannot run in the browser (Pyodide), so it never enters the live wheel
-closure. Instead the pipeline runs offline in the local `.venv`, certifies the route, runs the SimPy replay,
-and commits a deterministic [route trace](../../../manifests/s07_haul.json) the web viewer replays. Because
-both the optimization (unique shortest path + seeded CP-SAT) and the DES (fixed service times) are
-deterministic, the committed artifacts are **byte-identical across runs** — the deterministic-replay contract.
+S07 is split honestly into a **native plan** and a **live replay**:
+
+- **The PLAN is native and precomputed.** NetworkX route geometry + the OR-Tools CP-SAT cost certificate are
+  C++/no-WASM, so they run **offline** in the local `.venv` (in
+  [`simlab/scenarios/_haul_plan.py`](../../../simlab/scenarios/_haul_plan.py)) and are **committed** as small
+  *rendered data* — the two route polylines (node-id lists), the certified cost, and the analytic `g*` — in
+  [`simlab/scenarios/s07_plans.py`](../../../simlab/scenarios/s07_plans.py). One plan is committed for every
+  grade-slider step at the default geometry (so the route-flip lesson is live across the grade slider) plus the
+  off-default geometries the variants use. No raw graph is serialised.
+- **The REPLAY runs live.** The SimPy stochastic-replay over that fixed plan is pure-Python (`pure_python =
+  True`, `engine = "simpy"`, `wheels = ["numpy", "simpy"]`), so it runs **LIVE in Pyodide**. OR-Tools is
+  lazy-imported only in the offline plan builder and is **never reached in the worker** — the live `run()`
+  loads the committed plan and runs only the DES. The fleet sliders (trucks, loaders, load/dump times,
+  breakdown rate, seed) mutate the **replay**, not the plan; the grade slider re-selects among committed plans.
+
+Determinism holds in both halves: the plan is a unique shortest path + a seeded CP-SAT solve (offline,
+byte-stable), and the DES has no stochastic variates at `breakdown = 0` (and draws any breakdown delays from a
+single seeded NumPy RNG otherwise), so the committed [route trace](../../../manifests/s07_haul.json) is
+**byte-identical across runs** and a live run reproduces it exactly — the deterministic-replay contract.
 
 See the [Precompute pipeline guide](../../guides/01_precompute-pipeline.md) and the
 [Optimization & Routing problem-type guide](../../problem-types/03_optimization-routing.md) for the broader lane

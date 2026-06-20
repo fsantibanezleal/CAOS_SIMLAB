@@ -164,11 +164,12 @@ The DES-frameworks and healthcare-DES research dimensions surface these honestly
 loader."* → This is **Pattern B (optimize-then-simulate)**, scenario **S07**. The route is found with
 NetworkX and its optimum cost is certified by an **OR-Tools CP-SAT** min-cost-flow ILP, fixed offline; a
 SimPy model then replays the closed finite-source haul cycle over that route. In the shipped S07 this DES is
-**deterministic** — load/dump times are fixed constants and the seed is inert — so the queueing at the
-single loader, not random noise, is what saturates the fleet; it reports one run, not a CI. (Adding
-stochastic service times and replications/CI is the natural extension, but it is not what the shipped
-variant does.) S07 runs in the **precompute lane** and ships as a committed replay artifact — not because
-the SimPy is heavy, but because OR-Tools is native code that cannot run in the browser (Pyodide).
+**deterministic** by default (`breakdown=0`, fixed load/dump times) — so the queueing at the single loader,
+not random noise, is what saturates the fleet; it reports one run, not a CI. Setting `breakdown>0` adds
+seeded-RNG delays (still reproducible per seed). S07 runs in the **live lane**: its OR-Tools/NetworkX route
+plan is precomputed offline and **committed** (`s07_plans.py`) because OR-Tools is native and can't run in
+Pyodide, while the pure-Python **SimPy replay over that fixed plan runs live** in the browser — the
+fleet/load/dump/breakdown sliders mutate the replay; the grade slider re-selects a committed plan.
 
 ## Sources
 

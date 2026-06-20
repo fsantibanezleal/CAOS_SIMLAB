@@ -73,7 +73,7 @@ A progression from a 30-line live queue to map-scale optimize-then-simulate. All
 | S04 | Emergency Department Patient Flow | DES | live | priority triage, non-stationary (hour-of-day) arrivals, multi-stage flow |
 | S05 | Beer Game (Supply-Chain Bullwhip) | ABM | live | feedback + lead time amplify oscillations |
 | S06 | Job-Shop Scheduling (CP-SAT) | optimization | precomputed | combinatorial scheduling — what an optimizer does |
-| S07 | Construction Haul Routing | hybrid | precomputed | optimize-then-simulate; graded terrain drives cost (OR-Tools is native → replayed) |
+| S07 | Construction Haul Routing | hybrid | live | optimize-then-simulate: the OR-Tools/NetworkX plan is precomputed + committed, the SimPy stochastic replay runs **live** over it (sliders mutate the replay) |
 | S08 | Vehicle Routing (VRP) | optimization | precomputed | routing & fleet sizing with OR-Tools |
 | S09 | Ambulance Dispatch | hybrid | live | stochastic demand over a city graph; coverage |
 | S10 | Monte-Carlo Replication / CI Study | hybrid | live | replications, confidence intervals, finite-run bias |

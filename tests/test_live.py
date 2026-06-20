@@ -20,10 +20,13 @@ ROOT = Path(__file__).resolve().parent.parent
 def test_live_lanes_are_pyodide_loadable_only():
     lanes = set(live_lanes())
     # Live = pure-Python AND every wheel is Pyodide-loadable (LIVE_WHEELS). MEASURED: Mesa 3 runs in Pyodide
-    # (with sqlite3), so the ABM scenarios run live on real Mesa; SimPy/Ciw/NetworkX/joblib also load. The
-    # ONLY thing that stays precompute is the native OR-Tools solver (s06/s07/s08/s11).
-    assert lanes == {"s01_queue", "s02_schelling", "s03_sir", "s04_ed", "s05_beergame", "s09_ambulance", "s10_montecarlo"}
-    assert {"s06_jobshop", "s07_haul", "s08_vrp", "s11_minehaul"}.isdisjoint(lanes)  # native OR-Tools → precompute
+    # (with sqlite3), so the ABM scenarios run live on real Mesa; SimPy/Ciw/NetworkX/joblib also load. S07
+    # runs live too: its OR-Tools+NetworkX route PLAN is precomputed offline and COMMITTED (s07_plans.py),
+    # and only the pure-Python SimPy stochastic-replay over that fixed plan runs in the worker. The native
+    # solver scenarios (s06/s08/s11) stay precompute-only — they re-solve in run(), which can't run in WASM.
+    assert lanes == {"s01_queue", "s02_schelling", "s03_sir", "s04_ed", "s05_beergame",
+                     "s07_haul", "s09_ambulance", "s10_montecarlo"}
+    assert {"s06_jobshop", "s08_vrp", "s11_minehaul"}.isdisjoint(lanes)  # native OR-Tools solve → precompute
 
 
 def test_run_trace_json_refuses_precompute_only():

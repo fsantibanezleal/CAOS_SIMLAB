@@ -1,4 +1,4 @@
-"""S07 — Construction haul routing: optimize-then-simulate on three real frameworks.
+"""S07 — Construction haul routing: optimize-then-simulate, with a NATIVE plan and a LIVE replay.
 
 A fixed fleet recirculates between a LOAD point (bottom) and a DUMP (top), separated by a RIDGE of high
 ground with a low PASS. Elevation drives the loaded cost, so the optimal haul route is a genuine
@@ -9,105 +9,63 @@ grade). The shared LOADER is the binding resource: trucks are a finite calling p
 / M/M/1//N queue), so throughput saturates at the loader rate — match the fleet to the loader (the "match
 factor").
 
-This scenario USES the tools it documents — no hand-rolled NumPy graph or event loop:
+This scenario USES the tools it documents — no hand-rolled NumPy graph or event loop — and it is split
+honestly into a NATIVE plan and a LIVE replay:
 
-* **NetworkX** (``docs/frameworks/10_networkx``) builds a real directed road graph over the shared graded
-  ``GridNetwork`` terrain in ``_geo.py`` (same nodes/edges/elevation/blocked cells) and finds the haul
-  route with ``nx.dijkstra_path`` over the grade-weighted edges — the *optimize* step's geometry.
-* **OR-Tools** CP-SAT (``docs/frameworks/08_ortools``) independently re-solves the SAME shortest path as a
-  min-cost single-unit-flow ILP and confirms the route cost the optimizer commits to. CP-SAT is native
-  code, so this scenario is precomputed (``pure_python = False``); the solver is made reproducible with a
-  single worker + a fixed ``random_seed`` and a deterministic stopping rule, and its optimum cost is
-  STABLE across runs (the path geometry is taken from NetworkX, which is byte-stable, because equal-cost
-  optimal routes let the ILP tie-break arbitrarily).
-* **SimPy** (``docs/frameworks/01_simpy``) replays the cycle as a real discrete-event simulation: each truck
-  is a process that requests a shared ``simpy.Resource`` (the loaders), loads, hauls up the planned route,
-  dumps, hauls back, and re-enters the queue — the *simulate* step. The closed finite-source queue makes
-  throughput saturate at the loader rate exactly as the machine-repair model predicts.
+* **The PLAN (offline, native).** **NetworkX** (``docs/frameworks/10_networkx``) builds a real directed road
+  graph over the shared graded ``GridNetwork`` terrain in ``_geo.py`` and finds the haul route with
+  ``nx.dijkstra_path``; **OR-Tools** CP-SAT (``docs/frameworks/08_ortools``) independently re-solves the SAME
+  shortest path as a min-cost single-unit-flow ILP and CERTIFIES the route cost. Both are native (no WASM
+  build), so the plan is built **offline** by ``_haul_plan.py`` and COMMITTED as small rendered data
+  (``s07_plans.py``: the two route polylines as node-id lists + the cost certificate + the analytic g*).
+* **The REPLAY (live).** **SimPy** (``docs/frameworks/01_simpy``) replays the cycle as a real discrete-event
+  simulation over the FIXED committed plan: each truck is a process that requests a shared ``simpy.Resource``
+  (the loaders), loads, hauls up the planned route, dumps, hauls back, and re-enters the queue. This is the
+  interactive half — the fleet sliders (trucks, loaders, load/dump times, breakdown rate, seed) mutate the
+  REPLAY over the fixed plan, never the plan itself. SimPy + NumPy are pure-Python wheels Pyodide loads, so
+  this scenario runs **LIVE** (``pure_python = True``); OR-Tools is never imported in the worker.
+
+The plan-vs-fleet split is itself the lesson: an optimal route PLAN is necessary but not sufficient — a
+fixed fleet realizes a degraded version of it, and only the grade slider (which re-selects among committed
+plans) flips the route, while the fleet sliders only change throughput/wait over the SAME route.
 
 Determinism: the route is a unique shortest path on a fixed graph (NetworkX) confirmed by a seeded CP-SAT
-solve (OR-Tools); the DES has no stochastic variates in this variant family, so the replay is a fully
-deterministic function of (params, seed) — the same input yields the same trace byte-for-byte. The emitted
-artifact is the existing routetrace format (routes/agents/barriers/legend/kpis/analytic); nothing in the
-trace schema or the frontend contract changes.
+solve (OR-Tools), both done offline; the DES has no stochastic variates in the deterministic variants, and
+the optional breakdown stream is drawn from a single seeded NumPy RNG, so a run is a fully deterministic
+function of (params, seed) — the same input yields the same trace byte-for-byte. The emitted artifact is the
+existing routetrace format (routes/agents/barriers/legend/kpis/analytic); nothing in the schema changes.
 """
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Callable
+from typing import Callable
 
 from ..core.routetrace import RouteTrace
+from ..core.rng import make_rng
 from ..core.scenario import ParamSpec, Scenario, Variant
 from ._geo import GridNetwork, timed_legs
-
-if TYPE_CHECKING:  # type-checking only: NetworkX is a heavy dep absent under Pyodide, imported lazily below
-    import networkx as nx
-
-# OR-Tools CP-SAT confirmation of the optimal route cost. Native code => precompute lane.
-CP_SCALE = 1000          # integer edge-cost scaling (mm) so CP-SAT stays exact on a real-valued cost
-CP_RANDOM_SEED = 42      # fixed solver seed => reproducible search (machine-independent)
-CP_TIME_LIMIT_S = 10.0   # deterministic stop guard; the ILP solves to OPTIMAL well inside this
-CP_COST_TOL = 0.01       # NetworkX vs CP-SAT optimum agreement tolerance (>= 1/CP_SCALE quantization)
+from .s07_plans import PLANS
 
 
-def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.DiGraph:
-    """A real NetworkX directed road graph over the shared GridNetwork terrain.
+def _plan_key(grid: int, grade: float, pass_col: int, lift_col: int, barrier: int) -> str:
+    """Stable key for a committed geometry plan (must match ``_haul_plan.plan_key``)."""
+    return f"g{int(grid)}_grade{float(grade):.1f}_pass{int(pass_col)}_lift{int(lift_col)}_bar{int(barrier)}"
 
-    One directed arc per (undirected) road segment in each direction; the weight is the supplied edge cost
-    (plain distance for an empty return, grade-penalised distance for a loaded climb). Nodes/edges mirror
-    ``_geo`` exactly, so ``nx.dijkstra_path`` reproduces the lab's graded shortest path byte-for-byte.
+
+def _network_for(grid: int, pass_col: int, lift_col: int, barrier: int) -> tuple[GridNetwork, int, int, set[int]]:
+    """Rebuild the shared graded ridge network for a geometry (pure-Python: GridNetwork + numpy, no native).
+
+    This reconstructs the SAME nodes/edges/elevation/blocked cells the offline plan builder saw, so the live
+    render geometry matches the plan's route polylines exactly. ``_geo`` is untouched.
     """
-    import networkx as nx  # lazy: only needed to RUN (not to import the registry under Pyodide)
-
-    g = nx.DiGraph()
-    g.add_nodes_from(net.coords)
-    for a, b in net.edges:
-        g.add_edge(a, b, weight=cost(a, b))
-        g.add_edge(b, a, weight=cost(b, a))
-    return g
-
-
-def nx_route(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst: int) -> list[int]:
-    """The cheapest haul route src->dst on the graded road graph (NetworkX Dijkstra)."""
-    import networkx as nx  # lazy: only needed to RUN (not to import the registry under Pyodide)
-
-    g = build_road_graph(net, cost)
-    return nx.dijkstra_path(g, src, dst, weight="weight")
-
-
-def ortools_route_cost(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst: int) -> float:
-    """Confirm the optimal route COST with OR-Tools CP-SAT (a min-cost single-unit flow).
-
-    Decision : x[a,b] in {0,1} selects each directed arc. Constraint: unit flow conservation — out-in is
-    +1 at the source, -1 at the destination, 0 elsewhere, so the selected arcs form a single src->dst path.
-    Objective: minimise the (integer-scaled) total route cost. Single worker + fixed ``random_seed`` make
-    the optimum reproducible; equal-cost routes let CP-SAT tie-break the *path* arbitrarily, so the path
-    geometry comes from NetworkX (byte-stable) while CP-SAT certifies the cost the optimizer committed to.
-    """
-    from ortools.sat.python import cp_model  # lazy: native, precompute-only
-
-    arcs: list[tuple[int, int]] = []
-    for a, b in net.edges:
-        arcs.append((a, b))
-        arcs.append((b, a))
-
-    model = cp_model.CpModel()
-    x = {arc: model.new_bool_var(f"x_{arc[0]}_{arc[1]}") for arc in arcs}
-    out_arcs: dict[int, list[tuple[int, int]]] = {n: [] for n in net.coords}
-    in_arcs: dict[int, list[tuple[int, int]]] = {n: [] for n in net.coords}
-    for arc in arcs:
-        out_arcs[arc[0]].append(arc)
-        in_arcs[arc[1]].append(arc)
-    for n in net.coords:
-        rhs = 1 if n == src else (-1 if n == dst else 0)
-        model.add(sum(x[a] for a in out_arcs[n]) - sum(x[a] for a in in_arcs[n]) == rhs)
-    model.minimize(sum(int(round(cost(a, b) * CP_SCALE)) * x[(a, b)] for (a, b) in arcs))
-
-    solver = cp_model.CpSolver()
-    solver.parameters.num_search_workers = 1        # single worker => reproducible
-    solver.parameters.random_seed = CP_RANDOM_SEED
-    solver.parameters.max_time_in_seconds = CP_TIME_LIMIT_S
-    solver.solve(model)
-    return solver.objective_value / CP_SCALE
+    g = int(grid)
+    ridge_row = (g - 1) / 2.0
+    rr = int(round(ridge_row))
+    blocked = {rr * g + lift_col, (rr + 1) * g + lift_col} if barrier else set()
+    net = GridNetwork(g, g, spacing=1.0, terrain="ridge",
+                      terrain_opts={"passes": [pass_col], "ridge_row": ridge_row}, blocked=blocked)
+    load_node = 0 * g + lift_col
+    dump_node = (g - 1) * g + lift_col
+    return net, load_node, dump_node, blocked
 
 
 class HaulScenario(Scenario):
@@ -116,24 +74,29 @@ class HaulScenario(Scenario):
     method = "hybrid"
     tier = 3
     viz = "route"
-    engine = "ortools"          # OR-Tools certifies the route; NetworkX geometry + SimPy DES replay
-    pure_python = False         # CP-SAT is native code -> precompute lane (matches the docs)
-    wheels = []                 # native solver: no live wheel closure
+    engine = "simpy"            # LIVE SimPy DES replays the committed NetworkX+OR-Tools plan
+    pure_python = True          # the replay is pure-Python (SimPy + NumPy); the native PLAN is precomputed
+    wheels = ["numpy", "simpy"]  # the live worker's closure (the native plan ships as committed data)
     param_specs = [
-        ParamSpec("grid", "Grid size", 12, 10, 14, 1, kind="int"),
+        ParamSpec("grid", "Grid size", 12, 12, 12, 1, kind="int"),
         ParamSpec("n_trucks", "Trucks", 5, 1, 14, 1, kind="int"),
         ParamSpec("n_loaders", "Loaders", 1, 1, 4, 1, kind="int"),
         ParamSpec("grade", "Grade penalty", 3.0, 0.0, 8.0, 0.5),
-        ParamSpec("pass_col", "Pass column", 2, 1, 10, 1, kind="int"),
-        ParamSpec("lift_col", "Load/dump column", 4, 1, 10, 1, kind="int"),
+        ParamSpec("pass_col", "Pass column", 2, 2, 2, 1, kind="int"),
+        ParamSpec("lift_col", "Load/dump column", 4, 4, 4, 1, kind="int"),
         ParamSpec("barrier", "Wall on direct line", 0, 0, 1, 1, kind="int"),
+        ParamSpec("load_time", "Load time", 4.0, 1.0, 8.0, 0.5),
+        ParamSpec("dump_time", "Dump time", 1.0, 0.5, 4.0, 0.5),
+        ParamSpec("breakdown", "Breakdown rate", 0.0, 0.0, 0.5, 0.05),
         ParamSpec("horizon", "Shift length", 60.0, 20.0, 200.0, 5.0),
     ]
 
     def variants(self) -> list[Variant]:
         def v(vid, le, ls, *, nt=5, nl=1, grade=3.0, pc=2, lc=4, bar=0, ne="", ns=""):
             return Variant(vid, le, ls, {"grid": 12, "n_trucks": nt, "n_loaders": nl, "grade": grade,
-                                         "pass_col": pc, "lift_col": lc, "barrier": bar, "horizon": 60.0}, ne, ns)
+                                         "pass_col": pc, "lift_col": lc, "barrier": bar,
+                                         "load_time": 4.0, "dump_time": 1.0, "breakdown": 0.0,
+                                         "horizon": 60.0}, ne, ns)
 
         return [
             # (A) route trade-off — sweep the grade across the switch, move the pass, drop a wall
@@ -167,38 +130,42 @@ class HaulScenario(Scenario):
               ne="Flat haul: fast cycles, the route is trivially direct.", ns="Acarreo plano: ciclos rápidos, la ruta es trivialmente directa."),
         ]
 
+    def _load_plan(self, grid: int, grade: float, pass_col: int, lift_col: int, barrier: int) -> dict:
+        """Fetch the COMMITTED plan for this geometry (built offline by NetworkX+OR-Tools).
+
+        Live mode tunes the fleet over a FIXED plan, so the geometry must match a committed one. The grade
+        slider re-selects among committed plans (the route flips live); other geometry knobs are pinned to
+        the committed defaults by their param_specs. An off-grid geometry has no committed plan, which is a
+        native-plan miss (it would need OR-Tools/NetworkX, absent in the worker) — reported honestly.
+        """
+        key = _plan_key(grid, grade, pass_col, lift_col, barrier)
+        plan = PLANS.get(key)
+        if plan is None:  # pragma: no cover - guarded by pinned geometry param_specs
+            raise RuntimeError(
+                f"s07_haul: no committed plan for geometry '{key}'. The OR-Tools/NetworkX route plan is "
+                f"native (no WASM build); regenerate plans offline with `python -m simlab.scenarios._haul_plan`."
+            )
+        return plan
+
     def run(self, params: dict, seed: int) -> RouteTrace:
         p = self.coerce(params)
         g, nt, nl = int(p["grid"]), int(p["n_trucks"]), int(p["n_loaders"])
         grade, horizon = float(p["grade"]), float(p["horizon"])
         pass_col, lift_col, barrier = int(p["pass_col"]), int(p["lift_col"]), int(p["barrier"])
-        ridge_row = (g - 1) / 2.0
+        load_time, dump_time = float(p["load_time"]), float(p["dump_time"])
+        breakdown = float(p["breakdown"])
 
-        # A barrier (numeric flag) walls the direct climb: block the two ridge-row cells in the lift column,
-        # forcing a detour independent of grade. Deterministic from g/lift_col/ridge_row.
-        rr = int(round(ridge_row))
-        blocked = {rr * g + lift_col, (rr + 1) * g + lift_col} if barrier else set()
+        # ── PLAN (committed, native NetworkX+OR-Tools) ──
+        plan = self._load_plan(g, grade, pass_col, lift_col, barrier)
+        up_path: list[int] = list(plan["up_path"])
+        down_path: list[int] = list(plan["down_path"])
 
-        net = GridNetwork(g, g, spacing=1.0, terrain="ridge",
-                          terrain_opts={"passes": [pass_col], "ridge_row": ridge_row}, blocked=blocked)
-        load_node = 0 * g + lift_col          # bottom edge, lift column
-        dump_node = (g - 1) * g + lift_col    # top edge, lift column
+        # ── render geometry rebuilt live from the SAME GridNetwork (pure-Python; matches the plan) ──
+        net, load_node, dump_node, blocked = _network_for(g, pass_col, lift_col, barrier)
         speed = 1.0
-        load_time, dump_time = 4.0, 1.0       # a load takes minutes; the single loader is the binding constraint
 
         def loaded_cost(a: int, b: int) -> float:
             return net.dist(a, b) * (1.0 + grade * max(0.0, net.elev[b] - net.elev[a]))
-
-        # ── OPTIMIZE: the haul route (NetworkX geometry, OR-Tools CP-SAT cost certificate) ──
-        up_path = nx_route(net, loaded_cost, load_node, dump_node)        # loaded climb (graded)
-        down_path = nx_route(net, net.dist, dump_node, load_node)          # empty return (plain distance)
-        if up_path[0] != load_node or up_path[-1] != dump_node:
-            raise RuntimeError("haul: dump unreachable from load (barrier disconnected the graph)")
-        # CP-SAT certifies the optimum the planner commits to (stable across runs; geometry from NetworkX).
-        up_cost_nx = sum(loaded_cost(a, b) for a, b in zip(up_path, up_path[1:]))
-        up_cost_or = ortools_route_cost(net, loaded_cost, load_node, dump_node)
-        if abs(up_cost_or - up_cost_nx) > CP_COST_TOL:
-            raise RuntimeError(f"haul: OR-Tools route cost {up_cost_or:.4f} disagrees with NetworkX {up_cost_nx:.4f}")
 
         tr = RouteTrace(self.id, self.title, self.method, int(seed), p, bounds=net.bounds())
         tr.nodes = net.nodes_list(kinds={load_node: "load", dump_node: "dump"})
@@ -211,30 +178,15 @@ class HaulScenario(Scenario):
             {"code": "dump", "label_en": "dump", "label_es": "botadero", "color": "var(--color-warn)"},
         ]
 
-        # ── SIMULATE: the closed finite-source haul cycle as a real SimPy DES ──
+        # ── REPLAY: the closed finite-source haul cycle as a real SimPy DES over the fixed plan ──
         agents, loads, busy_time, wait_time = self._simulate(
-            net, nt, nl, horizon, up_path, down_path, loaded_cost, load_time, dump_time, speed)
+            net, nt, nl, horizon, up_path, down_path, loaded_cost, load_time, dump_time, speed,
+            breakdown, int(seed))
 
-        # analytic: where the route switches direct↔pass, and which way THIS variant routed
-        def path_LC(path: list[int]) -> tuple[float, float]:
-            length = sum(net.dist(a, b) for a, b in zip(path, path[1:]))
-            climb = sum(max(0.0, net.elev[b] - net.elev[a]) for a, b in zip(path, path[1:]))
-            return length, climb
-
-        direct = nx_route(net, net.dist, load_node, dump_node)            # grade 0 reference
-        detour = nx_route(net, lambda a, b: net.dist(a, b) * (1.0 + 50.0 * max(0.0, net.elev[b] - net.elev[a])),
-                          load_node, dump_node)
-        l_dir, c_dir = path_LC(direct)
-        l_det, c_det = path_LC(detour)
-        switch = (l_det - l_dir) / (c_dir - c_det) if (c_dir - c_det) > 1e-6 else None
-        # When a barrier is active, the "direct" reference path is itself forced onto a detour by the
-        # blocked cells, so it no longer represents the true crest geometry and the closed-form g*
-        # reference is ill-defined. The route flip is still correct; only the g* number is wrong, so
-        # report it as undefined (None) for barrier variants. Non-barrier g* is unaffected.
-        if barrier:
-            switch = None
-        cross = min(up_path, key=lambda n: abs(net.coords[n][1] - ridge_row))
-        via_col = int(round(net.coords[cross][0]))
+        # analytic comes straight from the committed plan (computed offline by the native builder)
+        plan_analytic = dict(plan["analytic"])
+        switch = plan_analytic["switch_grade_est"]
+        via_col = int(plan_analytic["cross_col"])
         detoured = abs(via_col - lift_col) > 0.5
 
         tr.t_end = horizon
@@ -246,12 +198,12 @@ class HaulScenario(Scenario):
             "throughput_per_hr": round(loads / horizon * 60, 2),
             "mean_cycle_time": round(cycle, 2),
             "loader_wait_per_load": round(wait_time / loads, 2) if loads else 0.0,
-            "switch_grade_est": round(switch, 2) if switch is not None else None,
+            "switch_grade_est": switch,
             "n_trucks": nt,
             "n_loaders": nl,
         }
         tr.analytic = {
-            "switch_grade_est": round(switch, 2) if switch is not None else None,
+            "switch_grade_est": switch,
             "route_via": (f"pass at col {via_col}" if detoured else "direct over crest"),
             "cross_col": via_col,
             "lift_col": lift_col,
@@ -261,18 +213,29 @@ class HaulScenario(Scenario):
     @staticmethod
     def _simulate(net: GridNetwork, nt: int, nl: int, horizon: float, up_path: list[int],
                   down_path: list[int], loaded_cost: Callable[[int, int], float],
-                  load_time: float, dump_time: float, speed: float):
-        """SimPy discrete-event replay of the closed finite-source haul cycle.
+                  load_time: float, dump_time: float, speed: float,
+                  breakdown: float, seed: int):
+        """SimPy discrete-event replay of the closed finite-source haul cycle over the FIXED plan.
 
         Each truck is a SimPy process competing for a shared ``Resource`` of ``nl`` loaders. A truck joins
         the loader queue, holds a loader for ``load_time``, hauls up the planned (loaded) route, dumps,
         hauls back the (empty) route, and re-enters the queue — until starting a load would run past the
         shift ``horizon``. The shared loader is the binding resource: with one loader, adding trucks only
         lengthens the queue, so throughput saturates at the loader rate (the machine-repair / M/M/1//N
-        result). Fully deterministic from the fixed plan + the staggered start; the route trace's per-truck
-        legs and the throughput/cycle/wait KPIs are a pure function of (params, seed).
+        result). When ``breakdown`` > 0 each loaded haul suffers an independent delay with that probability
+        (a fixed-magnitude stoppage), drawn from a single seeded NumPy RNG so the replay stays a pure
+        function of (params, seed); at ``breakdown = 0`` the run is byte-identical to the deterministic plan.
+        The route trace's per-truck legs and the throughput/cycle/wait KPIs are the simulated output.
         """
         import simpy
+
+        rng = make_rng(seed)
+        # All stochastic delays are drawn UP FRONT into a fixed per-truck stream, so determinism is
+        # independent of the SimPy scheduler's interleaving (same seed -> same delays -> same trace).
+        DELAY_MAG = 6.0            # a breakdown adds this many minutes to a loaded haul (fixed magnitude)
+        MAX_CYCLES = 200           # plenty of headroom for the longest shift; bounds the up-front draw
+        delays = [[(DELAY_MAG if (breakdown > 0.0 and rng.random() < breakdown) else 0.0)
+                   for _ in range(MAX_CYCLES)] for _ in range(nt)]
 
         env = simpy.Environment()
         loaders = simpy.Resource(env, capacity=nl)
@@ -281,6 +244,7 @@ class HaulScenario(Scenario):
 
         def truck(k: int):
             yield env.timeout(0.02 * k)  # slight stagger so the fleet doesn't hit the loader in lockstep
+            cyc = 0
             while True:
                 t_arr = env.now
                 with loaders.request() as req:
@@ -292,9 +256,12 @@ class HaulScenario(Scenario):
                     yield env.timeout(load_time)       # HOLD the loader for the load
                     load_end = env.now
                     stats["loads"] += 1
-                # loaded haul up the planned route, dump, then empty haul back
+                # loaded haul up the planned route, optional breakdown delay, dump, then empty haul back
                 up_legs, t_dump = timed_legs(net, up_path, load_end, speed, cost=loaded_cost)
                 yield env.timeout(t_dump - load_end)
+                delay = delays[k][cyc] if cyc < MAX_CYCLES else 0.0
+                if delay:
+                    yield env.timeout(delay)
                 yield env.timeout(dump_time)
                 t_dump_end = env.now
                 down_legs, t_back = timed_legs(net, down_path, t_dump_end, speed)
@@ -302,6 +269,7 @@ class HaulScenario(Scenario):
                 agents[k]["legs"].extend(up_legs)
                 agents[k]["legs"].extend(down_legs)
                 stats["busy"] += t_back - start_load
+                cyc += 1
                 if env.now >= horizon:
                     break
 

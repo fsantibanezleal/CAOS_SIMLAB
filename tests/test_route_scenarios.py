@@ -84,6 +84,51 @@ def test_haul_pipeline_manifest(tmp_path):
     assert res["variants"] >= 10
     m = json.loads((tmp_path / "manifests" / "s07_haul.json").read_text(encoding="utf-8"))
     assert m["viz"]["renderer"] == "route"
+    # S07 is LIVE now: the native OR-Tools/NetworkX route PLAN is committed offline and only the SimPy
+    # stochastic replay runs in the worker (pure-Python wheels).
+    assert m["lane"] == "live" and m["wheel_closure"] == ["numpy", "simpy"]
+
+
+def test_haul_committed_plan_reproduces_natively():
+    """The committed plans (s07_plans.py) must equal a fresh native NetworkX+OR-Tools rebuild — not stale."""
+    pytest.importorskip("ortools")
+    pytest.importorskip("networkx")
+    from simlab.scenarios import _haul_plan
+    from simlab.scenarios.s07_plans import PLANS
+
+    fresh = _haul_plan.build_all_plans()
+    assert set(fresh) == set(PLANS)
+    for key, plan in fresh.items():
+        committed = PLANS[key]
+        # route geometry + cost certificate + analytic must match the committed data byte-for-byte
+        assert plan["up_path"] == committed["up_path"], key
+        assert plan["down_path"] == committed["down_path"], key
+        assert plan["up_cost"] == committed["up_cost"], key
+        assert plan["analytic"] == committed["analytic"], key
+
+
+def test_haul_runs_live_without_ortools():
+    """The live SimPy replay must run with the native solver libs blocked (Pyodide has no WASM OR-Tools)."""
+    import sys
+
+    poison = ("ortools", "ortools.sat", "ortools.sat.python", "ortools.sat.python.cp_model", "networkx")
+    builder = "simlab.scenarios._haul_plan"  # may already be imported by an earlier test
+    saved = {m: sys.modules.get(m) for m in (*poison, builder)}
+    try:
+        for m in poison:
+            sys.modules[m] = None        # poison: any attempt to import these now fails
+        sys.modules.pop(builder, None)   # drop so we can prove the live path doesn't re-import it
+        from simlab.live import run_trace_json
+        out = run_trace_json("s07_haul", {}, 42)
+        assert '"scenario":"s07_haul"' in out
+        # the native plan builder module must NOT have been pulled in by the live path
+        assert builder not in sys.modules
+    finally:
+        for m, mod in saved.items():
+            if mod is None:
+                sys.modules.pop(m, None)
+            else:
+                sys.modules[m] = mod
 
 
 def test_ambulance_coverage_and_reproducible():

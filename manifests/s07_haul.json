@@ -4,20 +4,23 @@
   "title": "Construction Haul Routing",
   "method": "hybrid",
   "tier": 3,
-  "engine": "ortools",
+  "engine": "simpy",
   "seed": 42,
   "viz": {
     "renderer": "route",
     "dimensionality": "2d"
   },
-  "wheel_closure": [],
+  "wheel_closure": [
+    "numpy",
+    "simpy"
+  ],
   "param_specs": [
     {
       "key": "grid",
       "label": "Grid size",
       "default": 12,
-      "min": 10,
-      "max": 14,
+      "min": 12,
+      "max": 12,
       "step": 1,
       "kind": "int"
     },
@@ -52,8 +55,8 @@
       "key": "pass_col",
       "label": "Pass column",
       "default": 2,
-      "min": 1,
-      "max": 10,
+      "min": 2,
+      "max": 2,
       "step": 1,
       "kind": "int"
     },
@@ -61,8 +64,8 @@
       "key": "lift_col",
       "label": "Load/dump column",
       "default": 4,
-      "min": 1,
-      "max": 10,
+      "min": 4,
+      "max": 4,
       "step": 1,
       "kind": "int"
     },
@@ -76,6 +79,33 @@
       "kind": "int"
     },
     {
+      "key": "load_time",
+      "label": "Load time",
+      "default": 4.0,
+      "min": 1.0,
+      "max": 8.0,
+      "step": 0.5,
+      "kind": "float"
+    },
+    {
+      "key": "dump_time",
+      "label": "Dump time",
+      "default": 1.0,
+      "min": 0.5,
+      "max": 4.0,
+      "step": 0.5,
+      "kind": "float"
+    },
+    {
+      "key": "breakdown",
+      "label": "Breakdown rate",
+      "default": 0.0,
+      "min": 0.0,
+      "max": 0.5,
+      "step": 0.05,
+      "kind": "float"
+    },
+    {
       "key": "horizon",
       "label": "Shift length",
       "default": 60.0,
@@ -85,7 +115,7 @@
       "kind": "float"
     }
   ],
-  "lane": "precomputed",
+  "lane": "live",
   "gate_thresholds": {
     "max_run_ms": 3000.0,
     "max_trace_bytes": 1000000
@@ -105,16 +135,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 54.3,
-        "trace_bytes": 20571,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 9.0,
+        "trace_bytes": 20619,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 10,
@@ -147,16 +178,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 46.5,
-        "trace_bytes": 20541,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.6,
+        "trace_bytes": 20589,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 10,
@@ -189,16 +221,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 55.3,
-        "trace_bytes": 22085,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.6,
+        "trace_bytes": 22133,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 10,
@@ -231,16 +264,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 47.2,
-        "trace_bytes": 22085,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.6,
+        "trace_bytes": 22133,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 10,
@@ -273,16 +307,17 @@
         "pass_col": 9,
         "lift_col": 7,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 49.6,
-        "trace_bytes": 22002,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.6,
+        "trace_bytes": 22050,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 10,
@@ -315,16 +350,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 1,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 40.2,
-        "trace_bytes": 21828,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.6,
+        "trace_bytes": 21876,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 10,
@@ -357,16 +393,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 47.1,
-        "trace_bytes": 15028,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.4,
+        "trace_bytes": 15076,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 4,
@@ -399,16 +436,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 46.0,
-        "trace_bytes": 22378,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.6,
+        "trace_bytes": 22426,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 12,
@@ -441,16 +479,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 46.8,
-        "trace_bytes": 25467,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.7,
+        "trace_bytes": 25515,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 15,
@@ -483,16 +522,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 47.3,
-        "trace_bytes": 33398,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.9,
+        "trace_bytes": 33446,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 24,
@@ -525,16 +565,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 47.6,
-        "trace_bytes": 33388,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 1.0,
+        "trace_bytes": 33436,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 24,
@@ -567,16 +608,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 47.8,
-        "trace_bytes": 24230,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.6,
+        "trace_bytes": 24278,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 12,
@@ -609,16 +651,17 @@
         "pass_col": 2,
         "lift_col": 4,
         "barrier": 0,
+        "load_time": 4.0,
+        "dump_time": 1.0,
+        "breakdown": 0.0,
         "horizon": 60.0
       },
-      "lane": "precomputed",
+      "lane": "live",
       "gate": {
-        "pure_python": false,
-        "run_ms": 36.7,
-        "trace_bytes": 22183,
-        "reasons": [
-          "not pure-Python (cannot run in Pyodide/WASM)"
-        ]
+        "pure_python": true,
+        "run_ms": 0.6,
+        "trace_bytes": 22231,
+        "reasons": []
       },
       "kpis": {
         "loads_delivered": 13,
