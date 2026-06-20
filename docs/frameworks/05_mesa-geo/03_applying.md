@@ -57,8 +57,8 @@ engine for thousands of agents, not the million-agent one.
 
 | Scenario | Method | Mesa-Geo's role |
 |---|---|---|
-| **S07** — construction haul routing (geo variant) | OR-Tools + SimPy + OSMnx/NetworkX | Geospatial ABM layer: trucks as `GeoAgent`s moving over a real road/terrain map; renders the load-haul-dump cycle in true coordinates |
-| **S09** — ambulance dispatch & coverage (geo variant) | OR-Tools + SimPy + graph | Geospatial ABM layer: ambulances and incidents as `GeoAgent`s on the city map; visualizes response-time vs. station-siting trade-offs spatially |
+| **S07** — construction haul routing (geo variant) | OR-Tools CP-SAT (route-cost certificate) + NetworkX + a deterministic SimPy DES | Geospatial ABM layer: trucks as `GeoAgent`s moving over a real road/terrain map; renders the load-haul-dump cycle in true coordinates |
+| **S09** — ambulance dispatch & coverage (geo variant) | SimPy + NetworkX (no OR-Tools) | Geospatial ABM layer: ambulances and incidents as `GeoAgent`s on the city map; visualizes response-time vs. station-siting trade-offs spatially |
 
 In both, Mesa-Geo is the **geospatial-ABM presentation/agent layer**, not the
 optimizer or the queueing core. The scenario→tool map (see

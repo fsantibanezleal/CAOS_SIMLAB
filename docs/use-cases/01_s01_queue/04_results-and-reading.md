@@ -92,10 +92,16 @@ Three numbers are meant to be read **together**: `Wq_sim` (SimPy), `Wq` (Erlang-
 
 ## 4. Lane & performance (committed run)
 
-S01 ships **live** (`seed = 42`). Measured per-variant run times range from ≈ **2.6 ms** (`unstable`,
-which short-circuits via the no-steady-state branch) to ≈ **1296 ms** (`c10`, the ten-server pool), all
-inside the 3 s live gate; each trace is ≈ **35 KB**, far inside the 1 MB gate. The viz runs live in a
-Pyodide Web Worker — see [03 · Solvers applied §4](./03_solvers-applied.md#4-live-vs-precompute-lane-this-scenario).
+S01 ships **live** (`seed = 42`). Measured per-variant run times range from ≈ **2.7 ms** (`unstable`) to
+≈ **1032 ms** (`c10`, the ten-server pool), all inside the 3 s live gate; each trace is ≈ **35 KB**, far
+inside the 1 MB gate. Note that most of every *stable* variant's run time is the **Ciw cross-check** (10
+seeded M/M/c replications), not the SimPy animation: the SimPy run itself is cheap (~a few ms for 300
+customers). The `unstable` variant is fast for exactly that reason — it does **not** short-circuit the
+SimPy simulation (all 300 customers are still simulated, which is why it reports a finite
+`Wq_sim = 11.86`); what it skips is the *analytic* leg, because with no finite steady-state `Wq` there is
+nothing for Ciw to converge to, so `ciw_validate_mmc` returns `applicable: false` and the 10 Ciw
+replications never run. The viz runs live in a Pyodide Web Worker — see
+[03 · Solvers applied §4](./03_solvers-applied.md#4-live-vs-precompute-lane-this-scenario).
 
 ---
 

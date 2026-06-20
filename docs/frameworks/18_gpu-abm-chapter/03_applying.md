@@ -39,7 +39,7 @@ object stepped in a Python loop. The heavy engines exist for exactly the regime 
 
 | Population size | Right tool | Lane |
 |---|---|---|
-| 10³–10⁵ agents | **Mesa** (headless → trace → replay) | precompute (ships) |
+| 10³–10⁵ agents | **Mesa** (live in Pyodide + committed canonical replay) | live (ships) |
 | 10⁵–10⁸ agents, homogeneous, CPU-bound | **AMBER** (Polars columnar) | reference |
 | 10⁵–10⁸ agents, vectorizable, want CPU→GPU portability / gradients | **ABMax** (JAX `vmap`) | reference |
 | 10⁶–10⁸ agents, message-passing, single big GPU | **FLAME GPU 2** (CUDA) | reference |
@@ -85,15 +85,15 @@ The scenario→tool map assigns every one of S01–S11 to engines that **install
 
 | Scenario | Assigned engine(s) | Heavy-ABM? |
 |---|---|---|
-| S01 | SimPy + Ciw | no |
-| S02 / S03 / S05 | **Mesa** (≤10⁵ agents) | no — within Mesa's comfort zone |
+| S01 | SimPy (live engine) + Ciw (cross-check) | no |
+| S02 / S03 / S05 | **Mesa** (≤10⁵ agents), live in Pyodide | no — within Mesa's comfort zone |
 | S04 | SimPy | no |
 | S06 | OR-Tools CP-SAT | no |
-| S07 | OR-Tools + SimPy + OSMnx/NetworkX | no |
-| S08 | OR-Tools + PyVRP + SimPy | no |
-| S09 | OR-Tools + SimPy + graph | no |
+| S07 | OR-Tools CP-SAT + NetworkX + deterministic SimPy | no |
+| S08 | OR-Tools Routing + PyVRP (no SimPy) | no |
+| S09 | SimPy + NetworkX (no OR-Tools) | no |
 | S10 | joblib + CuPy/Numba + SciPy | no — *replications*, not one big population |
-| S11 | OR-Tools GLOP + SimPy | no |
+| S11 | OR-Tools GLOP + deterministic SimPy | no |
 
 The ABM scenarios (**S02 Schelling, S03 SIR, S05 Beer Game**) are the only ones that *could* in principle
 scale to millions of agents — but didactically they do not need to. Schelling segregates on a ~50×50 grid;

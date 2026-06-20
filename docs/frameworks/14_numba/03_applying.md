@@ -67,9 +67,9 @@ S10 is the only scenario that uses Numba (source:
 Every other scenario maps to a different dedicated tool — that mapping is the whole didactic
 point of the lab:
 
-- S01 → SimPy + Ciw · S02/S03/S05 → Mesa · S04 → SimPy · S06 → OR-Tools CP-SAT
-- S07 → OR-Tools + SimPy + OSMnx/NetworkX · S08 → OR-Tools + PyVRP + SimPy
-- S09 → OR-Tools + SimPy + graph · **S10 → joblib + CuPy/Numba + SciPy** · S11 → OR-Tools GLOP + SimPy
+- S01 → SimPy (live engine) + Ciw (cross-check) · S02/S03/S05 → Mesa (live) · S04 → SimPy · S06 → OR-Tools CP-SAT
+- S07 → OR-Tools CP-SAT + NetworkX + SimPy (deterministic) · S08 → OR-Tools Routing + PyVRP (no SimPy)
+- S09 → SimPy + NetworkX (no OR-Tools) · **S10 → joblib + CuPy/Numba + SciPy** · S11 → OR-Tools GLOP + SimPy (deterministic)
 
 Note S10's *default* replication driver is **[joblib](../12_joblib.md)** (CPU-parallel
 across cores). Numba + [CuPy](../15_cupy.md) are the **optional GPU appendix** layered on

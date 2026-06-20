@@ -11,12 +11,12 @@ $py = ".\.venv\Scripts\python.exe"
 & $py -m pip install --upgrade pip
 # Core (live/Pyodide engine) + dev tooling + the dedicated precompute engines (Mesa, OR-Tools, Ciw,
 # PyVRP, NetworkX/OSMnx, joblib/SciPy, ...). The precompute engines are what the scenarios actually use
-# to generate the committed traces — see docs/guides/precompute-pipeline.md.
+# to generate the committed traces — see docs/guides/01_precompute-pipeline.md.
 & $py -m pip install -r requirements.txt -r requirements-dev.txt -r requirements-precompute.txt
 
 Write-Host ""
 Write-Host "Optional GPU lane (CuPy/Numba/Taichi/JAX) for the Monte-Carlo exhibit — only on a CUDA box:"
-Write-Host "  $py -m pip install -r requirements-gpu.txt   # see docs/guides/gpu-lane.md"
+Write-Host "  $py -m pip install -r requirements-gpu.txt   # see docs/guides/03_gpu-lane.md"
 Write-Host ""
 Write-Host "Ready. Next:"
 Write-Host "  $py -m pytest                       # run the tests"

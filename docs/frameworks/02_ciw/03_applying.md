@@ -35,12 +35,19 @@ For S01 the workflow is **simulate-then-validate** (a sibling of the broader
 
 1. **Derive the analytical truth** — compute the closed-form quantity (here Erlang-C
    `Wq`; cross-checked with Little's Law `Lq = λ·Wq`).
-2. **Simulate** the same system in Ciw across several **seeded replications**.
-3. **Estimate with a CI** — average post-warm-up `waiting_time`, build a confidence
-   interval, and check that theory lands inside it.
-4. **Publish the agreement** as the didactic artifact: a number + CI + a "PASS" the web
-   app can render. Because Ciw is in the **precompute** lane, this runs offline and the
-   live site serves the committed result.
+2. **Simulate** the same system across **seeded replications**. In the shipped S01 this is
+   the **Ciw in-run cross-check** (`ciw_xcheck`): 10 capped, warmed-up replications run
+   *inside* the live gate, alongside the SimPy animation run. (The standalone
+   [`example.py`](./example.py) in this folder is a richer 30-replication demo of the same
+   idea.)
+3. **Estimate with a CI** — average post-warm-up `waiting_time`, build a 95% confidence
+   interval, and check whether the analytic value lands inside it.
+4. **Record the agreement** as the didactic artifact. The S01 `ciw_xcheck` dict records
+   `theory_in_ci` (a boolean — does the Erlang-C value fall inside the CI?), `rel_err`,
+   `reps`, and the CI half-width — **not** a "PASS" string. Because S01's lane is `live`,
+   this cross-check runs **in the browser inside the live gate**, not as an offline
+   precompute artifact. (Heavier *standalone* Ciw network studies that exceed the live gate
+   would instead use the precompute lane and ship a committed result.)
 
 This pattern generalises. Once a learner *trusts* the simulator on a case with a known
 answer, they can extend the **same** model to regimes with **no** closed form (general
@@ -55,7 +62,7 @@ from **S01** (theory exists) to **S04** (theory ran out, now trust the CI).
 
 | Scenario | Use of Ciw |
 |---|---|
-| **S01 — Bank / Clinic Teller Queue** | **Analytic M/M/c validation.** Ciw runs the teller queue; the result is benchmarked against the closed-form Erlang-C `Wq` (see [`example.py`](./example.py)). This is the validation anchor for the queueing block. The live SimPy queue animation provides the *motion*; the Ciw-validated theory number provides the *rigour*. |
+| **S01 — Bank / Clinic Teller Queue** | **Analytic M/M/c cross-check.** SimPy runs the live, animated teller queue; Ciw is the in-run cross-check (`ciw_xcheck`, 10 capped warmed-up replications) whose mean wait is benchmarked against the closed-form Erlang-C `Wq` (see the richer 30-rep [`example.py`](./example.py)). This is the validation anchor for the queueing block. The live SimPy queue animation provides the *motion*; the Ciw `theory_in_ci` / `rel_err` numbers provide the *rigour*. Both run in the live lane. |
 
 S01 is also the lab's **landing simulator** — the first thing a visitor sees — so pairing
 a live animation with a theory-anchored number sets the honesty tone for the whole site.
@@ -102,8 +109,9 @@ The DES-frameworks research places Ciw very deliberately:
 - **Pick [SimPy](../01_simpy.md) instead when** you need **custom process logic** that does not
   fit the queue-network mould — multi-stage resource grabs with arbitrary control flow,
   hybrid DES+optimization, or anything you want to keep consistent across the rest of the
-  lab's live scenarios (S04 SimPy ED flow; the hybrids S07/S08/S09 pair SimPy with
-  [OR-Tools](../08_ortools.md)). SimPy's `yield`-based processes are more general; Ciw trades
+  lab's other scenarios (S04 SimPy ED flow; the hybrids S07/S11 pair a deterministic SimPy
+  DES with native [OR-Tools](../08_ortools.md); S09 is SimPy + NetworkX, no OR-Tools).
+  SimPy's `yield`-based processes are more general; Ciw trades
   that generality for queueing-specific power and conciseness. The research makes SimPy the
   **primary** engine and Ciw the **specialist**.
 

@@ -13,8 +13,10 @@ code — nothing here is invented.
 ## Model class
 
 **M/M/c** (Poisson arrivals, exponential service, `c` servers, FCFS), studied by
-**independent-replication Monte-Carlo**. The model is the same one as S01; S10 wraps it in an
-output-analysis study.
+**independent-replication Monte-Carlo**. It is the same M/M/c *model class* as S01, but a **different
+engine**: S10 uses a fast NumPy heap-based earliest-free-server estimator (`mmc_mean_wait`), not S01's
+SimPy `Resource` simulation — so a per-run `Wq` here is not byte-identical to an S01 run, only the same
+underlying queue. S10 wraps that estimator in an output-analysis study.
 
 ## Sets & indices
 

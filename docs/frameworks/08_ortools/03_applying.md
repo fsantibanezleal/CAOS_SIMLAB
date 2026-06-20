@@ -37,38 +37,43 @@ Per the scenario→tool map, OR-Tools is the optimization engine in five scenari
 | Scenario | Sub-solver | What it optimises | Module |
 |---|---|---|---|
 | **S06 — Job-Shop** | **CP-SAT** | Operation start times that minimise the makespan (disjunctive scheduling). | `simlab/scenarios/s06_jobshop.py` |
-| **S07 — Construction haul routing** | **Routing** (CP) | Truck routes / fleet assignment on a real road graph (paired with SimPy + OSMnx/NetworkX). | `simlab/scenarios/s07_haul.py` |
-| **S08 — Vehicle routing (VRP)** | **Routing** (CP) | CVRP/VRPTW plan; OR-Tools is the *teaching default*, [PyVRP](../09_pyvrp.md) the SOTA contrast (paired with SimPy). | `simlab/scenarios/s08_vrp.py` |
-| **S09 — Ambulance dispatch** | **Routing** (CP) | Base dispatch plan over a city graph, then DES replays stochastic calls (paired with SimPy + graph). | `simlab/scenarios/s09_ambulance.py` |
-| **S11 — Mine multi-destination haul** | **GLOP** (LP) | The plant-**blend** linear program: mix phase tonnages to hit a target grade subject to supply caps (paired with SimPy). | `simlab/scenarios/s11_minehaul.py` |
+| **S07 — Construction haul routing** | **CP-SAT** | A min-cost single-unit-flow ILP that **certifies the route cost** of the cheapest loaded haul (the route itself is found with NetworkX Dijkstra). Paired with a **deterministic** SimPy haul DES. *(No OSMnx; no Routing solver.)* | `simlab/scenarios/s07_haul.py` |
+| **S08 — Vehicle routing (VRP)** | **Routing** (`pywrapcp`) | CVRP plan; OR-Tools is the *teaching default*, [PyVRP](../09_pyvrp.md) the SOTA contrast. Deterministic head-to-head; **no SimPy**. | `simlab/scenarios/s08_vrp.py` |
+| **S11 — Mine multi-destination haul** | **GLOP** (LP) | The plant-**blend** linear program: mix phase tonnages to hit a target grade subject to supply caps. Paired with a **deterministic** SimPy fleet DES. | `simlab/scenarios/s11_minehaul.py` |
 
-CP-SAT and GLOP are demonstrated in [`example.py`](./example.py); the Routing solver in S07/S08/S09 is the
-same `pywrapcp` family.
+*Not OR-Tools:* **S09 — Ambulance dispatch** uses **SimPy + NetworkX** (nearest-available dispatch on
+shortest paths), not OR-Tools at all — see [NetworkX applying](../10_networkx/03_applying.md).
+
+CP-SAT and GLOP are demonstrated in [`example.py`](./example.py); the only scenario using the **Routing**
+(`pywrapcp`) family is **S08**.
 
 ## The core pattern: optimize-then-simulate
 
 The single most valuable lesson the research identifies is **"an optimum on paper is fragile under
-uncertainty."** The pattern that delivers it:
+uncertainty."** The *general* pattern that delivers it:
 
-1. **Optimize** a plan with OR-Tools on *deterministic* inputs — e.g. solve a VRP with fixed travel times
-   (S07/S08/S09), or solve the blend LP with nominal supplies (S11), or schedule the shop with fixed
-   durations (S06).
-2. **Simulate** that fixed plan under stochastic perturbations in a **SimPy DES** — inject travel-time noise,
-   loader/dump-queue delays, stochastic call arrivals — and watch the "optimal" plan slip: missed time
-   windows, queueing, idle resources, off-spec blend.
-3. **Show the gap.** Display the optimizer's *planned* cost/finish next to the *simulated distribution* of
-   actual outcomes. That gap is the whole point — it motivates simheuristics and robust optimization.
+1. **Optimize** a plan with OR-Tools on *deterministic* inputs — e.g. certify a haul-route cost
+   (S07, CP-SAT), or solve the blend LP with nominal supplies (S11, GLOP), or schedule the shop with fixed
+   durations (S06, CP-SAT), or build a CVRP plan (S08, Routing).
+2. **Simulate** that fixed plan in a **SimPy DES** and report the realised outcomes.
+3. **Show the gap** between the optimizer's *planned* cost/finish and the *simulated* outcome.
 
-This is why OR-Tools and SimPy are paired in S07/S08/S09/S11: the optimizer produces the plan, the simulator
-stress-tests it. (S06 is the pure-optimization anchor — a solver with no simulation, shown as a Gantt chart,
-so students see clearly what "just optimizing" produces before the paired scenarios complicate it.)
+> **Honest scope (what the shipped scenarios do).** The fully stochastic stress-test — injecting
+> travel-time noise / call-arrival randomness and watching *missed time windows* appear — is the
+> *aspirational* form of the pattern. The **shipped** SimPy legs (S07 and S11) are **deterministic**: fixed
+> service times, inert seed; the gap they expose is **queueing at a shared finite resource** (e.g. the single
+> loader), not random-variate slippage. There are **no time windows anywhere in the repo**. **S08 has no
+> SimPy leg** (it is a deterministic OR-Tools-vs-PyVRP head-to-head), and **S09 is not an OR-Tools scenario**
+> at all. So OR-Tools is paired with a SimPy DES in **S07 and S11 only**. (S06 is the pure-optimization
+> anchor — a solver with no simulation, shown as a Gantt chart — so students see what "just optimizing"
+> produces before the paired scenarios complicate it.)
 
 ## A second pattern: CP-SAT for scheduling, GLOP for continuous mixing
 
 OR-Tools covers two modelling styles the lab teaches side by side:
 
 - **Discrete / combinatorial** (CP-SAT, Routing): "which operation goes where, in what order" — integer and
-  interval variables, `no_overlap`, precedence. S06, S07–S09.
+  interval variables, `no_overlap`, precedence. S06 and S07 (CP-SAT); S08 (Routing).
 - **Continuous / linear** (GLOP): "how much of each source to use" — real variables, linear constraints,
   a linear objective. S11's blend is a small LP with deviation variables `d+`/`d-` minimised to land the
   grade on target.

@@ -69,10 +69,12 @@ The committed deterministic trace uses **seed 42**; each replication `r` then dr
 - **Bit-for-bit reproducible.** The seed plan `seed + r` is fixed and each replication builds its own RNG
   inside the worker (`np.random.default_rng(seed)`), so the parallel result equals the serial result on
   any worker count or finish order. `scipy.stats` is then a pure deterministic function of that sample.
-- **Live-capable.** The model is pure-Python and fully seeded, so it can run in the browser via Pyodide
-  (lane "live"); the committed seed-42 trace is also replayed for the deterministic gallery. (The lab's
-  Scenario → tool map lists S10 under *precompute* because the dedicated `joblib` + `scipy` engines and
-  the committed CI sweeps live in the offline precompute pipeline; the in-browser live path is the
-  pure-Python fallback that produces the same seeded numbers.)
+- **Live.** The model is pure-Python and fully seeded, and its wheel closure (`numpy`, `joblib`, `scipy`)
+  is in `LIVE_WHEELS`, so the manifest gate classifies S10 as `lane: "live"` — it runs in the browser via
+  Pyodide. The live path is **not** a hand-rolled NumPy fallback: it runs the same dedicated engines, real
+  `joblib.Parallel(backend="threading")` (the only joblib backend that works under WASM) over `scipy.stats`
+  for the CI math, both imported lazily inside `run()` so the registry import stays light. The committed
+  seed-42 trace is also replayed for the deterministic gallery (first paint while Pyodide warms up); because
+  the run is a pure function of `(params, seed)`, the live result is byte-equal to that committed trace.
 
 See [03 — Solvers applied](./03_solvers-applied.md) for how the two lanes use the dedicated tools.

@@ -86,10 +86,10 @@ So S02 can run **live in the browser** under Pyodide. It is also **precomputed o
 viewer can instantly **replay** the canonical run without any cold-start. Either way the contract holds:
 same `(params, seed)` → same trace.
 
-> Note on the Mesa node's generic framing: the Mesa framework node describes Mesa as a *precompute-lane*
-> engine in general (its SolaraViz server is unfit for a static SPA). That is the safe default for *heavy*
-> Mesa models. S02/S03/S05 are light enough that the **measured** gate classifies them `live`; the precompute
-> path is still used to commit the canonical replay. The per-scenario manifest is authoritative for the lane.
+> **Lane note.** S02 (like S03/S05) runs **live** on real Mesa 3 in Pyodide — the measured gate classifies it
+> `live` (`numpy`+`mesa` ⊆ `LIVE_WHEELS`); the precompute path only commits the canonical replay. The one part
+> of Mesa that can't be served on a static SPA is its **SolaraViz** server-bound visualization — not the
+> engine. Heavy Mesa models (≫10⁵ agents) would precompute, but these light grids run live.
 
 See the lane guides: [live lane (Pyodide)](../../guides/02_live-lane-pyodide.md) ·
 [precompute pipeline](../../guides/01_precompute-pipeline.md).

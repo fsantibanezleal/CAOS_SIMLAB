@@ -84,14 +84,15 @@ gate for the variants shows `run_ms` under 1 ms and `trace_bytes ≈ 2.5–2.7 K
 limits — and the scenario's wheel closure (`numpy`, `mesa`) is within `LIVE_WHEELS`. So the slider re-runs
 the **real** model in the browser via Pyodide; "live" is the slider responsiveness, not a different model.
 
-> **Reconciling with the Mesa framework node.** The Mesa landing page
-> ([../../frameworks/04_mesa.md](../../frameworks/04_mesa.md)) discusses Mesa generally as a
-> *precompute-lane* engine because its full closure (pandas+scipy+networkx, SolaraViz server) is heavy. The
-> authoritative per-scenario verdict, however, is the **manifest gate**, which is *measured*: the Beer
-> Game's tiny model (4 agents, ~52 weeks, numpy-only at runtime) clears the live bar, so S05's manifest
-> records `lane: "live"`. Either way the invariant holds — because a run is a pure function of
-> `(params, seed)`, a live Pyodide run is **byte-equal** to the committed `data/artifacts/...` trace; the
-> build verifies that equality, so live and precomputed render through one code path.
+> **Why S05 is live even though Mesa has a heavy closure.** Mesa 3 was *measured* to run in Pyodide, so
+> `mesa` is in `LIVE_WHEELS` (`simlab/core/scenario.py`) alongside `numpy`; what cannot be served live is
+> Mesa's **SolaraViz** server, not the model itself. The authoritative per-scenario verdict is the
+> **manifest gate**, which is measured: the Beer Game's tiny model (4 agents, ~52 weeks, numpy-only at
+> runtime) clears the live bar with huge margin, so S05's manifest records `lane: "live"`. The
+> [Mesa framework node](../../frameworks/04_mesa.md) carries the same framing. Either way the invariant
+> holds — because a run is a pure function of `(params, seed)`, a live Pyodide run is **byte-equal** to the
+> committed `data/artifacts/...` trace; the build verifies that equality, so live and precomputed render
+> through one code path.
 
 The first paint plays a tiny precomputed trace instantly while Pyodide warms in the background; once warm,
 slider edits run live. See the live-lane guide:

@@ -2,7 +2,7 @@
 # closure the browser (Pyodide) must load, so every dependency here costs cold-start time.
 numpy>=1.26
 simpy>=4.1
-# No Mesa: the ABM scenarios (S02 Schelling, S03 SIR) are hand-rolled on NumPy to keep the Pyodide
-# wheel closure minimal and the agent rules fully visible in-repo.
-# OR-Tools (CP-SAT, routing, GLOP) is a PRECOMPUTE-only dependency — it is native, so it never enters the
-# browser wheel closure. Install it in the local pipeline venv: see requirements-precompute.txt.
+# Kept minimal on purpose (every line is browser cold-start weight). Mesa/Ciw are NOT pinned here even though
+# the ABM scenarios DO run live on real Mesa 3: the worker loads mesa (+ pandas/scipy/networkx/sqlite3) and
+# ciw at runtime via loadPackage/micropip — they are pinned in requirements-precompute.txt (also used by the
+# local pipeline). OR-Tools is native (no WASM) so it is precompute-only; see requirements-precompute.txt.

@@ -42,17 +42,24 @@ maps onto them one-to-one:
 Solving is then one call: `Model.solve(stop=..., seed=...)`, and you read
 `result.best.routes()` back out (mind the depot-is-index-0 numbering).
 
-## The pattern in this lab: optimize-then-simulate, with a SOTA contrast
+## The pattern in this lab: a SOTA contrast (and where simheuristics fit)
 
-The lab's core didactic move for routing is **optimize-then-simulate** (a
-"simheuristic"): first optimise routes on *deterministic* travel times, then
-**replay the plan under stochastic delays in a SimPy DES** and watch the
-"optimal" plan degrade (missed windows, depot/loader queues, idle vehicles). The
-lesson is blunt and valuable: *an optimum on paper is fragile under uncertainty.*
-The full write-up lives in the problem-type guide:
+The lab's broader didactic move for routing is **optimize-then-simulate** (a
+"simheuristic"): optimise routes on *deterministic* travel times, then replay the
+plan in a SimPy DES. The full write-up lives in the problem-type guide:
 [Optimization & routing](../../problem-types/03_optimization-routing.md).
 
-Within that pattern PyVRP plays a specific role — the **state-of-the-art
+> **Honest scope for S08 (the PyVRP scenario).** S08 does **not** instantiate the
+> stochastic simulate leg: it has **no SimPy replay**, no injected delays, and no
+> time windows. S08 is a **deterministic two-solver head-to-head** — OR-Tools vs
+> PyVRP on the identical instance — rendered from a committed trace with a scrubber.
+> The lesson S08 actually teaches is the *quality gap between a general and a
+> specialised solver*, not "the optimum degrades under uncertainty" (that fragility
+> lesson is carried by the deterministic-but-saturating haul DES in S07/S11). So
+> read the simheuristic pattern above as the *general* technique, explicitly **not**
+> wired into S08.
+
+Within that catalog PyVRP plays a specific role — the **state-of-the-art
 contrast**:
 
 - **OR-Tools is the teaching default** for the optimisation step. One library
@@ -64,9 +71,11 @@ contrast**:
   *general-purpose* optimiser and a *competition-grade specialised* one — without
   changing the problem.
 
-So the flow is: build one instance → solve with OR-Tools (default) → solve with
-PyVRP → compare total distance / longest route → then feed the chosen plan into
-the SimPy replay.
+So the flow for S08 is: build one instance → solve with OR-Tools (default) → solve
+with PyVRP → compare total distance / longest route, rendered as both plans driving
+the network from a committed deterministic trace. (Feeding a chosen plan into a
+stochastic SimPy replay is the *general* simheuristic extension — it is not part of
+the shipped S08.)
 
 ## Which scenario uses it
 

@@ -2,7 +2,8 @@
 
 **Mesa** is the canonical Python framework for **Agent-Based Modeling (ABM)**: you write `Agent` and
 `Model` classes, place agents in a space (grid / network / cell-space), and run time forward. This lab
-teaches ABM *with Mesa's abstractions as the curriculum* and uses Mesa in the **offline precompute lane**
+teaches ABM *with Mesa's abstractions as the curriculum* and runs Mesa **live in the browser via Pyodide**
+for the ABM scenarios (S02/S03/S05), backed by a committed canonical-replay artifact for instant first paint
 (see [02_usage.md](./02_usage.md) and [03_applying.md](./03_applying.md)).
 
 ← Back to the framework landing page: [../04_mesa.md](../04_mesa.md)
@@ -15,7 +16,7 @@ teaches ABM *with Mesa's abstractions as the curriculum* and uses Mesa in the **
 | Installed version | **3.5.1** |
 | License | Apache-2.0 |
 | Problem type | Agent-Based Modeling (ABM) |
-| Requirements file | **`requirements-precompute.txt`** (precompute lane — *not* the browser/live lane) |
+| Requirements file | pinned in **`requirements-precompute.txt`** (local install set); also a **live** wheel — the browser worker `micropip.install`s `mesa`, so the ABM scenarios run live (`mesa ⊆ LIVE_WHEELS`) |
 
 ## Exact install line
 
@@ -34,25 +35,29 @@ virtual environment.)
 
 ## Which requirements file it belongs to — and why
 
-The lab has three dependency lanes:
+The lab has three dependency files:
 
-| File | Lane | Mesa here? |
+| File | What it is | Mesa here? |
 |---|---|---|
-| `requirements.txt` | **Live** — the small wheel closure that the browser (Pyodide) must load | **No** |
-| `requirements-precompute.txt` | **Precompute** — heavier engines run offline to generate committed traces | **Yes** |
+| `requirements.txt` | the minimal **local** base install set (not the full live closure) | **No** |
+| `requirements-precompute.txt` | the local install set for the heavier engines | **Yes** |
 | `requirements-gpu.txt` | GPU precompute | No |
 
-Mesa lives in **`requirements-precompute.txt`**, not in the live `requirements.txt`. The reason is
-architectural, and it is the single most important fact about Mesa in this project:
+Mesa is pinned in **`requirements-precompute.txt`**, not in the base `requirements.txt`. But that pin does
+**not** mean Mesa is precompute-only — the live wheel closure is decided at runtime by the worker and the
+gate, not by `requirements.txt`:
 
-> Mesa's only first-class visualization (SolaraViz) is a **stateful Python (Solara) server bound to a
-> localhost port**. That is fine for local teaching and notebooks, but wrong for a static SPA on a shared,
-> no-GPU VPS. So the lab runs Mesa **headless** in the local pipeline, records the trajectory, commits the
-> compact artifact, and the web app **replays** it. Mesa never runs in production.
+> The browser worker loads the live wheels itself: it `loadPackage`s numpy/pandas/scipy/networkx/sqlite3 and
+> `micropip.install`s simpy/ciw/**mesa**/joblib. Because `mesa ⊆ LIVE_WHEELS` (`simlab/core/scenario.py`) and
+> the ABM scenarios are pure-Python and pass the 3-gate rule, **Mesa runs LIVE in Pyodide**. What Mesa cannot
+> serve is **SolaraViz** — its first-class visualization is a stateful Python (Solara) server bound to a
+> localhost port, fine for local teaching but wrong for a static SPA on a shared, no-GPU VPS. The lab's
+> React/SVG viewer owns the pixels instead; SolaraViz never runs in production, but the Mesa *engine* does.
 
-The trade-off is this: the ABM scenarios (S02 Schelling, S03 SIR, S05 Beer Game) **run on Mesa** during
-precompute, but Mesa never ships to the browser. Instead, the traces are committed as compact Arrow/JSON
-artifacts and replayed statically. This is covered honestly in [03_applying.md](./03_applying.md).
+The trade-off is this: the ABM scenarios (S02 Schelling, S03 SIR, S05 Beer Game) **run live on Mesa 3 in the
+browser**, and the same seeded models are *also* run headless in the local pipeline to commit a canonical
+replay trace (instant first paint + byte-for-byte reproducibility). This is covered in
+[03_applying.md](./03_applying.md).
 
 ## Key transitive dependencies
 
@@ -77,9 +82,10 @@ precompute path this lab uses. The example in [02_usage.md](./02_usage.md) impor
   (CUDA), **ABMax** (JAX) or **AMBER** (Polars) — none of which is needed for the lab's small canonical
   models, and all of which are documented as a reference chapter only
   ([../gpu-abm-chapter/](../18_gpu-abm-chapter.md)). There are therefore **no CUDA notes** for Mesa.
-- **Not Pyodide-shippable in practice.** Even though Mesa is pure Python, shipping it (plus pandas +
-  networkx) into the browser wheel closure would bloat cold-start; this is exactly why the live lane uses
-  NumPy directly. See [03_applying.md](./03_applying.md).
+- **Pyodide-shippable — and shipped live.** Mesa is pure Python; the browser worker `micropip.install`s it
+  (with pandas/networkx/sqlite3 loaded), and it was *measured* to clear the 3-gate live rule (~3 s cold
+  start). So the ABM scenarios run real Mesa 3 live in Pyodide — they do **not** fall back to a hand-rolled
+  NumPy model. See [03_applying.md](./03_applying.md).
 
 ## Verify the install
 
@@ -91,7 +97,8 @@ precompute path this lab uses. The example in [02_usage.md](./02_usage.md) impor
 ## Grounding / references
 
 - Mesa-frameworks research: `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md` (decision: "Teach
-  ABM with Mesa 3 … de-facto Python standard, Apache-2.0 … Mesa is for the repo and for precomputed runs,
-  NOT for serving live sims").
+  ABM with Mesa 3 … de-facto Python standard, Apache-2.0"). Note: the research's earlier
+  "NOT for serving live sims" caveat was about SolaraViz (the server-bound viz); a later measurement showed
+  the Mesa *engine* itself runs live in Pyodide, which is why the ABM scenarios are classified `live`.
 - Mesa 3 (JOSS 2025): <https://joss.theoj.org/papers/10.21105/joss.07668>
 - Mesa docs / repo (Apache-2.0): <https://mesa.readthedocs.io/latest/> · <https://github.com/projectmesa/mesa>

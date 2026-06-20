@@ -11,7 +11,7 @@ scenarios, the honest trade-offs from the research, and when to pick it over the
 ## 1. Formalize the problem, then solve it with Mesa
 
 ABM is the right lens when the question is **"what global pattern do these local rules produce?"** — not
-"what is the optimal decision?" (that is [optimization](../../problem-types/02_agent-based-modeling.md), a
+"what is the optimal decision?" (that is [optimization](../../problem-types/03_optimization-routing.md), a
 different problem type) and not "how do entities flow through resources?" (that is
 [discrete-event simulation](../../problem-types/01_discrete-event-simulation.md)). To formalize an ABM you
 specify four things — and each maps one-to-one onto a Mesa abstraction:
@@ -43,50 +43,54 @@ Mesa is the **ABM** framework. Three lab scenarios are agent-based models:
 Mesa's `Agent` / `Model` / space / `AgentSet` abstractions map one-to-one onto these, which is why the lab
 **teaches** ABM through Mesa's vocabulary — *the abstractions are the curriculum*.
 
-### The honest caveat (read this before claiming "the lab runs on Mesa")
+### The honest framing (read this before claiming how the lab runs Mesa)
 
-> **The lab's S02 / S03 / S05 now run on REAL Mesa 3.** Verified in source:
+> **The lab's S02 / S03 / S05 run on REAL Mesa 3, LIVE in the browser.** Verified in source:
 > `simlab/scenarios/s02_schelling.py`, `s03_sir.py` and `s05_beergame.py` all use `mesa.Agent` /
-> `mesa.Model` / `AgentSet` activation (engine = "mesa") and `import mesa`. These models are
-> **precomputed offline** in the local pipeline and **replayed statically** in the web browser because
-> Mesa's closure (pandas + scipy + networkx) is too heavy for live Pyodide cold-start.
+> `mesa.Model` / `AgentSet` activation (engine = "mesa") and `import mesa`. All three carry
+> `lane: "live"` in their manifests; the browser worker `micropip.install`s `mesa` and it was *measured*
+> to clear the 3-gate rule (`mesa ⊆ LIVE_WHEELS`, run < 3 s after a ~3 s cold start, trace < 1 MB). The
+> same seeded models are *also* run headless in the local pipeline to commit a canonical replay artifact
+> for instant first paint and byte-for-byte reproducibility.
 
-That split — real engine offline, lightweight replay online — is the architectural trade-off for Mesa:
+That split — live Mesa engine *plus* a committed canonical replay — is the architecture for Mesa:
 
-1. **Mesa is the *engine*; the web replays a *trace*.** Mesa's closure (pandas + scipy + networkx) is
-   heavy for a browser Pyodide cold-start. So the precompute pipeline runs Mesa offline, records the
-   deterministic trace to an Arrow or JSON artifact, and the web viewer replays it — zero compute on the
-   VPS, no Mesa on the browser. Same pattern the lab uses for every heavy engine (e.g., CAOS_SEISMIC).
+1. **Mesa runs live; a committed trace is the first paint.** The page loads instantly from a deterministic
+   committed trace (Arrow/JSON), then a live Run button re-executes real Mesa 3 in Pyodide on top of it.
+   What does *not* ship is **SolaraViz** (Mesa's server-bound visualization) — the lab's React/SVG viewer
+   owns the pixels instead, on a static SPA with zero server compute.
 2. **Mesa rules are fully visible in the code and the paper.** The lab is didactic. The `Agent.step()`
    and `Model.step()` implementations are in-repo; learners read the Mesa abstractions directly from the
    source, not hidden inside a framework blackbox.
-3. **Precompute-then-replay is the lab's truthful architecture.** All heavy engines (Mesa ABM, OR-Tools
-   optimization, Monte-Carlo joblib, networkx shortest paths) follow this pattern: seed offline, record
-   committed artifact, serve static replay. The "live" lane is reserved for lightweight engines (SimPy,
-   Ciw) that run in the browser under Pyodide without bloating the wheel.
+3. **Live for pure-Python; precompute only for native code.** Pure-Python engines whose wheels ⊆
+   `LIVE_WHEELS` (SimPy, Ciw, **Mesa**, joblib/scipy, networkx) run live under Pyodide. The precompute lane
+   is reserved for the **native-code** engines that cannot run in WASM — OR-Tools CP-SAT/GLOP (S06, S07,
+   S08, S11) — which are seeded offline, committed, and replayed.
 
-So Mesa's role in this lab is **the real ABM engine** — used in the **offline precompute pipeline**,
-teaching the curriculum via `Agent`/`Model`/space abstractions, and the canonical reference. The web
-viewer **replays** committed traces; it does **not** run Mesa live. That is the truthful framing.
+So Mesa's role in this lab is **the real ABM engine, run live in the browser**, teaching the curriculum via
+`Agent`/`Model`/space abstractions; the committed trace is only the canonical replay (first paint), and the
+precompute path is just where that canonical artifact is produced — not a claim that Mesa cannot run live.
 
 ---
 
-## 3. The pattern: precompute-then-replay
+## 3. The pattern: live Mesa + a committed canonical replay
 
-Mesa fits the lab's architecture as **simulate-offline → record → replay**:
+Mesa fits the lab's architecture as **commit a seeded canonical trace → first paint → re-run live in
+Pyodide**:
 
 ```
-local .venv (Mesa, headless)            committed artifact        web SPA (no compute)
-┌───────────────────────────┐           ┌──────────────┐          ┌──────────────────┐
-│ Model.step() each tick →   │  record   │ trace.arrow  │  serve   │ React/Vite player │
-│ DataCollector / frame trace├──────────►│  / .json     ├─────────►│ scrubs the frames │
-└───────────────────────────┘           └──────────────┘          └──────────────────┘
-        seeded (rng=…)                    small & versioned          deterministic replay
+local .venv (Mesa, headless)        committed artifact      web SPA (Pyodide live)
+┌───────────────────────────┐        ┌──────────────┐       ┌─────────────────────────┐
+│ Model.step() each tick →   │ record │ trace.arrow  │ first │ React player first-paints│
+│ DataCollector / frame trace├───────►│  / .json     ├──────►│ the trace, then a "Run"  │
+└───────────────────────────┘        └──────────────┘ paint │ button re-runs real Mesa │
+        seeded (rng=…)                small & versioned      │ live via micropip+Pyodide│
+                                                             └─────────────────────────┘
 ```
 
-This is the same pattern the lab uses for every heavy engine (it mirrors CAOS_SEISMIC: local compute →
-committed artifact → static viewer). The **seed** is what makes it sound: a fixed `rng=` means the
-committed trace is the *one true* run, reproducible by anyone who clones the repo.
+The committed seeded trace gives instant first paint and a *one true* run reproducible by anyone who clones
+the repo; the live Run then re-executes real Mesa 3 in the browser (same `rng=` ⇒ same trajectory). Native
+engines (OR-Tools) cannot do the live step and stay replay-only — but Mesa can and does.
 
 For ABM specifically the variant is **build-then-observe** rather than *optimize-then-simulate*: ABM does
 not prescribe a decision, it reveals the dynamics a rule set produces. (Contrast Optimization scenarios
@@ -115,9 +119,10 @@ Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
 - **Object-per-agent ceiling (~1e5 agents).** Mesa bogs down past ~100k agents. If a "heavy" scenario needs
   more, route it to **FLAME GPU 2** (CUDA), **ABMax** (JAX) or **AMBER** (Polars) — do not fight Mesa.
 - **CPU-only, no GPU.** Fine for the lab's small models; irrelevant for million-agent scale.
-- **Two-engine cognitive load.** Teaching Mesa while the live cards run on NumPy (and the *live* on-ramp
-  uses NetLogo Web) can confuse learners — the docs mitigate by framing it explicitly ("NumPy/NetLogo for
-  instant play; Mesa for how to build & scale it yourself").
+- **Replay-vs-live nuance.** The ABM pages must be explicit that the page first paints from a committed
+  canonical trace and *then* re-runs real Mesa 3 live in Pyodide on a Run — so learners do not mistake the
+  instant first paint for "Mesa isn't really running." (NetLogo Web remains a separate zero-server in-browser
+  on-ramp for the classic models.)
 
 ---
 
@@ -128,7 +133,7 @@ Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
 | To **learn/teach** ABM in Python; build small–medium models (≤1e5 agents) | **Mesa 3** | the standard; abstractions = curriculum |
 | **Real maps / GIS** in an ABM | **Mesa-Geo** ([../mesa-geo/](../05_mesa-geo.md)) | GeoAgents over Shapely/GeoPandas, Leaflet |
 | An **instant, zero-server in-browser** animated classic (Schelling, SIR, Wolf-Sheep) | **NetLogo Web** ([../netlogo-web/](../07_netlogo-web.md)) | compiles to JS, runs fully client-side, zero VPS compute |
-| A **throwaway ≤10-line demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab instead uses **Mesa 3** for S02/S03/S05 (precomputed + replayed) — real abstractions, reproducible |
+| A **throwaway ≤10-line demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab instead uses **Mesa 3** for S02/S03/S05 (run live in Pyodide, with a committed canonical replay) — real abstractions, reproducible |
 | **Millions of agents** | **FLAME GPU 2** / ABMax / AMBER ([../gpu-abm-chapter/](../18_gpu-abm-chapter.md)) | GPU / vectorized / columnar scale beyond Mesa's ceiling |
 | **Crowd / pedestrian flow** | **JuPedSim** ([../jupedsim/](../06_jupedsim.md)) | validated social-force / collision-free-speed, pip-installable |
 
@@ -145,5 +150,5 @@ Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
 - How to install / which requirements file: [01_installation.md](./01_installation.md)
 - API + runnable example + verified output: [02_usage.md](./02_usage.md)
 - Runnable example source: [example.py](./example.py)
-- Truthful Mesa framing in the live Theory pages: `wip/caos-simlab/content/fix-mesa-framing.md`
+- Live-lane rationale (why Mesa runs in Pyodide): [../../guides/02_live-lane-pyodide.md](../../guides/02_live-lane-pyodide.md)
 - Research (decision + trade-offs): `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`

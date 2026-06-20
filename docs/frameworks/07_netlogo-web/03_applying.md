@@ -63,24 +63,28 @@ Code-Example variants or author our own — see §4).
 The lab teaches ABM with **three** representations of the *same* model, and the docs must name the split
 honestly or learners get lost:
 
-1. **LIVE / instant play → NetLogo Web** (this node). Client-side JS, animated, sliders, **zero server
-   compute**. The on-ramp: play first, understand later.
-2. **Python precomputed card → Mesa 3** (`simlab/scenarios/s02_schelling.py`, `s03_sir.py`,
-   `engine = "mesa"`): offline precompute → committed trace → static replay in the web viewer. The full
-   `Agent`/`Model`/space abstractions, **rules fully visible in-repo** for teaching.
+1. **LIVE / instant play (native JS) → NetLogo Web** (this node). Client-side JS, animated, sliders, **zero
+   server compute, no Pyodide**. The on-ramp: play first, understand later.
+2. **LIVE Python engine → Mesa 3** (`simlab/scenarios/s02_schelling.py`, `s03_sir.py`,
+   `engine = "mesa"`): runs **live in Pyodide** (a committed canonical trace gives the instant first paint,
+   then a Run re-executes real Mesa). The full `Agent`/`Model`/space abstractions, **rules fully visible
+   in-repo** for teaching.
 3. **Build-it-yourself / scale-up path → Mesa** in a Jupyter notebook. The framework whose abstractions
    *are* the curriculum; learners write their own models.
 
-> The honest one-liner the live Theory pages must carry: **"NetLogo for instant in-browser play; Python
-> + Mesa for how to build & trace it yourself."** Pair each NetLogo card with its Mesa precomputed
-> equivalent so the lesson lands: *the concept is engine-independent; Mesa is the production engine.* See
-> the [Mesa node](../04_mesa.md).
+> The honest one-liner the live Theory pages must carry: **"NetLogo for instant in-browser play (compiled
+> JS, no Pyodide); Python + Mesa for how to build & reproduce it yourself."** Pair each NetLogo card with its
+> Mesa equivalent so the lesson lands: *the concept is engine-independent; Mesa is the real production engine
+> — and it also runs live (in Pyodide), backed by a committed canonical trace.* See the
+> [Mesa node](../04_mesa.md).
 
-## 4. The pattern: client-side-live (no precompute, no replay)
+## 4. The pattern: client-side-live in native JS (no Pyodide)
 
-NetLogo Web is the **one engine in the lab that does NOT use precompute-then-replay.** Every heavy engine
-(Mesa, OR-Tools, JuPedSim, …) follows *simulate-offline → commit artifact → static replay*. NetLogo Web is
-the opposite — the simulation **runs live in the visitor's browser**:
+NetLogo Web is the **one engine in the lab that runs live without Pyodide** — it is compiled to JavaScript,
+so it has the smallest cold start. The Pyodide live engines (SimPy, Ciw, **Mesa**, joblib/SciPy, NetworkX)
+also run live, but pay the WASM wheel-load tax first. Only the **native-code** engines (OR-Tools, JuPedSim,
+GPU) are precompute-then-replay (*simulate-offline → commit artifact → static replay*). NetLogo Web's
+simulation **runs live in the visitor's browser**:
 
 ```text
 authoring time (once)                              every visit (in the browser)
@@ -118,8 +122,9 @@ Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`.
   Fine for the on-ramp models; anything large goes to Mesa / FLAME GPU 2 / ABMax / AMBER offline.
 - **License nuance is a real hazard** for a public product — see §6. Shipping a CC BY-NC-SA model in a
   public repo without care is a licensing mistake.
-- **Two-engine cognitive load.** Teaching Mesa while the live card runs on NetLogo (and the shipped Python
-  card on Mesa precompute) can confuse learners; mitigate with the explicit framing in §3.
+- **Two-engine cognitive load.** Two live runtimes for the same model — NetLogo Web (compiled JS) and Mesa
+  (live in Pyodide, with a committed canonical replay for first paint) — can confuse learners; mitigate with
+  the explicit framing in §3 (the difference is the *runtime*, not live-vs-precompute).
 - **Engine-version / selector drift.** The chrome-strip CSS selectors and bundled-engine version can change
   across NetLogo Web releases; pin one engine version per committed model and re-verify selectors on export.
 - **No `random-seed` ⇒ non-reproducible card.** Forgetting to seed `setup` makes each visit different,
@@ -162,8 +167,8 @@ For S02 and S03 specifically: both are trivial to author cleanly, so the lab's l
 | If you need… | Pick | Why |
 |---|---|---|
 | An **instant, zero-server, animated** in-browser ABM classic (Schelling, SIR, Wolf-Sheep) | **NetLogo Web** (Tortoise) | compiles to JS, runs fully client-side, no VPS compute |
-| A **throwaway ≤10-line Python demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab uses **Mesa 3** for S02/S03 (precomputed + replayed) |
-| To **learn/teach + build/scale** ABM in Python (≤1e5 agents), with `DataCollector` / `batch_run` | **[Mesa 3](../04_mesa/03_applying.md)** (offline → replay) | the Python standard; abstractions = curriculum |
+| A **throwaway ≤10-line Python demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab uses **Mesa 3** for S02/S03 (run live in Pyodide + committed replay) |
+| To **learn/teach + build/scale** ABM in Python (≤1e5 agents), with `DataCollector` / `batch_run` | **[Mesa 3](../04_mesa/03_applying.md)** (live in Pyodide + replay) | the Python standard; abstractions = curriculum |
 | **Real maps / GIS** in an ABM | **Mesa-Geo** | GeoAgents over Shapely/GeoPandas |
 | **Millions of agents** | **[FLAME GPU 2 / ABMax / AMBER](../18_gpu-abm-chapter.md)** | GPU / vectorized / columnar scale beyond Mesa & the browser |
 | **Crowd / pedestrian flow** | **JuPedSim** | validated social-force / collision-free-speed, pip-installable |

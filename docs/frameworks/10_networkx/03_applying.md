@@ -49,8 +49,8 @@ attribution are needed.
 
 | Scenario | How NetworkX is used | Paired with |
 |---|---|---|
-| **S07 — Construction Haul Routing** | Shortest path across a graded junction grid; the edge cost encodes **grade × elevation gain**, so the "cheapest" haul route bends around steep climbs. k-shortest paths expose the near-tie between the direct climb and the longer-but-flatter detour (the route "flips" past a critical grade). | **SimPy** DES replay under stochastic load/dump/queue delays; 2D grade overlay |
-| **S09 — Ambulance Dispatch** | Shortest path on a city junction grid to compute travel time from each station to each call, which drives the nearest-available-ambulance dispatch decision. Shortest-path lengths feed the response-time and coverage KPIs. | **SimPy** DES with stochastic Poisson call arrivals over many runs |
+| **S07 — Construction Haul Routing** | Shortest path across a graded junction grid; the edge cost encodes **grade × elevation gain**, so the "cheapest" haul route bends around steep climbs. k-shortest paths expose the near-tie between the direct climb and the longer-but-flatter detour (the route "flips" past a critical grade). The route's optimum **cost is certified by an OR-Tools CP-SAT** min-cost-flow ILP. | **OR-Tools CP-SAT** (cost certificate) + a **deterministic** SimPy haul DES (fixed load/dump times, inert seed; 2D grade overlay) — *precompute lane* |
+| **S09 — Ambulance Dispatch** | Shortest path on a city junction grid to compute travel time from each station to each call, which drives the nearest-available-ambulance dispatch decision. Shortest-path lengths feed the response-time and coverage KPIs. | **SimPy** DES driven by **one seeded** Poisson call stream (variates drawn up front; not replicated) — *live lane*, no OR-Tools |
 
 Both scenarios live in the [Optimization & Routing problem type](../../problem-types/03_optimization-routing.md)
 (see its S07 / S09 rows and the NetworkX + OSMnx section).
@@ -69,19 +69,20 @@ NetworkX is the **first stage** of the lab's signature *optimize-then-simulate* 
 pipeline:
 
 1. **Graph.** Build (or download via OSMnx) the road network as a weighted NetworkX graph.
-2. **Matrix.** Run shortest paths (Dijkstra / A\* / all-pairs) to get the N×N travel-time matrix and
+2. **Matrix / paths.** Run shortest paths (Dijkstra / A\* / all-pairs) to get the travel-time lengths and
    the drawable route geometry. *This is the NetworkX step.*
-3. **Optimize.** Hand the matrix to OR-Tools / PyVRP to choose routes or dispatch (deterministic
-   inputs → an "optimal" plan).
-4. **Simulate.** Replay the plan in a **SimPy** DES under stochastic delays and watch the optimum
-   degrade — missed time windows, queueing, idle ambulances.
+3. **Optimize / decide.** Use the lengths to choose a plan — in S07 an OR-Tools CP-SAT cost certificate over
+   the Dijkstra route; in S09 the nearest-available dispatch decision directly from the path lengths.
+4. **Simulate.** Replay in a **SimPy** DES. In the shipped scenarios these legs are **deterministic** (S07:
+   fixed service times, inert seed; S09: one seeded call stream with variates drawn up front), so the gap they
+   expose is **queueing at a shared finite resource** (the loader; the busy ambulances), not random-variate
+   slippage. There are **no time windows in the repo**.
 
 The research states the bridge plainly: *"an optimum on paper is fragile under uncertainty"* — the
 optimizer proposes, the simulator disposes. NetworkX makes step 2 readable and inspectable. The
-**k-shortest paths** capability is what makes the fragility *visible*: when route #1 and route #2 are a
-near-tie (8.986 vs 9.029 in the [example](./example.py)), a tiny stochastic delay on one segment is
-enough to make the "second-best" route actually win — which is exactly the lesson the SimPy replay
-drives home.
+**k-shortest paths** capability makes the fragility *visible* as a concept: when route #1 and route #2 are a
+near-tie (8.986 vs 9.029 in the [example](./example.py)), a tiny delay on one segment is enough to make the
+"second-best" route win — the principle the deterministic haul DES illustrates via loader contention.
 
 ## Honest trade-offs (grounded in the research)
 

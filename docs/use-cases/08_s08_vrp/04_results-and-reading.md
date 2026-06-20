@@ -63,9 +63,11 @@ legs dominate. **c18** (18 customers, `9×9`) is the largest instance and the on
   **green** (legend `depot`) and the **customers** **magenta** (legend `customer`).
 - **The routes.** Each *used* vehicle gets **one route color** and animates leaving the depot, visiting its
   customer sequence in order, and returning. Unused vehicles (depot→depot only) are not drawn.
-- **The OR-Tools ↔ PyVRP overlay.** The primary (OR-Tools) plan is what renders by default; the PyVRP plan
-  lives in the `analytic` slot with the **same polyline/leg shape**, so the frontend can toggle/overlay it to
-  show the head-to-head — and the `compare` block surfaces the distance gap directly.
+- **The OR-Tools ↔ PyVRP contrast (committed, not yet an in-app overlay).** The web viewer draws only the
+  primary OR-Tools plan; the PyVRP plan is committed alongside in the `analytic` slot with the **same
+  polyline/leg shape**, so it is ready for a future toggle/overlay UI, but no such toggle ships today. The
+  head-to-head you can read now is the `compare` block, which records the distance gap directly (see the gap
+  columns in the variant table above).
 - **The HUD KPIs** (configured columns: `total_distance`, `max_route_time`, `vehicles_used`, `customers`,
   `capacity`). The reading lens is the **total-distance ↔ longest-route trade-off**: compare `vehicles_used`
   against `total_distance` and `max_route_time` across variants. When the gap to PyVRP is non-zero, that is

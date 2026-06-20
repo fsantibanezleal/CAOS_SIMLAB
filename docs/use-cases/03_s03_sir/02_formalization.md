@@ -50,8 +50,12 @@ Each cell independently starts Infected with probability `i₀`, else Susceptibl
 x_{ij}(0) = I  with prob. i₀ ,   x_{ij}(0) = S  otherwise
 ```
 
-If the seeded draw lights **no** cell, the centre cell is forced Infected (so a stochastic all-S start
-cannot make the run inert). All draws use the seeded `self.random`, so the initial board is reproducible.
+If the seeded draw lights **no** cell, a fixed seed cell is forced Infected (so a stochastic all-S start
+cannot make the run inert). The code forces `states[n² // 2] = I` — a single fixed **flat array index**, not
+the geometric grid centre: under the row-major map `flat = j·n + i`, for even `n` the index `n²/2` decodes to
+`(i = 0, j = n/2)`, i.e. the **left-edge, middle-row** cell (the true centre would be `(n//2)·n + n//2`). The
+guarantee that matters — at least one seed case — holds regardless of which cell it is. All draws use the
+seeded `self.random`, so the initial board is reproducible.
 
 ## Dynamics (the one synchronous sweep)
 

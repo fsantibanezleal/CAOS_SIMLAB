@@ -66,9 +66,9 @@ the **DES teaching chapter / offline video** for the heavy precomputed scenarios
 | Scenario | Salabim's role | Engine of record |
 |---|---|---|
 | **DES teaching chapter** | The "see it move in pure Python" counterpoint to SimPy — fast visual feedback for the modeller, batteries-included statistics. | — (didactic) |
-| **S07 — Construction Haul Routing** *(DES leg)* | Optional **offline `.mp4`** of the load–haul–dump cycle, rendered locally, committed and replayed. | SimPy (model) + OR-Tools (plan) |
-| **S09 — Ambulance Dispatch** *(DES leg)* | Optional **offline `.mp4`/`.gif`** of stochastic call streams over the city, rendered locally. | SimPy (model) + OR-Tools (plan) |
-| **S10 — Monte-Carlo / CI study** | Could illustrate one replication as a video; the *statistics* come from the SimPy+joblib pipeline, not Salabim. | SimPy + joblib (CPU) |
+| **S07 — Construction Haul Routing** *(DES leg)* | Optional **offline `.mp4`** of the (deterministic) load–haul–dump cycle, rendered locally, committed and replayed. | SimPy (deterministic DES) + OR-Tools CP-SAT (route-cost certificate) + NetworkX |
+| **S09 — Ambulance Dispatch** *(DES leg)* | Optional **offline `.mp4`/`.gif`** of the seeded call stream over the city, rendered locally. | SimPy + NetworkX (no OR-Tools) |
+| **S10 — Monte-Carlo / CI study** | Could illustrate one replication as a video; the *statistics* come from the joblib pipeline, not Salabim. | M/M/c heap estimator + joblib (CPU) |
 
 The **live** scenarios (S01 bank/clinic queue, S04 ED flow) never use Salabim — they are
 SimPy in the Pyodide worker with the React queue-network renderer. The scenario→tool map (in

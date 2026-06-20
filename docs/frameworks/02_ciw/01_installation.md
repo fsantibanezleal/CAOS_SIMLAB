@@ -15,7 +15,7 @@ ask, and answer, *"does my sim match theory?"*
 | **License** | MIT (safe for a public repo) |
 | **Paradigm** | event-scheduling queueing networks (headless — no built-in visualization) |
 | **Runtime footprint** | pure Python, CPU-only, single-threaded per run, no native code, no GPU |
-| **Requirements lane** | `requirements-precompute.txt` (offline precompute, **not** the live browser bundle) |
+| **Requirements lane** | pinned in `requirements-precompute.txt` (the local install set); also a **live** wheel — the browser worker `micropip.install`s `ciw`, so the S01 cross-check runs live (`ciw ⊆ LIVE_WHEELS`) |
 
 ---
 
@@ -38,16 +38,19 @@ pip install -r requirements-precompute.txt
 
 ## 2. Which requirements file — and why
 
-Ciw lives in the **precompute** lane (`requirements-precompute.txt`), **not** the base
-`requirements.txt`.
+Ciw is pinned in `requirements-precompute.txt`, **not** the base `requirements.txt`.
 
-The base file is the *Pyodide closure*: the small, pure-Python set (SimPy + NumPy) that
-the live browser MVP loads into a Web Worker. Ciw is used **offline** to generate the
-validation traces and didactic numbers for the queueing chapter of scenario **S01**; the
-web app then serves the committed artifact. Keeping Ciw out of the base file keeps the
-Pyodide wheel closure small and the live page fast — this is the lab's two-lane
-discipline (see the [precompute pipeline guide](../../guides/01_precompute-pipeline.md) and
-[architecture.md](../../architecture.md)).
+The base `requirements.txt` is the minimal **local** install set; it is *not* the full
+live closure. At runtime the Pyodide Web Worker loads the live wheels itself — it
+`loadPackage`s numpy/pandas/scipy/networkx/sqlite3 and `micropip.install`s
+simpy/**ciw**/mesa/joblib (`LIVE_WHEELS` in `simlab/core/scenario.py`). So **Ciw runs live
+in the browser** as S01's in-run cross-check: it is one of the wheels the worker installs,
+and `ciw ⊆ LIVE_WHEELS`. The pin lives in `requirements-precompute.txt` because that file
+is also where the heavier offline engines (Mesa, OR-Tools) are declared for local
+precompute runs; it does not mean Ciw is precompute-only. (A *standalone* Ciw network study
+that exceeded the live gate would run offline and ship a committed artifact — but S01's Ciw
+cross-check does not.) See the [precompute pipeline guide](../../guides/01_precompute-pipeline.md)
+and [architecture.md](../../architecture.md) for the two-lane design.
 
 > **Note on the pin.** In `requirements-precompute.txt` the `ciw>=3.1` line is currently
 > commented as a *planned-on-demand* dependency. The verified, working pin for this
@@ -109,7 +112,7 @@ The full walk-through of that output is in [02 · Usage](./02_usage.md).
 
 | Scenario | Role of Ciw |
 |---|---|
-| **S01** (Bank / Clinic Teller Queue) | Analytic **M/M/c validation** — run the queue in Ciw, compare the mean wait to the closed-form Erlang-C `Wq`, and publish the agreement as the teaching artifact. SimPy drives the live animation; Ciw provides the theory anchor. |
+| **S01** (Bank / Clinic Teller Queue) | Analytic **M/M/c cross-check** — SimPy drives the live, animated queue; Ciw is the in-run cross-check (`ciw_xcheck`, 10 capped warmed-up replications) comparing the mean wait to the closed-form Erlang-C `Wq` and recording `theory_in_ci` + `rel_err`. Both run in the live lane; Ciw provides the theory anchor. |
 
 Deprecated engines **AgentPy** and **desmod** are *not* used anywhere in this lab — they
 appear only as a "deprecated, don't use" signpost. For DES use **SimPy / Ciw / Salabim**

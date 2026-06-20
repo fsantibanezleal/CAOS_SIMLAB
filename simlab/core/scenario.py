@@ -2,7 +2,8 @@
 
 A Scenario declares its tunable parameters and knows how to `run(params, seed) -> Trace`. The gate
 (`classify_lane`) decides, FROM MEASUREMENT, whether a scenario may run live in the browser or must be
-precomputed. The rule is an AND of three conditions; failing any one forces precompute. This is what
+precomputed. The rule is the 3-gate AND — ENGINE (pure-Python AND `wheels ⊆ LIVE_WHEELS`, so it imports in
+the browser worker) · TIME (run < 3 s) · TRACE (< 1 MB); failing any gate forces precompute. This is what
 prevents "live mislabeling" (e.g. tagging an OR-Tools scenario live when native code cannot run in WASM).
 """
 from __future__ import annotations
@@ -20,7 +21,7 @@ GATE_MAX_TRACE_BYTES = 1_000_000  # animatable trace must be < ~1 MB
 # start ~3 s for numpy+pandas+scipy+networkx+sqlite3+mesa, a 20-step 2500-agent run ~2.3 s — verified in a
 # real browser). So ABM runs LIVE on real Mesa, not a stand-in. Only NATIVE engines stay precompute-only:
 # OR-Tools (C++/no WASM) — those scenarios set pure_python=False. The worker loads each scenario's closure
-# on demand. (ABM also offers a NetLogo Web card; see web/public/netlogo + docs/frameworks/netlogo-web.)
+# on demand. (ABM also offers a NetLogo Web card; see web/public/netlogo + docs/frameworks/07_netlogo-web.)
 LIVE_WHEELS = frozenset({
     "numpy", "simpy", "ciw", "mesa", "pandas", "scipy", "networkx", "sqlite3", "joblib",
 })

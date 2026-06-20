@@ -11,16 +11,16 @@ factor").
 
 This scenario USES the tools it documents — no hand-rolled NumPy graph or event loop:
 
-* **NetworkX** (``docs/frameworks/networkx``) builds a real directed road graph over the shared graded
+* **NetworkX** (``docs/frameworks/10_networkx``) builds a real directed road graph over the shared graded
   ``GridNetwork`` terrain in ``_geo.py`` (same nodes/edges/elevation/blocked cells) and finds the haul
   route with ``nx.dijkstra_path`` over the grade-weighted edges — the *optimize* step's geometry.
-* **OR-Tools** CP-SAT (``docs/frameworks/ortools``) independently re-solves the SAME shortest path as a
+* **OR-Tools** CP-SAT (``docs/frameworks/08_ortools``) independently re-solves the SAME shortest path as a
   min-cost single-unit-flow ILP and confirms the route cost the optimizer commits to. CP-SAT is native
   code, so this scenario is precomputed (``pure_python = False``); the solver is made reproducible with a
   single worker + a fixed ``random_seed`` and a deterministic stopping rule, and its optimum cost is
   STABLE across runs (the path geometry is taken from NetworkX, which is byte-stable, because equal-cost
   optimal routes let the ILP tie-break arbitrarily).
-* **SimPy** (``docs/frameworks/simpy``) replays the cycle as a real discrete-event simulation: each truck
+* **SimPy** (``docs/frameworks/01_simpy``) replays the cycle as a real discrete-event simulation: each truck
   is a process that requests a shared ``simpy.Resource`` (the loaders), loads, hauls up the planned route,
   dumps, hauls back, and re-enters the queue — the *simulate* step. The closed finite-source queue makes
   throughput saturate at the loader rate exactly as the machine-repair model predicts.

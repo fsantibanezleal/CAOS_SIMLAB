@@ -11,12 +11,16 @@ by design: the engine emits a structured event trace, the React front end owns t
 Reach for SimPy whenever the system is **entities flowing through activities and queues for limited
 resources under randomness**, and the *waiting* — not a single best decision — is what you want to
 measure (throughput, waiting time, utilization). In CAOS_SIMLAB it is the engine behind the whole DES
-half of the curriculum: it runs the **live, in-browser** queueing scenarios (S01 bank/clinic M/M/c,
-S04 emergency-department flow), it is the **"simulate" leg** of the optimize-then-simulate hybrids
-(S07/S08/S09/S11 — *the optimizer proposes, the simulator disposes*), and it is the **base model** the
-Monte-Carlo CI study (S10) replicates across thousands of seeds. Light models stay live; heavy runs
-(long horizons, big fleets, many replications) use the **same engine** moved to the precompute lane and
-ship as a committed, replayable trace.
+half of the curriculum: it runs the **live, in-browser** queueing scenarios (S01 bank/clinic M/M/c — where
+SimPy is the live engine and Ciw the in-run cross-check — and S04 emergency-department flow), it drives the
+**live** ambulance dispatch DES (S09, SimPy + NetworkX), and it is the **simulate leg** of the
+optimize-then-simulate hybrids whose optimizer is native OR-Tools (S07 and S11 — *the optimizer proposes,
+the simulator disposes*). In those hybrids the shipped SimPy legs are **deterministic** (fixed service
+times; contention from shared finite resources, not random variates), and they sit in the precompute lane
+because the OR-Tools optimizer is native code that cannot run in WASM. (S08 has **no** SimPy leg — it is a
+deterministic OR-Tools-vs-PyVRP head-to-head.) The M/M/c base model also feeds the Monte-Carlo CI study
+(S10). Pure-Python SimPy models stay live; a leg falls to the precompute lane only when paired with a native
+engine or when it breaches a gate.
 
 ## Read in order
 
@@ -49,16 +53,20 @@ ship as a committed, replayable trace.
   Little's Law; paired with [Ciw](./02_ciw.md) for the closed-form analytic overlay. *(live)*
 - **S04 — Emergency Department Patient Flow** — non-stationary arrivals, priority triage, multi-stage
   resource-limited flow; no closed form → replications + CI + warm-up. *(live)*
-- **S07 — Construction Haul Routing** *(DES leg)* — replays trucks under stochastic load/dump/delay on
-  a fixed [OR-Tools](./08_ortools.md) plan. *(precomputed)*
-- **S08 — Last-Mile Delivery VRP** *(DES leg)* — replays optimized [PyVRP](./09_pyvrp/02_usage.md)
-  routes with travel-time noise; exposes time-window violations. *(precomputed)*
-- **S09 — Ambulance Dispatch** *(DES leg)* — many stochastic call streams over a city graph;
-  response-time distributions from replicated runs. *(precomputed)*
-- **S10 — Monte-Carlo Replication / CI Study** — SimPy is the base model (reuses S01/S04), replicated
-  across thousands of seeds to draw CI envelopes vs the naive single run. *(precomputed)*
-- **S11 — LP/GLOP hybrid** *(DES leg)* — simulates the system under the GLOP-optimized allocation to
-  report realised outcomes under uncertainty. *(precomputed)*
+- **S07 — Construction Haul Routing** *(DES leg)* — a **deterministic** SimPy DES of the closed
+  finite-source haul cycle (fixed load/dump times, inert seed) over the route certified by
+  [OR-Tools](./08_ortools.md) CP-SAT; saturation comes from the shared finite loader, not random variates.
+  *(precomputed — native OR-Tools)*
+- **S08 — Last-Mile Delivery VRP** — **no SimPy leg.** S08 is a deterministic two-solver head-to-head
+  (OR-Tools vs [PyVRP](./09_pyvrp/02_usage.md)) replayed from a committed trace. *(precomputed — native code)*
+- **S09 — Ambulance Dispatch** — SimPy + [NetworkX](./10_networkx.md), **live**. One seeded Poisson call
+  stream drives nearest-available dispatch; the DES is the event-ordering mechanism (variates drawn up front
+  from one seeded RNG), not a stochastic stress-test. No OR-Tools. *(live)*
+- **S10 — Monte-Carlo Replication / CI Study** — the base M/M/c model (a fast heap-based estimator, same
+  model class as S01 but a different engine) replicated across seeds via [joblib](./12_joblib.md) to draw CI
+  envelopes vs the naive single run. *(live)*
+- **S11 — LP/GLOP hybrid** *(DES leg)* — a **deterministic** SimPy DES of the haul system under the
+  GLOP-optimized allocation (no stochastic variates). *(precomputed — native OR-Tools)*
 
 ## Related
 

@@ -11,11 +11,13 @@ carries the "enter → a running simulator, instantly" promise.
 
 **When to use it:** modest-scale (~1e3–1e4 agents) ABM classics — Schelling segregation, SIR epidemics,
 Wolf-Sheep, Flocking — where the goal is *play first, understand later* with no server cost. **How the lab
-uses it:** it is the live, instant-play half of a deliberate two-engine pairing. Each NetLogo card has a
-twin **Mesa 3** precomputed-and-replayed card so the lesson lands cleanly: *the concept is
-engine-independent; NetLogo is for instant in-browser play, Python + Mesa is for how to build and trace it
-yourself.* For anything large (millions of agents) or anything that must trace-and-replay an exact run, the
-lab leaves this lane for Mesa / the GPU-ABM chapter (see below). The one hard compliance fact: NetLogo model
+uses it:** it is a zero-server instant-play on-ramp, the JS half of a deliberate two-engine pairing. Each
+NetLogo card has a twin **Mesa 3** card (which runs **live in Pyodide**, backed by a committed canonical
+replay) so the lesson lands cleanly: *the concept is engine-independent; NetLogo runs instantly as compiled
+JS with no Pyodide load, Python + Mesa is the real engine — also live, plus the exact committed trace — for
+how to build and reproduce it yourself.* The difference is the runtime (native JS vs Pyodide-Python), not
+live-vs-precompute: both run live. For anything large (millions of agents) the lab routes to the GPU-ABM
+chapter (see below). The one hard compliance fact: NetLogo model
 licenses are **mixed** (Code Examples are CC0; most Models Library models are CC BY-NC-SA — *not* open
 source), so the lab prefers CC0 or authors its own models — detailed in the applying page.
 
@@ -44,7 +46,7 @@ HTML and looking at the animated card (see
 
 ## Scenarios that use this framework
 
-| Scenario | Live card (this engine) | Python twin (Mesa, precompute → replay) |
+| Scenario | NetLogo Web card (JS, this engine) | Python twin (Mesa 3 — runs live in Pyodide + committed replay) |
 |---|---|---|
 | **S02 — Schelling segregation** | segregation on a 2-D grid; sliders: `pct-similar-wanted`, `density` | `simlab/scenarios/s02_schelling.py` (`engine = "mesa"`) |
 | **S03 — SIR epidemic** | epidemic wave + S/I/R curves; sliders: infection prob., recovery, contacts | `simlab/scenarios/s03_sir.py` (`engine = "mesa"`) |

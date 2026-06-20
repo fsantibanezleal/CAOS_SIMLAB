@@ -70,8 +70,9 @@ Step by step:
 
 2. **Fan K seeded replications across cores.**
    `run_study(...)` builds `delayed(mmc_mean_wait)(lam, mu, c, n, base_seed + r)` for `r in range(K)` and
-   runs them with `Parallel(n_jobs=n_jobs)`. The seed plan `base_seed + r` is exactly S10's
-   `make_rng(seed + r)` scheme. Results come back in order, so `per_run[r]` is replication `r`.
+   runs them with `Parallel(n_jobs=n_jobs)`. The seed plan `base_seed + r` is exactly S10's: it passes the
+   **seed int** `int(seed) + r` to `mmc_mean_wait`, which builds its own RNG internally (S10 uses
+   `Parallel(..., backend="threading")`). Results come back in order, so `per_run[r]` is replication `r`.
 
 3. **Aggregate a normal-approximation 95% CI.**
    With the K per-run KPIs in a NumPy array: `mean = per_run.mean()`, sample sd `per_run.std(ddof=1)` (the

@@ -6,13 +6,14 @@ OR-Tools is three solvers in one package. This lab uses all three:
 
 | Sub-solver | Import | What it solves | Scenarios |
 |---|---|---|---|
-| **CP-SAT** | `from ortools.sat.python import cp_model` | Constraint programming / discrete scheduling | S06 job-shop |
-| **Routing** | `from ortools.constraint_solver import pywrapcp, routing_enums_pb2` | TSP / CVRP / VRPTW / PDPTW | S07, S08, S09 |
+| **CP-SAT** | `from ortools.sat.python import cp_model` | Constraint programming / discrete scheduling | S06 job-shop; S07 haul (min-cost-flow route-cost certificate) |
+| **Routing** | `from ortools.constraint_solver import pywrapcp, routing_enums_pb2` | TSP / CVRP / VRPTW / PDPTW | S08 VRP |
 | **GLOP** | `from ortools.linear_solver import pywraplp` | Linear programming (continuous) | S11 blend LP |
 
 The two demos in [`example.py`](./example.py) cover the **CP-SAT** and **GLOP** ends of the toolkit (the
-Routing end is the same `pywrapcp` family used by S07/S08/S09 — a routing model is internally a
+Routing end is the same `pywrapcp` family used by **S08** — a routing model is internally a
 constraint-programming model with index/arc variables, so the modelling mindset carries straight over).
+Note **S09** (ambulance dispatch) is **not** an OR-Tools scenario — it is SimPy + NetworkX.
 
 ## Key concepts
 

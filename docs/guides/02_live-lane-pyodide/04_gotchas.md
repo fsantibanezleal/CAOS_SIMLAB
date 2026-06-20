@@ -24,10 +24,12 @@ There are two stale comments in the source that pre-date the measured Mesa-in-Py
   its comment says "No Mesa". That file is the *local pip base*, not the browser closure: it is intentionally
   small because every line is also cold-start weight. The browser loads `mesa` (and friends) at runtime via
   `loadPackage` + `micropip`, so a tiny `requirements.txt` and a live Mesa lane are **not** a contradiction.
-- The module docstring in [`simlab/live.py`](../../../simlab/live.py) calls
-  `mesa, joblib, scipy, networkx` "precompute-only". The executable code below it (`_is_live` →
-  `set(sc.wheels) <= LIVE_WHEELS`) is the truth, and `LIVE_WHEELS` now **includes** them. When the comment and
-  the constant disagree, the constant wins.
+- The single source of truth for what runs live is `LIVE_WHEELS` + `_is_live`
+  (`sc.pure_python and set(sc.wheels) <= LIVE_WHEELS`) in
+  [`simlab/core/scenario.py`](../../../simlab/core/scenario.py) / [`simlab/live.py`](../../../simlab/live.py) —
+  not prose. `LIVE_WHEELS` **includes** `mesa, joblib, scipy, networkx`, so those engines run live. If any
+  comment or doc ever disagrees with the constant, the constant wins — ask the gate at runtime via
+  `simlab.live.live_lanes()`.
 
 When in doubt, ask the gate at runtime: `simlab.live.live_lanes()` returns exactly the scenario ids the browser
 is allowed to run.

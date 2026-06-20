@@ -99,9 +99,12 @@ S01 is a **live** scenario. The lab's [3-gate rule](../../architecture/03_the-ga
 
 - **Pure-Python:** yes — SimPy, Ciw and NumPy are all pure-Python / Pyodide-loadable
   (`wheels = ["simpy", "ciw", "numpy"]`, all in `LIVE_WHEELS`).
-- **Run time:** every shipped variant runs well under the 3 s gate (measured `run_ms` ranges ≈ **2.6 ms**
-  for the unstable variant up to ≈ **1296 ms** for the ten-server pool — see the manifest and
-  [04 · Results](./04_results-and-reading.md)).
+- **Run time:** every shipped variant runs well under the 3 s gate (measured `run_ms` ranges ≈ **2.7 ms**
+  for the unstable variant up to ≈ **1032 ms** for the ten-server pool — see the manifest and
+  [04 · Results](./04_results-and-reading.md)). The bulk of each *stable* variant's time is the Ciw
+  cross-check (10 seeded replications), not the SimPy animation; the unstable variant is fast because that
+  Ciw study is **skipped** (`applicable: false` — no finite theory to converge to), **not** because the
+  SimPy run short-circuits — the SimPy simulation always runs all 300 customers to completion.
 - **Trace size:** ≈ **35 KB** per variant, far below the 1 MB gate.
 
 So the published lane is `lane: "live"`. In the app, the SimPy run (and its in-trace Ciw cross-check)

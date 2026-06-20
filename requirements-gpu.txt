@@ -1,10 +1,10 @@
 # OPTIONAL GPU lane — local-only. NEVER a hard dependency, NEVER on the deploy path (the app is static; the
 # contract is the committed trace, not the GPU). Setup detects CUDA and falls back to CPU. Honest verdict
-# (see docs/problem-types/monte-carlo-replications.md "When does GPU actually help?"): GPU helps large-N ABM
+# (see docs/problem-types/04_monte-carlo-replications.md "When does GPU actually help?"): GPU helps large-N ABM
 # and thousands of independent Monte-Carlo replications, NOT small-N event-loop DES (it is slower there).
 #
 # Install:  pip install -r requirements-gpu.txt   (verified on an RTX 4070 Laptop, CUDA 12, 2026-06-19)
-# Per-framework guides + runnable examples: docs/frameworks/{cupy,numba,taichi,jax}/.
+# Per-framework guides + runnable examples: docs/frameworks/{15_cupy,14_numba,16_taichi,17_jax}/.
 
 cupy-cuda12x==14.1.1   # array Monte-Carlo on the GPU (cuRAND-backed); CUDA 12.x; CPU(numpy) fallback in code
 numba==0.65.1          # @njit CPU kernels + CUDA kernels (xoroshiro128p per-thread RNG); CPU fallback
@@ -13,6 +13,6 @@ jax==0.10.2            # vmap+jit vectorized Monte-Carlo primitive (CPU/GPU back
 jaxlib==0.10.2
 
 # Reference-only — NOT installed here (no usable wheel on this Windows/py3.13 box), documented as chapters:
-#   FLAME GPU 2  — AGPL-3.0, CUDA-coupled, no PyPI wheel (conda/source only); million-agent GPU-ABM. See docs/frameworks/gpu-abm-chapter/.
-#   ABMax (JAX)  — pip install fails on Windows (WinError 206, path too long via orbax). See docs/frameworks/gpu-abm-chapter/.
+#   FLAME GPU 2  — AGPL-3.0, CUDA-coupled, no PyPI wheel (conda/source only); million-agent GPU-ABM. See docs/frameworks/18_gpu-abm-chapter/.
+#   ABMax (JAX)  — pip install fails on Windows (WinError 206, path too long via orbax). See docs/frameworks/18_gpu-abm-chapter/.
 #   AMBER        — Polars-columnar big-ABM accelerator; reference only.

@@ -12,12 +12,16 @@ Reach for Ciw when the problem **is** a queueing network *and* you want to **val
 simulation against queueing theory**. That is its distinguishing strength: the classical
 queues it simulates (M/M/1, M/M/c, Jackson networks) have **closed-form** answers, so a
 Ciw run can be checked against the math side-by-side. In CAOS_SIMLAB that powers the
-**queueing-theory teaching block**: scenario **S01** runs an M/M/c teller queue in Ciw and
-benchmarks the mean wait against the closed-form Erlang-C `Wq`, publishing the agreement
-(value + 95% CI + a "PASS") as the didactic artifact. Ciw is a **secondary teaching
-chapter** — [SimPy](./01_simpy.md) is the lab's primary live engine and drives S01's animation;
-Ciw provides the theory anchor. Because it sits in the **precompute lane**, it runs offline
-and the live site serves the committed result.
+**queueing-theory teaching block**: in scenario **S01** the live, animated M/M/c teller
+queue runs on [SimPy](./01_simpy.md) (a single ~300-customer run), and Ciw is the
+**in-run cross-check** — a short replicated study (10 capped, warmed-up replications)
+whose mean wait is compared back to the closed-form Erlang-C `Wq`. The cross-check
+records `theory_in_ci` (a boolean: does the analytic value fall inside the 95% CI?) and
+`rel_err`, *not* a "PASS" string. Ciw is a **secondary teaching chapter** — SimPy is the
+lab's primary live engine and drives S01's animation; Ciw provides the theory anchor. The
+S01 Ciw cross-check runs **inside the live gate** alongside the SimPy run (S01's lane is
+`live`); Ciw is also available as a standalone precompute-lane engine for heavier
+queueing-network studies that exceed the live gate.
 
 ## Read in order
 
@@ -42,8 +46,10 @@ and the live site serves the committed result.
 
 ## Scenarios that use it
 
-- **S01 — Bank / Clinic Teller Queue (M/M/c)** — Ciw provides the analytic M/M/c
-  validation anchor; SimPy drives the live animation. Module: `simlab/scenarios/s01_queue.py`.
+- **S01 — Bank / Clinic Teller Queue (M/M/c)** — SimPy is the live, animated engine; Ciw is
+  the in-run cross-check (10 capped, warmed-up replications → `theory_in_ci` + `rel_err`)
+  against the closed-form Erlang-C `Wq`, run inside the live gate. Module:
+  `simlab/scenarios/s01_queue.py`.
 
 ## Related
 
@@ -52,4 +58,5 @@ and the live site serves the committed result.
 - Sibling DES engines: [SimPy](./01_simpy.md) (primary live engine) ·
   [Salabim](./03_salabim.md) (offline animation / video).
 - [architecture.md](../architecture.md) · [precompute pipeline](../guides/01_precompute-pipeline.md)
-  — the two-lane, replay-is-truth design that makes Ciw a precompute-lane tool.
+  — the two-lane, replay-is-truth design (the S01 Ciw cross-check stays in the live lane;
+  heavier standalone Ciw network studies use the precompute lane).

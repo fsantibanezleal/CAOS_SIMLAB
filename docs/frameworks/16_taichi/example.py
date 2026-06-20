@@ -23,7 +23,7 @@ the update is a pure arithmetic stencil, and ti.init is given a fixed
 random_seed, so the printed checksum is bit-stable across runs on this build.
 
 Run (cwd = repo root):
-    .venv/Scripts/python.exe docs/frameworks/taichi/example.py
+    .venv/Scripts/python.exe docs/frameworks/16_taichi/example.py
 """
 
 import taichi as ti

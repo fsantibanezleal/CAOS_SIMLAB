@@ -57,9 +57,9 @@ precompute/GPU lane, never on the live or VPS path.
 None of the lab's **flagship** scenarios (`simlab/scenarios/s01…s11`) use Taichi. The scenario→tool map
 keeps the spine on dedicated, permissive CPU tools:
 
-- **S01** SimPy + Ciw · **S02 / S03 / S05** Mesa · **S04** SimPy · **S06** OR-Tools CP-SAT
-- **S07** OR-Tools + SimPy + OSMnx/NetworkX · **S08** OR-Tools + PyVRP + SimPy
-- **S09** OR-Tools + SimPy + graph · **S10** joblib + CuPy/Numba + SciPy · **S11** OR-Tools GLOP + SimPy
+- **S01** SimPy (live engine) + Ciw (cross-check) · **S02 / S03 / S05** Mesa (live) · **S04** SimPy · **S06** OR-Tools CP-SAT
+- **S07** OR-Tools CP-SAT + NetworkX + SimPy (deterministic) · **S08** OR-Tools Routing + PyVRP (no SimPy)
+- **S09** SimPy + NetworkX (no OR-Tools) · **S10** joblib + CuPy/Numba + SciPy · **S11** OR-Tools GLOP + SimPy (deterministic)
 
 The closest *conceptual* cousins are the grid-environment ABMs — **S02 Schelling** and **S03 SIR** both
 live on a 2D lattice (see [agent-based modeling](../../problem-types/02_agent-based-modeling.md)) — but those

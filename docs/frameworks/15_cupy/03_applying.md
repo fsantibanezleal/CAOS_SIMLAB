@@ -44,9 +44,9 @@ hand-rolled) — see
   scenario code lives at [`../../../simlab/scenarios/s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo.py).
 
 S10 is the **only** scenario in the lab that uses CuPy. Every other scenario is CPU by design:
-[SimPy](../01_simpy/02_usage.md) + [Ciw](../02_ciw.md) (S01), Mesa 3 ABM (S02/S03/S05), SimPy (S04), and
-[OR-Tools](../08_ortools.md) / [PyVRP](../09_pyvrp/02_usage.md) / [NetworkX](../10_networkx.md) (S06–S09, S11)
-— none of which a GPU helps (see the trade-offs below).
+[SimPy](../01_simpy/02_usage.md) live engine + [Ciw](../02_ciw.md) cross-check (S01), Mesa 3 ABM (S02/S03/S05),
+SimPy (S04), [OR-Tools](../08_ortools.md) (S06/S07/S11) + [PyVRP](../09_pyvrp/02_usage.md) (S08), and
+[NetworkX](../10_networkx.md) + SimPy (S07/S09) — none of which a GPU helps (see the trade-offs below).
 
 > **Reference-only neighbours.** For *large-N* GPU work the canonical engine is **FLAME GPU 2**, documented as
 > a [reference chapter](../18_gpu-abm-chapter/02_usage.md), not a runtime dependency — AGPL-3.0-only (copyleft),

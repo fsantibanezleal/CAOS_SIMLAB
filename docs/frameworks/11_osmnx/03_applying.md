@@ -63,14 +63,16 @@ is how a viewer shows that "the optimum" is one of several near-equal options.
 Per the scenario→tool map and the routing problem-type guide
 ([`../../problem-types/03_optimization-routing.md`](../../problem-types/03_optimization-routing.md)):
 
-| Scenario | OSMnx role | Paired with |
+| Scenario | OSMnx role (the real-OSM on-ramp) | Shipped engines |
 |---|---|---|
-| **S07 — Construction haul routing** | road graph + travel-time matrix + route geometry; elevation/grade matters here, so the road layer feeds a grade-aware cost | OR-Tools Routing → **SimPy** stochastic load/dump/delay replay |
-| **S09 — Emergency / ambulance dispatch** | city road graph + matrix for the base dispatch/relocation plan; route geometry for the animated representative run | OR-Tools (base plan) + **SimPy** many stochastic call streams |
+| **S07 — Construction haul routing** | *would* supply a real OSM road graph + grade-aware cost when wired in; the **shipped** S07 uses a synthetic graded `_geo` grid via NetworkX (no OSMnx) | NetworkX (Dijkstra route) + **OR-Tools CP-SAT** (route-cost certificate) + a **deterministic** SimPy haul DES |
+| **S09 — Emergency / ambulance dispatch** | *would* supply the real city road graph; the **shipped** S09 uses the synthetic `_geo` city grid via NetworkX (no OSMnx) | NetworkX (shortest paths) + **SimPy** driven by **one seeded** Poisson call stream (no OR-Tools) |
 
-OSMnx is the **road layer** for **S07/S09** specifically. (S08 last-mile VRP also routes on a road
-network conceptually, but its headline contrast is OR-Tools-vs-PyVRP; OSMnx supplies the same
-graph/matrix role there too when a real network is wired in.)
+OSMnx is the **real-OSM on-ramp** for the road layer. Importantly, the **shipped** S07/S09 build their
+graphs from the synthetic `_geo` grid with **NetworkX** — they do *not* import OSMnx; it is the documented
+next step for real geography. (S08 last-mile VRP also routes on a road network conceptually, but its headline
+contrast is OR-Tools-vs-PyVRP; OSMnx would supply the graph/matrix role there too when a real network is
+wired in.)
 
 > **Honest status of the repo today.** No scenario currently ingests OpenStreetMap. S07/S08/S09
 > run on a **self-contained synthetic `GridNetwork`** (`simlab/scenarios/_geo.py`) — a grid of

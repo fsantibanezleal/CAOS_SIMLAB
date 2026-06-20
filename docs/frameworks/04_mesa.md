@@ -11,26 +11,32 @@ concepts. Reach for something else for million-agent GPU scale ([gpu-abm-chapter
 real maps ([mesa-geo](./05_mesa-geo.md)), or an instant zero-server in-browser classic
 ([netlogo-web](./07_netlogo-web.md)).
 
-**How this lab uses it.** Mesa is a **precompute-lane** engine, not a live one. Its only first-class
-visualization (SolaraViz) is a stateful Python server bound to a localhost port — fine for local teaching,
-wrong for a static SPA on a shared no-GPU VPS. So the lab runs Mesa **headless and seeded** in the local
-`.venv`, records the deterministic trajectory to a compact Arrow/JSON artifact, commits it, and the web
-viewer **replays** it (zero compute on the VPS, no Mesa in the browser). The three ABM scenarios — **S02
-Schelling**, **S03 SIR**, **S05 Beer Game** — run on *real* Mesa 3 offline; the `Agent.step()` /
-`Model.step()` code is in-repo so the abstractions stay the curriculum, not a blackbox. That truthful split
-(real engine offline, lightweight replay online) is the whole architectural trade-off, and it is documented
-honestly in [03_applying.md](./04_mesa/03_applying.md).
+**How this lab uses it.** Mesa **runs LIVE in the browser via Pyodide** — it was *measured* to satisfy the
+3-gate live rule (pure-Python, run < 3 s, trace < 1 MB) with `mesa ⊆ LIVE_WHEELS`, and the worker
+`micropip.install`s it (a `sqlite3` load for `mesa.experimental` and a ~3 s cold start are the cost). The
+three ABM scenarios — **S02 Schelling**, **S03 SIR**, **S05 Beer Game** — are classified `lane: "live"` in
+their manifests and expose a live Run button: move a slider and real Mesa 3 re-runs in the browser. The same
+models are *also* run headless and seeded in the local `.venv` to commit the canonical replay artifact (the
+deterministic first-paint trace), so the page renders instantly and a clone reproduces the run byte-for-byte;
+the live Run then re-executes the model on top of that. What Mesa cannot serve is **SolaraViz**, its
+first-class visualization — a stateful Python server bound to a localhost port, wrong for a static SPA on a
+shared no-GPU VPS; the lab's React/SVG viewer owns the pixels instead. The `Agent.step()` / `Model.step()`
+code is in-repo so the abstractions stay the curriculum, not a blackbox. This split (live Mesa engine + a
+committed canonical replay; React owns the rendering) is documented in
+[03_applying.md](./04_mesa/03_applying.md).
 
 ## Read in order
 
 1. [01_installation.md](./04_mesa/01_installation.md) — exact `pip install "mesa>=3.0"` line, the resolved
-   **3.5.1** version, which requirements lane it belongs to (`requirements-precompute.txt`, *not* live),
-   key transitive deps (numpy 2.4.6 / pandas / networkx / tqdm), and platform / no-CUDA notes.
+   **3.5.1** version, the requirements lanes (pinned locally in `requirements-precompute.txt`; the browser
+   worker `micropip.install`s it so it also runs **live**, `mesa ⊆ LIVE_WHEELS`), key transitive deps
+   (numpy 2.4.6 / pandas / networkx / tqdm), and platform / no-CUDA notes.
 2. [02_usage.md](./04_mesa/02_usage.md) — the real API and concepts (the four ingredients; the Mesa-2→3
    activation break; `rng=` seeding), the Schelling example walked through step by step, and its **real
    captured output** (re-run and verified).
 3. [03_applying.md](./04_mesa/03_applying.md) — how to *formalize* an ABM and *solve* it with Mesa, the
-   precompute-then-replay pattern, the honest trade-offs, and when to pick Mesa vs the alternatives.
+   live-Mesa-in-Pyodide lane plus the committed canonical-replay artifact, the honest trade-offs, and when
+   to pick Mesa vs the alternatives.
 4. [example.py](./04_mesa/example.py) — the runnable, ruff-clean Schelling model.
 
 Run the example from the repo root with the project venv:

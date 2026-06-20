@@ -64,8 +64,10 @@ vectorized replication batch *validates with uncertainty*.
 ## 3. Which scenarios use it
 
 JAX is **not the primary engine for any single scenario** — the scenario→tool map
-assigns concrete engines elsewhere (S01 SimPy+Ciw; S02/S03/S05 Mesa; S04 SimPy;
-S06/S11 OR-Tools; S07–S09 OR-Tools+SimPy+graph/PyVRP; S10 joblib+CuPy/Numba+SciPy).
+assigns concrete engines elsewhere (S01 SimPy live engine + Ciw cross-check;
+S02/S03/S05 Mesa live; S04 SimPy; S06 OR-Tools CP-SAT; S07 OR-Tools CP-SAT + NetworkX
++ deterministic SimPy; S08 OR-Tools Routing + PyVRP, no SimPy; S09 SimPy + NetworkX,
+no OR-Tools; S11 OR-Tools GLOP + deterministic SimPy; S10 joblib+CuPy/Numba+SciPy).
 JAX is the **vectorization primitive that backs the Monte-Carlo / batched-ABM
 *context*** that cuts across them:
 

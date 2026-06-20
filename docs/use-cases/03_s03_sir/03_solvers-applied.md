@@ -87,11 +87,10 @@ What "live + committed trace" means here, in practice:
   `GridTrace` schema (`simlab.gridtrace/v1`) and a run is deterministic from `(params, seed)` — "replay =
   truth".
 
-> **Honesty note on the framework page.** The Mesa node ([04_mesa.md](../../frameworks/04_mesa.md)) frames
-> Mesa generally as a *precompute-lane* engine (SolaraViz can't be served publicly). For S03 specifically the
-> measured gate result and the committed manifest both say **live** — real Mesa 3 in Pyodide — with the
-> committed trace serving as the instant-first-paint / offline-replay fallback. The code and manifest are the
-> authority used here.
+> **Lane note.** S03 runs **live** on real Mesa 3 in Pyodide — the measured gate result and the committed
+> manifest both say so (`numpy`+`mesa` ⊆ `LIVE_WHEELS`). The committed trace is the instant-first-paint /
+> offline-replay fallback. The only part of Mesa that can't be served publicly is its **SolaraViz**
+> (server-bound visualization) — not the engine; see [04_mesa.md](../../frameworks/04_mesa.md).
 
 ---
 

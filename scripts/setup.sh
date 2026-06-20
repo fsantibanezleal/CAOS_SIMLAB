@@ -18,7 +18,7 @@ VENV_PY=".venv/bin/python"
 
 echo
 echo "Optional GPU lane (CuPy/Numba/Taichi/JAX) for the Monte-Carlo exhibit — only on a CUDA box:"
-echo "  $VENV_PY -m pip install -r requirements-gpu.txt   # see docs/guides/gpu-lane.md"
+echo "  $VENV_PY -m pip install -r requirements-gpu.txt   # see docs/guides/03_gpu-lane.md"
 echo
 echo "Ready. Next:"
 echo "  $VENV_PY -m pytest                  # run the tests"

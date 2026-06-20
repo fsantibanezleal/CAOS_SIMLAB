@@ -156,8 +156,9 @@ Because an M/M/c queue has a **closed-form** mean wait (the Erlang-C result), th
 the analytic `Wq` and the theoretical utilization `ρ = λ / (c·μ)`, and prints them beside the simulated
 values. A simulation that does not converge to a known answer *when one exists* is a bug — so this
 side-by-side is the cheapest, most credible validation a learner can witness. (When the model gets
-realistic enough that no closed form exists — e.g. the multi-stage S04 ED — you switch to replications
-+ confidence intervals; see [`03_applying.md`](./03_applying.md).)
+realistic enough that no closed form exists — e.g. the multi-stage S04 ED — the validation method is
+replications + confidence intervals, which the lab demonstrates in **S10** (the Monte-Carlo study), not in
+the single S04 run; see [`03_applying.md`](./03_applying.md).)
 
 The Erlang-C helper in the file is just the textbook formula:
 

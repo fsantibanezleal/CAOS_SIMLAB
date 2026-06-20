@@ -18,7 +18,7 @@ This is the OFFLINE/precompute lane only. Salabim's animation renders with tkint
 viewer is driven by SimPy event traces instead.
 
 Run (cwd = repo root):
-    .venv/Scripts/python.exe docs/frameworks/salabim/example.py
+    .venv/Scripts/python.exe docs/frameworks/03_salabim/example.py
 """
 
 import salabim as sim

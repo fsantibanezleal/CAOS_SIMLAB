@@ -12,10 +12,13 @@ In this lab OR-Tools is a **precompute-lane** tool. It is native C++ code that c
 (Pyodide), so it never enters the live wheel closure; instead it runs **offline** in the local `.venv` and
 commits deterministic traces (optimal schedules, blend plans) that the web viewer replays. The defining
 teaching pattern is **optimize-then-simulate**: OR-Tools produces a plan that is optimal *on paper* under
-deterministic inputs, then a paired SimPy simulation stress-tests it under uncertainty so the learner can
-watch the "optimum" degrade. Five scenarios use it — **S06** (CP-SAT job-shop), **S07/S08/S09** (Routing,
-paired with SimPy + a road graph), and **S11** (GLOP blend LP). For reproducible committed traces the lab
-deliberately forces determinism: one CP-SAT search worker, fixed `random_seed=42`, bounded time.
+deterministic inputs, then (in the haul scenarios) a paired SimPy DES replays it so the learner sees the
+fleet saturate the shared loader. **Four** scenarios use OR-Tools — **S06** (CP-SAT job-shop), **S07**
+(CP-SAT route-cost certificate, paired with a deterministic SimPy haul DES over a NetworkX road graph),
+**S08** (Routing — the CVRP teaching default — contrasted with PyVRP; no SimPy), and **S11** (GLOP blend LP,
+paired with a deterministic SimPy fleet DES). Note **S09 does *not* use OR-Tools** — it is SimPy + NetworkX
+(nearest-available dispatch on shortest paths). For reproducible committed traces the lab deliberately forces
+determinism: one CP-SAT search worker, fixed `random_seed=42`, bounded time.
 
 ## Read in order
 
@@ -42,11 +45,15 @@ deliberately forces determinism: one CP-SAT search worker, fixed `random_seed=42
 The scenario code lives in `simlab/scenarios/`:
 
 - **S06 — Job-Shop Scheduling** (`simlab/scenarios/s06_jobshop.py`) — CP-SAT; the pure-optimization anchor.
-- **S07 — Construction Haul Routing** (`simlab/scenarios/s07_haul.py`) — Routing + SimPy + OSMnx/NetworkX.
-- **S08 — Vehicle Routing (VRP)** (`simlab/scenarios/s08_vrp.py`) — Routing (teaching default) + PyVRP (SOTA
-  contrast) + SimPy.
-- **S09 — Ambulance Dispatch** (`simlab/scenarios/s09_ambulance.py`) — Routing + SimPy + graph.
-- **S11 — Mine Multi-Destination Haul** (`simlab/scenarios/s11_minehaul.py`) — GLOP blend LP + SimPy.
+- **S07 — Construction Haul Routing** (`simlab/scenarios/s07_haul.py`) — **CP-SAT** (min-cost single-unit-flow
+  ILP certifying the route cost) + NetworkX (Dijkstra route) + a **deterministic** SimPy haul DES. No OSMnx.
+- **S08 — Vehicle Routing (VRP)** (`simlab/scenarios/s08_vrp.py`) — **Routing** (`pywrapcp`, teaching default)
+  + PyVRP (SOTA contrast). Deterministic; **no SimPy**.
+- **S11 — Mine Multi-Destination Haul** (`simlab/scenarios/s11_minehaul.py`) — GLOP blend LP + a
+  **deterministic** SimPy fleet DES.
+
+S09 (Ambulance Dispatch) is **not** an OR-Tools scenario — it is SimPy + NetworkX; see
+[NetworkX](./10_networkx.md) and [SimPy](./01_simpy.md).
 
 ## Related
 

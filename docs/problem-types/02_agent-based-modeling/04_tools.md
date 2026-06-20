@@ -70,9 +70,10 @@ the lab uses **[NetLogo Web](../../frameworks/07_netlogo-web.md)** (the *Tortois
 
 When geography is part of the model — agents on a real road network, demand over a city — use
 **[Mesa-Geo](../../frameworks/05_mesa-geo.md)** (Apache-2.0). It adds **GeoAgents** with real geometry
-(Shapely/GeoPandas) and a Leaflet/Solara map. Like Mesa, it is a **precompute** engine here: run it headless,
-commit the rendered paths, and the SPA replays them on a deck.gl/MapLibre map. The same non-public-server
-caveat applies (it shares Mesa's Solara visualization model). For the routing/dispatch scenarios, the *spatial
+(Shapely/GeoPandas) and a Leaflet/Solara map. Unlike plain Mesa (which runs **live** in Pyodide — see below),
+Mesa-Geo's GeoPandas/Shapely closure is heavier, so a geo ABM would **precompute** here: run it headless,
+commit the rendered paths, and the SPA replays them on a deck.gl/MapLibre map (no scenario ships Mesa-Geo
+yet). For the routing/dispatch scenarios, the *spatial
 graph* work is typically done with [NetworkX](../../frameworks/10_networkx.md) /
 [OSMnx](../../frameworks/11_osmnx.md) and the agent layer kept simple — see
 [Optimization & Routing](../03_optimization-routing.md).
@@ -142,7 +143,7 @@ dynamics from local ordering policies*, not entity-through-resource flow — see
 
 | Tool | Lane here | Scale | License | Use it for |
 |---|---|---|---|---|
-| [Mesa 3](../../frameworks/04_mesa.md) | precompute (default) | 10³–10⁵ | Apache-2.0 | the curriculum + headless heavy ABM |
+| [Mesa 3](../../frameworks/04_mesa.md) | **live** (Pyodide) | 10³–10⁵ | Apache-2.0 | the ABM curriculum (s02/s03/s05 run live) + headless heavy ABM |
 | [NetLogo Web](../../frameworks/07_netlogo-web.md) | live (default) | 10³–10⁴ | OSS (models mixed CC0 / CC BY-NC-SA) | instant in-browser classic cards |
 | [Mesa-Geo](../../frameworks/05_mesa-geo.md) | precompute | 10³–10⁵ | Apache-2.0 | real-map / GeoAgent models |
 | [JuPedSim](../../frameworks/06_jupedsim.md) | precompute | crowd-scale | LGPLv3 | pedestrian / evacuation flow |

@@ -88,12 +88,14 @@ re-runs and the flow re-animates. It clears all three gates of the lab's
 The gate is structural (`classify_lane` in `simlab/core/scenario.py`) and CI enforces it, so S04 cannot
 silently ship as "live" if it ever breached a gate.
 
-**The heavy lane is its sibling, not S04 itself.** When you want the *honest distribution* rather than one
-live draw, the **same SimPy model** is replicated across thousands of seeds in **S10** (Monte-Carlo / CI
-study) on the **precompute lane** (CPU via [joblib](../../frameworks/12_joblib.md), CIs via
-[scipy.stats](../../frameworks/13_scipy-stats.md)) — computed offline and committed as a CI-envelope artifact,
-then replayed. S04 lets you *feel* one shift live; S10 turns the S01/S04 base models into the
-replications-and-CI lesson. See the SimPy applying page
+**The replications-and-CI lesson lives in its sibling, not in S04 itself.** When you want the *honest
+distribution* rather than one live draw, the **same M/M/c model class** is replicated across many seeded runs
+in **S10** (Monte-Carlo / CI study) — note S10 uses a fast NumPy heap estimator (`mmc_mean_wait`), a
+*different engine* from S04/S01's SimPy `Resource` simulation, parallelised with
+[joblib](../../frameworks/12_joblib.md) and reduced to CIs with [scipy.stats](../../frameworks/13_scipy-stats.md).
+S10 is itself a **live** scenario (its wheel closure `numpy/joblib/scipy` is in `LIVE_WHEELS`); a seed-42 CI
+sweep is also committed for the deterministic gallery. S04 lets you *feel* one shift live; S10 turns the
+M/M/c base model into the replications-and-CI lesson. See the SimPy applying page
 [§5 (live vs precomputed)](../../frameworks/01_simpy/03_applying.md#5-where-simpy-runs--live-vs-precomputed).
 
 Continue to [04 · Results & reading](./04_results-and-reading.md).

@@ -83,10 +83,13 @@ but less balanced** than OR-Tools' — exactly the trade-off the head-to-head ex
 
 Both solvers' `special`-index sequences go through the **same** `_plan_from_special_seqs` helper, which
 expands each route into grid-node polylines + timed legs and computes `total_distance`, `max_route_dist`,
-`vehicles_used` and per-vehicle `loads`. Because both plans use the same renderer they are drawn identically.
-The OR-Tools plan becomes the trace's `routes`/`agents`/`kpis`; the PyVRP plan plus a `compare` block
-(`distance_gap`, `distance_gap_pct`, both `max_route_dist`) is carried in `analytic` so the frontend can
-overlay/toggle the SOTA contrast and CI can assert the gap. See [04 · Results & reading](./04_results-and-reading.md).
+`vehicles_used` and per-vehicle `loads`. Because both plans share that helper they *would* render
+identically. The OR-Tools plan becomes the trace's `routes`/`agents`/`kpis` (the only plan the shipped web
+viewer draws); the PyVRP plan plus a `compare` block (`distance_gap`, `distance_gap_pct`, both
+`max_route_dist`) is carried in `analytic` so the SOTA contrast is committed with every trace and available
+to a future overlay/toggle UI. Today that contrast is surfaced in the committed data and in
+[04 · Results & reading](./04_results-and-reading.md), not via an in-app toggle, and the current test suite
+checks the OR-Tools plan (all customers served, manifest lane) but does not yet assert the PyVRP gap.
 
 ## Live vs. precompute lane
 

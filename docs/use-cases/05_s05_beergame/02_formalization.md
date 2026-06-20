@@ -50,8 +50,12 @@ The retailer's input is the customer demand: `r^(1)_t = d_t`. Every other echelo
 
 Built once, up front, from the seeded RNG (`BeerGameModel._build_demand`):
 
-- **step** (`pattern=0`): `d_t = d₀` for `t < 6`, then `d_t = d₀ + Δ` from week 6 on.
-- **spike** (`pattern=1`): `d_t = d₀` everywhere except a single week-6 pulse `d_6 = d₀ + Δ`.
+- **step** (`pattern=0`): `d_t = d₀` for the first `warmup = 6` weeks, then `d_t = d₀ + Δ` from **array
+  index 6 onward**. Note the labeling: the demand array is 0-indexed while the plotted x-axis is `range(1,
+  W+1)` (1-indexed weeks, `s05_beergame.py:190`), so array index 6 is rendered as **displayed week 7** — the
+  step appears on the chart at week 7, not week 6.
+- **spike** (`pattern=1`): `d_t = d₀` everywhere except a single pulse at **array index 6** (`demand[ws] = d₀
+  + Δ`), i.e. **displayed week 7** on the same 0-vs-1 indexing as the step.
 - **AR(1) noise** (`pattern=2`): `e_t = 0.6·e_{t−1} + ε_t`, `ε_t ∼ N(0, (Δ/2)²)`, then
   `d_t = max(0, d₀ + e_t)`. The draws flow through the seeded model RNG — reproducible per seed.
 

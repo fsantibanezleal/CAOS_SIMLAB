@@ -37,12 +37,14 @@ transfer/launch overhead — and never put the discrete-event *model* itself on 
 
 ## Where it is used in the lab
 
-- **S10 — Monte-Carlo Replication / CI Study (primary).** joblib is the default replication driver: it runs
-  K seeded replications of the base models and turns them into a 95% CI compared against the closed-form
-  Erlang-C reference. See the [scenario → tool map](../README.md#scenario--tool-map).
-- **Every stochastic scenario's results-honesty beat** — the replicate-then-aggregate pattern (a single
-  noisy run beside the replicated, CI-banded answer) is the house standard, notably for the S04 emergency
-  department flagship.
+- **S10 — Monte-Carlo Replication / CI Study (primary).** joblib is the replication driver, used directly in
+  the shipped scenario: `Parallel(..., backend="threading")` runs K seeded replications of the M/M/c base
+  model and turns them into a 95% CI compared against the closed-form Erlang-C reference. The `threading`
+  backend keeps S10 in the **live** lane (works under Pyodide; no process-pool cold start). See the
+  [scenario → tool map](../README.md#scenario--tool-map).
+- **The results-honesty beat** — the replicate-then-aggregate pattern (a single noisy run beside the
+  replicated, CI-banded answer) is the house standard. In the shipped lab the replicated, CI-banded study is
+  **S10** (the S04 ED is a single seeded run, not a replicated CI study).
 
 ## Related
 
@@ -51,4 +53,4 @@ transfer/launch overhead — and never put the discrete-event *model* itself on 
 - Companion frameworks: [SciPy stats](./13_scipy-stats.md) (turns the replications into the
   interval), [Numba](./14_numba.md) and [CuPy](./15_cupy.md) (the optional GPU exhibit above
   the crossover).
-- [All frameworks](../README.md#by-framework-install--usage--applying--a-verified-examplepy).
+- [All frameworks](../frameworks.md) — the frameworks index (install → usage → applying + a verified `example.py` per node).

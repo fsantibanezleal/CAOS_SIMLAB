@@ -17,7 +17,7 @@ below.** Do **not** treat "NumPy by hand" as a methodology, and do **not** use t
 | **Confidence-interval math** | **SciPy (`scipy.stats`)** | BSD | The CI / `t` / `z` math — `t.interval`, `t.ppf`, `norm.ppf`, `sem`; never hand-roll critical values | [13 — `scipy.stats`](../../frameworks/13_scipy-stats.md) |
 | **Grid / cellular-automata GPU** | **Taichi** | Apache-2.0 | Niche — particle/field/CA grids (diffusion, fire, traffic CA); portable CUDA/Vulkan/Metal | [16 — Taichi](../../frameworks/16_taichi.md) |
 | **Large-N GPU-ABM (reference only)** | **FLAME GPU 2** | AGPL-3.0-only | **Reference chapter, not a dependency** — the canonical million-agent GPU-ABM engine; cut from runtime (copyleft, brittle CUDA, 8 GB OOM) | [18 — GPU-ABM chapter](../../frameworks/18_gpu-abm-chapter.md) |
-| Base DES models being replicated | **SimPy** (+ **Ciw** for M/M/c analytics) | MIT | The S01 / S04 models that S10 replicates; run on CPU (live or precompute), never on GPU | [01 — SimPy](../../frameworks/01_simpy.md), [02 — Ciw](../../frameworks/02_ciw.md) |
+| The model being replicated (S10) | **heap-based M/M/c estimator** (numpy; echoes the S01 queue) | MIT | S10's own light estimator — NOT the S01/S04 SimPy code — fanned out thousands of times by joblib; runs live on CPU, never GPU | [S10 use-case](../../use-cases/10_s10_montecarlo.md) · [SimPy](../../frameworks/01_simpy.md) |
 
 **Do not use:** **AgentPy**, **desmod** — both deprecated; mentioned only so they are not adopted by mistake.
 

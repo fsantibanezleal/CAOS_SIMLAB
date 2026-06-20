@@ -54,17 +54,21 @@ cells and record it in the manifest so the whole surface is regenerable.
 
 ## Which scenarios use it
 
-- **S10 — Monte-Carlo Replication / CI Study (primary).** joblib is the **v1 default replication driver**.
-  S10 runs K independent replications of the S01 M/M/c base model (`mmc_mean_wait`, seeded `seed + r`),
-  builds the running mean and the 95% CI band, and compares it to the closed-form Erlang-C `Wq`. The exact
-  loop in the S10 scenario —
-  `np.array([mmc_mean_wait(..., make_rng(seed + r)) for r in range(reps)])` — is a serial comprehension; the
-  joblib version in [`example.py`](./example.py) is the drop-in parallel form of that same loop for larger
-  sweeps. See the [scenario → tool map](../../README.md#scenario--tool-map).
+- **S10 — Monte-Carlo Replication / CI Study (primary).** joblib is the **replication driver**, used
+  directly in the shipped scenario. S10 runs K independent replications of the M/M/c base model
+  (`mmc_mean_wait`, an M/M/c heap-based estimator — same model *class* as S01 but a different engine from
+  S01's SimPy run), builds the running mean and the 95% CI band, and compares it to the closed-form
+  Erlang-C `Wq`. The actual loop in `s10_montecarlo.py` is **already joblib** (not a serial comprehension):
+  `Parallel(n_jobs=-1, backend="threading")(delayed(mmc_mean_wait)(lam, mu, c, n, int(seed) + r) for r in range(reps))`.
+  Note the worker takes a **seed int** (`int(seed) + r`), not an RNG `Generator` — it builds its own RNG
+  inside. The `threading` backend is deliberate: it avoids the loky process-pool cold-start tax and is the
+  only joblib backend that works under Pyodide/WASM, so S10 keeps its **live** lane. The
+  [`example.py`](./example.py) shows the same pattern in isolation. See the
+  [scenario → tool map](../../README.md#scenario--tool-map).
 - **Cross-cutting "report an interval, not a point" beat.** The replicate-then-aggregate pattern is the
-  house standard for *every* stochastic scenario's results-honesty step (notably the S04 ED flagship): a
-  single noisy run beside the replicated, CI-banded answer. joblib is the engine whenever that ensemble is
-  big enough to want multiple cores.
+  house standard for the results-honesty step: a single noisy run beside the replicated, CI-banded answer.
+  In the shipped lab the **replicated, CI-banded study is S10** (the S04 ED is a single seeded run, not a
+  replicated CI study). joblib is the engine whenever that ensemble is big enough to want multiple cores.
 
 ## Honest trade-offs (grounded in the research)
 

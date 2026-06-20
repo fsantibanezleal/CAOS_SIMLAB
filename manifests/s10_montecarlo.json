@@ -84,7 +84,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 1778.4,
+        "run_ms": 356.6,
         "trace_bytes": 2374,
         "reasons": []
       },
@@ -121,7 +121,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 56.2,
+        "run_ms": 69.2,
         "trace_bytes": 6036,
         "reasons": []
       },
@@ -158,7 +158,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 158.1,
+        "run_ms": 145.6,
         "trace_bytes": 13436,
         "reasons": []
       },
@@ -195,7 +195,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 74.7,
+        "run_ms": 57.9,
         "trace_bytes": 6024,
         "reasons": []
       },
@@ -232,7 +232,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 70.7,
+        "run_ms": 58.0,
         "trace_bytes": 6013,
         "reasons": []
       },
@@ -269,7 +269,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 65.0,
+        "run_ms": 65.1,
         "trace_bytes": 6032,
         "reasons": []
       },
@@ -306,7 +306,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 135.9,
+        "run_ms": 214.7,
         "trace_bytes": 13432,
         "reasons": []
       },
@@ -343,7 +343,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 127.8,
+        "run_ms": 187.8,
         "trace_bytes": 13444,
         "reasons": []
       },
@@ -380,7 +380,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 28.4,
+        "run_ms": 36.4,
         "trace_bytes": 2372,
         "reasons": []
       },
@@ -417,7 +417,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 143.5,
+        "run_ms": 152.0,
         "trace_bytes": 13420,
         "reasons": []
       },

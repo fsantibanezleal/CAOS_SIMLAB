@@ -25,7 +25,7 @@ What this demonstrates (the statistics half of the S10 pattern):
 
 Run it (cwd = repo root, the CAOS_SIMLAB folder):
 
-    .venv/Scripts/python.exe docs/frameworks/scipy-stats/example.py
+    .venv/Scripts/python.exe docs/frameworks/13_scipy-stats/example.py
 
 Only relative paths and the standard scientific stack are used (numpy, scipy).
 No GPU, no network, no files written.

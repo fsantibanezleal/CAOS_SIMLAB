@@ -105,8 +105,10 @@ The primary plan's KPIs (from **OR-Tools**, carried in the trace exactly as the 
 ### The OR-Tools ↔ PyVRP head-to-head (the `analytic` slot)
 
 PyVRP's plan is carried alongside in the trace's free-form **`analytic`** field (no route-schema change), so
-the frontend can overlay/toggle the SOTA contrast. The committed comparison block records, for the same
-instance:
+the SOTA contrast travels with every committed trace and is available to any future overlay/toggle UI. (The
+shipped web viewer renders only the primary OR-Tools plan today; it does not yet read this `analytic` slot
+for S08 — the contrast lives in the committed data and in [04 · Results & reading](./04_results-and-reading.md),
+not in an in-app toggle.) The committed comparison block records, for the same instance:
 
 - per engine: `total_distance`, `vehicles_used`, `max_route_dist`, per-vehicle `loads`;
 - `compare.distance_gap` $=$ (OR-Tools total) $-$ (PyVRP total); **$> 0$ means PyVRP found a shorter total**;

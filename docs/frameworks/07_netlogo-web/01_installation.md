@@ -6,9 +6,10 @@ you **author a model** (in NetLogo desktop or on netlogoweb.org) and **export a 
 already contains the engine inlined. That HTML is then embedded in the lab's React/Vite SPA and runs
 **entirely in the visitor's browser** — zero server compute.
 
-This is the **LIVE on-ramp lane** for ABM: the visitor lands on a page and a real, animated simulator is
-already running, with sliders, on a no-GPU VPS that only serves static files. (Contrast the Mesa lane,
-which is offline precompute → committed trace → replay; see the [Mesa node](../04_mesa.md).)
+This is the **native-JS LIVE on-ramp lane** for ABM: the visitor lands on a page and a real, animated
+simulator is already running, with sliders, on a no-GPU VPS that only serves static files — with no Pyodide
+download at all. (The Mesa lane *also* runs live, but via Pyodide-Python, backed by a committed canonical
+trace for instant first paint; see the [Mesa node](../04_mesa.md).)
 
 > **Reading order for this node:** start here (install/obtain the engine), then
 > [`02_usage.md`](./02_usage.md) (the real embed API + the runnable artifact), then
@@ -39,11 +40,13 @@ which is offline precompute → committed trace → replay; see the [Mesa node](
 | Lane | Engine | Where it runs | Cold start |
 |---|---|---|---|
 | **LIVE / native JS** (this node) | NetLogo Web (Tortoise) | visitor's browser, native JS | smallest — no runtime download beyond the HTML |
-| **LIVE / Python-in-browser** | NumPy / SimPy via **Pyodide** | visitor's browser, WASM | larger — must fetch the Pyodide wheel closure first |
-| **Offline → replay** | Mesa / OR-Tools / JuPedSim / … | precompute box, committed trace, static replay | n/a — the browser only replays a JSON/Arrow trace |
+| **LIVE / Python-in-browser** | SimPy, Ciw, **Mesa**, joblib/SciPy, NetworkX via **Pyodide** (`⊆ LIVE_WHEELS`) | visitor's browser, WASM | larger — must fetch/micropip the wheel closure first (~3 s for Mesa) |
+| **Offline → replay (native code only)** | OR-Tools / JuPedSim / GPU engines | precompute box, committed trace, static replay | n/a — the browser only replays a JSON/Arrow trace |
 
-NetLogo Web is the only engine that **simulates live in the browser without Pyodide**, which is exactly why
-it owns the "enter → a running simulator, instantly" on-ramp.
+NetLogo Web is the only engine that **simulates live in the browser without Pyodide** (compiled JS), which is
+exactly why it owns the "enter → a running simulator, instantly" on-ramp. Mesa runs live too, but via Pyodide
+(it pays the WASM cold start). The offline-replay lane is reserved for **native code** that cannot run in
+WASM (OR-Tools, JuPedSim, GPU engines) — not for Mesa.
 
 ## 2. Step 1 — author or pick a model
 
