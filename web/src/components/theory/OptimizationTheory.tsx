@@ -536,8 +536,8 @@ g<g^{*}\Rightarrow\text{direct},\ \ g>g^{*}\Rightarrow\text{pass}.`}
           <Callout variant="strong" title={es ? "Rol en el modelado" : "Modeling role"}>
             <p>
               {es
-                ? "S07 enseña el match factor barriendo la flota contra un cargador fijo (KPIs throughput_per_hr, loader_wait_per_load). S11 enseña plan-vs-realidad: el KPI plan_adherence_pct y grade_dev muestran cómo una flota sub-equipada desliza la ley fuera de la banda. Juntos cierran el bucle optimize-then-simulate del laboratorio."
-                : "S07 teaches the match factor by sweeping the fleet against a fixed loader (KPIs throughput_per_hr, loader_wait_per_load). S11 teaches plan-vs-reality: the plan_adherence_pct and grade_dev KPIs show how an under-trucked fleet slips grade out of band. Together they close the lab's optimize-then-simulate loop."}
+                ? "S07 barre la flota contra un cargador fijo y reporta throughput_per_hr y loader_wait_per_load; el match factor no es un KPI mostrado sino la lente analítica con la que infieres el régimen — el rendimiento que satura y la espera del cargador que crece delatan el cruce de MF=1. S11 enseña plan-vs-realidad: el KPI plan_adherence_pct y grade_dev muestran cómo una flota sub-equipada desliza la ley fuera de la banda. Juntos cierran el bucle optimize-then-simulate del laboratorio."
+                : "S07 sweeps the fleet against a fixed loader and reports throughput_per_hr and loader_wait_per_load; the match factor is not a displayed KPI but the analytic lens you read those through — saturating throughput and rising loader wait reveal the MF=1 crossing. S11 teaches plan-vs-reality: the plan_adherence_pct and grade_dev KPIs show how an under-trucked fleet slips grade out of band. Together they close the lab's optimize-then-simulate loop."}
             </p>
           </Callout>
 

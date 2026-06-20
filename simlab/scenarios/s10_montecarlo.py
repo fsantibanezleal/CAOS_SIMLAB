@@ -1,9 +1,16 @@
 """S10 — Monte-Carlo replication / confidence-interval study.
 
-Runs N independent replications of the M/M/c queue (the S01 model) and shows the output-analysis lesson
-made interactive: a single run is noisy, but the running mean of many seeded replications converges to the
-closed-form Erlang-C value, and the 95% confidence interval narrows like 1/√n. Precompute lane (N runs),
-but pure-Python and fully seeded.
+Runs N independent replications of the M/M/c queue (the S01 model) and shows two output-analysis lessons
+made interactive. (1) The replication/CI lesson: a single run is noisy, but the running mean of many seeded
+replications stabilises and the 95% confidence interval narrows like 1/√n. (2) The finite-run-bias lesson:
+each replication starts empty and serves only a finite number of customers, so its per-run mean carries a
+transient (initialisation) bias. At light-to-moderate load that bias is tiny and the running mean lands on
+the closed-form Erlang-C value; at high load (ρ≈0.9, ~600 customers/run) the bias is large (~16% low), so
+the CI converges tightly around a BIASED estimate and the Erlang-C line sits outside it — the CI measures
+the precision of a biased estimator, not its accuracy.
+
+Live-capable: pure-Python and fully seeded, so it runs in the browser via Pyodide (lane "live"); the
+committed seed-42 trace is also replayed for the deterministic gallery.
 """
 from __future__ import annotations
 
@@ -62,9 +69,9 @@ class MonteCarloScenario(Scenario):
             v("rep500_mod", "500 reps · ρ≈0.67", "500 réplicas · ρ≈0.67", 2.0, 3, 500, "Many replications: a tight, well-centred CI.", "Muchas réplicas: IC angosto y bien centrado."),
             v("rep200_light", "200 reps · ρ≈0.50", "200 réplicas · ρ≈0.50", 1.5, 3, 200, "Light load: low variance, easy to estimate.", "Carga ligera: baja varianza, fácil de estimar."),
             v("rep200_busy", "200 reps · ρ≈0.80", "200 réplicas · ρ≈0.80", 2.4, 3, 200, "Busier: more run-to-run variability.", "Más ocupada: más variabilidad entre corridas."),
-            v("rep200_heavy", "200 reps · ρ≈0.90", "200 réplicas · ρ≈0.90", 2.7, 3, 200, "Heavy load: high variance — the CI is wide.", "Carga alta: alta varianza — el IC es ancho."),
+            v("rep200_heavy", "200 reps · ρ≈0.90", "200 réplicas · ρ≈0.90", 2.7, 3, 200, "Heavy load: ~600 customers/run is too short — a ~16% transient bias pulls the CI below Erlang-C.", "Carga alta: ~600 clientes/corrida es muy corto — un sesgo transitorio ~16% deja el IC bajo Erlang-C."),
             v("rep500_busy", "500 reps · ρ≈0.80", "500 réplicas · ρ≈0.80", 2.4, 3, 500, "More reps tame the busy-system variance.", "Más réplicas domestican la varianza del sistema ocupado."),
-            v("rep500_heavy", "500 reps · ρ≈0.90", "500 réplicas · ρ≈0.90", 2.7, 3, 500, "Even at ρ=0.9, 500 reps give a usable CI.", "Aun a ρ=0.9, 500 réplicas dan un IC utilizable."),
+            v("rep500_heavy", "500 reps · ρ≈0.90", "500 réplicas · ρ≈0.90", 2.7, 3, 500, "More reps tighten the CI but can't fix bias: it converges precisely onto a ~16%-low value, outside Erlang-C.", "Más réplicas cierran el IC pero no corrigen el sesgo: converge con precisión a un valor ~16% bajo, fuera de Erlang-C."),
             v("rep50_heavy", "50 reps · ρ≈0.90", "50 réplicas · ρ≈0.90", 2.7, 3, 50, "The danger case: few reps at high load — don't trust it.", "El caso peligroso: pocas réplicas a carga alta — no confíes."),
             v("rep500_light", "500 reps · ρ≈0.50", "500 réplicas · ρ≈0.50", 1.5, 3, 500, "Best case: light load, many reps, razor-tight CI.", "Mejor caso: carga ligera, muchas réplicas, IC finísimo."),
         ]

@@ -3,6 +3,32 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.15.002] - 2026-06-19
+### Fixed
+- **Adversarial truth-audit remediation.** A full audit (equations vs code, citations web-verified, each
+  case re-executed) found the simulation/OR cores correct and **all 50 citations real (0 fabricated)**, but
+  surfaced real defects — now fixed:
+  - **QueueingTheory pooling figure was wrong by 2×** (showed Wq 0.889/0.277/0.102 for c=2/5/10; correct
+    1.778/0.554/0.205). Fixed the values, bar heights, trend overlay, caption, and the "cuts to a third" →
+    "to a bit under half" prose. *(The headline figure now matches the code's own Erlang-C.)*
+  - **DES methodology tab described features the code doesn't implement** — a "Welch warm-up the lab
+    applies", "spawned substreams / CRN", Student-t CIs, and "inside the CI across all 12 regimes". Reworded
+    to the truth: no warm-up (n is large), sequential PCG64 seeds, a normal-approximation CI, 11 stable
+    regimes. OptimizationTheory: S07 infers the match-factor regime from throughput/loader-wait (no MF KPI).
+  - **Scenario variant claims now match the data.** S11: the dump flow is serviced (dump_heavy routes the
+    majority to the dump), plan-adherence is measured over the plant plan (overtrucked = 100%), and
+    low_target / surge12 / barrier retuned so they realize their labels. S03: fizzle now genuinely dies out
+    (R0≈0.7) and threshold is small/slow (R0≈1.3); title "SIR/SEIR"→"SIR" (no SEIR exists). S07: f_t12 note
+    corrected (loads 12→15, wait ~4×), `switch_grade_est`→null under a barrier (was a wrong 2.98), the sim
+    framed as deterministic with M/M/1//N as the analytic analogue. S08: global-span = longest route (not
+    "longest − shortest"); the back-and-forth claim removed; manyveh/c15v4/tightcap stated honestly (the
+    extra vehicle/tighter cap doesn't bind on these instances). S06: dropped the false "j4m6 short makespan"
+    + "at equal load" (generated jobs traverse all machines → makespans not comparable across instances).
+    S10: it's live-capable (not "no live mode"); the ρ≈0.9 case reframed as the finite-run transient-bias
+    lesson. S02: copy corrected (≈99% settle, segregation ≫ random at τ=0.30, t70 empty 0.10). S01: stale
+    "Wq=inf" docstring → "None". AbmTheory: removed the spurious "SingleActivation" Mesa scheduler.
+  - 38 tests pass; ruff clean; all affected traces regenerated.
+
 ## [0.15.001] - 2026-06-19
 ### Fixed
 - **S11 terrain made genuinely diverse.** The previous hills were clustered centrally, leaving flat

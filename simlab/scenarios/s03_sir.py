@@ -31,7 +31,7 @@ def _infected_neighbors(grid: np.ndarray) -> np.ndarray:
 
 class SIRScenario(Scenario):
     id = "s03_sir"
-    title = "SIR / SEIR Epidemic"
+    title = "SIR Epidemic"
     method = "ABM"
     tier = 1
     viz = "agent-grid"
@@ -51,8 +51,8 @@ class SIRScenario(Scenario):
             return Variant(vid, le, ls, {"size": 38, "beta": beta, "gamma": gamma, "init_infected": init, "steps": 80}, ne, ns)
 
         return [
-            v("fizzle", "Below threshold (fizzles)", "Bajo umbral (se apaga)", 0.06, 0.25, 0.02, "Transmissibility too low: the outbreak dies out.", "Transmisibilidad muy baja: el brote se apaga."),
-            v("threshold", "Near threshold", "Cerca del umbral", 0.10, 0.25, 0.02, "Right at the tipping point — small, slow spread.", "Justo en el punto de quiebre — propagación pequeña y lenta."),
+            v("fizzle", "Below threshold (fizzles)", "Bajo umbral (se apaga)", 0.022, 0.25, 0.02, "Transmissibility too low: the outbreak dies out.", "Transmisibilidad muy baja: el brote se apaga."),
+            v("threshold", "Near threshold", "Cerca del umbral", 0.04, 0.25, 0.02, "Right at the tipping point — small, slow spread.", "Justo en el punto de quiebre — propagación pequeña y lenta."),
             v("mild", "Mild wave", "Ola leve", 0.14, 0.20, 0.02, "A modest epidemic with a low peak.", "Una epidemia modesta con pico bajo."),
             v("moderate", "Moderate wave", "Ola moderada", 0.20, 0.20, 0.02, "The classic SIR wave: rise, peak, burnout.", "La ola SIR clásica: sube, pico, extinción."),
             v("severe", "Severe wave", "Ola severa", 0.30, 0.20, 0.02, "High transmissibility: tall, fast peak.", "Alta transmisibilidad: pico alto y rápido."),

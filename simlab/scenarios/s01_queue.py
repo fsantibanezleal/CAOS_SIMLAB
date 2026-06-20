@@ -22,7 +22,7 @@ from ..core.trace import Trace
 def erlang_c_mmc(lam: float, mu: float, c: int) -> dict:
     """Closed-form M/M/c reference: utilisation, P(wait), Wq (mean wait in queue), Lq.
 
-    Returns Wq = inf when the system is unstable (rho >= 1) — a teachable failure mode.
+    Returns Wq = None (null) when unstable (rho >= 1) — a teachable failure mode.
     """
     rho = lam / (c * mu)
     a = lam / mu  # offered load (Erlangs)

@@ -312,7 +312,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.9,
+        "run_ms": 0.8,
         "trace_bytes": 21828,
         "reasons": []
       },
@@ -321,12 +321,12 @@
         "throughput_per_hr": 10.0,
         "mean_cycle_time": 31.75,
         "loader_wait_per_load": 3.98,
-        "switch_grade_est": 2.98,
+        "switch_grade_est": null,
         "n_trucks": 5,
         "n_loaders": 1
       },
       "analytic": {
-        "switch_grade_est": 2.98,
+        "switch_grade_est": null,
         "route_via": "pass at col 3",
         "cross_col": 3,
         "lift_col": 4
@@ -432,7 +432,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.9,
+        "run_ms": 2.1,
         "trace_bytes": 25467,
         "reasons": []
       },
@@ -472,7 +472,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.9,
+        "run_ms": 1.0,
         "trace_bytes": 33398,
         "reasons": []
       },
@@ -552,7 +552,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.9,
+        "run_ms": 0.8,
         "trace_bytes": 24230,
         "reasons": []
       },
@@ -592,7 +592,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.9,
+        "run_ms": 0.8,
         "trace_bytes": 22183,
         "reasons": []
       },

@@ -98,7 +98,7 @@ export function AbmTheory({ es }: { es: boolean }) {
             <p>
               {es
                 ? "El planificador (scheduler) o régimen de activación determina qué agentes se actualizan en cada tick y en qué orden, y cómo cada agente lee el estado compartido. Como los agentes de un ABM mutan un mundo común, el planificador no es un detalle de implementación: es parte del modelo, y cambiarlo puede cambiar el resultado emergente. La librería usa tres regímenes canónicos, que reflejan los planificadores históricos de Mesa RandomActivation / SimultaneousActivation / StagedActivation."
-                : "The scheduler (activation regime) governs which agents are stepped on each tick and in what order, and how each agent reads shared state. Because ABM agents mutate a common world, the scheduler is not an implementation detail — it is part of the model, and changing it can change the emergent outcome. Three canonical regimes are used in the lab, mirroring Mesa's historical SingleActivation / RandomActivation / SimultaneousActivation / StagedActivation schedulers."}
+                : "The scheduler (activation regime) governs which agents are stepped on each tick and in what order, and how each agent reads shared state. Because ABM agents mutate a common world, the scheduler is not an implementation detail — it is part of the model, and changing it can change the emergent outcome. Three canonical regimes are used in the lab, mirroring Mesa's historical RandomActivation / SimultaneousActivation / StagedActivation schedulers."}
             </p>
             <p>
               {es
@@ -846,7 +846,7 @@ export function AbmTheory({ es }: { es: boolean }) {
               </text>
               {/* caption strip */}
               <text x="320" y="228" fontSize={10.5} textAnchor="middle" fill="var(--color-fg-faint)">
-                R₀ = β/γ · p_c = 1 − 1/R₀ · 1−ρ = e^(−R₀ρ)
+                R₀ = β/γ;  p_c = 1 − 1/R₀;  1−ρ = e^(−R₀ρ)
               </text>
             </svg>
             <figcaption className="fig-cap">
