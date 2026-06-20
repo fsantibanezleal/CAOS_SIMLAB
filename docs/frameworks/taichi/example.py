@@ -26,7 +26,6 @@ Run (cwd = repo root):
     .venv/Scripts/python.exe docs/frameworks/taichi/example.py
 """
 
-import numpy as np
 import taichi as ti
 
 # Portable, deterministic init. arch=ti.cpu so the example runs anywhere (no
