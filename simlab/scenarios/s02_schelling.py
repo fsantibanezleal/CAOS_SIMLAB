@@ -17,112 +17,130 @@ series + KPIs); nothing in the trace schema or the frontend contract changes.
 """
 from __future__ import annotations
 
-import mesa
-from mesa.space import SingleGrid
-
 from ..core.gridtrace import GridTrace
 from ..core.scenario import ParamSpec, Scenario, Variant
 
 EMPTY, A, B = 0, 1, 2
 
+# The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy third-party dep absent under Pyodide).
+# Importing this module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps;
+# Mesa is imported only when ``run()`` calls ``_models()`` to build the classes (cached after the first
+# build, so behaviour is identical to top-level class definitions).
+_MODELS: tuple[type, type] | None = None
 
-class SchellingHousehold(mesa.Agent):
-    """One household with a fixed group label (``A`` or ``B``).
 
-    The agent owns the local rule but the *evaluation* is driven by the model each tick (so the lab can
-    record happiness + segregation per step). ``self.pos`` is the ``(x, y)`` set by the grid on placement.
+def _models() -> tuple[type, type]:
+    """Build (and cache) the Mesa-backed ``SchellingHousehold`` + ``SchellingModel`` classes.
+
+    Mesa is imported here, inside the function that needs it, so ``import simlab.registry`` works without
+    Mesa installed (the Pyodide live lane). The classes are identical to a top-level definition.
     """
+    global _MODELS
+    if _MODELS is not None:
+        return _MODELS
 
-    def __init__(self, model: "SchellingModel", group: int) -> None:
-        super().__init__(model)
-        self.group = group
+    import mesa
+    from mesa.space import SingleGrid
 
-    def same_and_occupied(self) -> tuple[int, int]:
-        """Count Moore-neighbours that are same-type and the total occupied neighbours."""
-        same = occupied = 0
-        for nb in self.model.grid.iter_neighbors(self.pos, moore=True):
-            occupied += 1
-            if nb.group == self.group:
-                same += 1
-        return same, occupied
+    class SchellingHousehold(mesa.Agent):
+        """One household with a fixed group label (``A`` or ``B``).
 
-
-class SchellingModel(mesa.Model):
-    """The Schelling world: a (non-torus) ``SingleGrid`` populated with two household types.
-
-    Built with Mesa 3. Activation uses the model's ``AgentSet`` (``self.agents``). Relocation of unhappy
-    agents is done *simultaneously* per step (all unhappy agents are computed first, then moved), which is
-    the classic batch Schelling update; every move uses ``self.random`` so the run is deterministic.
-    """
-
-    def __init__(self, size: int, empty_frac: float, tolerance: float, seed: int) -> None:
-        # Mesa 3: ``rng=`` seeds both self.random (Python random.Random) and self.rng (NumPy Generator).
-        # Seeding here is what makes the whole run reproducible — the foundation of the committed trace.
-        super().__init__(rng=int(seed))
-        self.size = int(size)
-        self.tolerance = float(tolerance)
-        self.grid = SingleGrid(self.size, self.size, torus=False)
-
-        # Populate. Mirror the original layout exactly so the model is the same world, just expressed in
-        # Mesa: visit cells row-major, mark occupied where a draw clears the empty fraction, then split the
-        # occupied cells 50/50 into A/B after a shuffle. All draws come from the seeded self.random.
-        n_cells = self.size * self.size
-        draws = [self.random.random() for _ in range(n_cells)]
-        occupied_flat = [i for i in range(n_cells) if draws[i] >= empty_frac]
-        self.random.shuffle(occupied_flat)
-        half = len(occupied_flat) // 2
-        for rank, flat in enumerate(occupied_flat):
-            group = A if rank < half else B
-            agent = SchellingHousehold(self, group)
-            self.grid.place_agent(agent, (flat % self.size, flat // self.size))
-
-        self.total_agents = len(self.agents)
-
-    # --- metrics over the current configuration -------------------------------------------------
-    def segregation_and_unhappy(self) -> tuple[float, list["SchellingHousehold"]]:
-        """Mean same-type fraction over non-isolated agents + the list of unhappy agents.
-
-        Isolated agents (no occupied neighbours) are content — there is no same-type ratio to fail.
+        The agent owns the local rule but the *evaluation* is driven by the model each tick (so the lab can
+        record happiness + segregation per step). ``self.pos`` is the ``(x, y)`` set by the grid on placement.
         """
-        fracs: list[float] = []
-        unhappy: list[SchellingHousehold] = []
-        for agent in self.agents:
-            same, occupied = agent.same_and_occupied()
-            if occupied == 0:
-                continue  # isolated → content, excluded from the segregation index
-            frac = same / occupied
-            fracs.append(frac)
-            if frac < self.tolerance:
-                unhappy.append(agent)
-        seg = sum(fracs) / len(fracs) if fracs else 0.0
-        return seg, unhappy
 
-    def relocate(self, unhappy: list["SchellingHousehold"]) -> None:
-        """Move every unhappy agent to a random empty cell (simultaneous batch update).
+        def __init__(self, model: "SchellingModel", group: int) -> None:
+            super().__init__(model)
+            self.group = group
 
-        Sorted empties + seeded shuffle keep this deterministic regardless of set iteration order.
+        def same_and_occupied(self) -> tuple[int, int]:
+            """Count Moore-neighbours that are same-type and the total occupied neighbours."""
+            same = occupied = 0
+            for nb in self.model.grid.iter_neighbors(self.pos, moore=True):
+                occupied += 1
+                if nb.group == self.group:
+                    same += 1
+            return same, occupied
+
+    class SchellingModel(mesa.Model):
+        """The Schelling world: a (non-torus) ``SingleGrid`` populated with two household types.
+
+        Built with Mesa 3. Activation uses the model's ``AgentSet`` (``self.agents``). Relocation of unhappy
+        agents is done *simultaneously* per step (all unhappy agents are computed first, then moved), which is
+        the classic batch Schelling update; every move uses ``self.random`` so the run is deterministic.
         """
-        empties = sorted(self.grid.empties)  # set → stable order before shuffling
-        self.random.shuffle(empties)
-        order = list(unhappy)
-        self.random.shuffle(order)
-        ei = 0
-        for agent in order:
-            if ei >= len(empties):
-                break
-            dest = empties[ei]
-            ei += 1
-            vacated = agent.pos
-            self.grid.move_agent(agent, dest)
-            empties.append(vacated)  # the freed cell becomes available within the same step
 
-    def grid_snapshot(self) -> list[int]:
-        """Flatten the grid to a row-major list of state codes (EMPTY / A / B) for the frame trace."""
-        cells = [EMPTY] * (self.size * self.size)
-        for agent in self.agents:
-            x, y = agent.pos
-            cells[y * self.size + x] = agent.group
-        return cells
+        def __init__(self, size: int, empty_frac: float, tolerance: float, seed: int) -> None:
+            # Mesa 3: ``rng=`` seeds both self.random (Python random.Random) and self.rng (NumPy Generator).
+            # Seeding here is what makes the whole run reproducible — the foundation of the committed trace.
+            super().__init__(rng=int(seed))
+            self.size = int(size)
+            self.tolerance = float(tolerance)
+            self.grid = SingleGrid(self.size, self.size, torus=False)
+
+            # Populate. Mirror the original layout exactly so the model is the same world, just expressed in
+            # Mesa: visit cells row-major, mark occupied where a draw clears the empty fraction, then split
+            # the occupied cells 50/50 into A/B after a shuffle. All draws come from the seeded self.random.
+            n_cells = self.size * self.size
+            draws = [self.random.random() for _ in range(n_cells)]
+            occupied_flat = [i for i in range(n_cells) if draws[i] >= empty_frac]
+            self.random.shuffle(occupied_flat)
+            half = len(occupied_flat) // 2
+            for rank, flat in enumerate(occupied_flat):
+                group = A if rank < half else B
+                agent = SchellingHousehold(self, group)
+                self.grid.place_agent(agent, (flat % self.size, flat // self.size))
+
+            self.total_agents = len(self.agents)
+
+        # --- metrics over the current configuration ---------------------------------------------
+        def segregation_and_unhappy(self) -> tuple[float, list["SchellingHousehold"]]:
+            """Mean same-type fraction over non-isolated agents + the list of unhappy agents.
+
+            Isolated agents (no occupied neighbours) are content — there is no same-type ratio to fail.
+            """
+            fracs: list[float] = []
+            unhappy: list[SchellingHousehold] = []
+            for agent in self.agents:
+                same, occupied = agent.same_and_occupied()
+                if occupied == 0:
+                    continue  # isolated → content, excluded from the segregation index
+                frac = same / occupied
+                fracs.append(frac)
+                if frac < self.tolerance:
+                    unhappy.append(agent)
+            seg = sum(fracs) / len(fracs) if fracs else 0.0
+            return seg, unhappy
+
+        def relocate(self, unhappy: list["SchellingHousehold"]) -> None:
+            """Move every unhappy agent to a random empty cell (simultaneous batch update).
+
+            Sorted empties + seeded shuffle keep this deterministic regardless of set iteration order.
+            """
+            empties = sorted(self.grid.empties)  # set → stable order before shuffling
+            self.random.shuffle(empties)
+            order = list(unhappy)
+            self.random.shuffle(order)
+            ei = 0
+            for agent in order:
+                if ei >= len(empties):
+                    break
+                dest = empties[ei]
+                ei += 1
+                vacated = agent.pos
+                self.grid.move_agent(agent, dest)
+                empties.append(vacated)  # the freed cell becomes available within the same step
+
+        def grid_snapshot(self) -> list[int]:
+            """Flatten the grid to a row-major list of state codes (EMPTY / A / B) for the frame trace."""
+            cells = [EMPTY] * (self.size * self.size)
+            for agent in self.agents:
+                x, y = agent.pos
+                cells[y * self.size + x] = agent.group
+            return cells
+
+    _MODELS = (SchellingHousehold, SchellingModel)
+    return _MODELS
 
 
 class SchellingScenario(Scenario):
@@ -163,6 +181,7 @@ class SchellingScenario(Scenario):
         n = int(p["size"])
         empty_frac, tol, steps = float(p["empty"]), float(p["tolerance"]), int(p["steps"])
 
+        _, SchellingModel = _models()  # lazy: build the Mesa-backed model classes only when running
         model = SchellingModel(size=n, empty_frac=empty_frac, tolerance=tol, seed=int(seed))
 
         tr = GridTrace(self.id, self.title, self.method, int(seed), p, n, n, legend=[

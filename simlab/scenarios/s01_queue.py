@@ -23,7 +23,6 @@ from __future__ import annotations
 import math
 from statistics import fmean, mean, stdev
 
-import ciw
 import simpy
 
 from ..core.rng import make_rng
@@ -67,6 +66,8 @@ def _ciw_replication_wq(lam: float, mu: float, c: int, max_time: float, seed: in
     (an M/M/c node), exactly as the queueing chapter defines it. ``ciw.seed(seed)`` makes the run
     reproducible. Returns 0.0 if no customer cleared the warm-up (degenerate short run).
     """
+    import ciw  # lazy: only needed to RUN the cross-check (not to import the registry under Pyodide)
+
     network = ciw.create_network(
         arrival_distributions=[ciw.dists.Exponential(rate=lam)],
         service_distributions=[ciw.dists.Exponential(rate=mu)],

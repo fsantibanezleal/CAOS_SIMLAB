@@ -33,13 +33,14 @@ trace schema or the frontend contract changes.
 """
 from __future__ import annotations
 
-from typing import Callable
-
-import networkx as nx
+from typing import TYPE_CHECKING, Callable
 
 from ..core.routetrace import RouteTrace
 from ..core.scenario import ParamSpec, Scenario, Variant
 from ._geo import GridNetwork, timed_legs
+
+if TYPE_CHECKING:  # type-checking only: NetworkX is a heavy dep absent under Pyodide, imported lazily below
+    import networkx as nx
 
 # OR-Tools CP-SAT confirmation of the optimal route cost. Native code => precompute lane.
 CP_SCALE = 1000          # integer edge-cost scaling (mm) so CP-SAT stays exact on a real-valued cost
@@ -55,6 +56,8 @@ def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.
     (plain distance for an empty return, grade-penalised distance for a loaded climb). Nodes/edges mirror
     ``_geo`` exactly, so ``nx.dijkstra_path`` reproduces the lab's graded shortest path byte-for-byte.
     """
+    import networkx as nx  # lazy: only needed to RUN (not to import the registry under Pyodide)
+
     g = nx.DiGraph()
     g.add_nodes_from(net.coords)
     for a, b in net.edges:
@@ -65,6 +68,8 @@ def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.
 
 def nx_route(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst: int) -> list[int]:
     """The cheapest haul route src->dst on the graded road graph (NetworkX Dijkstra)."""
+    import networkx as nx  # lazy: only needed to RUN (not to import the registry under Pyodide)
+
     g = build_road_graph(net, cost)
     return nx.dijkstra_path(g, src, dst, weight="weight")
 

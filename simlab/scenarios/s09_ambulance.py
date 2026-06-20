@@ -31,13 +31,15 @@ so the scenario keeps its live lane. The shared ``_geo.py`` is untouched.
 from __future__ import annotations
 
 import math
-
-import networkx as nx
+from typing import TYPE_CHECKING
 
 from ..core.routetrace import RouteTrace
 from ..core.rng import make_rng
 from ..core.scenario import ParamSpec, Scenario, Variant
 from ._geo import GridNetwork, timed_legs
+
+if TYPE_CHECKING:  # type-checking only: NetworkX is a heavy dep absent under Pyodide, imported lazily below
+    import networkx as nx
 
 STATION_POS = [(0.2, 0.2), (0.8, 0.8), (0.8, 0.2), (0.2, 0.8), (0.5, 0.5)]
 
@@ -48,6 +50,8 @@ def build_road_graph(net: GridNetwork) -> nx.Graph:
     Nodes and edges mirror ``_geo`` exactly; each road segment's weight is its euclidean length, so
     ``nx.dijkstra_path`` reproduces the lab's plain-distance Dijkstra byte-for-byte on the unit grid.
     """
+    import networkx as nx  # lazy: only needed to RUN (not to import the registry under Pyodide)
+
     g = nx.Graph()
     g.add_nodes_from(net.coords)
     for a, b in net.edges:
@@ -70,6 +74,8 @@ class RoadRouter:
 
     def _ensure(self, src: int) -> None:
         if src not in self._paths:
+            import networkx as nx  # lazy: only needed to RUN (not to import the registry under Pyodide)
+
             lengths, paths = nx.single_source_dijkstra(self.graph, src, weight="weight")
             self._paths[src] = paths
             self._lengths[src] = lengths

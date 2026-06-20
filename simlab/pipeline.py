@@ -39,7 +39,7 @@ def precompute(scenario_id: str, seed: int = 42, out_root: Path | str = REPO_ROO
 
         rel = Path("data") / "artifacts" / sc.id / f"{var.id}-seed{seed}.json"
         trace_bytes = trace.write(out_root / rel)
-        gate = classify_lane(sc.pure_python, run_ms, trace_bytes)
+        gate = classify_lane(sc.pure_python, run_ms, trace_bytes, sc.wheels)
 
         entries.append({
             "id": var.id,

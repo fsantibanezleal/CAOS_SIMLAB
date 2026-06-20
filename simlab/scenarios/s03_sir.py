@@ -20,104 +20,122 @@ nothing in the trace schema or the frontend contract changes.
 """
 from __future__ import annotations
 
-import mesa
-from mesa.space import SingleGrid
-
 from ..core.gridtrace import GridTrace
 from ..core.scenario import ParamSpec, Scenario, Variant
 
 S, I, R = 0, 1, 2  # noqa: E741 — standard SIR compartment names
 
+# The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy third-party dep absent under Pyodide).
+# Importing this module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps;
+# Mesa is imported only when ``run()`` calls ``_models()`` to build the classes (cached after the first
+# build, so behaviour is identical to top-level class definitions).
+_MODELS: tuple[type, type] | None = None
 
-class SIRAgent(mesa.Agent):
-    """One cell carrying a health state (``S`` / ``I`` / ``R``).
 
-    The agent owns its state but the *transition* is driven by the model each tick (simultaneous batch
-    update), so the lab can record the S/I/R populations per step. ``self.pos`` is the ``(x, y)`` set by the
-    grid on placement.
+def _models() -> tuple[type, type]:
+    """Build (and cache) the Mesa-backed ``SIRAgent`` + ``SIRModel`` classes.
+
+    Mesa is imported here, inside the function that needs it, so ``import simlab.registry`` works without
+    Mesa installed (the Pyodide live lane). The classes are identical to a top-level definition.
     """
+    global _MODELS
+    if _MODELS is not None:
+        return _MODELS
 
-    def __init__(self, model: "SIRModel", state: int) -> None:
-        super().__init__(model)
-        self.state = state
+    import mesa
+    from mesa.space import SingleGrid
 
-    def infected_neighbors(self) -> int:
-        """Count Moore-neighbours currently in the Infected state."""
-        return sum(1 for nb in self.model.grid.iter_neighbors(self.pos, moore=True) if nb.state == I)
+    class SIRAgent(mesa.Agent):
+        """One cell carrying a health state (``S`` / ``I`` / ``R``).
 
-
-class SIRModel(mesa.Model):
-    """The SIR world: a (non-torus) ``SingleGrid`` with one agent per cell.
-
-    Built with Mesa 3. Activation uses the model's ``AgentSet`` (``self.agents``). The per-step update is
-    computed against the start-of-step configuration and applied simultaneously (the classic synchronous
-    SIR sweep); every draw uses ``self.random`` so the run is deterministic.
-    """
-
-    def __init__(self, size: int, beta: float, gamma: float, init_infected: float, seed: int) -> None:
-        # Mesa 3: ``rng=`` seeds both self.random (Python random.Random) and self.rng (NumPy Generator).
-        # Seeding here is what makes the whole run reproducible — the foundation of the committed trace.
-        super().__init__(rng=int(seed))
-        self.size = int(size)
-        self.beta = float(beta)
-        self.gamma = float(gamma)
-        self.grid = SingleGrid(self.size, self.size, torus=False)
-
-        # Populate: one agent per cell, visited row-major (flat index = y*size + x). Each cell starts
-        # Infected if a seeded draw clears the init fraction, else Susceptible. All draws come from the
-        # seeded self.random, so the initial board is reproducible.
-        n_cells = self.size * self.size
-        states = [I if self.random.random() < init_infected else S for _ in range(n_cells)]
-        if I not in states:  # guarantee at least one seed case (a stochastic all-S start would be inert)
-            states[n_cells // 2] = I
-        for flat in range(n_cells):
-            agent = SIRAgent(self, states[flat])
-            self.grid.place_agent(agent, (flat % self.size, flat // self.size))
-
-        self.total_agents = len(self.agents)
-
-    # --- one simultaneous SIR sweep -------------------------------------------------------------
-    def step(self) -> None:
-        """Decide all transitions against the current board, then apply them together.
-
-        Iterating ``self.agents`` in its stable order and drawing infection then recovery per agent keeps
-        the sweep deterministic; reads use the unmodified ``state`` so the update is synchronous.
+        The agent owns its state but the *transition* is driven by the model each tick (simultaneous batch
+        update), so the lab can record the S/I/R populations per step. ``self.pos`` is the ``(x, y)`` set by
+        the grid on placement.
         """
-        new_infected: list[SIRAgent] = []
-        new_recovered: list[SIRAgent] = []
-        for agent in self.agents:
-            if agent.state == S:
-                k = agent.infected_neighbors()
-                if k:
-                    p_inf = 1.0 - (1.0 - self.beta) ** k
-                    if self.random.random() < p_inf:
-                        new_infected.append(agent)
-            elif agent.state == I:
-                if self.random.random() < self.gamma:
-                    new_recovered.append(agent)
-        for agent in new_infected:
-            agent.state = I
-        for agent in new_recovered:
-            agent.state = R
 
-    # --- metrics over the current configuration -------------------------------------------------
-    def counts(self) -> tuple[int, int, int]:
-        """Return the (S, I, R) population counts over all agents."""
-        ni = nr = 0
-        for agent in self.agents:
-            if agent.state == I:
-                ni += 1
-            elif agent.state == R:
-                nr += 1
-        return self.total_agents - ni - nr, ni, nr
+        def __init__(self, model: "SIRModel", state: int) -> None:
+            super().__init__(model)
+            self.state = state
 
-    def grid_snapshot(self) -> list[int]:
-        """Flatten the grid to a row-major list of state codes (S / I / R) for the frame trace."""
-        cells = [S] * (self.size * self.size)
-        for agent in self.agents:
-            x, y = agent.pos
-            cells[y * self.size + x] = agent.state
-        return cells
+        def infected_neighbors(self) -> int:
+            """Count Moore-neighbours currently in the Infected state."""
+            return sum(1 for nb in self.model.grid.iter_neighbors(self.pos, moore=True) if nb.state == I)
+
+    class SIRModel(mesa.Model):
+        """The SIR world: a (non-torus) ``SingleGrid`` with one agent per cell.
+
+        Built with Mesa 3. Activation uses the model's ``AgentSet`` (``self.agents``). The per-step update is
+        computed against the start-of-step configuration and applied simultaneously (the classic synchronous
+        SIR sweep); every draw uses ``self.random`` so the run is deterministic.
+        """
+
+        def __init__(self, size: int, beta: float, gamma: float, init_infected: float, seed: int) -> None:
+            # Mesa 3: ``rng=`` seeds both self.random (Python random.Random) and self.rng (NumPy Generator).
+            # Seeding here is what makes the whole run reproducible — the foundation of the committed trace.
+            super().__init__(rng=int(seed))
+            self.size = int(size)
+            self.beta = float(beta)
+            self.gamma = float(gamma)
+            self.grid = SingleGrid(self.size, self.size, torus=False)
+
+            # Populate: one agent per cell, visited row-major (flat index = y*size + x). Each cell starts
+            # Infected if a seeded draw clears the init fraction, else Susceptible. All draws come from the
+            # seeded self.random, so the initial board is reproducible.
+            n_cells = self.size * self.size
+            states = [I if self.random.random() < init_infected else S for _ in range(n_cells)]
+            if I not in states:  # guarantee at least one seed case (a stochastic all-S start would be inert)
+                states[n_cells // 2] = I
+            for flat in range(n_cells):
+                agent = SIRAgent(self, states[flat])
+                self.grid.place_agent(agent, (flat % self.size, flat // self.size))
+
+            self.total_agents = len(self.agents)
+
+        # --- one simultaneous SIR sweep ---------------------------------------------------------
+        def step(self) -> None:
+            """Decide all transitions against the current board, then apply them together.
+
+            Iterating ``self.agents`` in its stable order and drawing infection then recovery per agent keeps
+            the sweep deterministic; reads use the unmodified ``state`` so the update is synchronous.
+            """
+            new_infected: list[SIRAgent] = []
+            new_recovered: list[SIRAgent] = []
+            for agent in self.agents:
+                if agent.state == S:
+                    k = agent.infected_neighbors()
+                    if k:
+                        p_inf = 1.0 - (1.0 - self.beta) ** k
+                        if self.random.random() < p_inf:
+                            new_infected.append(agent)
+                elif agent.state == I:
+                    if self.random.random() < self.gamma:
+                        new_recovered.append(agent)
+            for agent in new_infected:
+                agent.state = I
+            for agent in new_recovered:
+                agent.state = R
+
+        # --- metrics over the current configuration ---------------------------------------------
+        def counts(self) -> tuple[int, int, int]:
+            """Return the (S, I, R) population counts over all agents."""
+            ni = nr = 0
+            for agent in self.agents:
+                if agent.state == I:
+                    ni += 1
+                elif agent.state == R:
+                    nr += 1
+            return self.total_agents - ni - nr, ni, nr
+
+        def grid_snapshot(self) -> list[int]:
+            """Flatten the grid to a row-major list of state codes (S / I / R) for the frame trace."""
+            cells = [S] * (self.size * self.size)
+            for agent in self.agents:
+                x, y = agent.pos
+                cells[y * self.size + x] = agent.state
+            return cells
+
+    _MODELS = (SIRAgent, SIRModel)
+    return _MODELS
 
 
 class SIRScenario(Scenario):
@@ -160,6 +178,7 @@ class SIRScenario(Scenario):
         beta, gamma = float(p["beta"]), float(p["gamma"])
         init, steps = float(p["init_infected"]), int(p["steps"])
 
+        _, SIRModel = _models()  # lazy: build the Mesa-backed model classes only when running
         model = SIRModel(size=n, beta=beta, gamma=gamma, init_infected=init, seed=int(seed))
 
         tr = GridTrace(self.id, self.title, self.method, int(seed), p, n, n, legend=[

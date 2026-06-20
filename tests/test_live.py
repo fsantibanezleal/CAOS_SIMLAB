@@ -17,18 +17,24 @@ from simlab.registry import get_scenario
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def test_live_lanes_excludes_native_engines():
+def test_live_lanes_are_lightweight_pure_python_only():
     lanes = set(live_lanes())
-    assert {"s06_jobshop", "s08_vrp", "s11_minehaul"}.isdisjoint(lanes)  # OR-Tools, native → precompute only
+    # Live = pure-Python AND wheel closure ⊆ the browser worker's (numpy, simpy, ciw). Today that is exactly
+    # the SimPy DES scenarios. Everything heavier is precompute + replay: Mesa ABM (pandas/scipy closure too
+    # heavy for the live cold-start), OR-Tools (native, no WASM), joblib/scipy (s10), networkx (s09).
+    assert lanes == {"s01_queue", "s04_ed"}
     assert {
-        "s01_queue", "s02_schelling", "s03_sir", "s04_ed", "s05_beergame",
-        "s07_haul", "s09_ambulance", "s10_montecarlo",
-    } <= lanes
+        "s02_schelling", "s03_sir", "s05_beergame", "s06_jobshop", "s07_haul",
+        "s08_vrp", "s09_ambulance", "s10_montecarlo", "s11_minehaul",
+    }.isdisjoint(lanes)
 
 
-def test_run_trace_json_refuses_native_engine():
+def test_run_trace_json_refuses_precompute_only():
+    # native engine (OR-Tools) and heavy-closure (Mesa) scenarios must both be refused in WASM
     with pytest.raises(RuntimeError):
         run_trace_json("s08_vrp", {}, 42)
+    with pytest.raises(RuntimeError):
+        run_trace_json("s02_schelling", {}, 42)
 
 
 def test_run_trace_json_byte_matches_committed():

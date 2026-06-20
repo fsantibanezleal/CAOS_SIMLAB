@@ -23,7 +23,6 @@ the frontend contract changes.
 """
 from __future__ import annotations
 
-import mesa
 import numpy as np
 
 from ..core.charttrace import ChartTrace
@@ -33,85 +32,105 @@ STAGES = ["retailer", "wholesaler", "distributor", "factory"]
 STAGE_COLORS = ["var(--color-good)", "var(--color-accent)", "var(--color-warn)", "var(--color-magenta)"]
 STAGE_LABELS_ES = ["minorista", "mayorista", "distribuidor", "fábrica"]
 
+# The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy third-party dep absent under Pyodide).
+# Importing this module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps
+# (numpy is allowed: it exists in the live worker). Mesa is imported only when ``run()`` calls ``_models()``
+# to build the classes (cached after the first build, so behaviour is identical to top-level definitions).
+_MODELS: tuple[type, type] | None = None
 
-class EchelonAgent(mesa.Agent):
-    """One supply-chain echelon running an order-up-to base-stock policy.
 
-    The agent owns its own state — an exponentially-smoothed forecast of incoming demand and its previous
-    order-up-to level ``S`` — and exposes one local rule, :meth:`place_order`, which the model calls each
-    week with the order this echelon received from its downstream neighbour. The rule is the classic
-    base-stock update: ``order_t = received_t + (S_t − S_{t−1})`` with ``S_t = (L+1)·forecast_t``, clamped
-    at zero. Nothing here is global; the bullwhip *emerges* from four agents each following this rule.
+def _models() -> tuple[type, type]:
+    """Build (and cache) the Mesa-backed ``EchelonAgent`` + ``BeerGameModel`` classes.
+
+    Mesa is imported here, inside the function that needs it, so ``import simlab.registry`` works without
+    Mesa installed (the Pyodide live lane). The classes are identical to a top-level definition.
     """
+    global _MODELS
+    if _MODELS is not None:
+        return _MODELS
 
-    def __init__(self, model: "BeerGameModel", lead: int, theta: float, base: float) -> None:
-        super().__init__(model)
-        self.lead = int(lead)
-        self.theta = float(theta)
-        self.forecast = float(base)
-        self.s_prev = (self.lead + 1) * float(base)
-        self.orders: list[float] = []
+    import mesa
 
-    def place_order(self, received: float) -> float:
-        """Update the forecast from the demand just received, set the order-up-to level, emit the order."""
-        self.forecast = self.theta * received + (1 - self.theta) * self.forecast
-        s_t = (self.lead + 1) * self.forecast
-        order = max(0.0, received + (s_t - self.s_prev))
-        self.s_prev = s_t
-        self.orders.append(order)
-        return order
+    class EchelonAgent(mesa.Agent):
+        """One supply-chain echelon running an order-up-to base-stock policy.
 
-
-class BeerGameModel(mesa.Model):
-    """The Beer Game world: four serial echelons, no space — a plain Mesa model over an ``AgentSet``.
-
-    Built with Mesa 3. The customer-demand series is generated up front from the seeded ``self.rng`` (so
-    the AR(1) noisy pattern is reproducible), then :meth:`step` is called once per week. Each step pushes
-    the customer demand into the retailer and lets each order cascade upstream through ``self.agents`` —
-    the model's ``AgentSet``, ordered retailer → factory, which is the activation order the Beer Game
-    needs (downstream places its order before its upstream neighbour acts on it).
-    """
-
-    def __init__(self, weeks: int, lead: int, theta: float, step: float, pattern: int, seed: int,
-                 base: float = 8.0, warmup: int = 6) -> None:
-        # Mesa 3: ``rng=`` seeds self.rng (NumPy Generator, identical to np.random.default_rng(seed)) and
-        # self.random. Seeding here is what makes the whole run reproducible — the committed trace's truth.
-        super().__init__(rng=int(seed))
-        self.weeks = int(weeks)
-        self.base = float(base)
-
-        # The four echelons are created retailer → factory, so self.agents iterates in that serial order.
-        for _ in STAGES:
-            EchelonAgent(self, lead, theta, base)
-
-        self.demand = self._build_demand(self.weeks, base, float(step), int(pattern), int(warmup))
-        self.week = 0
-
-    def _build_demand(self, w: int, base: float, step: float, pattern: int, ws: int) -> np.ndarray:
-        """Customer demand: a step, a one-week spike, or AR(1) noise (the only stochastic pattern)."""
-        demand = np.full(w, base)
-        if pattern == 0:  # step
-            demand[ws:] = base + step
-        elif pattern == 1:  # spike
-            demand[ws] = base + step
-        else:  # AR(1) noise — draws flow through the seeded model RNG
-            e = 0.0
-            for t in range(w):
-                e = 0.6 * e + self.rng.normal(0, step / 2.0)
-                demand[t] = max(0.0, base + e)
-        return demand
-
-    def step(self) -> None:
-        """One simulated week: push customer demand into the chain; each order cascades one stage upstream.
-
-        ``self.agents`` is the model's AgentSet in creation order (retailer → factory). Activating in that
-        order means each echelon places its order from the order its downstream neighbour just placed this
-        same tick — information ripples upstream one activation per stage.
+        The agent owns its own state — an exponentially-smoothed forecast of incoming demand and its
+        previous order-up-to level ``S`` — and exposes one local rule, :meth:`place_order`, which the model
+        calls each week with the order this echelon received from its downstream neighbour. The rule is the
+        classic base-stock update: ``order_t = received_t + (S_t − S_{t−1})`` with ``S_t = (L+1)·forecast_t``,
+        clamped at zero. Nothing here is global; the bullwhip *emerges* from four agents each following this.
         """
-        incoming = float(self.demand[self.week])
-        for agent in self.agents:
-            incoming = agent.place_order(incoming)
-        self.week += 1
+
+        def __init__(self, model: "BeerGameModel", lead: int, theta: float, base: float) -> None:
+            super().__init__(model)
+            self.lead = int(lead)
+            self.theta = float(theta)
+            self.forecast = float(base)
+            self.s_prev = (self.lead + 1) * float(base)
+            self.orders: list[float] = []
+
+        def place_order(self, received: float) -> float:
+            """Update the forecast from the demand just received, set the order-up-to level, emit the order."""
+            self.forecast = self.theta * received + (1 - self.theta) * self.forecast
+            s_t = (self.lead + 1) * self.forecast
+            order = max(0.0, received + (s_t - self.s_prev))
+            self.s_prev = s_t
+            self.orders.append(order)
+            return order
+
+    class BeerGameModel(mesa.Model):
+        """The Beer Game world: four serial echelons, no space — a plain Mesa model over an ``AgentSet``.
+
+        Built with Mesa 3. The customer-demand series is generated up front from the seeded ``self.rng`` (so
+        the AR(1) noisy pattern is reproducible), then :meth:`step` is called once per week. Each step pushes
+        the customer demand into the retailer and lets each order cascade upstream through ``self.agents`` —
+        the model's ``AgentSet``, ordered retailer → factory, which is the activation order the Beer Game
+        needs (downstream places its order before its upstream neighbour acts on it).
+        """
+
+        def __init__(self, weeks: int, lead: int, theta: float, step: float, pattern: int, seed: int,
+                     base: float = 8.0, warmup: int = 6) -> None:
+            # Mesa 3: ``rng=`` seeds self.rng (NumPy Generator, identical to np.random.default_rng(seed))
+            # and self.random. Seeding here makes the whole run reproducible — the committed trace's truth.
+            super().__init__(rng=int(seed))
+            self.weeks = int(weeks)
+            self.base = float(base)
+
+            # The four echelons are created retailer → factory, so self.agents iterates in that serial order.
+            for _ in STAGES:
+                EchelonAgent(self, lead, theta, base)
+
+            self.demand = self._build_demand(self.weeks, base, float(step), int(pattern), int(warmup))
+            self.week = 0
+
+        def _build_demand(self, w: int, base: float, step: float, pattern: int, ws: int) -> np.ndarray:
+            """Customer demand: a step, a one-week spike, or AR(1) noise (the only stochastic pattern)."""
+            demand = np.full(w, base)
+            if pattern == 0:  # step
+                demand[ws:] = base + step
+            elif pattern == 1:  # spike
+                demand[ws] = base + step
+            else:  # AR(1) noise — draws flow through the seeded model RNG
+                e = 0.0
+                for t in range(w):
+                    e = 0.6 * e + self.rng.normal(0, step / 2.0)
+                    demand[t] = max(0.0, base + e)
+            return demand
+
+        def step(self) -> None:
+            """One simulated week: push customer demand into the chain; orders cascade one stage upstream.
+
+            ``self.agents`` is the model's AgentSet in creation order (retailer → factory). Activating in
+            that order means each echelon places its order from the order its downstream neighbour just
+            placed this same tick — information ripples upstream one activation per stage.
+            """
+            incoming = float(self.demand[self.week])
+            for agent in self.agents:
+                incoming = agent.place_order(incoming)
+            self.week += 1
+
+    _MODELS = (EchelonAgent, BeerGameModel)
+    return _MODELS
 
 
 class BeerGameScenario(Scenario):
@@ -153,6 +172,7 @@ class BeerGameScenario(Scenario):
         w, lead, theta, step, pattern = int(p["weeks"]), int(p["lead"]), float(p["theta"]), float(p["step"]), int(p["pattern"])
         base = 8.0
 
+        _, BeerGameModel = _models()  # lazy: build the Mesa-backed model classes only when running
         model = BeerGameModel(weeks=w, lead=lead, theta=theta, step=step, pattern=pattern, seed=int(seed), base=base)
         for _ in range(w):
             model.step()

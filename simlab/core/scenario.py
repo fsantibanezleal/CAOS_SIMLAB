@@ -11,9 +11,16 @@ from dataclasses import dataclass
 
 from .trace import Trace
 
-# --- the 3 gates (tunable, recorded in every manifest) ---
+# --- the gates (tunable, recorded in every manifest) ---
 GATE_MAX_RUN_MS = 3000.0          # must finish a run in-Worker on a mid laptop in < 3 s
 GATE_MAX_TRACE_BYTES = 1_000_000  # animatable trace must be < ~1 MB
+# The wheel closure the live Pyodide worker loads. A scenario may only run LIVE if its `wheels` are a subset
+# of this set — otherwise the browser worker can't import its engine, so it must be precomputed and replayed.
+# Kept deliberately small (fast cold-start): numpy + simpy (DES) + ciw (queueing validation). Heavy engines
+# (mesa, ortools, joblib, scipy, networkx, pyvrp) are precompute-only — the dedicated tool runs in the local
+# pipeline and the seeded trace is replayed. (Mesa is pure-Python and *could* load in Pyodide, but its
+# pandas+scipy closure is too heavy for the live cold-start; ABM ships as replay.)
+LIVE_WHEELS = frozenset({"numpy", "simpy", "ciw"})
 
 
 @dataclass
@@ -53,8 +60,10 @@ class GateResult:
     reasons: list[str]   # why it was forced to precompute (empty => live)
 
 
-def classify_lane(pure_python: bool, run_ms: float, trace_bytes: int) -> GateResult:
-    """Apply the 3-gate AND rule. live iff pure-Python AND run<3s AND trace<1MB."""
+def classify_lane(
+    pure_python: bool, run_ms: float, trace_bytes: int, wheels: list[str] | tuple[str, ...] = ()
+) -> GateResult:
+    """Apply the gate (AND rule). live iff pure-Python AND run<3s AND trace<1MB AND wheels ⊆ LIVE_WHEELS."""
     reasons: list[str] = []
     if not pure_python:
         reasons.append("not pure-Python (cannot run in Pyodide/WASM)")
@@ -62,6 +71,9 @@ def classify_lane(pure_python: bool, run_ms: float, trace_bytes: int) -> GateRes
         reasons.append(f"run {run_ms:.0f}ms > {GATE_MAX_RUN_MS:.0f}ms gate")
     if trace_bytes > GATE_MAX_TRACE_BYTES:
         reasons.append(f"trace {trace_bytes}B > {GATE_MAX_TRACE_BYTES}B gate")
+    heavy = sorted(set(wheels) - LIVE_WHEELS)
+    if heavy:
+        reasons.append(f"needs wheels {heavy} not in the live worker (precompute + replay)")
     lane = "live" if not reasons else "precomputed"
     return GateResult(pure_python, round(float(run_ms), 1), int(trace_bytes), lane, reasons)
 

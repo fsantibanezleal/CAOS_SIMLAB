@@ -52,7 +52,7 @@
       "kind": "int"
     }
   ],
-  "lane": "live",
+  "lane": "precomputed",
   "gate_thresholds": {
     "max_run_ms": 3000.0,
     "max_trace_bytes": 1000000
@@ -70,12 +70,14 @@
         "tolerance": 0.3,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 24.2,
+        "run_ms": 755.1,
         "trace_bytes": 15287,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.7396,
@@ -98,12 +100,14 @@
         "tolerance": 0.375,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 25.0,
+        "run_ms": 12.5,
         "trace_bytes": 18959,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.7352,
@@ -126,12 +130,14 @@
         "tolerance": 0.45,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 52.3,
+        "run_ms": 24.9,
         "trace_bytes": 40992,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.8805,
@@ -154,12 +160,14 @@
         "tolerance": 0.5,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 44.0,
+        "run_ms": 25.1,
         "trace_bytes": 40990,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.8805,
@@ -182,12 +190,14 @@
         "tolerance": 0.55,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 60.5,
+        "run_ms": 32.6,
         "trace_bytes": 53837,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.9402,
@@ -210,12 +220,14 @@
         "tolerance": 0.625,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 103.1,
+        "run_ms": 52.1,
         "trace_bytes": 94238,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.9709,
@@ -238,12 +250,14 @@
         "tolerance": 0.7,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 104.8,
+        "run_ms": 55.8,
         "trace_bytes": 94229,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.9438,
@@ -266,12 +280,14 @@
         "tolerance": 0.5,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 36.6,
+        "run_ms": 19.7,
         "trace_bytes": 31802,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.86,
@@ -294,12 +310,14 @@
         "tolerance": 0.5,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 63.1,
+        "run_ms": 13.8,
         "trace_bytes": 26302,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.8879,
@@ -322,12 +340,14 @@
         "tolerance": 0.5,
         "steps": 50
       },
-      "lane": "live",
+      "lane": "precomputed",
       "gate": {
         "pure_python": true,
-        "run_ms": 18.6,
+        "run_ms": 10.3,
         "trace_bytes": 18956,
-        "reasons": []
+        "reasons": [
+          "needs wheels ['mesa'] not in the live worker (precompute + replay)"
+        ]
       },
       "kpis": {
         "final_segregation": 0.923,
