@@ -54,7 +54,7 @@ The build mirrors the formalization one-to-one
   10 s cap and report a bound. The reproducibility invariants that make the committed trace
   machine-independent are `num_search_workers = 1` and the fixed `random_seed = 42` — a single deterministic
   search thread; the 10 s cap is just a safety ceiling these small instances never approach.)
-- **One library, maximum didactic surface.** OR-Tools also provides Routing (S07–S09) and GLOP LP (S11), so
+- **One library, maximum didactic surface.** OR-Tools also provides Routing (S07/S08) and GLOP LP (S11), so
   the lab teaches CP scheduling, routing and LP from a single `pip install ortools`. CP-SAT is the
   pure-optimization anchor of that set. See the
   [Optimization & Routing guide §4](../../problem-types/03_optimization-routing.md) and the framework's
@@ -68,7 +68,8 @@ job-shop on `ft06` (verified makespan 55) alongside a GLOP LP.
 **Precompute, always.** OR-Tools is native C++ with a Python wrapper; it **cannot** compile to WASM and so
 never runs in the Pyodide live lane. The scenario declares `pure_python = False`, which fails the engine
 gate of the lab's [4-gate](../../architecture/03_the-gate.md) (`live` requires pure-Python *and*
-`wheels ⊆ LIVE_WHEELS` *and* `run_ms < 3000` *and* `trace_bytes < ~1 MB`). The committed manifest records
+`wheels ⊆ LIVE_WHEELS` *and* `run_ms <= 3000` *and* `trace_bytes <= ~1 MB` — the gate fails only when
+`run_ms > 3000` or `trace_bytes > ~1 MB`, so a run exactly at the boundary still qualifies). The committed manifest records
 `lane = precomputed` with the reason *"not pure-Python (cannot run in Pyodide/WASM)"*. S06 fails the lane on
 the **engine gate** (native OR-Tools cannot run in WASM), so the exact CP-SAT solve `run_ms` — measured and
 recorded in the manifest, host-dependent — is moot for the lane decision; the trace is tiny (`trace_bytes ≈ 1954`).

@@ -71,7 +71,7 @@ class JobShopScenario(Scenario):
             g("j6m4", "6 jobs × 4 machines", "6 trabajos × 4 máquinas", 6, 4, 16, "Heavy contention on few machines.", "Fuerte contención en pocas máquinas."),
             g("j6m6", "6 jobs × 6 machines", "6 trabajos × 6 máquinas", 6, 6, 17, "A 6×6 generated instance.", "Una instancia 6×6 generada."),
             g("j8m4", "8 jobs × 4 machines", "8 trabajos × 4 máquinas", 8, 4, 18, "Many jobs queue for few machines.", "Muchos trabajos en cola por pocas máquinas."),
-            g("j4m6", "4 jobs × 6 machines", "4 trabajos × 6 máquinas", 4, 6, 19, "More machines than jobs: short makespan.", "Más máquinas que trabajos: makespan corto."),
+            g("j4m6", "4 jobs × 6 machines", "4 trabajos × 6 máquinas", 4, 6, 19, "More machines than jobs, yet the makespan stays long — a single critical path dominates.", "Más máquinas que trabajos y aun así el makespan se mantiene largo — domina una única ruta crítica."),
         ]
 
     def run(self, params: dict, seed: int) -> GanttTrace:

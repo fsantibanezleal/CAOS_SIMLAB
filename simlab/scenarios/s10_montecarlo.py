@@ -1,6 +1,7 @@
 """S10 — Monte-Carlo replication / confidence-interval study, on **joblib + SciPy**.
 
-Runs N independent replications of the M/M/c queue (the S01 model) and shows two output-analysis lessons
+Runs N independent replications of the same M/M/c model class as S01 — via a fast NumPy heap estimator, not
+S01's SimPy engine — and shows two output-analysis lessons
 made interactive. (1) The replication/CI lesson: a single run is noisy, but the running mean of many seeded
 replications stabilises and the 95% confidence interval narrows like 1/√n. (2) The finite-run-bias lesson:
 each replication starts empty and serves only a finite number of customers, so its per-run mean carries a

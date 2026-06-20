@@ -19,7 +19,8 @@ before the old code path was retired (a one-time equivalence check — only the 
 Determinism flows from Mesa's seeded RNG: ``Model(rng=int(seed))`` seeds ``self.rng`` (a NumPy Generator
 identical to ``np.random.default_rng(seed)``), the only source of randomness (the AR(1) noisy-demand
 pattern). Same (params, seed) → same trace — the lab's "replay = truth" contract. The emitted artifact is
-the existing chart-trace format (inventory/backorder/order series + KPIs); nothing in the trace schema or
+the existing chart-trace format (the customer-demand series + the four per-echelon order series + KPIs; there
+is no inventory/backorder series — the model carries no on-hand stock, see the assumptions); nothing in the trace schema or
 the frontend contract changes.
 """
 from __future__ import annotations

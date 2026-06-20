@@ -36,7 +36,7 @@ fleet-limited.
 | `surge` | dem=120 | A **demand surge** at the same fleet — adherence drops, out of band. |
 | `surge12` | nt=16, dem=120, hz=200 | More trucks + a longer shift **absorb the surge** — back in band. |
 | `stock_source` | init=40, sg=3.2 | A pre-built rich stock **feeds** the plant — the stock **drains** as a source. |
-| `two_phase_rich` | nt=4, gt=3.2 | A **high target** needs the distant rich phase a small fleet can't deliver. |
+| `two_phase_rich` | nt=4, gt=3.2 | A **high target** needs the distant rich phase a small fleet can't deliver — and here the miss is *partly structural in the plan*, not only fleet shortage: the optimal LP `plan_grade` (3.13) itself **undershoots** `g* = 3.2`, because the richest phase (grade 3.4) is capped by availability so even a perfect blend cannot reach the target. |
 | `dump_heavy` | dem=25 | **Low plant demand** — most production routes to the **dump** (more dump loads than plant loads). |
 | `barrier` | bar=1 | An **L-shaped wall** on the rich phase's haul road lengthens its cycle — the slip **worsens** vs `base`. |
 | `low_target` | gt=1.75 | A **low target** leans on the near phases alone — easy to hit, **in band**. |

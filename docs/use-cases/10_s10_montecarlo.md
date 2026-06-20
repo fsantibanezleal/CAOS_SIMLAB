@@ -1,7 +1,8 @@
 # 10 — S10 · Monte-Carlo Replication / CI Study (joblib + SciPy)
 
 A stochastic simulation is a *random experiment*, not a calculation: a single run of the M/M/c queue (the
-S01 model) returns a noisy mean wait-in-queue `Wq`, and two seeds give two different answers. The
+same M/M/c model class as S01 — a fast NumPy estimator, not S01's SimPy engine) returns a noisy mean
+wait-in-queue `Wq`, and two seeds give two different answers. The
 output-analysis question this scenario makes interactive is **how many independent, seeded replications do
 I need — and at what precision — for my estimator to match the closed-form Erlang-C answer?** S10 runs `N`
 seeded replications, plots the **running mean** and its **95% confidence interval** as replications

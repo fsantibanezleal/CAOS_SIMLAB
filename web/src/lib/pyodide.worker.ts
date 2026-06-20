@@ -62,7 +62,10 @@ async function init(sourcesUrl: string): Promise<void> {
   // background while the first paint replays a committed trace.
   await pyodide.loadPackage(["numpy", "pandas", "scipy", "networkx", "sqlite3", "micropip"]);
   const micropip = pyodide.pyimport("micropip");
-  await micropip.install(["simpy", "ciw", "mesa", "joblib"]);
+  // Pinned to requirements-precompute.txt so the in-browser run byte-matches the committed traces — a future
+  // mesa/ciw release that changed RNG draw order or AgentSet iteration would otherwise silently degrade the
+  // verify-button "byte match" with no code change here. All four are pure-Python wheels.
+  await micropip.install(["simpy==4.1.2", "ciw==3.2.7", "mesa==3.5.1", "joblib==1.5.3"]);
   post({ type: "progress", phase: "loading-simlab" });
   const res = await fetch(sourcesUrl);
   if (!res.ok || !(res.headers.get("content-type") ?? "").includes("json")) {

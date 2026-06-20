@@ -143,7 +143,7 @@ The LP's **objective** is the blend deviation `d⁺ + d⁻` (minimized on paper)
 
 The headline reading: **an optimal plan is necessary but not sufficient** — fleet size, not the LP, decides
 whether the band is hit, and the **base 6-truck fleet does NOT land in band**. With `g* = 2.9`, `τ = 0.15`
-the band is `[2.75, 3.05]`; the 6-truck `base` reaches only `ĝ = 2.547` (`grade_dev = 0.353`, ≈ 2.5× the
+the band is `[2.75, 3.05]`; the 6-truck `base` reaches only `ĝ = 2.547` (`grade_dev = 0.353`, ≈ 2.35× the
 `τ = 0.15` tolerance — well outside the band), with `plan_adherence = 63.3%` and **`in_band = 0`**. The
 realized blend (`ĝ = 2.547`) falls short of the plan's blend (`plan_grade = 2.9`) by **2.547 vs 2.9**: the
 LP plan is optimal, yet the fleet cannot haul enough of the far high-grade phase before the shift ends, so

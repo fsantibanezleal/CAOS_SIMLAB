@@ -21,7 +21,7 @@ you subclass, which is exactly why this lab teaches with it: *the abstractions a
 An **agent** is an autonomous decision-maker with two halves:
 
 - **State** — the attributes it carries (a household's group label and tolerance; an individual's health
-  status; a supply-chain echelon's inventory level and ordering policy).
+  status; a supply-chain echelon's demand forecast and order-up-to level).
 - **Behavior** — a `step()` method that reads its *local* situation and acts.
 
 Three properties distinguish ABM agents from cells in a plain cellular automaton or rows in a dataframe:
@@ -36,7 +36,7 @@ In Mesa you subclass `Agent`; in NetLogo the agents are *turtles*. Concretely, i
 |---|---|---|---|
 | **S02 Schelling** | a household | group label, tolerance τ | move to an empty cell if too few neighbors share my group |
 | **S03 SIR** | an individual | health status S/I/R | catch infection from infected neighbors; later recover |
-| **S05 Beer Game** | a supply-chain echelon | inventory, backlog, order policy | order up to my target given the demand I've seen |
+| **S05 Beer Game** | a supply-chain echelon | smoothed demand forecast + order-up-to level (no physical inventory/backlog) | order up to my target given the demand I've seen |
 
 ---
 
@@ -70,7 +70,7 @@ of view, referencing only what that agent can perceive:
 
 - *"If fewer than 30% of my neighbors share my group, I move."* (Schelling)
 - *"If a neighbor is infected, I become infected with probability β."* (SIR)
-- *"Order up to my target inventory given what I've seen of demand."* (Beer Game)
+- *"Order up to my target order-up-to level given what I've seen of demand."* (Beer Game)
 
 The emergent macro-pattern — the segregation index climbing far above any agent's τ, the epidemic peak, the
 upstream order swings — is **never written down**. It is *discovered* by running the model. Encode
@@ -111,12 +111,14 @@ A simulation you cannot measure is a screensaver. You collect two kinds of serie
 
 - **Model-level** metrics — aggregates over all agents: the infected count, the segregation index, total
   backorders.
-- **Agent-level** metrics — per-agent attributes over time: one household's happiness, one echelon's
-  inventory.
+- **Agent-level** metrics — per-agent attributes over time: one household's happiness, one echelon's emitted
+  order series.
 
-Mesa's `DataCollector` does both and hands you tidy tables (pandas) at the end. **In this lab the collected
-series *is* the replay artifact:** the headless run records a step-by-step trace (model- and agent-level
-deltas) to JSON/Arrow, and the web viewer animates that trace. A run is therefore a pure function of
+Mesa offers a `DataCollector` that can do both and hand you tidy tables (pandas) at the end; the lab's
+scenarios instead record the per-tick series directly (e.g. S05 has each echelon append to its own order list,
+no `DataCollector`). Either way, **in this lab the recorded series *is* the replay artifact:** the headless run
+captures a step-by-step trace (model- and agent-level series) to JSON/Arrow, and the web viewer animates that
+trace. A run is therefore a pure function of
 `(params, seed)`, and the committed trace is the source of truth — *replay = truth*. See the
 [trace contract](../../architecture/02_determinism-and-trace.md).
 
