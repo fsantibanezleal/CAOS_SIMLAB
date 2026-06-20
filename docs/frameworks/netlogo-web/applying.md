@@ -27,15 +27,15 @@ honestly or learners get lost:
 
 1. **LIVE / instant play → NetLogo Web** (this doc). Client-side JS, animated, sliders, **zero server
    compute**. The on-ramp: play first, understand later.
-2. **Shipped live Python card → hand-rolled NumPy** (`simlab/scenarios/s02_schelling.py`,
-   `s03_sir.py`, `engine = "numpy"`), run in-browser via Pyodide. Tiny wheel closure, **rules fully visible
-   in-repo** for teaching.
-3. **Build-it-yourself / scale-up → Mesa** (offline precompute → committed trace → replay). The framework
-   whose `Agent`/`Model`/space abstractions *are* the curriculum.
+2. **Python precomputed card → Mesa 3** (`simlab/scenarios/s02_schelling.py`, `s03_sir.py`, 
+   `engine = "mesa"`), offline precompute → committed trace → static replay in the web viewer. The full
+   `Agent`/`Model`/space abstractions, **rules fully visible in-repo** for teaching.
+3. **Build-it-yourself / scale-up path → Mesa** in a Jupyter notebook. The framework whose abstractions
+   *are* the curriculum; learners write their own models.
 
 > The honest one-liner the live Theory pages must carry: **"NetLogo for instant in-browser play; Python
-> (NumPy now, Mesa to scale) for how to build it yourself."** Pair each NetLogo card with its Python
-> equivalent so the lesson lands: *the concept is engine-independent.*
+> + Mesa for how to build & trace it yourself."** Pair each NetLogo card with its Mesa precomputed
+> equivalent so the lesson lands: *the concept is engine-independent; Mesa is the production engine.*
 
 ## 2. The pattern: client-side-live (no precompute, no replay)
 

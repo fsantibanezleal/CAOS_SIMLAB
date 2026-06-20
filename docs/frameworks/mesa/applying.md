@@ -20,23 +20,29 @@ Mesa's `Agent` / `Model` / space / `AgentSet` abstractions map one-to-one onto t
 
 ### The honest caveat (read this before claiming "the lab runs on Mesa")
 
-> **The lab's *shipped* S02 / S03 / S05 are hand-rolled on NumPy, not on Mesa.** Verified in source:
-> `simlab/scenarios/s02_schelling.py`, `s03_sir.py` and `s05_beergame.py` all declare `engine = "numpy"`
-> and contain no `import mesa`. `requirements.txt` says so explicitly.
+> **The lab's S02 / S03 / S05 now run on REAL Mesa 3.** Verified in source:
+> `simlab/scenarios/s02_schelling.py`, `s03_sir.py` and `s05_beergame.py` all use `mesa.Agent` /
+> `mesa.Model` / `AgentSet` activation (engine = "mesa") and `import mesa`. These models are
+> **precomputed offline** in the local pipeline and **replayed statically** in the web browser because
+> Mesa's closure (pandas + scipy + networkx) is too heavy for live Pyodide cold-start.
 
-There are three reasons, and they are exactly the trade-off boundary for Mesa:
+That split — real engine offline, lightweight replay online — is the architectural trade-off for Mesa:
 
-1. **Pyodide wheel closure must stay tiny.** The scenarios run *live in the browser*. Pulling Mesa (plus
-   pandas + networkx) into the Pyodide closure would bloat cold-start. NumPy is already in the closure.
-2. **Every agent rule must be visible in-repo for teaching.** The lab is didactic; a ~30-line NumPy sweep
-   that a learner can read top-to-bottom beats an opaque framework call.
-3. **These canonical models are tiny and vectorize cleanly.** At ~300–1000 cells, a NumPy sweep is simpler
-   and faster than per-object agent activation; a framework would add overhead, not value.
+1. **Mesa is the *engine*; the web replays a *trace*.** Mesa's closure (pandas + scipy + networkx) is
+   heavy for a browser Pyodide cold-start. So the precompute pipeline runs Mesa offline, records the
+   deterministic trace to an Arrow or JSON artifact, and the web viewer replays it — zero compute on the
+   VPS, no Mesa on the browser. Same pattern the lab uses for every heavy engine (e.g., CAOS_SEISMIC).
+2. **Mesa rules are fully visible in the code and the paper.** The lab is didactic. The `Agent.step()`
+   and `Model.step()` implementations are in-repo; learners read the Mesa abstractions directly from the
+   source, not hidden inside a framework blackbox.
+3. **Precompute-then-replay is the lab's truthful architecture.** All heavy engines (Mesa ABM, OR-Tools
+   optimization, Monte-Carlo joblib, networkx shortest paths) follow this pattern: seed offline, record
+   committed artifact, serve static replay. The "live" lane is reserved for lightweight engines (SimPy,
+   Ciw) that run in the browser under Pyodide without bloating the wheel.
 
-So Mesa's role in this lab is **(a) the conceptual reference** the docs and Theory pages teach against, and
-**(b) the engine you reach for in the offline precompute lane** when a model outgrows a hand-rolled sweep
-(heterogeneous agents, network spaces, large suites). It is **not** the live engine. That is the truthful
-framing — see `wip/caos-simlab/content/fix-mesa-framing.md`.
+So Mesa's role in this lab is **the real ABM engine** — used in the **offline precompute pipeline**,
+teaching the curriculum via `Agent`/`Model`/space abstractions, and the canonical reference. The web
+viewer **replays** committed traces; it does **not** run Mesa live. That is the truthful framing.
 
 ---
 

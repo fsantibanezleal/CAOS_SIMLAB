@@ -20,8 +20,8 @@ shipped content.
   bias → **verification & validation** (SimPy vs the closed-form M/M/c) → priorities / balking / reneging →
   optimize-then-simulate.
 - **abm/** — agent + environment → rules / step → scheduler & activation order → space & neighbourhoods →
-  **emergence** (Schelling, SIR) → data collection & sweeps. (ABM is hand-rolled on NumPy in `simlab`, not
-  Mesa-based.)
+  **emergence** (Schelling, SIR) → data collection & sweeps. (ABM runs on **Mesa 3** in `simlab` during
+  precompute; traces are replayed statically in the web viewer.)
 - **optimization/** — OR-Tools VRP/VRPTW → PyVRP SOTA contrast → simulate the optimized route under
   stochastic delay (the optimize-then-simulate bridge).
 - **pitfalls/** — *Common Simulation Mistakes* (single replication, one fixed seed, eyeballing

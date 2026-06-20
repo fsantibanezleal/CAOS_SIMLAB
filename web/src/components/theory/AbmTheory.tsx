@@ -97,8 +97,8 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "El planificador (scheduler) o régimen de activación determina qué agentes se actualizan en cada tick y en qué orden, y cómo cada agente lee el estado compartido. Como los agentes de un ABM mutan un mundo común, el planificador no es un detalle de implementación: es parte del modelo, y cambiarlo puede cambiar el resultado emergente. La librería usa tres regímenes canónicos, que reflejan los planificadores históricos de Mesa RandomActivation / SimultaneousActivation / StagedActivation."
-                : "The scheduler (activation regime) governs which agents are stepped on each tick and in what order, and how each agent reads shared state. Because ABM agents mutate a common world, the scheduler is not an implementation detail — it is part of the model, and changing it can change the emergent outcome. Three canonical regimes are used in the lab, mirroring Mesa's historical RandomActivation / SimultaneousActivation / StagedActivation schedulers."}
+                ? "El planificador (scheduler) o régimen de activación determina qué agentes se actualizan en cada tick y en qué orden, y cómo cada agente lee el estado compartido. Como los agentes de un ABM mutan un mundo común, el planificador no es un detalle de implementación: es parte del modelo, y cambiarlo puede cambiar el resultado emergente. Conceptualmente existen tres regímenes canónicos. Mesa 2 los exponía como objetos planificador explícitos (RandomActivation / SimultaneousActivation / StagedActivation); Mesa 3 — el motor sobre el que corre este laboratorio — los eliminó y entrega en su lugar un AgentSet en model.agents, sobre el que el régimen se expresa directamente con métodos como do() (orden fijo) y shuffle_do() (orden barajado). Los escenarios de agentes de este laboratorio recorren su AgentSet (self.agents) y aplican una actualización simultánea por lotes: todas las transiciones de un paso se deciden contra la configuración del inicio del paso y luego se confirman juntas, que es la activación simultánea/síncrona descrita más abajo. Los regímenes aleatorio y por etapas se presentan aquí como la taxonomía conceptual completa, no como modos que el laboratorio alterne."
+                : "The scheduler (activation regime) governs which agents are stepped on each tick and in what order, and how each agent reads shared state. Because ABM agents mutate a common world, the scheduler is not an implementation detail — it is part of the model, and changing it can change the emergent outcome. Conceptually there are three canonical regimes. Mesa 2 exposed them as explicit scheduler objects (RandomActivation / SimultaneousActivation / StagedActivation); Mesa 3 — the engine this lab runs on — removed those and instead gives every model an AgentSet at model.agents, on which the regime is expressed directly through methods like do() (fixed order) and shuffle_do() (shuffled order). This lab's agent scenarios iterate their AgentSet (self.agents) and apply a simultaneous batch update: every transition for a step is decided against the start-of-step configuration and then committed together — the simultaneous/synchronous activation described below. The random and staged regimes are presented here as the full conceptual taxonomy, not as modes the lab switches between."}
             </p>
             <p>
               {es
@@ -107,8 +107,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             </p>
             <p>
               {es
-                ? "Activación simultánea (síncrona). Todos los agentes calculan primero su próximo estado a partir de una instantánea congelada del tick anterior (fase step), y luego se confirman todos los estados juntos (fase advance). Ningún agente ve el movimiento de otro dentro del tick. Es el régimen correcto cuando el modelo busca aproximar un sistema de ecuaciones en diferencias acopladas actualizadas en bloque — p. ej. flocking tipo autómata celular, donde cada boid reacciona a dónde estaban sus vecinos. Las actualizaciones síncronas pueden crear sus propios artefactos (dos agentes intercambiando celdas, oscilaciones tipo «blinker») que los esquemas asíncronos evitan."
-                : "Simultaneous activation (synchronous). All agents first compute their next state from a frozen snapshot of the previous tick (a step phase), then all states are committed together (an advance phase). No agent sees another's move within the tick. This is the correct regime when the model is meant to approximate a system of coupled difference equations updated in lockstep — e.g. cellular-automaton style flocking where every boid reacts to where its neighbors were. Synchronous updates can create artifacts of their own (e.g. two agents swapping cells, “blinker” oscillations) that asynchronous schemes avoid."}
+                ? "Activación simultánea (síncrona) — el régimen de este laboratorio. Todos los agentes calculan primero su próximo estado a partir de una instantánea congelada del tick anterior (fase step), y luego se confirman todos los estados juntos (fase advance). Ningún agente ve el movimiento de otro dentro del tick. Esto es exactamente lo que hacen los escenarios de agentes del laboratorio sobre Mesa 3: el step() del modelo recorre el AgentSet (self.agents), decide todas las infecciones/recuperaciones (S03 SIR) o reubicaciones (S02 Schelling) leyendo el estado del inicio del paso, y recién entonces las aplica en bloque. Es el régimen correcto cuando el modelo busca aproximar un sistema de ecuaciones en diferencias acopladas actualizadas en bloque — p. ej. flocking tipo autómata celular, donde cada boid reacciona a dónde estaban sus vecinos. Las actualizaciones síncronas pueden crear sus propios artefactos (dos agentes intercambiando celdas, oscilaciones tipo «blinker») que los esquemas asíncronos evitan."
+                : "Simultaneous activation (synchronous) — this lab's regime. All agents first compute their next state from a frozen snapshot of the previous tick (a step phase), then all states are committed together (an advance phase). No agent sees another's move within the tick. This is exactly what the lab's Mesa 3 agent scenarios do: the model's step() iterates the AgentSet (self.agents), decides every infection/recovery (S03 SIR) or relocation (S02 Schelling) by reading the start-of-step state, and only then applies them in a batch. This is the correct regime when the model is meant to approximate a system of coupled difference equations updated in lockstep — e.g. cellular-automaton style flocking where every boid reacts to where its neighbors were. Synchronous updates can create artifacts of their own (e.g. two agents swapping cells, “blinker” oscillations) that asynchronous schemes avoid."}
             </p>
             <p>
               {es
@@ -794,8 +794,8 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "La versión de agentes. En la implementación con Mesa de la librería, cada agente lleva un estado de salud discreto ∈{S,I,R} y vive en una grilla o red de contactos. En cada tick, un agente infeccioso infecta a cada contacto susceptible (vecino) con probabilidad por contacto p_inf, y se recupera con probabilidad p_rec por tick (de modo que el período infeccioso medio es 1/p_rec ticks). Bajo contactos bien mezclados y N grande, estas micro-reglas reproducen la EDO anterior, con β ≈ ⟨k⟩·p_inf (⟨k⟩ = grado medio de contacto por la probabilidad por contacto) y γ ≈ p_rec — lo que permite a la librería validar el modelo de agentes contra el R₀ cerrado, el umbral de inmunidad de rebaño y la curva de tamaño final. El valor del modelo de agentes está justamente donde la EDO falla: topología de red y estructura espacial (el clustering baja el R₀ efectivo y la tasa de ataque por debajo de la predicción de mezcla perfecta), discretitud (extinción estocástica cuando I es pequeño aun con R₀>1) y heterogeneidad (super-contagiadores). El rédito didáctico es mostrar las corridas de agentes convergiendo a la EDO al aumentar la mezcla y apartándose de ella al añadir estructura."
-                : "The agent version. In the lab's Mesa implementation, each agent carries a discrete health state ∈{S,I,R} and lives on a grid or contact network. On each tick an infectious agent infects each susceptible contact (neighbor) with per-contact probability p_inf, and recovers with probability p_rec per tick (so the mean infectious period is 1/p_rec ticks). Under well-mixed, large-N contacts these micro-rules reproduce the ODE above, with effective β ≈ ⟨k⟩·p_inf (mean contact degree times per-contact probability) and γ ≈ p_rec — letting the lab validate the agent model against the closed-form R₀, herd-immunity threshold, and final-size curve. The agent model's value is precisely where the ODE fails: network topology and spatial structure (clustering lowers the effective R₀ and the attack rate below the well-mixed prediction), discreteness (stochastic fade-out when I is small even with R₀>1), and heterogeneity (super-spreaders). The didactic payoff is showing the agent runs converging to the ODE as mixing increases and departing from it as structure is added."}
+                ? "La versión de agentes. En la implementación del laboratorio sobre Mesa 3 (mesa.space.SingleGrid, un agente mesa.Agent por celda), cada celda lleva un estado de salud discreto ∈{S,I,R} sobre una retícula con vecindarios de Moore. En cada tick, una celda susceptible se infecta con probabilidad 1−(1−β)^k a partir de sus k vecinos infectados, y una celda infectada se recupera con probabilidad γ por tick (de modo que el período infeccioso medio es 1/γ ticks). Bajo mezcla suficiente y N grande, estas micro-reglas reproducen la EDO anterior — el grado de vecindario de Moore juega el papel de ⟨k⟩, de modo que la β efectiva ≈ ⟨k⟩·β_por-contacto y la tasa de recuperación ≈ γ — lo que permite comparar el modelo de agentes contra el R₀ cerrado, el umbral de inmunidad de rebaño y la curva de tamaño final. El valor del modelo de agentes está justamente donde la EDO falla: estructura espacial (el clustering en la grilla baja el R₀ efectivo y la tasa de ataque por debajo de la predicción de mezcla perfecta), discretitud (extinción estocástica cuando I es pequeño aun con R₀>1) y heterogeneidad local. El rédito didáctico es mostrar las corridas de agentes apartándose de la EDO de campo medio porque el contagio sólo viaja entre vecinos espaciales, no entre pares cualesquiera."
+                : "The agent version. In the lab's Mesa 3 implementation (mesa.space.SingleGrid, one mesa.Agent per cell), each cell carries a discrete health state ∈{S,I,R} on a lattice with Moore neighborhoods. On each tick a susceptible cell becomes infected with probability 1−(1−β)^k from its k infected neighbors, and an infected cell recovers with probability γ per tick (so the mean infectious period is 1/γ ticks). Under sufficient mixing and large N these micro-rules reproduce the ODE above — the Moore-neighborhood degree plays the role of ⟨k⟩, so the effective β ≈ ⟨k⟩·β_per-contact and the recovery rate ≈ γ — letting one compare the agent model against the closed-form R₀, herd-immunity threshold, and final-size curve. The agent model's value is precisely where the ODE fails: spatial structure (grid clustering lowers the effective R₀ and the attack rate below the well-mixed prediction), discreteness (stochastic fade-out when I is small even with R₀>1), and local heterogeneity. The didactic payoff is showing the agent runs departing from the mean-field ODE because contagion only travels between spatial neighbors, not between arbitrary pairs."}
             </p>
           </div>
 
@@ -1044,8 +1044,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             </p>
             <p>
               {es
-                ? "La regla de movimiento base, M, es local y voraz: mira hasta el límite de tu visión en las cuatro direcciones de la retícula, identifica la celda desocupada con más azúcar, muévete allí y cosecha toda su azúcar. En cada paso, la riqueza del agente cambia según el azúcar cosechada menos el metabolismo; un agente cuya riqueza llega a cero muere (inanición). De este montaje mínimo emerge una distribución de riqueza robusta y muy sesgada (una desigualdad tipo Pareto / Gini alto) puramente por la heterogeneidad en visión, metabolismo y posición — no por una regla que prescriba la desigualdad. Al añadir más reglas (reemplazo/reproducción, estaciones, contaminación, un segundo recurso «especia» con comercio, combate, cultura y enfermedad transmisibles) se generan los fenómenos sociales correspondientes, todos de abajo hacia arriba. Sugarscape es el ejemplo de la librería de emergencia impulsada por recursos y del planificador por etapas (Sub-pestaña 2)."
-                : "The base movement rule, M, is local and greedy: look out to the limit of your vision along the four lattice directions, identify the unoccupied cell with the most sugar, move there, and harvest all its sugar. Each step the agent's wealth changes by harvested sugar minus metabolism; an agent whose wealth hits zero dies (starvation). From this minimal setup a robust, highly skewed wealth distribution emerges (a Pareto-like / Gini-large inequality) purely from heterogeneity in vision, metabolism, and position — not from any rule that prescribes inequality. Layering further rules (replacement/reproduction, seasons, pollution, a second resource “spice” with trade, combat, transmissible culture and disease) generates the corresponding social phenomena, all bottom-up. Sugarscape is the lab's exemplar of resource-driven emergence and of the staged scheduler (Sub-tab 2)."}
+                ? "La regla de movimiento base, M, es local y voraz: mira hasta el límite de tu visión en las cuatro direcciones de la retícula, identifica la celda desocupada con más azúcar, muévete allí y cosecha toda su azúcar. En cada paso, la riqueza del agente cambia según el azúcar cosechada menos el metabolismo; un agente cuya riqueza llega a cero muere (inanición). De este montaje mínimo emerge una distribución de riqueza robusta y muy sesgada (una desigualdad tipo Pareto / Gini alto) puramente por la heterogeneidad en visión, metabolismo y posición — no por una regla que prescriba la desigualdad. Al añadir más reglas (reemplazo/reproducción, estaciones, contaminación, un segundo recurso «especia» con comercio, combate, cultura y enfermedad transmisibles) se generan los fenómenos sociales correspondientes, todos de abajo hacia arriba. Sugarscape es el ejemplo canónico de emergencia impulsada por recursos y de la planificación por etapas (Sub-pestaña 2); se trata aquí como modelo de referencia, no como un escenario que el laboratorio ejecute en vivo."
+                : "The base movement rule, M, is local and greedy: look out to the limit of your vision along the four lattice directions, identify the unoccupied cell with the most sugar, move there, and harvest all its sugar. Each step the agent's wealth changes by harvested sugar minus metabolism; an agent whose wealth hits zero dies (starvation). From this minimal setup a robust, highly skewed wealth distribution emerges (a Pareto-like / Gini-large inequality) purely from heterogeneity in vision, metabolism, and position — not from any rule that prescribes inequality. Layering further rules (replacement/reproduction, seasons, pollution, a second resource “spice” with trade, combat, transmissible culture and disease) generates the corresponding social phenomena, all bottom-up. Sugarscape is the canonical exemplar of resource-driven emergence and of staged scheduling (Sub-tab 2); it is treated here as a reference model, not as a scenario the lab runs live."}
             </p>
           </div>
 
@@ -1136,8 +1136,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             tex={String.raw`\mathrm{Gini} = \frac{\sum_{i}\sum_{j}\lvert w_i - w_j\rvert}{2\,n\sum_i w_i},`}
             caption={
               es
-                ? "El macro-observable emergente es la desigualdad de la distribución de riqueza (coeficiente de Gini), que la librería rastrea en vivo y que sube a valores altos solo por la regla M."
-                : "The emergent macro-observable is the wealth distribution's inequality (Gini coefficient), which the lab tracks live and which rises to large values from the simple rule M alone."
+                ? "El macro-observable emergente es la desigualdad de la distribución de riqueza (coeficiente de Gini), que sube a valores altos solo por la regla M."
+                : "The emergent macro-observable is the wealth distribution's inequality (Gini coefficient), which rises to large values from the simple rule M alone."
             }
           />
 
@@ -1169,30 +1169,52 @@ export function AbmTheory({ es }: { es: boolean }) {
     },
     {
       id: "mesa",
-      label: es ? "El marco Mesa" : "The Mesa framework",
+      label: es ? "Mesa 3: el motor de ABM del laboratorio" : "Mesa 3: the lab's ABM engine",
       content: (
         <div className="th-block">
           <div className="prose">
             <p>
               {es
-                ? "Mesa (Kazil, Masad y Crooks 2020; originalmente Masad y Kazil 2015) es el marco open-source en Python que la librería usa para todos los escenarios de ABM — la contraparte ABM de SimPy en el lado DES. Mesa provee las tres cosas que todo ABM necesita, de modo que el modelador escribe solo la ciencia:"
-                : "Mesa (Kazil, Masad & Crooks 2020; originally Masad & Kazil 2015) is the open-source Python framework the lab uses for all ABM scenarios — the ABM counterpart to SimPy on the DES side. Mesa provides the three things every ABM needs, so the modeler writes only the science:"}
+                ? "Los escenarios de agentes de este laboratorio corren sobre Mesa 3, el marco de ABM en Python de referencia (Kazil, Masad y Crooks 2020; originalmente Masad y Kazil 2015; Mesa 3 en ter Hoeven et al. 2025). S02 Schelling, S03 SIR y S05 Beer Game están construidos con sus abstracciones reales — mesa.Agent para las entidades, mesa.Model para el mundo, mesa.space.SingleGrid para las grillas (S02/S03; el Beer Game es una red serial sin espacio) y el AgentSet del modelo (self.agents) para la activación. El patrón concreto que verás en el código es:"
+                : "This lab's agent scenarios run on Mesa 3, the reference Python ABM framework (Kazil, Masad & Crooks 2020; originally Masad & Kazil 2015; Mesa 3 in ter Hoeven et al. 2025). S02 Schelling, S03 SIR and S05 Beer Game are built on its real abstractions — mesa.Agent for the entities, mesa.Model for the world, mesa.space.SingleGrid for the grids (S02/S03; the Beer Game is a serial network with no space), and the model's AgentSet (self.agents) for activation. The concrete pattern you will see in the code is:"}
             </p>
             <ul>
               <li>
                 {es
-                  ? "Clases base Model y Agent — se hereda de Agent (dándole estado y un método step() que codifica su regla local) y de Model (que contiene la población de agentes, el entorno y el planificador)."
-                  : "Model and Agent base classes — you subclass Agent (giving it state and a step() method encoding its local rule) and Model (holding the agent population, the environment, and the schedule)."}
+                  ? "Subclase de mesa.Agent — cada hogar (S02), celda (S03) o eslabón (S05) es un mesa.Agent con su estado propio (grupo, estado de salud, pronóstico) y su regla local; al construirse con super().__init__(model) Mesa lo registra solo en model.agents y le asigna un unique_id."
+                  : "Subclass mesa.Agent — each household (S02), cell (S03) or echelon (S05) is a mesa.Agent carrying its own state (group, health state, forecast) and its local rule; built with super().__init__(model), Mesa registers it into model.agents and assigns a unique_id automatically."}
               </li>
               <li>
                 {es
-                  ? "Módulos de espacio — grillas (SingleGrid, MultiGrid, con vecindarios de Moore/von Neumann), ContinuousSpace (para Boids), HexGrid y espacios de red (para el SIR sobre red de contactos) — que proveen directamente el entorno de la Sub-pestaña 1."
-                  : "Space modules — grids (SingleGrid, MultiGrid, with Moore/von Neumann neighborhoods), ContinuousSpace (for Boids), HexGrid, and network spaces (for contact-network SIR) — directly supplying the environment of Sub-tab 1."}
+                  ? "Subclase de mesa.Model con un espacio Mesa — el mundo es un mesa.Model; S02/S03 usan mesa.space.SingleGrid (un agente por celda, vecindarios de Moore vía grid.iter_neighbors(..., moore=True)), mientras que el Beer Game prescinde del espacio por ser una red serial de cuatro etapas."
+                  : "Subclass mesa.Model with a Mesa space — the world is a mesa.Model; S02/S03 use mesa.space.SingleGrid (one agent per cell, Moore neighborhoods via grid.iter_neighbors(..., moore=True)), while the Beer Game drops the space because it is a four-stage serial network."}
               </li>
               <li>
                 {es
-                  ? "Regímenes de activación — históricamente los planificadores RandomActivation, SimultaneousActivation y StagedActivation del módulo time (Mesa 3 los generaliza mediante métodos de activación de AgentSet como shuffle_do y do) — que implementan directamente la Sub-pestaña 2."
-                  : "Activation regimes — historically the time module's RandomActivation, SimultaneousActivation, and StagedActivation schedulers (Mesa 3 generalizes these via AgentSet activation methods like shuffle_do and do) — directly implementing Sub-tab 2."}
+                  ? "Activación por el AgentSet (self.agents) + actualización simultánea por lotes — el paso del modelo recorre self.agents (el AgentSet de Mesa 3, sin los planificadores eliminados de Mesa 2), decide todas las transiciones contra la configuración del inicio del paso y las aplica en bloque; toda la aleatoriedad fluye por el RNG sembrado de Mesa (Model(rng=seed) siembra self.random y self.rng), así run(params, seed) es una función pura — la base del visor de reproducción determinista."
+                  : "Activation via the AgentSet (self.agents) + a simultaneous batch update — the model's step iterates self.agents (Mesa 3's AgentSet, without Mesa 2's removed schedulers), decides every transition against the start-of-step configuration, then applies them in a batch; all randomness flows through Mesa's seeded RNG (Model(rng=seed) seeds self.random and self.rng), so run(params, seed) is a pure function — the basis of the deterministic-replay viewer."}
+              </li>
+            </ul>
+            <p>
+              {es
+                ? "Eso vale para los tres modelos del laboratorio, y las mismas abstracciones de Mesa son las que lo llevan más allá cuando un modelo propio crece. Lo que el marco ofrece — y lo que justifica elegirlo tanto aquí como para tu propio trabajo — es:"
+                : "That holds for all three of the lab's models, and the same Mesa abstractions are what carry it further as your own model grows. What the framework offers — and what justifies choosing it both here and for your own work — is:"}
+            </p>
+            <ul>
+              <li>
+                {es
+                  ? "Clases base Model y Agent — se hereda de Agent (dándole estado y un método step() que codifica su regla local) y de Model (que contiene la población de agentes, el entorno y el planificador) — útil cuando los agentes son heterogéneos y no se reducen a una sola operación de grilla."
+                  : "Model and Agent base classes — you subclass Agent (giving it state and a step() method encoding its local rule) and Model (holding the agent population, the environment, and the schedule) — useful when agents are heterogeneous and do not reduce to a single grid operation."}
+              </li>
+              <li>
+                {es
+                  ? "Módulos de espacio — grillas (SingleGrid, MultiGrid, con vecindarios de Moore/von Neumann), ContinuousSpace (p. ej. para Boids), HexGrid y espacios de red — que proveen el entorno de la Sub-pestaña 1 sin reimplementarlo."
+                  : "Space modules — grids (SingleGrid, MultiGrid, with Moore/von Neumann neighborhoods), ContinuousSpace (e.g. for Boids), HexGrid, and network spaces — supplying the environment of Sub-tab 1 without reimplementing it."}
+              </li>
+              <li>
+                {es
+                  ? "Regímenes de activación — históricamente los planificadores RandomActivation, SimultaneousActivation y StagedActivation del módulo time (Mesa 3 los generaliza mediante métodos de activación de AgentSet como shuffle_do y do) — la realización directa de la Sub-pestaña 2 cuando se necesita elegir y alternar el orden de actualización."
+                  : "Activation regimes — historically the time module's RandomActivation, SimultaneousActivation, and StagedActivation schedulers (Mesa 3 generalizes these via AgentSet activation methods like shuffle_do and do) — the direct realization of Sub-tab 2 when you need to choose and switch the update order."}
               </li>
               <li>
                 {es
@@ -1201,22 +1223,22 @@ export function AbmTheory({ es }: { es: boolean }) {
               </li>
               <li>
                 {es
-                  ? "Visualización — un servidor interactivo en navegador (deslizadores de parámetros + gráficos y grillas en vivo) que la librería envuelve para la UI didáctica pública."
-                  : "Visualization — a browser-based interactive server (parameter sliders + live plots and grids) that the lab wraps for the public didactic UI."}
+                  ? "Visualización — un servidor interactivo en navegador (deslizadores de parámetros + gráficos y grillas en vivo) para prototipar modelos rápidamente."
+                  : "Visualization — a browser-based interactive server (parameter sliders + live plots and grids) for prototyping models quickly."}
               </li>
             </ul>
             <p>
               {es
-                ? "Como Mesa es Python puro, determinista dada una semilla y explícito sobre su planificador, permite a la librería entregar cada modelo canónico (Schelling, SIR de agentes, Boids, Sugarscape) como una implementación fiel y reproducible, con las corridas sembradas que la validación demanda."
-                : "Because Mesa is pure Python, deterministic given a seed, and explicit about its scheduler, it lets the lab ship each canonical model (Schelling, agent-SIR, Boids, Sugarscape) as a faithful, reproducible implementation, with the seeded runs that validation demands."}
+                ? "Un matiz de despliegue honesto: el cierre de wheels de Mesa (pandas, scipy) es demasiado pesado para el arranque en frío en vivo de Pyodide, así que el ABM no se re-ejecuta en el navegador — corre en el pipeline local sembrado y el laboratorio reproduce la traza precomputada. Las colas DES (SimPy: S01 Banco/Clínica, S04 Urgencias) sí corren en vivo en Pyodide. Misma honestidad para ambas pistas: la semilla fija el resultado, la traza es la verdad, el visor solo la reproduce."
+                : "An honest deployment nuance: Mesa's wheel closure (pandas, scipy) is too heavy for Pyodide's live cold-start, so the ABM is not re-run in the browser — it runs in the seeded local pipeline and the lab replays the precomputed trace. The DES queues (SimPy: S01 Bank/Clinic, S04 ED) do run live in Pyodide. Same honesty for both lanes: the seed fixes the result, the trace is the truth, the viewer only replays it."}
             </p>
           </div>
 
           <Callout variant="strong" title={es ? "La arquitectura en una línea" : "The architecture in one line"}>
             <p>
               {es
-                ? "SimPy maneja colas dirigidas por eventos; Mesa maneja agentes dirigidos por reglas; ambos alimentan el mismo visor de reproducción determinista (deterministic-replay)."
-                : "SimPy handles event-driven queues; Mesa handles rule-driven agents; both feed the same deterministic-replay viewer."}
+                ? "SimPy (con validación cruzada Ciw) maneja las colas dirigidas por eventos; Mesa 3 maneja los agentes dirigidos por reglas; ambos alimentan el mismo visor de reproducción determinista (deterministic-replay)."
+                : "SimPy (with Ciw cross-validation) handles the event-driven queues; Mesa 3 handles the rule-driven agents; both feed the same deterministic-replay viewer."}
             </p>
           </Callout>
 
@@ -1225,7 +1247,7 @@ export function AbmTheory({ es }: { es: boolean }) {
               className="fig-svg wide"
               viewBox="0 0 760 140"
               role="img"
-              aria-label={es ? "Diagrama de arquitectura de Mesa: Agent.step → Scheduler → Model → DataCollector → visor" : "Mesa architecture diagram: Agent.step → Scheduler → Model → DataCollector → viewer"}
+              aria-label={es ? "Bucle de actualización Mesa 3 del laboratorio: estado(t) → Model.step() sobre AgentSet → estado(t+1) → frame → visor" : "Lab's Mesa 3 update loop: state(t) → Model.step() over AgentSet → state(t+1) → frame → viewer"}
             >
               <defs>
                 <marker id="mesa-arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
@@ -1233,13 +1255,13 @@ export function AbmTheory({ es }: { es: boolean }) {
                 </marker>
               </defs>
               <text x="20" y="28" fontSize={14} fill="var(--color-fg)">
-                {es ? "Sustrato de ejecución de Mesa" : "Mesa execution substrate"}
+                {es ? "Bucle de actualización Mesa 3 del laboratorio (un step por tick)" : "The lab's Mesa 3 update loop (one step per tick)"}
               </text>
               {[
-                { t: "Agent.step()", x: 20 },
-                { t: "Scheduler", x: 175 },
-                { t: "Model", x: 330 },
-                { t: "DataCollector", x: 470 },
+                { t: es ? "estado(t)" : "state(t)", x: 20 },
+                { t: "Model.step()", x: 175 },
+                { t: es ? "estado(t+1)" : "state(t+1)", x: 330 },
+                { t: "frame trace", x: 470 },
                 { t: es ? "Visor replay" : "Replay viewer", x: 625 },
               ].map((b, i) => (
                 <g key={`mb${i}`}>
@@ -1255,17 +1277,17 @@ export function AbmTheory({ es }: { es: boolean }) {
             </svg>
             <figcaption className="fig-cap">
               {es
-                ? "El sustrato de ejecución: la regla local de cada agente (Agent.step) la activa el planificador dentro del Model, el DataCollector registra cada paso y todo alimenta el visor de reproducción determinista."
-                : "The execution substrate: each agent's local rule (Agent.step) is activated by the Scheduler within the Model, the DataCollector records each step, and everything feeds the deterministic-replay viewer."}
+                ? "El bucle real del laboratorio: cada tick, el Model.step() de Mesa 3 recorre el AgentSet (self.agents), decide todas las transiciones contra el estado(t) y las aplica en bloque para producir el estado(t+1) (activación simultánea), se registra un frame, y la traza completa (precomputada en el pipeline local) alimenta el visor de reproducción determinista."
+                : "The lab's actual loop: each tick, Mesa 3's Model.step() iterates the AgentSet (self.agents), decides every transition against state(t) and applies them in a batch to produce state(t+1) (simultaneous activation), a frame is recorded, and the full trace (precomputed in the local pipeline) feeds the deterministic-replay viewer."}
             </figcaption>
           </figure>
 
           <Equation
-            tex={String.raw`\text{run}(\text{seed}) \ \text{is a pure function of inputs given a fixed seed and scheduler.}`}
+            tex={String.raw`\text{run}(\text{seed}) \ \text{is a pure function of inputs given a fixed seed and update rule.}`}
             caption={
               es
-                ? "Contrato de determinismo: dada una semilla fija y un planificador fijo, run(seed) es función pura de las entradas — la base del visor de reproducción determinista."
-                : "Determinism contract: given a fixed seed and fixed scheduler, run(seed) is a pure function of inputs — the basis of the deterministic-replay viewer."
+                ? "Contrato de determinismo: dada una semilla fija (el RNG sembrado de Mesa, Model(rng=seed)) y la regla de actualización simultánea por lotes, run(seed) es función pura de las entradas — la base del visor de reproducción determinista."
+                : "Determinism contract: given a fixed seed (Mesa's seeded RNG, Model(rng=seed)) and the simultaneous batch update rule, run(seed) is a pure function of inputs — the basis of the deterministic-replay viewer."
             }
           />
 
@@ -1274,14 +1296,14 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ul>
               {[
                 es
-                  ? "Techo de rendimiento de Python — Mesa es interpretado; poblaciones muy grandes pueden necesitar batching/vectorización o un núcleo compilado (reconocerlo, no fingir lo contrario)."
-                  : "Python performance ceiling — Mesa is interpreted; very large populations may need batching/vectorization or a compiled core (acknowledge, don't pretend otherwise).",
+                  ? "Mesa corre en el pipeline local, no en vivo: su cierre de wheels (pandas, scipy) es demasiado pesado para el arranque en frío de Pyodide, así que el ABM se precomputa y se reproduce; solo las colas DES (SimPy) corren en vivo en el navegador."
+                  : "Mesa runs in the local pipeline, not live: its wheel closure (pandas, scipy) is too heavy for Pyodide cold-start, so the ABM is precomputed and replayed; only the DES queues (SimPy) run live in the browser.",
                 es
-                  ? "El planificador es explícito por diseño — un beneficio (sin orden oculto) pero el modelador debe elegir correctamente (Sub-pestaña 2)."
-                  : "Scheduler is explicit by design — a benefit (no hidden order) but the modeler must choose correctly (Sub-tab 2).",
+                  ? "Los escenarios fijan el régimen de activación a simultáneo/síncrono por lotes (Sub-pestaña 2): el step() del modelo decide todo contra el estado del inicio del paso y lo aplica junto. Explorar activación aleatoria o por etapas sería trivial sobre el mismo AgentSet de Mesa (shuffle_do / do por etapas), pero el laboratorio no lo alterna."
+                  : "The scenarios fix the activation regime to simultaneous/synchronous batch (Sub-tab 2): the model's step() decides everything against the start-of-step state and applies it together. Exploring random or staged activation would be trivial on the same Mesa AgentSet (shuffle_do / staged do), but the lab does not switch between them.",
                 es
-                  ? "Evolución de la API — Mesa 3 (2025) reestructuró la planificación en torno a AgentSet; fijar la versión en el bloque ODD/Details para reproducibilidad."
-                  : "API evolution — Mesa 3 (2025) restructured scheduling around AgentSet; pin the version in the ODD/Details block for reproducibility.",
+                  ? "Mesa escala a agentes heterogéneos, planificación compleja, espacios de red y grandes conjuntos de modelos; es interpretado, por lo que poblaciones enormes (≳1e5 agentes) pueden necesitar batching/vectorización o motores compilados (FLAME GPU 2, ABMax). Para tu propio trabajo, la misma elección que hace el laboratorio se sostiene salvo a esa escala."
+                  : "Mesa scales to heterogeneous agents, complex scheduling, network spaces, and large model suites; it is interpreted, so very large populations (≳1e5 agents) may need batching/vectorization or compiled engines (FLAME GPU 2, ABMax). For your own work, the same choice the lab makes holds except at that scale.",
               ].map((x, i) => (
                 <li key={i}>{x}</li>
               ))}

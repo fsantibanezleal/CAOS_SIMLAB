@@ -42,10 +42,9 @@ architectural, and it is the single most important fact about Mesa in this proje
 > no-GPU VPS. So the lab runs Mesa **headless** in the local pipeline, records the trajectory, commits the
 > compact artifact, and the web app **replays** it. Mesa never runs in production.
 
-Because of that, the *live* in-browser ABM scenarios (S02 Schelling, S03 SIR, S05 Beer Game) are
-**hand-rolled on NumPy**, not on Mesa — `requirements.txt` even says so. Mesa is documented and installed
-as the **framework to scale up to** (and the conceptual reference), not as the engine that ships to the
-browser. This is covered honestly in [applying.md](./applying.md).
+The trade-off is this: the ABM scenarios (S02 Schelling, S03 SIR, S05 Beer Game) **run on Mesa** during
+precompute, but Mesa never ships to the browser. Instead, the traces are committed as compact Arrow/JSON
+artifacts and replayed statically. This is covered honestly in [applying.md](./applying.md).
 
 ## Key transitive dependencies
 

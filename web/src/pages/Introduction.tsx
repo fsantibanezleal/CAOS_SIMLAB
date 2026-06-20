@@ -17,10 +17,11 @@ function En() {
       <div className="page-head">
         <h1>A hands-on lab for simulation modeling</h1>
         <p className="lede">
-          CAOS_SIMLAB teaches <strong>Discrete-Event Simulation (DES)</strong> and{" "}
-          <strong>Agent-Based Modeling (ABM)</strong> the way they are actually practised: you open a worked
-          case study, pick from a family of pre-simulated regimes, watch the dynamics run, and check the
-          result against theory — then learn how the model was built so you can build your own.
+          CAOS_SIMLAB teaches <strong>Discrete-Event Simulation (DES)</strong>,{" "}
+          <strong>Agent-Based Modeling (ABM)</strong> and <strong>Optimization / Operations Research</strong>{" "}
+          the way they are actually practised: you open a worked case study, pick from a family of
+          pre-simulated regimes, watch the dynamics run, and check the result against theory — then learn how
+          the model was built so you can build your own.
         </p>
       </div>
 
@@ -45,8 +46,8 @@ function En() {
             <h3>Agent-Based Modeling (ABM)</h3>
             <p className="muted">
               Many autonomous agents follow simple local rules; global behaviour <em>emerges</em> that no
-              single agent intended — segregation, epidemics, flocking, traffic. Engine (coming): {" "}
-              <span className="mono">Mesa</span>.
+              single agent intended — segregation, epidemics, flocking, traffic. Engine here:{" "}
+              <span className="mono">Mesa 3</span> (precomputed and replayed in the browser).
             </p>
           </div>
         </div>
@@ -66,8 +67,8 @@ function En() {
         <Callout variant="strong" title="It's a static site — no server simulates on demand">
           <p>
             All compute is offline (the committed traces) or, for light models, in your own browser. There is
-            no backend, nothing to attack, and nothing to pay for — the architecture the heavy case studies
-            (routing, dispatch) will reuse.
+            no backend, nothing to attack, and nothing to pay for — the same architecture carries the heavy
+            case studies (routing, dispatch, scheduling), whose native solvers are precomputed offline.
           </p>
         </Callout>
       </section>
@@ -76,7 +77,7 @@ function En() {
         <h2>What you'll find</h2>
         <ul>
           <li><Link to="/">Experiments</Link> — worked case studies, each with a detailed write-up, ≥10 comparable regimes, an animated player, and a sim-vs-theory comparison.</li>
-          <li><Link to="/theory">Theory</Link> — the concepts from zero: the event loop, queueing theory and the M/M/c formulas, and why replications and validation matter.</li>
+          <li><Link to="/theory">Theory</Link> — the concepts from zero: the event loop, queueing theory and the M/M/c formulas, agent-based modeling, optimization and routing, and why replications and validation matter.</li>
           <li><Link to="/build">How to build</Link> — the end-to-end recipe for building a simulation program of this kind, with the real code.</li>
         </ul>
         <p className="faint small">
@@ -93,10 +94,11 @@ function Es() {
       <div className="page-head">
         <h1>Un laboratorio práctico de modelado por simulación</h1>
         <p className="lede">
-          CAOS_SIMLAB enseña <strong>Simulación de Eventos Discretos (DES)</strong> y{" "}
-          <strong>Modelos Basados en Agentes (ABM)</strong> tal como se practican de verdad: abres un caso de
-          estudio, eliges entre una familia de regímenes pre-simulados, observas la dinámica, y contrastas el
-          resultado con la teoría — y luego aprendes cómo se construyó el modelo para construir el tuyo.
+          CAOS_SIMLAB enseña <strong>Simulación de Eventos Discretos (DES)</strong>,{" "}
+          <strong>Modelos Basados en Agentes (ABM)</strong> y <strong>Optimización / Investigación de
+          Operaciones</strong> tal como se practican de verdad: abres un caso de estudio, eliges entre una
+          familia de regímenes pre-simulados, observas la dinámica, y contrastas el resultado con la teoría —
+          y luego aprendes cómo se construyó el modelo para construir el tuyo.
         </p>
       </div>
 
@@ -121,8 +123,8 @@ function Es() {
             <h3>Modelos Basados en Agentes (ABM)</h3>
             <p className="muted">
               Muchos agentes autónomos siguen reglas locales simples; <em>emerge</em> un comportamiento global
-              que ningún agente buscó — segregación, epidemias, bandadas, tráfico. Motor (próximamente):{" "}
-              <span className="mono">Mesa</span>.
+              que ningún agente buscó — segregación, epidemias, bandadas, tráfico. Motor aquí:{" "}
+              <span className="mono">Mesa 3</span> (precomputado y reproducido en el navegador).
             </p>
           </div>
         </div>
@@ -143,8 +145,8 @@ function Es() {
         <Callout variant="strong" title="Es un sitio estático — ningún servidor simula bajo demanda">
           <p>
             Todo el cómputo es offline (los traces commiteados) o, para modelos livianos, en tu propio
-            navegador. No hay backend, nada que atacar ni nada que pagar — la arquitectura que reutilizarán los
-            casos pesados (ruteo, despacho).
+            navegador. No hay backend, nada que atacar ni nada que pagar — la misma arquitectura sostiene los
+            casos pesados (ruteo, despacho, programación), cuyos solvers nativos se precomputan offline.
           </p>
         </Callout>
       </section>
@@ -153,7 +155,7 @@ function Es() {
         <h2>Qué vas a encontrar</h2>
         <ul>
           <li><Link to="/">Experimentos</Link> — casos de estudio, cada uno con explicación detallada, ≥10 regímenes comparables, un reproductor animado y una comparación sim-vs-teoría.</li>
-          <li><Link to="/theory">Teoría</Link> — los conceptos desde cero: el bucle de eventos, la teoría de colas y las fórmulas M/M/c, y por qué importan las réplicas y la validación.</li>
+          <li><Link to="/theory">Teoría</Link> — los conceptos desde cero: el bucle de eventos, la teoría de colas y las fórmulas M/M/c, los modelos basados en agentes, la optimización y el ruteo, y por qué importan las réplicas y la validación.</li>
           <li><Link to="/build">Cómo construir</Link> — la receta de punta a punta para construir un programa de simulación de este tipo, con el código real.</li>
         </ul>
         <p className="faint small">Los escenarios son educativos, no ajustados para planificación de servicios reales.</p>
