@@ -55,7 +55,9 @@ Padmanabhan & Whang, 1997). This is **policy/feedback ABM**, not a DES queue clo
 [02 · When to use](./02_when-to-use.md)).
 
 - **Tunable:** base-stock / target inventory, lead time, demand-shock size/timing, number of echelons.
-- **Space:** a serial chain (line graph). **Activation:** staged (observe → order → ship/receive).
+- **Space:** a serial chain (line graph). **Activation:** a fixed-order serial cascade over the four echelons
+  (downstream → upstream); each echelon runs its observe → forecast → order rule in turn — a single ordered
+  pass over the AgentSet, not a synchronous batch.
 
 ---
 
@@ -84,7 +86,7 @@ detail — the same rules under different schedulers give different dynamics:
 |---|---|---|---|
 | **Random** | a *partially updated* world | breaking fixed-order artifacts; the common default | Schelling moves |
 | **Simultaneous** | the *current* world; all update at once | synchronous systems (cellular-automaton epidemics) | SIR step |
-| **Staged** | phase-ordered sub-steps within a tick | a step with ordered sub-phases | Beer Game observe→order→ship |
+| **Staged** | phase-ordered sub-steps within a tick | a step with ordered sub-phases | ordered observe→decide→act sub-phases (the lab's Beer Game uses a simpler fixed-order serial cascade) |
 
 In Mesa 3 this is expressed on the `AgentSet` (`shuffle_do` / `do` / explicit stages), **not** the removed
 pre-3.0 `Scheduler` classes — see [Mesa usage](../../frameworks/04_mesa/02_usage.md).
@@ -100,7 +102,7 @@ ABM KPIs come in two levels (both collected every tick via Mesa's `DataCollector
 |---|---|---|
 | **Schelling** | segregation index *S* (mean fraction of like-neighbors), fraction unhappy, steps to convergence | per-household happiness, number of moves |
 | **SIR** | infected count I(t), **peak height & time**, **attack rate** (final fraction recovered), did-it-take-off | per-cell time-to-infection / time-to-recovery |
-| **Beer Game** | per-echelon **bullwhip ratio** Bᵢ = Var(oᵢ)/Var(d), total cost, peak backlog | per-echelon inventory & order series over time |
+| **Beer Game** | per-echelon **bullwhip ratio** Bᵢ = Var(oᵢ)/Var(d) (retailer/wholesaler/distributor/factory) + peak factory order | per-echelon inventory & order series over time |
 
 Because every KPI is computed over the **committed seeded trace**, the numbers are **reproducible**: a given
 `(params, seed)` always yields the same KPIs, and the viewer reads them back exactly. For confidence intervals

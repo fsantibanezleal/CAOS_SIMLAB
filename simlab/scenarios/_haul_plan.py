@@ -40,7 +40,7 @@ def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.
     (plain distance for an empty return, grade-penalised distance for a loaded climb). Nodes/edges mirror
     ``_geo`` exactly, so ``nx.dijkstra_path`` reproduces the lab's graded shortest path byte-for-byte.
     """
-    import networkx as nx  # lazy: native-absent under Pyodide, only needed in the offline plan builder
+    import networkx as nx  # lazy: offline-only — this plan builder is never imported in the live worker
 
     g = nx.DiGraph()
     g.add_nodes_from(net.coords)
@@ -52,7 +52,7 @@ def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.
 
 def nx_route(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst: int) -> list[int]:
     """The cheapest haul route src->dst on the graded road graph (NetworkX Dijkstra)."""
-    import networkx as nx  # lazy: native-absent under Pyodide, only needed in the offline plan builder
+    import networkx as nx  # lazy: offline-only — this plan builder is never imported in the live worker
 
     g = build_road_graph(net, cost)
     return nx.dijkstra_path(g, src, dst, weight="weight")

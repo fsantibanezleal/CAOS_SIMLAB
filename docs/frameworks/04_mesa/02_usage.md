@@ -209,5 +209,5 @@ replay forever.
 ## Grounding / references
 
 - ABM problem-type guide: [../../problem-types/02_agent-based-modeling.md](../../problem-types/02_agent-based-modeling.md)
-- Research: `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`
+- Research: the project's internal ABM-frameworks research note
 - Mesa docs: <https://mesa.readthedocs.io/latest/> · Schelling tutorial in the Mesa examples.

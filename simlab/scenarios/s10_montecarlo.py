@@ -41,7 +41,8 @@ from ..core.charttrace import ChartTrace
 from ..core.scenario import ParamSpec, Scenario, Variant
 from .s01_queue import erlang_c_mmc
 
-# joblib + scipy are heavy third-party deps absent under Pyodide, so they are imported lazily inside
+# joblib + scipy are heavy deps the worker loads at runtime (loadPackage scipy + micropip joblib), so they
+# are imported lazily inside
 # ``run()`` (the only place that needs them). The exact 95% two-sided normal critical value (SciPy's
 # ``norm.ppf(0.975)``, not the hand-typed 1.96) is likewise computed inside ``run()``. Importing this
 # module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps (numpy is
@@ -110,7 +111,7 @@ class MonteCarloScenario(Scenario):
         ]
 
     def run(self, params: dict, seed: int) -> ChartTrace:
-        # Lazy: joblib + scipy are native deps absent under Pyodide; importing them only here keeps the
+        # Lazy: joblib + scipy are heavy deps loaded at runtime in the worker; importing them only here keeps the
         # registry import (and thus the whole live lane) working without them.
         from joblib import Parallel, delayed
         from scipy import stats

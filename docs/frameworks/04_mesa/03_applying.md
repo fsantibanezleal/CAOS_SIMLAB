@@ -113,7 +113,7 @@ live-lane rationale: [../../guides/02_live-lane-pyodide.md](../../guides/02_live
 
 ## 4. Honest trade-offs (from the research)
 
-Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
+Grounded in the project's internal ABM-frameworks research note:
 
 **Strengths**
 - **De-facto Python ABM standard** — Apache-2.0, actively maintained, JOSS-published (2025), huge community
@@ -161,4 +161,4 @@ Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`:
 - API + runnable example + verified output: [02_usage.md](./02_usage.md)
 - Runnable example source: [example.py](./example.py)
 - Live-lane rationale (why Mesa runs in Pyodide): [../../guides/02_live-lane-pyodide.md](../../guides/02_live-lane-pyodide.md)
-- Research (decision + trade-offs): `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`
+- Research (decision + trade-offs): the project's internal ABM-frameworks research note

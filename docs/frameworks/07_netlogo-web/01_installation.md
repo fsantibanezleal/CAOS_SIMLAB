@@ -136,7 +136,7 @@ card before deploy (the lab's screenshot-verify rule applies — building blind 
 - ABM-frameworks research (decision: "Power the LIVE in-browser ABM scenarios with NetLogo Web (Tortoise);
   compiles to JavaScript and runs entirely client-side, so GitHub Pages just serves static files (zero
   server compute)"):
-  `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`.
+  the project's internal ABM-frameworks research note.
 - Tortoise (JS compiler + runtime, engine artifacts): <https://github.com/NetLogo/Tortoise>
 - Galapagos (the netlogoweb.org front-end): <https://github.com/NetLogo/Galapagos>
 - NetLogo Web: <https://netlogoweb.org>

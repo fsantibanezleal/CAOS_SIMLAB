@@ -107,7 +107,7 @@ reproducible — the same discipline as the seeded Python traces, just executed 
 
 ## 5. Honest trade-offs (from the research)
 
-Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`.
+Grounded in the project's internal ABM-frameworks research note.
 
 **Strengths**
 - **Zero server compute.** Pure client-side JS — GitHub Pages serves a static file and does nothing else.
@@ -187,4 +187,4 @@ For S02 and S03 specifically: both are trivial to author cleanly, so the lab's l
 - Chrome-strip + iframe/React embed snippet + verified facts: [`02_usage.md`](./02_usage.md)
 - The Python ABM lane (build-it-yourself / scale-up): [`../04_mesa/03_applying.md`](../04_mesa/03_applying.md)
 - ABM problem-type guide: [`../../problem-types/02_agent-based-modeling.md`](../../problem-types/02_agent-based-modeling.md)
-- Research (decision + trade-offs + license nuance): `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`
+- Research (decision + trade-offs + license nuance): the project's internal ABM-frameworks research note

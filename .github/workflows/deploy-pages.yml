@@ -11,6 +11,8 @@ on:
       - "web/**"
       - "data/artifacts/**"
       - "manifests/**"
+      - "simlab/**"            # copy-data.mjs inlines simlab/**/*.py into the live Pyodide bundle, so engine
+                               # edits change what runs in the browser even without a trace change → redeploy
       - ".github/workflows/deploy-pages.yml"
   workflow_dispatch:
 

@@ -1702,7 +1702,7 @@ function S08Desc({ lang }: { lang: string }) {
         sujeto a <strong>restricciones de grado</strong> (cada cliente se visita exactamente una vez) y a que la flota salga y vuelva al depósito:
       </p>
       <Equation
-        tex={String.raw`\sum_{j\in V} x_{ij} = 1 \;\; \forall i\neq 0, \qquad \sum_{i\in V} x_{ij} = 1 \;\; \forall j\neq 0, \qquad \sum_{j} x_{0j} = K`}
+        tex={String.raw`\sum_{j\in V} x_{ij} = 1 \;\; \forall i\neq 0, \qquad \sum_{i\in V} x_{ij} = 1 \;\; \forall j\neq 0, \qquad \sum_{j} x_{0j} \le K`}
         caption="Grado de entrada/salida = 1 por cliente; K vehículos parten del depósito."
       />
       <p>
@@ -1767,7 +1767,7 @@ function S08Desc({ lang }: { lang: string }) {
         subject to <strong>degree constraints</strong> (each customer is visited exactly once) and the fleet leaving from and returning to the depot:
       </p>
       <Equation
-        tex={String.raw`\sum_{j\in V} x_{ij} = 1 \;\; \forall i\neq 0, \qquad \sum_{i\in V} x_{ij} = 1 \;\; \forall j\neq 0, \qquad \sum_{j} x_{0j} = K`}
+        tex={String.raw`\sum_{j\in V} x_{ij} = 1 \;\; \forall i\neq 0, \qquad \sum_{i\in V} x_{ij} = 1 \;\; \forall j\neq 0, \qquad \sum_{j} x_{0j} \le K`}
         caption="In-/out-degree = 1 per customer; K vehicles depart the depot."
       />
       <p>

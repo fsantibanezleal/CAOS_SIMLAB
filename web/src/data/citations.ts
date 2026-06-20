@@ -1,4 +1,4 @@
-// CAOS_SIMLAB master bibliography. DOIs/URLs verified 2026-06-19 (see wip/caos-simlab/content/citations).
+// CAOS_SIMLAB master bibliography. DOIs/URLs verified 2026-06-19.
 // verified:false means "no DOI exists to verify" (book/software/pre-DOI era), NOT "in doubt".
 // Resolve DOIs at https://doi.org/<doi>.
 

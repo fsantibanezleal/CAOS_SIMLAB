@@ -100,7 +100,7 @@ precompute path this lab uses. The example in [02_usage.md](./02_usage.md) impor
 
 ## Grounding / references
 
-- Mesa-frameworks research: `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md` (decision: "Teach
+- Mesa-frameworks research: the project's internal ABM-frameworks research note (decision: "Teach
   ABM with Mesa 3 … de-facto Python standard, Apache-2.0"). Note: the research's earlier
   "NOT for serving live sims" caveat was about SolaraViz (the server-bound viz); a later measurement showed
   the Mesa *engine* itself runs live in Pyodide, which is why the ABM scenarios are classified `live`.

@@ -39,7 +39,7 @@ from ..core.rng import make_rng
 from ..core.scenario import ParamSpec, Scenario, Variant
 from ._geo import GridNetwork, timed_legs
 
-if TYPE_CHECKING:  # type-checking only: NetworkX is a heavy dep absent under Pyodide, imported lazily below
+if TYPE_CHECKING:  # type-checking only: NetworkX is imported lazily below (the worker loads it at runtime; it IS in LIVE_WHEELS)
     import networkx as nx
 
 STATION_POS = [(0.2, 0.2), (0.8, 0.8), (0.8, 0.2), (0.2, 0.8), (0.5, 0.5)]

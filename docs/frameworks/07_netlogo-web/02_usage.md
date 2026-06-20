@@ -218,7 +218,7 @@ NetLogo's own documentation rather than asserted from memory:
 ## 6. Grounding / references
 
 - ABM-frameworks research (LIVE-lane decision + the chrome-strip + iframe embed pattern):
-  `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`.
+  the project's internal ABM-frameworks research note.
 - Tortoise (NetLogo → JS compiler + runtime): <https://github.com/NetLogo/Tortoise>
 - Galapagos (netlogoweb.org front-end / session API): <https://github.com/NetLogo/Galapagos>
 - NetLogo Web: <https://netlogoweb.org>

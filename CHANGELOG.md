@@ -189,7 +189,7 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
     infection now reads as "happening now"), via a per-cell diff vs the previous frame in `AgentGridViz`.
   - **S05/S10 charts** gain a **leading-edge marker** on each revealed series so the eye tracks "now"
     (progressive reveal + playhead was already correct).
-- Process: a 50-agent adversarial review (`wip/.../viz-review-2026-06-19.md`) graded all 10 scenes for
+- Process: a 50-agent internal adversarial visualization review graded all 10 scenes for
   attractiveness / clarity / dynamics-coverage / live-correctness; the 5 confirmed findings are fixed here.
   Verified in-browser (Playwright) across the route/grid/chart scenes; zero console errors.
 
