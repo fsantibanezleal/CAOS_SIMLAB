@@ -66,8 +66,9 @@ def _models() -> tuple[type, type]:
         """The Schelling world: a (non-torus) ``SingleGrid`` populated with two household types.
 
         Built with Mesa 3. Activation uses the model's ``AgentSet`` (``self.agents``). Relocation of unhappy
-        agents is done *simultaneously* per step (all unhappy agents are computed first, then moved), which is
-        the classic batch Schelling update; every move uses ``self.random`` so the run is deterministic.
+        agents is a *batch update* per step: all unhappy agents are decided against the start-of-step config
+        first, then relocated one-by-one into the growing empty pool — the classic batch Schelling update;
+        every move uses ``self.random`` so the run is deterministic.
         """
 
         def __init__(self, size: int, empty_frac: float, tolerance: float, seed: int) -> None:
@@ -113,7 +114,7 @@ def _models() -> tuple[type, type]:
             return seg, unhappy
 
         def relocate(self, unhappy: list["SchellingHousehold"]) -> None:
-            """Move every unhappy agent to a random empty cell (simultaneous batch update).
+            """Move every unhappy agent to a random empty cell (batch update).
 
             Sorted empties + seeded shuffle keep this deterministic regardless of set iteration order.
             """

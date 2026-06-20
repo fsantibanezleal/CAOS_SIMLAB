@@ -71,7 +71,7 @@ would misteach*; we refuse to show one.
   ([S10](../../use-cases/10_s10_montecarlo.md)) — the highest-ROI GPU use — runs in **seconds on CPU cores
   via [joblib](../../frameworks/12_joblib.md)**, so it ships as **CPU precompute** and delivers the full
   replications / warm-up / CI curriculum without a GPU gate.
-- **GPU is one *optional* exhibit, never on the VPS / Pages runtime path.** [CuPy](../../frameworks/15_cupy.md)
+- **GPU is one *optional* exhibit, never on the live (GitHub Pages) deploy runtime.** [CuPy](../../frameworks/15_cupy.md)
   / [Numba](../../frameworks/14_numba.md) Monte-Carlo lives in a separate `requirements-gpu.txt` behind a
   **CUDA-detect-with-CPU-fallback** so GPU-less learners reproduce every result on CPU. See the
   [GPU lane guide](../../guides/03_gpu-lane.md).

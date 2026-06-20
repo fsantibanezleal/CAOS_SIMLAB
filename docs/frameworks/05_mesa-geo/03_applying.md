@@ -55,66 +55,71 @@ engine for thousands of agents, not the million-agent one.
 
 ## Where it fits in CAOS_SIMLAB
 
-| Scenario | Method | Mesa-Geo's role |
-|---|---|---|
-| **S07** — construction haul routing (geo variant) | OR-Tools CP-SAT (route-cost certificate) + NetworkX + a deterministic SimPy DES | Geospatial ABM layer: trucks as `GeoAgent`s moving over a real road/terrain map; renders the load-haul-dump cycle in true coordinates |
-| **S09** — ambulance dispatch & coverage (geo variant) | SimPy + NetworkX (no OR-Tools) | Geospatial ABM layer: ambulances and incidents as `GeoAgent`s on the city map; visualizes response-time vs. station-siting trade-offs spatially |
+**No shipped scenario uses Mesa-Geo today.** This is the same honest pattern as OSMnx: Mesa-Geo is the
+*documented engine* for a **future geospatial variant**, not a layer behind any current scenario. The shipped
+routing/dispatch scenarios deliberately stay on abstract graphs:
 
-In both, Mesa-Geo is the **geospatial-ABM presentation/agent layer**, not the
-optimizer or the queueing core. The scenario→tool map (see
-[`../../README.md`](../../README.md)) pairs it with OR-Tools (the routing/siting
-decision) and SimPy (the discrete-event cycle timing); OSMnx/NetworkX supply the
-road graph. Mesa-Geo is what makes the agents live on the actual map.
+- **S07** (construction haul routing) runs a native OR-Tools CP-SAT route plan committed offline, replayed by
+  a pure-Python SimPy DES — over an in-repo road graph, **not** Mesa-Geo GeoAgents.
+- **S09** (ambulance dispatch & coverage) runs SimPy + NetworkX (closed-form nearest-available dispatch over
+  an in-repo `GridNetwork`), with **no** Mesa-Geo and **no** OR-Tools.
 
-## The pattern: optimize-then-simulate-then-replay
+If a **geospatial variant** of one of these were added later, Mesa-Geo *would supply* the agent-on-a-real-map
+layer — trucks or ambulances as `GeoAgent`s with Shapely geometries on a CRS-aware `GeoSpace`, moving over an
+OSMnx road graph — while OR-Tools / SimPy / NetworkX kept their current roles (the routing/siting decision and
+the discrete-event cycle timing). That variant *would be* the natural place Mesa-Geo earns its keep; until one
+ships, this guide documents the engine, not a live use.
 
-The geo routing scenarios follow a three-stage pipeline, all run **offline** in
-the local precompute lane (see
+## The pattern a future geo variant would follow
+
+*No scenario ships this pipeline today.* If a geospatial ABM variant were added,
+it would follow a three-stage pipeline run **offline** in the local precompute
+lane (see
 [`../../guides/01_precompute-pipeline.md`](../../guides/01_precompute-pipeline.md)):
 
-1. **Optimize** — OR-Tools decides the plan (vehicle routes for S07; dispatch +
-   coverage for S09). This is native-code and solver-bound, so it can never run
-   in the browser; it is precompute-only.
-2. **Simulate** — SimPy times the discrete-event cycle (loading, hauling,
-   dumping; or call → dispatch → on-scene → transport), and Mesa-Geo places the
-   agents on the real map at each tick, computing positions/distances against the
-   road graph and terrain.
-3. **Replay** — each tick's state is exported (e.g. via
+1. **Optimize** — OR-Tools *would* decide the plan (vehicle routes; dispatch +
+   coverage). The CP-SAT/routing solve is native-code and solver-bound, so it can
+   never run in the browser; it is precompute-only.
+2. **Simulate** — SimPy *would* time the discrete-event cycle (loading, hauling,
+   dumping; or call → dispatch → on-scene → transport), and Mesa-Geo *would*
+   place the agents on the real map at each tick, computing positions/distances
+   against the road graph and terrain.
+3. **Replay** — each tick's state *would* be exported (e.g. via
    `GeoSpace.get_agents_as_GeoDataFrame()` → GeoJSON/Arrow), committed as a
-   compact artifact, and the static SPA **replays** it on a deck.gl / MapLibre
-   map, labelled "precomputed due to cost; full details in the repo."
+   compact artifact, and the static SPA *would* **replay** it on a deck.gl /
+   MapLibre map, labelled "precomputed due to cost; full details in the repo."
 
-This mirrors CAOS_SEISMIC and CAOS_LDA_HSI exactly: local compute → committed
-artifact → static viewer. No simulation process runs on the production VPS (the
-architecture rule; see [`../../architecture.md`](../../architecture.md)).
+That mirrors CAOS_SEISMIC and CAOS_LDA_HSI: local compute → committed artifact →
+static viewer. No simulation process runs on the live (Pages) deploy (the architecture
+rule; see [`../../architecture.md`](../../architecture.md)).
 
-**Real maps, same code as the minimal example.** The only thing that changes
+**Real maps, same code as the minimal example.** The only thing that would change
 from [`example.py`](example.py) is the *source* of the geometries: instead of
 hand-built `Point`s you load a `GeoDataFrame` (from OSMnx road geometry, GeoJSON,
 or a DEM-derived layer) and bulk-build agents with `AgentCreator` /
 `GeoAgent.from_dataframe`. The `GeoSpace` queries (`distance`,
 `get_neighbors_within_distance`, `get_intersecting_agents`) are identical.
 
-**3D terrain only where it earns its place.** Per the research, terrain
-rendering is a value-add (not a gimmick) **only** for genuinely geospatial
-scenarios where elevation changes the answer — S07 haul gradients (and
-optionally S09). Mesa-Geo's `RasterLayer` can hold an SRTM/Copernicus DEM so
-travel cost reflects slope; the SPA renders it with deck.gl `TerrainLayer`.
+**3D terrain only where it would earn its place.** Per the research, terrain
+rendering is a value-add (not a gimmick) **only** for a genuinely geospatial
+variant where elevation changes the answer — e.g. haul gradients on a future geo
+S07. Mesa-Geo's `RasterLayer` *would* hold an SRTM/Copernicus DEM so travel cost
+reflects slope, and the SPA *would* render it with deck.gl `TerrainLayer`.
 
 ## Honest trade-offs (grounded in the research)
 
 - **Strength — real maps with clean abstractions.** Mesa-Geo gives "medium-high"
   didactic value precisely because it puts standard ABM concepts on real
-  geography (Apache-2.0, actively maintained alongside Mesa 3). For the geo
-  routing scenarios that is the differentiator.
+  geography (Apache-2.0, actively maintained alongside Mesa 3). For a future geo
+  routing/dispatch variant that would be the differentiator (none ships today).
 - **Weakness — object-per-agent ceiling.** It carries Mesa's scaling limit
   (~1e5 agents). For the one "wow-scale" large-ABM scenario the research routes
   work to FLAME GPU 2 (CUDA) / ABMax (JAX) / AMBER (Polars) instead — *not*
   Mesa-Geo (see [`../18_gpu-abm-chapter.md`](../18_gpu-abm-chapter.md)).
 - **Weakness — not a web-serving engine.** Like plain Mesa, its only first-class
-  viz is a stateful Solara/Leaflet server on localhost. Running that behind nginx
-  for public users is the **primary architectural risk** the research calls out;
-  it does not scale on the shared VPS. We serve replays, never a live Solara
+  viz is a stateful Solara/Leaflet server on localhost. Running that as a public
+  live server is the **primary architectural risk** the research calls out;
+  it does not scale, and GitHub Pages only serves static files (zero server compute). We serve replays, never a live Solara
   process.
 - **Constraint — native GIS stack, no Pyodide.** rasterio/GDAL/pyproj are native
   and not WASM-compiled, so Mesa-Geo cannot run in-browser. It is firmly a

@@ -13,9 +13,10 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
   stay precompute. Gate: live iff `pure_python AND wheels ⊆ LIVE_WHEELS AND <3s AND <1MB`; worker loads the
   closure on demand. NetLogo Web card added as the alternate ABM live engine.
 ### Added
-- Documentation rebuilt as a **numbered wiki**: `docs/frameworks/NN_<fw>/` (18, verified examples),
-  `docs/use-cases/NN_<scenario>/` (assumptions+formalization+solvers+results, 11), deep `docs/architecture/`
-  (7 files), granular problem-types/guides, master + section indexes.
+- Documentation rebuilt as a **numbered wiki**: 18 `docs/frameworks/NN_<fw>/` guides with **16 verified
+  `example.py`** (NetLogo Web is an in-browser JS card and the GPU-ABM chapter is reference-only, so both are
+  doc-only by design), `docs/use-cases/NN_<scenario>/` (assumptions+formalization+solvers+results, 11), deep
+  `docs/architecture/` (7 files), granular problem-types/guides, master + section indexes.
 ### Fixed — cross-layer consistency
 - Hard adversarial validation (15 independent auditors) found **83 defects**; all remediated — docs,
   docstrings, in-code comments, web content and manifests aligned to the code+manifest truth (Mesa = live not
@@ -32,8 +33,9 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 - **Monte-Carlo → joblib** (CPU-parallel seeded replications) + **scipy.stats** confidence intervals (s10),
   replacing the hand-rolled NumPy loop.
 ### Added
-- Documentation rebuilt: `docs/problem-types/` (DES/ABM/optimization/Monte-Carlo) and `docs/frameworks/<tool>/`
-  for 18 tools (installation/usage/applying + a verified `example.py` actually run in the .venv), plus
+- Documentation rebuilt: `docs/problem-types/` (DES/ABM/optimization/Monte-Carlo) and 18 `docs/frameworks/<tool>/`
+  guides (installation/usage/applying) with **16 verified `example.py` actually run in the .venv** (NetLogo Web
+  is a JS in-browser card and the GPU-ABM chapter is reference-only, so both are doc-only by design), plus
   `docs/guides/` (precompute/live/gpu) and a docs index. `requirements-precompute.txt`/`requirements-gpu.txt`
   pinned to verified versions; setup scripts install the precompute lane.
 ### Fixed

@@ -65,8 +65,8 @@ multiprocessing is all S10 needs.
 ## Platform / OS / CUDA notes
 
 - **OS:** pure Python, works identically on Windows, Linux, and macOS. The lab develops on Windows and
-  deploys precomputed artifacts to a Linux VPS, so cross-platform reproducibility matters — see the gotcha
-  below.
+  commits precomputed artifacts served by GitHub Pages, while the precompute pipeline runs on Linux CI, so
+  cross-platform reproducibility matters — see the gotcha below.
 - **Windows `__main__` guard (important):** on Windows the default `loky`/multiprocessing backend
   *spawns* fresh interpreter processes, which re-import your module. Any script that calls
   `joblib.Parallel` at top level **must** guard its entry point with `if __name__ == "__main__":` (our

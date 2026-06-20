@@ -69,8 +69,8 @@ class MineHaulScenario(Scenario):
                                          "barrier": bar, "horizon": hz}, ne, nse)
 
         return [
-            v("base", "Matched fleet", "Flota equilibrada", nt=6,
-              ne="A matched fleet roughly realizes the plan: blend near target.", nse="Una flota equilibrada realiza el plan: mezcla cerca de la meta."),
+            v("base", "6 trucks · still off spec", "6 camiones · aún fuera de especificación", nt=6,
+              ne="A 6-truck fleet closes much of the gap but still misses spec: only ~63% plan adherence, blend 2.55 vs target 2.9 (dev ~2.3x the band) — out of band.", nse="Una flota de 6 camiones cierra buena parte de la brecha pero aún no cumple: solo ~63% de adherencia, mezcla 2.55 vs meta 2.9 (desvío ~2.3x la banda) — fuera de banda."),
             v("undertrucked", "Under-trucked · grade slips", "Sub-equipado · la ley se desajusta", nt=3,
               ne="Too few trucks: the far high-grade phase lags, the blend slips below target.", nse="Pocos camiones: la fase rica lejana se atrasa, la mezcla cae bajo la meta."),
             v("overtrucked", "Over-trucked · plan met", "Sobre-equipado · plan cumplido", nt=12,

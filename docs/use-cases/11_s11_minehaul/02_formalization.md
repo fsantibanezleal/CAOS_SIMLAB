@@ -141,9 +141,15 @@ The LP's **objective** is the blend deviation `d⁺ + d⁻` (minimized on paper)
 - **Analytic block** (the *plan* vs realization, for honesty): `plan_grade`, `plan_x` (the LP allocation),
   `demand_eff`, `stock_peak`, `stock_end`.
 
-The headline reading: a **matched** fleet lands `ĝ` inside `g* ± τ` with high adherence; an **under-sized**
-fleet starves the far high-grade phase, so `ĝ` drops below the band even though the LP plan was optimal —
-*an optimal plan is necessary but not sufficient.*
+The headline reading: **an optimal plan is necessary but not sufficient** — fleet size, not the LP, decides
+whether the band is hit. The 6-truck `base` fleet *closes much of the gap but still misses spec*: it reaches
+`ĝ = 2.547` against the `g* = 2.9` target (`grade_dev = 0.353`, ≈ 2.3× the `τ = 0.15` tolerance), with
+`plan_adherence = 63.3%` and `in_band = 0` — the LP plan is optimal, yet the fleet cannot haul enough of the
+far high-grade phase before the shift ends. Only a **larger fleet** lands `ĝ` inside `g* ± τ`: the ~12-truck
+`overtrucked` variant reaches `ĝ = 2.86` (`grade_dev = 0.04`, `adherence = 100%`, `in_band = 1`), and
+`surge12` (16 trucks) is likewise in-band; a `low_target` variant (looser target) also fits with the 6-truck
+fleet. The genuinely **under-sized** 3-truck `undertrucked` case starves the far high-grade phase hardest —
+`ĝ = 1.78`, `adherence = 33.3%`, far below the band — even though its LP plan was optimal.
 
 ## Next
 

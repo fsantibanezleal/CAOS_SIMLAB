@@ -16,8 +16,8 @@ OR-Tools lives in the **precompute** lane, not the core runtime:
 | | |
 |---|---|
 | Requirements file | `requirements-precompute.txt` |
-| Pin | `ortools>=9.10` |
-| Installed version in this lab | **9.15.6755** |
+| Pin (exact, as in the file) | `ortools==9.15.6755` |
+| Installed + verified version | **9.15.6755** |
 | License | **Apache-2.0** (permissive, safe for a public repo — no copyleft) |
 
 **Why precompute and not core?** OR-Tools is **native code** — a large C++ solver core wrapped for Python.
@@ -36,9 +36,9 @@ Everything is already installed in this repo's `.venv` — **do not re-run pip h
 installation is:
 
 ```bash
-pip install -r requirements-precompute.txt        # installs ortools>=9.10 (and the rest of the lane)
+pip install -r requirements-precompute.txt        # installs ortools==9.15.6755 (and the rest of the lane)
 # or, just this package:
-pip install "ortools>=9.10"
+pip install "ortools==9.15.6755"
 ```
 
 Verify the installed version:

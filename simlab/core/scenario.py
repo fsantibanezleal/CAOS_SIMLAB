@@ -13,7 +13,10 @@ from dataclasses import dataclass
 from .trace import Trace
 
 # --- the gates (tunable, recorded in every manifest) ---
-GATE_MAX_RUN_MS = 3000.0          # must finish a run in-Worker on a mid laptop in < 3 s
+GATE_MAX_RUN_MS = 3000.0          # < 3 s gate. The run_ms it tests is the OFFLINE CPython proxy (perf_counter
+                                  # in the .venv, measured in pipeline.py) — a conservative stand-in, NOT the
+                                  # in-Worker time; the real in-browser runtime is measured live in
+                                  # web's pyodide.worker.ts.
 GATE_MAX_TRACE_BYTES = 1_000_000  # animatable trace must be < ~1 MB
 # Wheels the live Pyodide worker CAN load (pure-Python or with a Pyodide wheel). A scenario runs LIVE only if
 # its `wheels` are all in this set — otherwise its engine can't import in the browser, so it's precomputed +

@@ -1,9 +1,14 @@
 # 02 · Formalization
 
-The math behind S07, pulled from the verified Context block (`S07Desc` in `web/src/pages/Experiments.tsx`)
-and kept consistent with [`simlab/scenarios/s07_haul.py`](../../../simlab/scenarios/s07_haul.py). The
-scenario is a **hybrid**: a deterministic shortest-path optimization (the route) followed by a
-discrete-event simulation of a closed finite-source queue (the cycle).
+The math behind S07, grounded in the **code** — the live SimPy replay in
+[`simlab/scenarios/s07_haul.py`](../../../simlab/scenarios/s07_haul.py), the offline route-plan builder
+[`simlab/scenarios/_haul_plan.py`](../../../simlab/scenarios/_haul_plan.py) (NetworkX + the OR-Tools CP-SAT
+cost certificate), and the committed plans in
+[`simlab/scenarios/s07_plans.py`](../../../simlab/scenarios/s07_plans.py). The canonical statement of which
+engine owns which part of the pipeline is [03 · Solvers applied](./03_solvers-applied.md); the equations here
+are kept consistent with those modules. The scenario is a **hybrid**: a deterministic shortest-path
+optimization (the route, precomputed offline) followed by a live discrete-event simulation of a closed
+finite-source queue (the cycle).
 
 ## Sets
 

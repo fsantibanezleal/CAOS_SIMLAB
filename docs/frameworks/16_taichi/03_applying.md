@@ -46,7 +46,7 @@ It is deliberately **not** a core pillar of CAOS_SIMLAB. The research is explici
 is small-N didactic clarity (queueing DES, emergent ABM), where a GPU is pointless — the work is
 event-scheduling and branch-heavy logic, not parallel arithmetic. Taichi earns a place only in the **one
 workload where regular-grid arithmetic dominates**, and even there it is an *optional* exhibit on the
-precompute/GPU lane, never on the live or VPS path.
+precompute/GPU lane, never on the live or deploy runtime.
 
 ## Which scenario(s) use it
 
@@ -80,8 +80,8 @@ lab-wide policy lives in the [GPU lane guide](../../guides/03_gpu-lane.md):
 2. **Commit a compact artifact.** Snapshot selected frames (or a downsampled field) to a compact
    Arrow/JSON trace — the *same artifact shape* every other scenario emits.
 3. **Replay in the browser.** The static web viewer animates the committed frames. The browser never runs
-   Taichi: it has a native LLVM core, so it cannot enter the Pyodide wheel closure, and the VPS carries no
-   compute dependency at all.
+   Taichi: it has a native LLVM core, so it cannot enter the Pyodide wheel closure, and GitHub Pages carries no
+   compute dependency at all (zero server compute).
 
 For the grid/CA niche specifically, the pattern is **simulate-the-field-then-replay**: there is no
 optimisation step (unlike OR-Tools scenarios) — the value is watching a spatial process evolve under
@@ -137,7 +137,7 @@ Reach for Taichi **only** when you have a regular-grid stencil (the fire/diffusi
 piece of Python that runs portably on CPU and scales to a GPU under a permissive license. Run it
 `arch=ti.cpu` by default, precompute frames locally, commit a compact trace, replay statically. Verify the
 GPU crossover before claiming any speedup, respect the 8 GB ceiling, and treat the whole exhibit as a niche
-teaching asset — not a pillar, and never on the live or VPS path.
+teaching asset — not a pillar, and never on the live or deploy runtime.
 
 ## References (from research dimension 07 / adv-04)
 

@@ -22,7 +22,7 @@ OR-Tools makes the routing/siting decision and SimPy times the discrete-event
 cycle. Each tick's state is exported as a `GeoDataFrame` → GeoJSON/Arrow,
 committed as a compact artifact, and the static SPA replays it on a deck.gl /
 MapLibre map (optimize → simulate → replay, all offline; nothing runs on the
-production VPS). This mirrors the deterministic-replay design used across the
+live (Pages) deploy). This mirrors the deterministic-replay design used across the
 CAOS labs.
 
 ## Read in order

@@ -71,6 +71,14 @@ households live on a grid; a household is **happy** if at least `HOMOPHILY` of i
 share its type, otherwise it **relocates to a random empty cell**. Nobody programs "segregation" — it
 **emerges**.
 
+> **This is the *generic* Mesa idiom, not the shipped scenario.** The example below uses a `torus=True`
+> grid, an **integer** homophily threshold, and per-agent `Agent.step()` activated with
+> `self.agents.shuffle_do("step")`. The shipped `simlab/scenarios/s02_schelling.py` deliberately differs: a
+> **non-torus** grid, a **fractional `tolerance`** threshold, a fixed **50/50** group split, and a manual
+> **batch update** (all unhappy agents are decided against the start-of-step configuration, then relocated
+> one-by-one) instead of `Agent.step()`/`shuffle_do`. Both are real Mesa 3; the example teaches the canonical
+> idiom, the scenario records the lab's canonical trace.
+
 ### 2.1 The agent — state + one local rule
 
 ```python

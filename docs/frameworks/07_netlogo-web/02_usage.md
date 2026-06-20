@@ -136,7 +136,7 @@ HTML carries its own copy of the engine.
 ### 3c. As a React component in the Vite SPA
 
 In the actual SPA (React 19 + Vite 6), wrap the iframe in a small component and resolve the asset through
-Vite's `BASE_URL` (the app is served under a base path on GitHub Pages / the VPS):
+Vite's `BASE_URL` (the app is served under a base path on GitHub Pages):
 
 ```tsx
 // web/src/components/sim/NetLogoCard.tsx

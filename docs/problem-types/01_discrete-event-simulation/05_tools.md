@@ -113,7 +113,6 @@ All DES tools used in the lab are permissive and mutually compatible:
 | Salabim | MIT |
 | JaamSim *(reference-only)* | Apache-2.0 |
 | AnyLogic *(reference-only)* | Proprietary |
-| NHS A&E distributions (used to shape S04 arrivals) | Open Government Licence — attribute |
 
 See [`LICENSES.md`](../../../LICENSES.md) and [`ATTRIBUTION.md`](../../../ATTRIBUTION.md). Repo:
 <https://github.com/fsantibanezleal/CAOS_SIMLAB>.

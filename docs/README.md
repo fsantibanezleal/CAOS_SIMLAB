@@ -42,10 +42,10 @@ replays. The contract underneath everything: a run is a pure function of `(param
 | [S04](./use-cases/04_s04_ed.md) | Emergency Department Flow | SimPy (multi-stage priority) | live |
 | [S05](./use-cases/05_s05_beergame.md) | Beer Game (bullwhip) | Mesa (policy/feedback) | live |
 | [S06](./use-cases/06_s06_jobshop.md) | Job-Shop Scheduling | OR-Tools CP-SAT | precompute |
-| [S07](./use-cases/07_s07_haul.md) | Construction Haul Routing | OR-Tools + SimPy + OSMnx/NetworkX | precompute |
-| [S08](./use-cases/08_s08_vrp.md) | Vehicle Routing (VRP) | OR-Tools + PyVRP + SimPy | precompute |
-| [S09](./use-cases/09_s09_ambulance.md) | Ambulance Dispatch | SimPy + OR-Tools-class dispatch + graph | live |
-| [S10](./use-cases/10_s10_montecarlo.md) | Monte-Carlo CI Study | joblib (+ CuPy/Numba) + SciPy | precompute |
+| [S07](./use-cases/07_s07_haul.md) | Construction Haul Routing | NetworkX + OR-Tools CP-SAT (plan, precomputed) + SimPy (replay, live) | precompute plan + live replay |
+| [S08](./use-cases/08_s08_vrp.md) | Vehicle Routing (CVRP) | OR-Tools + PyVRP | precompute |
+| [S09](./use-cases/09_s09_ambulance.md) | Ambulance Dispatch | SimPy + NetworkX (closed-form nearest-available dispatch) | live |
+| [S10](./use-cases/10_s10_montecarlo.md) | Monte-Carlo CI Study | joblib + SciPy | live |
 | [S11](./use-cases/11_s11_minehaul.md) | Mine Multi-Destination Haul | OR-Tools GLOP LP + SimPy | precompute |
 
 The tools behind each scenario are documented in [frameworks.md](./frameworks.md); the problem type each one

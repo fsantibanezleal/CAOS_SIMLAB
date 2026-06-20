@@ -18,7 +18,7 @@ NetLogo Web is the right tool when **all** of these hold:
    this shape.
 2. **The scale is modest** — ~1e3–1e4 agents, so it runs smoothly in a browser (see §3 limits).
 3. **The goal is "play first, understand later"** — the visitor should see it *move* and *react to a slider*
-   within a second of landing, with **zero server compute** on a no-GPU VPS.
+   within a second of landing, with **zero server compute** on GitHub Pages (no backend).
 
 If any of those fails — millions of agents, a server-side data pipeline, a need to *trace and replay* an
 exact run for teaching the code — you are in a different lane (§5).
@@ -47,16 +47,18 @@ the visitor's browser does the simulating.
 ## 3. Which lab scenarios use NetLogo Web
 
 NetLogo Web is the **LIVE in-browser ABM** engine — the "enter → straight to a running simulator" on-ramp.
-Two scenarios get a NetLogo Web live card:
+**One** NetLogo Web live card ships today (S02 Schelling, `web/public/netlogo/schelling.html`); a second
+(S03 SIR) is **planned, not yet shipped**:
 
 | Scenario | Live card | Sliders the visitor drags | What emerges, instantly |
 |---|---|---|---|
-| **S02 Schelling** (`simlab/scenarios/s02_schelling.py`) | segregation on a 2-D grid | `pct-similar-wanted` (tolerance), `density` | strong segregation from a *mild* local preference |
-| **S03 SIR** (`simlab/scenarios/s03_sir.py`) | epidemic spreading | infection probability, recovery rate, contacts | an epidemic **wave** + the S/I/R curves over time |
+| **S02 Schelling** (`simlab/scenarios/s02_schelling.py`) | **shipped** — `web/public/netlogo/schelling.html`: segregation on a 2-D grid | `pct-similar-wanted` (tolerance), `density` | strong segregation from a *mild* local preference |
+| **S03 SIR** (`simlab/scenarios/s03_sir.py`) | **planned (not yet shipped)** — epidemic spreading card | infection probability, recovery rate, contacts | an epidemic **wave** + the S/I/R curves over time |
 
 These are the **classic ABM canon** and both exist as CC0-friendly NetLogo models, which is exactly why they
 are the live-card picks (Schelling and "Virus"/SIR are textbook Models Library entries; we prefer the CC0
-Code-Example variants or author our own — see §4).
+Code-Example variants or author our own — see §4). Only the Schelling card is committed under
+`web/public/netlogo/` so far; the SIR card is the documented next addition.
 
 ### The two-engine framing (read this — it is the source of learner confusion)
 
@@ -92,11 +94,11 @@ authoring time (once)                              every visit (in the browser)
 │ NetLogo model + Interface ├──────────►│ Tortoise engine steps the model LIVE,     │
 │ random-seed <fixed>       │  to HTML  │ draws the view, reacts to slider drags     │
 └──────────────────────────┘           └──────────────────────────────────────────┘
-        committed once as a static .html             VPS does ZERO compute
+        committed once as a static .html        GitHub Pages does ZERO compute
 ```
 
 Why this lane exists at all, given the lab's precompute religion: it is the **cleanest way to honor
-"enter → a running simulator"** on a **no-GPU, shared VPS**. A NumPy/Pyodide card must download the Pyodide
+"enter → a running simulator"** on **GitHub Pages (a static deploy, no backend)**. A NumPy/Pyodide card must download the Pyodide
 runtime before the first frame; a NetLogo Web card is native JS and starts faster, with no Python in the
 browser. The cost is the trade-offs in §5.
 
@@ -108,7 +110,7 @@ reproducible — the same discipline as the seeded Python traces, just executed 
 Grounded in `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`.
 
 **Strengths**
-- **Zero server compute.** Pure client-side JS — the no-GPU VPS serves a static file and does nothing else.
+- **Zero server compute.** Pure client-side JS — GitHub Pages serves a static file and does nothing else.
   This is *the* architectural fit for the live lane.
 - **Instant, animated, interactive for free.** Sliders, buttons, plots and a real-time view come straight
   out of the export — no UI code to write for the model itself.
@@ -166,7 +168,7 @@ For S02 and S03 specifically: both are trivial to author cleanly, so the lab's l
 
 | If you need… | Pick | Why |
 |---|---|---|
-| An **instant, zero-server, animated** in-browser ABM classic (Schelling, SIR, Wolf-Sheep) | **NetLogo Web** (Tortoise) | compiles to JS, runs fully client-side, no VPS compute |
+| An **instant, zero-server, animated** in-browser ABM classic (Schelling, SIR, Wolf-Sheep) | **NetLogo Web** (Tortoise) | compiles to JS, runs fully client-side, no deploy-runtime compute |
 | A **throwaway ≤10-line Python demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab uses **Mesa 3** for S02/S03 (run live in Pyodide + committed replay) |
 | To **learn/teach + build/scale** ABM in Python (≤1e5 agents), with `DataCollector` / `batch_run` | **[Mesa 3](../04_mesa/03_applying.md)** (live in Pyodide + replay) | the Python standard; abstractions = curriculum |
 | **Real maps / GIS** in an ABM | **Mesa-Geo** | GeoAgents over Shapely/GeoPandas |

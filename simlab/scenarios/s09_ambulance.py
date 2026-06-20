@@ -10,9 +10,10 @@ This scenario USES the tools it documents — no hand-rolled NumPy event loop or
 
 * **NetworkX** (``docs/frameworks/10_networkx``) builds a real undirected road graph over the shared city
   ``GridNetwork`` in ``_geo.py`` (same nodes/edges/coordinates). Travel routes — base→scene, scene→hospital,
-  hospital→base — are ``nx.dijkstra_path`` shortest paths on the distance-weighted graph, and the dispatch
-  metric (earliest possible arrival across the fleet) reads ``nx`` path *lengths*. On the unit grid these
-  reproduce the lab's previous Dijkstra byte-for-byte, so the committed trace is unchanged.
+  hospital→base — and the dispatch metric (earliest possible arrival across the fleet) come from
+  ``nx.single_source_dijkstra`` (memoised per origin, yielding both the node paths and the path *lengths*) on
+  the distance-weighted graph. On the unit grid these reproduce the lab's previous Dijkstra byte-for-byte, so
+  the committed trace is unchanged.
 * **SimPy** (``docs/frameworks/01_simpy``) replays the call stream + dispatch as a real discrete-event
   simulation. A single arrival process injects each Poisson call at its event time; an instantaneous
   dispatcher then commits the nearest-available ambulance (the one with the earliest feasible scene arrival,
@@ -48,7 +49,7 @@ def build_road_graph(net: GridNetwork) -> nx.Graph:
     """A real NetworkX undirected road graph over the shared city GridNetwork.
 
     Nodes and edges mirror ``_geo`` exactly; each road segment's weight is its euclidean length, so
-    ``nx.dijkstra_path`` reproduces the lab's plain-distance Dijkstra byte-for-byte on the unit grid.
+    ``nx.single_source_dijkstra`` reproduces the lab's plain-distance Dijkstra byte-for-byte on the unit grid.
     """
     import networkx as nx  # lazy: only needed to RUN (not to import the registry under Pyodide)
 

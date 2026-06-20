@@ -39,13 +39,16 @@ seeded sampler (NumPy)  ──►  many replications (joblib / CuPy)  ──► 
 ```
 
 1. Define the replication as a pure function of `(params, seed)` returning one KPI.
-2. Run `K` replications with **independent, non-overlapping** seeds (S10's plan is `make_rng(seed + r)`).
+2. Run `K` replications with **independent, non-overlapping** seeds. S10 fans them with joblib
+   (`delayed(mmc_mean_wait)(..., int(seed) + r)` for `r` in `range(reps)`); each replication builds its own
+   stream inside the worker with `np.random.default_rng(int(seed) + r)`, so the result is identical on any
+   worker count.
 3. Pass the resulting array to `scipy.stats`: `stats.sem(sample)` for the standard error, then
    `stats.t.interval(0.95, K-1, loc=mean, scale=sem)` for the interval.
 
-In CAOS_SIMLAB this happens **offline in the precompute pipeline**; only the resulting numbers (mean, CI
-bounds, half-width) are committed into the trace and the static site replays them. The browser never
-imports SciPy (see [`01_installation.md`](./01_installation.md)).
+In CAOS_SIMLAB this runs **live in the browser**: `scipy` is in `LIVE_WHEELS` and the Pyodide worker loads
+it, so S10 computes its CIs in-browser with `scipy.stats` (the same study is also committed as a seed-42
+trace for the deterministic gallery). See [`01_installation.md`](./01_installation.md).
 
 ## 3. Which scenario uses it
 
@@ -98,8 +101,8 @@ type — make several points that constrain how `scipy.stats` should be applied:
 - **vs hand-rolled formula math.** Don't. Typing `1.96` and a `t`-table value invites copy errors and
   ddof mistakes. `scipy.stats` is the canonical, tested implementation; the lab rule is to call it.
 - **vs `statsmodels`.** `statsmodels` is excellent for regression and richer inference, but it is a much
-  larger dependency for what is, here, three function calls. `scipy.stats` is already in the precompute
-  venv (pulled by Mesa/scikit-learn) and sufficient for means and standard CIs.
+  larger dependency for what is, here, three function calls. `scipy` is already pinned directly
+  (`scipy==1.18.0`) and loaded into the live worker, and is sufficient for means and standard CIs.
 - **vs bootstrap (`scipy.stats.bootstrap`).** When the sampling distribution is *not* approximately
   normal and you want a distribution-free interval (e.g. for a quantile or a ratio), `scipy.stats.bootstrap`
   is the right tool — and it lives in the same package, so adopting it costs no new dependency. For the

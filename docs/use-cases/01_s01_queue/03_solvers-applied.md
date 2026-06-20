@@ -99,8 +99,10 @@ S01 is a **live** scenario. The lab's [4-gate](../../architecture/03_the-gate.md
 
 - **Pure-Python:** yes — SimPy, Ciw and NumPy are all pure-Python / Pyodide-loadable
   (`wheels = ["simpy", "ciw", "numpy"]`, all in `LIVE_WHEELS`).
-- **Run time:** every shipped variant runs well under the 3 s gate (measured `run_ms` ranges ≈ **2.7 ms**
-  for the unstable variant up to ≈ **1032 ms** for the ten-server pool — see the manifest and
+- **Run time:** every shipped variant clears the 3 s gate, though not by a wide margin — measured `run_ms`
+  ranges from ≈ **6.2 ms** for the unstable variant up to ≈ **2498.6 ms** (the ten-server `c10` pool, ~2.5 s,
+  still under the 3 s gate); the heavier stable variants (`saturated` ≈ 2.2 s, `c5` ≈ 2.1 s) also sit in the
+  2.0–2.5 s band, so this is "inside the gate," not "well under" it (see the manifest's `gate.run_ms` and
   [04 · Results](./04_results-and-reading.md)). The bulk of each *stable* variant's time is the Ciw
   cross-check (10 seeded replications), not the SimPy animation; the unstable variant is fast because that
   Ciw study is **skipped** (`applicable: false` — no finite theory to converge to), **not** because the

@@ -12,7 +12,8 @@ node is readable as Markdown; the live Theory page renders the same equations wi
 
 ## 1. Model class
 
-A **lattice agent-based model (ABM)** with **asynchronous, relocation-driven activation**. There is no
+A **lattice agent-based model (ABM)** with **batch-update, relocation-driven activation** (all unhappy agents
+are decided against the start-of-step configuration, then relocated one-by-one). There is no
 closed-form solver and no objective to optimize: in ABM the **run *is* the answer** — you build the local
 rule and observe the global pattern it produces. (`analytic = {}` in the trace, by design.)
 
@@ -57,17 +58,21 @@ local view — there is no global decision vector being optimized.
 
 ## 5. Dynamics (the step)
 
-Each step is a **simultaneous batch update** (verified in `relocate()` and the `run()` loop):
+Each step is a **batch update** (verified in `relocate()` and the `run()` loop): all unhappy agents are
+*decided* against the **start-of-step configuration** in one pass, then *relocated* one-by-one into the
+growing pool of empty cells. (This batch-decision-then-sequential-move scheme is neither a strictly
+simultaneous swap nor a fully asynchronous re-evaluation between moves — it is the single, well-defined
+update the code implements.)
 
 1. **Evaluate.** For every agent compute s_i; collect the unhappy set U = { i : |N_i| > 0 and s_i < τ }.
    (`segregation_and_unhappy()` returns both the segregation index and U in one pass.)
 2. **Stop test.** If U is empty (everyone content) **or** the step index has reached T, stop — the system
    has converged or hit the cap.
-3. **Relocate.** Otherwise move every unhappy agent to a random empty cell: take the grid's empties as a
-   *sorted* list (stable order), seeded-shuffle them, seeded-shuffle the movers, and assign one-to-one;
-   each just-vacated cell is appended back so it becomes available to later movers in the same step. All
-   shuffles use the seeded `self.random`, so the batch update is deterministic regardless of set iteration
-   order.
+3. **Relocate.** Otherwise move every unhappy agent (all decided against the start-of-step board) to a
+   random empty cell: take the grid's empties as a *sorted* list (stable order), seeded-shuffle them,
+   seeded-shuffle the movers, and assign one-to-one; each just-vacated cell is appended back so it becomes
+   available to later movers in the same step. All shuffles use the seeded `self.random`, so the batch
+   update is deterministic regardless of set iteration order.
 
 The loop records a frame **before** each evaluation, so frame t is the configuration at the start of round t
 (the initial random board is frame 0).

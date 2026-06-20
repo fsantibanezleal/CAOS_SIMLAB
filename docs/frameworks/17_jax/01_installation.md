@@ -64,8 +64,8 @@ offline, local-only lanes. JAX is **never** in `requirements.txt` (the live MVP)
 because:
 
 - The browser / SPA never imports JAX. The deploy contract is the committed trace
-  artifact, **not** a runtime simulator, so JAX has no place on the VPS or the
-  GitHub Pages path (see [`../../architecture.md`](../../architecture.md) and the
+  artifact, **not** a runtime simulator, so JAX has no place on the
+  GitHub Pages deploy runtime (see [`../../architecture.md`](../../architecture.md) and the
   [GPU-lane guide](../../guides/03_gpu-lane.md)).
 - JAX is a *precompute / vectorization* tool used to generate artifacts offline,
   alongside `ortools` (precompute) and the optional CuPy / Numba GPU exhibit.

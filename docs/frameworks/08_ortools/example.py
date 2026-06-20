@@ -10,8 +10,10 @@ family as S11). We maximise profit subject to two resource constraints and
 print the optimum and the optimal x*, y*.
 
 Determinism:
-  * CP-SAT: single worker (num_search_workers = 1) + fixed random_seed = 42,
-    plus a wall-clock time limit so the script always terminates.
+  * CP-SAT: the reproducibility invariants are single worker (num_search_workers = 1)
+    + fixed random_seed = 42. The wall-clock cap (CP_TIME_LIMIT_S = 10.0, matching S06
+    and the S07 plan builder) is only a termination guard, not a determinism knob, and
+    never fires on these tiny instances.
   * GLOP: the simplex on this LP is deterministic; we still print solver status.
   * The generated job-shop instance uses a seeded numpy Generator so the demo
     prints the same numbers on every run.
@@ -26,7 +28,10 @@ from ortools.linear_solver import pywraplp
 from ortools.sat.python import cp_model
 
 SEED = 42
-CP_TIME_LIMIT_S = 5.0
+# Termination guard only (NOT a determinism knob): matches S06 and the S07 plan builder
+# (CP_TIME_LIMIT_S = 10.0). ft06 solves to OPTIMAL in tens of ms, so this cap never fires;
+# reproducibility comes from num_search_workers = 1 + random_seed.
+CP_TIME_LIMIT_S = 10.0
 
 # Fisher & Thompson (1963) ft06: per job, an ordered list of (machine, duration).
 # Proven optimal makespan = 55. This is the exact instance scenario S06 ships.

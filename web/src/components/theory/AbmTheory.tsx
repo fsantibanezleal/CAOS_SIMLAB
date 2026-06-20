@@ -1229,8 +1229,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             </ul>
             <p>
               {es
-                ? "Un matiz de despliegue honesto: el cierre de wheels de Mesa (pandas, scipy) es demasiado pesado para el arranque en frío en vivo de Pyodide, así que el ABM no se re-ejecuta en el navegador — corre en el pipeline local sembrado y el laboratorio reproduce la traza precomputada. Las colas DES (SimPy: S01 Banco/Clínica, S04 Urgencias) sí corren en vivo en Pyodide. Misma honestidad para ambas pistas: la semilla fija el resultado, la traza es la verdad, el visor solo la reproduce."
-                : "An honest deployment nuance: Mesa's wheel closure (pandas, scipy) is too heavy for Pyodide's live cold-start, so the ABM is not re-run in the browser — it runs in the seeded local pipeline and the lab replays the precomputed trace. The DES queues (SimPy: S01 Bank/Clinic, S04 ED) do run live in Pyodide. Same honesty for both lanes: the seed fixes the result, the trace is the truth, the viewer only replays it."}
+                ? "Un matiz de despliegue honesto: el cierre de wheels de Mesa (numpy + mesa, con pandas/scipy/networkx/sqlite3 como dependencias) sí carga en Pyodide — fue medido, no asumido — así que el ABM se re-ejecuta en vivo en el navegador (S02 Schelling, S03 SIR, S05 Beer Game), con un arranque en frío de ≈3 s durante el cual una traza canónica comprometida pinta el primer cuadro al instante. Las colas DES (SimPy: S01 Banco/Clínica, S04 Urgencias) también corren en vivo. Lo único que se precomputa son los escenarios de solver nativo (OR-Tools), que no tienen build de WebAssembly. Misma honestidad para ambas pistas: la semilla fija el resultado, la traza es la verdad, el visor la reproduce."
+                : "An honest deployment nuance: Mesa's wheel closure (numpy + mesa, with pandas/scipy/networkx/sqlite3 as dependencies) does load in Pyodide — measured, not assumed — so the ABM re-runs live in the browser (S02 Schelling, S03 SIR, S05 Beer Game), with a ~3 s cold start during which a committed canonical trace paints the first frame instantly. The DES queues (SimPy: S01 Bank/Clinic, S04 ED) also run live. The only precomputed scenarios are the native-solver ones (OR-Tools), which have no WebAssembly build. Same honesty for both lanes: the seed fixes the result, the trace is the truth, the viewer replays it."}
             </p>
           </div>
 
@@ -1277,8 +1277,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             </svg>
             <figcaption className="fig-cap">
               {es
-                ? "El bucle real del laboratorio: cada tick, el Model.step() de Mesa 3 recorre el AgentSet (self.agents), decide todas las transiciones contra el estado(t) y las aplica en bloque para producir el estado(t+1) (activación simultánea), se registra un frame, y la traza completa (precomputada en el pipeline local) alimenta el visor de reproducción determinista."
-                : "The lab's actual loop: each tick, Mesa 3's Model.step() iterates the AgentSet (self.agents), decides every transition against state(t) and applies them in a batch to produce state(t+1) (simultaneous activation), a frame is recorded, and the full trace (precomputed in the local pipeline) feeds the deterministic-replay viewer."}
+                ? "El bucle real del laboratorio: cada tick, el Model.step() de Mesa 3 recorre el AgentSet (self.agents), decide todas las transiciones contra el estado(t) y las aplica como actualización por lotes para producir el estado(t+1), se registra un frame, y la traza alimenta el visor de reproducción determinista. Este bucle de Mesa corre en vivo en Pyodide (S02/S03/S05); la traza canónica comprometida solo provee el primer cuadro instantáneo mientras el runtime calienta."
+                : "The lab's actual loop: each tick, Mesa 3's Model.step() iterates the AgentSet (self.agents), decides every transition against state(t) and applies them as a batch update to produce state(t+1), a frame is recorded, and the trace feeds the deterministic-replay viewer. This Mesa loop runs live in Pyodide (S02/S03/S05); the committed canonical trace only supplies the instant first paint while the runtime warms up."}
             </figcaption>
           </figure>
 
@@ -1286,8 +1286,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             tex={String.raw`\text{run}(\text{seed}) \ \text{is a pure function of inputs given a fixed seed and update rule.}`}
             caption={
               es
-                ? "Contrato de determinismo: dada una semilla fija (el RNG sembrado de Mesa, Model(rng=seed)) y la regla de actualización simultánea por lotes, run(seed) es función pura de las entradas — la base del visor de reproducción determinista."
-                : "Determinism contract: given a fixed seed (Mesa's seeded RNG, Model(rng=seed)) and the simultaneous batch update rule, run(seed) is a pure function of inputs — the basis of the deterministic-replay viewer."
+                ? "Contrato de determinismo: dada una semilla fija (el RNG sembrado de Mesa, Model(rng=seed)) y la regla de actualización por lotes, run(seed) es función pura de las entradas — la base del visor de reproducción determinista, ya corra Mesa en vivo en el navegador o desde la traza comprometida."
+                : "Determinism contract: given a fixed seed (Mesa's seeded RNG, Model(rng=seed)) and the batch update rule, run(seed) is a pure function of inputs — the basis of the deterministic-replay viewer, whether Mesa runs live in the browser or from the committed trace."
             }
           />
 
@@ -1296,11 +1296,11 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ul>
               {[
                 es
-                  ? "Mesa corre en el pipeline local, no en vivo: su cierre de wheels (pandas, scipy) es demasiado pesado para el arranque en frío de Pyodide, así que el ABM se precomputa y se reproduce; solo las colas DES (SimPy) corren en vivo en el navegador."
-                  : "Mesa runs in the local pipeline, not live: its wheel closure (pandas, scipy) is too heavy for Pyodide cold-start, so the ABM is precomputed and replayed; only the DES queues (SimPy) run live in the browser.",
+                  ? "Mesa 3 corre en vivo en el navegador vía Pyodide: las escenas ABM (S02 Schelling, S03 SIR, S05 Beer Game) cargan su cierre de wheels (numpy + mesa, con pandas/scipy/networkx/sqlite3 como dependencias) en el worker y se ejecutan ahí — medido, no asumido (≈3 s de arranque en frío). Mientras el runtime calienta, una traza canónica comprometida pinta el primer cuadro al instante. Lo único que se precomputa son los escenarios de solver nativo (OR-Tools: S06, S08, S11), que no tienen build de WebAssembly."
+                  : "Mesa 3 runs live in the browser via Pyodide: the ABM scenes (S02 Schelling, S03 SIR, S05 Beer Game) load their wheel closure (numpy + mesa, with pandas/scipy/networkx/sqlite3 as dependencies) into the worker and execute there — measured, not assumed (~3 s cold start). While the runtime warms up, a committed canonical trace paints the first frame instantly. The only precomputed scenarios are the native-solver ones (OR-Tools: S06, S08, S11), which have no WebAssembly build.",
                 es
-                  ? "Los escenarios fijan el régimen de activación a simultáneo/síncrono por lotes (Sub-pestaña 2): el step() del modelo decide todo contra el estado del inicio del paso y lo aplica junto. Explorar activación aleatoria o por etapas sería trivial sobre el mismo AgentSet de Mesa (shuffle_do / do por etapas), pero el laboratorio no lo alterna."
-                  : "The scenarios fix the activation regime to simultaneous/synchronous batch (Sub-tab 2): the model's step() decides everything against the start-of-step state and applies it together. Exploring random or staged activation would be trivial on the same Mesa AgentSet (shuffle_do / staged do), but the lab does not switch between them.",
+                  ? "Los escenarios fijan el régimen de activación a actualización por lotes (Sub-pestaña 2): el step() del modelo decide todo contra el estado del inicio del paso y luego lo aplica (los agentes que cambian se reubican uno a uno en el nuevo estado). Explorar activación aleatoria o por etapas sería trivial sobre el mismo AgentSet de Mesa (shuffle_do / do por etapas), pero el laboratorio no lo alterna."
+                  : "The scenarios fix the activation regime to a batch update (Sub-tab 2): the model's step() decides everything against the start-of-step state, then applies it (changed agents relocate one-by-one into the new state). Exploring random or staged activation would be trivial on the same Mesa AgentSet (shuffle_do / staged do), but the lab does not switch between them.",
                 es
                   ? "Mesa escala a agentes heterogéneos, planificación compleja, espacios de red y grandes conjuntos de modelos; es interpretado, por lo que poblaciones enormes (≳1e5 agentes) pueden necesitar batching/vectorización o motores compilados (FLAME GPU 2, ABMax). Para tu propio trabajo, la misma elección que hace el laboratorio se sostiene salvo a esa escala."
                   : "Mesa scales to heterogeneous agents, complex scheduling, network spaces, and large model suites; it is interpreted, so very large populations (≳1e5 agents) may need batching/vectorization or compiled engines (FLAME GPU 2, ABMax). For your own work, the same choice the lab makes holds except at that scale.",

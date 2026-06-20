@@ -74,9 +74,9 @@ import-cost optimization, not a semantic change.
 conditions:
 
 - **pure-Python** — `SchellingScenario.pure_python = True` (Mesa is pure Python; no native blockers).
-- **run time** < 3000 ms — the committed gate timings are well under the cap (e.g. `t50` ≈ 19 ms; the
-  largest committed gate timing is the cold `t30` run at ≈ 1.1 s — see the manifest's `t30` `gate.run_ms` —
-  still well inside the 3 s cap).
+- **run time** < 3000 ms — the committed gate timings are inside the cap (e.g. `t50` ≈ 34 ms; the
+  largest committed gate timing is the cold `t30` run at ≈ 2.1 s — see the manifest's `t30` `gate.run_ms` —
+  still under the 3 s cap).
 - **trace size** < 1 MB — the largest committed trace (`t625`) is ≈ 94 KB, far under the cap.
 - **wheel closure ⊆ live worker** — `wheels = ["numpy", "mesa"]`, and both are in `LIVE_WHEELS`. Mesa 3 was
   *measured* to run in Pyodide (numpy + pandas + scipy + networkx + sqlite3 + mesa), so ABM runs **live on

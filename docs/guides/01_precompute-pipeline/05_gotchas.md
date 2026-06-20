@@ -10,9 +10,11 @@ numbers are. These are the rules the pipeline (and CI) enforce, plus the practic
   a fixed `(code, params, seed)` **must reproduce the committed bytes**. If it does not, the run is
   non-deterministic and the trace cannot be trusted as truth. See
   [../architecture/02_determinism-and-trace.md](../../architecture/02_determinism-and-trace.md).
-- **GPU runs need per-replication seeding.** GPU thread-scheduling is non-deterministic across runs, so the
-  GPU exhibit fixes the seed *per replication* (xoroshiro128p for Numba, cuRAND for CuPy) and snapshots the
-  deterministic state into the trace — so the result reproduces on any machine, GPU or not. Detail in
+- **GPU runs would need per-replication seeding.** The GPU lane is a **reference-only** chapter — no GPU
+  exhibit ships (S10's Monte-Carlo study runs on **joblib + SciPy**, live; CuPy/Numba are intentionally out
+  of scope). Documented for completeness: because GPU thread-scheduling is non-deterministic across runs, a
+  GPU exhibit *would* fix the seed *per replication* (xoroshiro128p for Numba, cuRAND for CuPy) and snapshot
+  the deterministic state into the trace so the result reproduces on any machine, GPU or not. Detail in
   [../03_gpu-lane.md](../03_gpu-lane.md).
 - **One engine, two lanes.** Because `sc.run` is the same call the browser makes, the live result must equal
   the committed trace for the same `(params, seed)`. The build verifies byte-equality between a live Pyodide
@@ -40,9 +42,11 @@ numbers are. These are the rules the pipeline (and CI) enforce, plus the practic
 - **Re-run after model or variant changes — and commit both trees together.** If you change `sc.run`, the
   variants, or the params but forget to re-run, the app replays a **stale** trace that no longer matches the
   code. Always commit `data/artifacts/` and `manifests/` in the same change as the code that produced them.
-- **Native engines are precompute-only, by design.** OR-Tools (S06, S07, S08, S09, S11) is C++ with no WASM
+- **Native engines are precompute-only, by design.** OR-Tools (S06, S07, S08, S11) is C++ with no WASM
   build, so its scenarios set `pure_python = False` and never enter the browser wheel closure. Do not try to
-  "promote" them to live.
+  "promote" them to live. (S09 is **not** in this list — it has no OR-Tools at all; it is a live SimPy +
+  NetworkX DES, see below. And S07 is a *hybrid*: its native route plan is precomputed and committed as
+  data, but the pure-Python **SimPy replay** runs **live** over those committed plans.)
 - **Keep the live wheel closure tiny.** Every entry in `requirements.txt` is a wheel Pyodide must fetch at
   cold start. The live core is intentionally just `numpy` + `simpy`; the heavy engines live in
   `requirements-precompute.txt` / `requirements-gpu.txt` and **never** enter the browser. Adding a heavy dep
@@ -56,8 +60,9 @@ numbers are. These are the rules the pipeline (and CI) enforce, plus the practic
 ## Per-scenario engines (where each trace comes from)
 
 S01 SimPy + Ciw (Erlang-C validation) · S02/S03/S05 Mesa · S04 SimPy · S06 OR-Tools CP-SAT ·
-S07 OR-Tools + SimPy + OSMnx/NetworkX · S08 OR-Tools + PyVRP + SimPy · S09 OR-Tools + SimPy + graph ·
-S10 joblib (+ optional CuPy/Numba) + SciPy · S11 OR-Tools GLOP LP + SimPy. Detail per problem type in
+S07 NetworkX + OR-Tools CP-SAT (route plan, precomputed) + SimPy (replay, live) ·
+S08 OR-Tools + PyVRP (CVRP, no SimPy) · S09 SimPy + NetworkX (closed-form nearest-available dispatch, no
+OR-Tools) · S10 joblib + SciPy · S11 OR-Tools GLOP LP + SimPy. Detail per problem type in
 [../../problem-types/](../../problem-types/) and per tool in [../../frameworks/](../../frameworks.md).
 
 Back to the node index: [../01_precompute-pipeline.md](../01_precompute-pipeline.md).

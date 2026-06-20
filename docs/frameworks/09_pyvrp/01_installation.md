@@ -21,18 +21,19 @@ PyVRP belongs to the **precompute** lane: `requirements-precompute.txt`.
   the [live-lane (Pyodide) guide](../../guides/02_live-lane-pyodide.md) for why this
   split exists.
 - It is used **offline** on a developer machine to generate the committed
-  solution traces that the web app replays. The VPS and browser only ever see
+  solution traces that the web app replays. The deploy (GitHub Pages) and browser only ever see
   the resulting JSON/Arrow artifacts, never PyVRP itself.
 
 The line in `requirements-precompute.txt`:
 
 ```
-pyvrp>=0.9        # S08 SOTA VRP contrast
+pyvrp==0.13.4     # S08 SOTA VRP contrast
 ```
 
-The floor is `>=0.9` (the first release with the stable high-level `Model`
-builder used throughout this node); the version actually installed and verified is
-newer (below).
+The exact `==0.13.4` pin is what the file carries and what is installed + verified
+here. As a *design-rationale* floor, anything `>=0.9` (the first release with the
+stable high-level `Model` builder used throughout this node) would work; the lab
+pins the exact version so the offline lane is reproducible from a clean checkout.
 
 ## Exact install line and installed version
 

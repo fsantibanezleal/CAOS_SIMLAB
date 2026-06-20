@@ -20,10 +20,14 @@ There are two stale comments in the source that pre-date the measured Mesa-in-Py
 [`simlab/core/scenario.py`](../../../simlab/core/scenario.py) plus `_is_live` in
 [`simlab/live.py`](../../../simlab/live.py) — read those, not the prose comments:
 
-- [`requirements.txt`](../../../requirements.txt) keeps the live **base** install minimal (`numpy`, `simpy`) and
-  its comment says "No Mesa". That file is the *local pip base*, not the browser closure: it is intentionally
-  small because every line is also cold-start weight. The browser loads `mesa` (and friends) at runtime via
-  `loadPackage` + `micropip`, so a tiny `requirements.txt` and a live Mesa lane are **not** a contradiction.
+- [`requirements.txt`](../../../requirements.txt) keeps the live **base** install minimal (`numpy`, `simpy`).
+  Its comment now states the truth explicitly — *"Mesa/Ciw are NOT pinned here even though the ABM scenarios
+  DO run live on real Mesa 3: the worker loads mesa (+ pandas/scipy/networkx/sqlite3) and ciw at runtime via
+  loadPackage/micropip"* — so do **not** read its short pin list as "no Mesa in the browser". That file is the
+  *local pip base*, not the browser closure: it is intentionally small because every line is also cold-start
+  weight. The browser loads `mesa` (and friends) at runtime via `loadPackage` + `micropip`, so a tiny
+  `requirements.txt` and a live Mesa lane are **not** a contradiction. The authoritative list of what runs
+  live is `LIVE_WHEELS` (= `numpy, simpy, ciw, mesa, pandas, scipy, networkx, sqlite3, joblib`), below.
 - The single source of truth for what runs live is `LIVE_WHEELS` + `_is_live`
   (`sc.pure_python and set(sc.wheels) <= LIVE_WHEELS`) in
   [`simlab/core/scenario.py`](../../../simlab/core/scenario.py) / [`simlab/live.py`](../../../simlab/live.py) —
@@ -45,10 +49,13 @@ path here. See [03 · Internals](./03_internals.md#why-a-classic-worker-not-a-mo
 
 Every wheel in the closure is bytes Pyodide must fetch on cold start. The closure is deliberately the **minimum**
 the live scenarios need; the heavy/native engines (OR-Tools, Mesa-Geo, OSMnx, the GPU libraries) live in
-`requirements-precompute.txt` / `requirements-gpu.txt` and **never** enter the browser — their work is
-precomputed and replayed (see [the precompute pipeline](../01_precompute-pipeline.md) and
-[the GPU lane](../03_gpu-lane.md)). Adding a wheel to `LIVE_WHEELS` to make one scenario live taxes the cold
-start of **every** visitor — weigh it against just precomputing that scenario.
+`requirements-precompute.txt` / `requirements-gpu.txt` and **never** enter the browser. The native **OR-Tools**
+work is precomputed and replayed (S06/S08/S11 plans, S07's route plan; see
+[the precompute pipeline](../01_precompute-pipeline.md)). Mesa-Geo, OSMnx and the GPU libraries have **no
+shipped scenario** — they are documented as the engines for *future* geospatial / road-graph / GPU variants,
+not because anything precomputed currently uses them (see [the GPU lane](../03_gpu-lane.md), reference-only).
+Adding a wheel to `LIVE_WHEELS` to make one scenario live taxes the cold start of **every** visitor — weigh it
+against just precomputing that scenario.
 
 ## No `PyProxy` may cross the worker boundary
 

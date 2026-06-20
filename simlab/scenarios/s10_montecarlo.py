@@ -11,9 +11,11 @@ the precision of a biased estimator, not its accuracy.
 
 This scenario is built on the real tools it documents rather than a hand-rolled NumPy loop:
 
-* **joblib** (``Parallel`` / ``delayed``) fans the N replications across CPU cores. Each replication owns
-  its own seeded RNG stream (``make_rng(seed + r)``), so the parallel result equals the serial result
-  byte-for-byte — the worker count and finish order never change the answer. This is the CPU v1 default;
+* **joblib** (``Parallel`` / ``delayed``) fans the N replications across CPU cores. Each replication builds
+  its own seeded NumPy Generator inline from ``seed + r`` (``np.random.default_rng(seed + r)`` — the function
+  is self-contained so joblib can pickle it to a worker; this is exactly what ``make_rng(seed + r)`` returns),
+  so the parallel result equals the serial result byte-for-byte — the worker count and finish order never
+  change the answer. This is the CPU v1 default;
   the GPU exhibit is intentionally out of scope here (a many-replication study is embarrassingly parallel
   and maps cleanly onto cores).
 * **scipy.stats** computes the confidence intervals from the sample rather than a hand-typed critical
@@ -50,10 +52,12 @@ def mmc_mean_wait(lam: float, mu: float, c: int, n: int, seed: int) -> float:
     """One replication: mean time-in-queue of an M/M/c FCFS queue (earliest-free-server method, O(n log c)).
 
     Takes a *seed* (not a pre-built Generator) so the function is self-contained and picklable — joblib must
-    be able to ship it to worker processes. Internally it builds the single seeded RNG for this run, exactly
-    as ``make_rng(seed)`` would, so the per-replication variate stream is identical to the old serial loop.
+    be able to ship it to worker processes. Internally it builds the single seeded RNG for this run by calling
+    ``np.random.default_rng(int(seed))`` inline (exactly what ``make_rng(seed)`` returns; inlined here only to
+    stay self-contained), so the per-replication variate stream is identical to the old serial loop.
     """
     rng = np.random.default_rng(int(seed))  # the single source of randomness for this replication
+                                            # (inlined np.random.default_rng == make_rng, kept picklable)
     inter = rng.exponential(1.0 / lam, size=n)
     service = rng.exponential(1.0 / mu, size=n)
     arrival = np.cumsum(inter)

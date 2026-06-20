@@ -7,8 +7,8 @@ already contains the engine inlined. That HTML is then embedded in the lab's Rea
 **entirely in the visitor's browser** — zero server compute.
 
 This is the **native-JS LIVE on-ramp lane** for ABM: the visitor lands on a page and a real, animated
-simulator is already running, with sliders, on a no-GPU VPS that only serves static files — with no Pyodide
-download at all. (The Mesa lane *also* runs live, but via Pyodide-Python, backed by a committed canonical
+simulator is already running, with sliders, on GitHub Pages, which only serves static files (zero server
+compute) — with no Pyodide download at all. (The Mesa lane *also* runs live, but via Pyodide-Python, backed by a committed canonical
 trace for instant first paint; see the [Mesa node](../04_mesa.md).)
 
 > **Reading order for this node:** start here (install/obtain the engine), then
@@ -102,7 +102,8 @@ Vite copies `web/public/**` to the build output untouched, so each model is reac
 ## 5. Platform / runtime notes
 
 - **No OS install, no toolchain, no CUDA.** The engine is JavaScript; it runs in any modern browser
-  (Chromium / Firefox / Safari). There is nothing to compile on the VPS and no GPU involvement.
+  (Chromium / Firefox / Safari). There is nothing to compile on the deploy (GitHub Pages, no backend) and no
+  GPU involvement.
 - **No Pyodide.** Unlike the lab's NumPy/SimPy live scenarios (which run Python *in* the browser via
   Pyodide), NetLogo Web is native JS — it does **not** load the Pyodide runtime, so its cold-start is
   smaller and independent of the wheel closure.
@@ -133,7 +134,8 @@ card before deploy (the lab's screenshot-verify rule applies — building blind 
 ## 7. Grounding / references
 
 - ABM-frameworks research (decision: "Power the LIVE in-browser ABM scenarios with NetLogo Web (Tortoise);
-  compiles to JavaScript and runs entirely client-side, so the no-GPU VPS just serves static files"):
+  compiles to JavaScript and runs entirely client-side, so GitHub Pages just serves static files (zero
+  server compute)"):
   `wip/caos-simlab/research/02-abm-frameworks-2026-06-18.md`.
 - Tortoise (JS compiler + runtime, engine artifacts): <https://github.com/NetLogo/Tortoise>
 - Galapagos (the netlogoweb.org front-end): <https://github.com/NetLogo/Galapagos>

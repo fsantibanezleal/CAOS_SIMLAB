@@ -42,9 +42,9 @@ shuffles) flows through Mesa's seeded RNG (`Model(rng=seed)` seeds `self.random`
   wrapped). Edge and corner agents therefore have fewer potential neighbours.
 - **A single, local preference per agent.** A household looks only at its own *occupied* Moore neighbours
   and is content when at least a fraction τ of them share its type. This is the only behaviour an agent has.
-- **Relocation of unhappy agents to a random empty cell**, done as a **simultaneous batch update** each
-  step (all unhappy agents are identified first, then moved). The just-vacated cell becomes available to
-  later movers within the same step.
+- **Relocation of unhappy agents to a random empty cell**, done as a **batch update** each step: all unhappy
+  agents are decided against the start-of-step configuration first, then relocated one-by-one. The
+  just-vacated cell becomes available to later movers within the same step.
 - **An isolated agent (no occupied neighbours) is content by convention** — there is no same-type ratio to
   fail, so it is excluded from both the unhappy set and the segregation index.
 
@@ -63,9 +63,10 @@ that this is the only mechanism behind real segregation. Excluded, on purpose:
 
 ## 4. Assumptions that shape interpretation
 
-- **Asynchronous, not strictly Markovian.** The within-step shuffle order (of unhappy agents and of empty
-  cells) influences the exact trace. Qualitative conclusions therefore rest on **ensembles over seeds**, not
-  on any single committed run.
+- **Batch update, not strictly Markovian.** Each step decides every unhappy agent against the start-of-step
+  configuration, then relocates them one-by-one; the within-step shuffle order (of unhappy agents and of
+  empty cells) influences the exact trace. Qualitative conclusions therefore rest on **ensembles over
+  seeds**, not on any single committed run.
 - **Equal group sizes** (50/50 split) — the model does not study minority/majority asymmetry.
 - **Honesty caveat (from the Context block).** The model shows that a mild local rule *suffices* to generate
   global segregation; it is not a claim that this rule is the cause of any particular real-world segregation.

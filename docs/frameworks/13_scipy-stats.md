@@ -12,12 +12,11 @@ step that decides whether the headline number is defensible or a precise lie.
 Reach for it whenever a stochastic KPI needs a **mean with its uncertainty**, and especially when the
 replication count `K` is small — the Student-t interval is the lab's honest default because it widens to
 admit that we *estimated* the variance from the same sample, and it converges to the z-interval as `K`
-grows. In CAOS_SIMLAB the CI math runs **offline in the precompute pipeline** (`scipy.stats` is a large
-native package and stays out of the browser/live lane); only the resulting numbers (mean, CI bounds,
-half-width) are committed into the deterministic trace and replayed by the static site. The scenario that
-exercises this is **S10 — Monte-Carlo Replication / CI Study**, and the methodology behind it is the
-conceptual backbone of the whole lab. It pairs naturally with the parallel-replication tools — see
-[Related frameworks](#related-frameworks) below.
+grows. In CAOS_SIMLAB the CI math runs **live in the browser**: `scipy` is in `LIVE_WHEELS` and the Pyodide
+worker loads it (`loadPackage("scipy")`), so the shipped **S10 — Monte-Carlo Replication / CI Study** computes
+its confidence intervals in-browser via `scipy.stats` (the same study is also precomputed and committed as a
+seed-42 trace for the deterministic gallery). S10's methodology is the conceptual backbone of the whole lab.
+It pairs naturally with the parallel-replication tools — see [Related frameworks](#related-frameworks) below.
 
 ## Read in order
 
