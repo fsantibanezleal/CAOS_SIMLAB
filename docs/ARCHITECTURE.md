@@ -11,13 +11,21 @@ compact, JSON timeline of events + KPIs). The trace is the source of truth; the 
 it. This is the same "deterministic core is truth, the presentation layer only renders it" discipline as
 deterministic-first generative apps — here applied to simulation replay rather than LLM output.
 
-## Three lanes
+## Two planes, dedicated engines
 
-1. **Live** — pure-Python scenarios (SimPy/Mesa) run in a Pyodide Web Worker. Editable params, real-time
-   animation, zero server compute.
-2. **Precomputed** — scenarios that fail the live gate (native solvers like OR-Tools, large agent counts,
-   GPU work) are run by the local pipeline into a committed seeded trace + manifest, replayed with a
-   scrubber.
+The whole point of the lab is to use the **real, dedicated, state-of-the-art tool for each problem type**
+(not hand-rolled stand-ins). The local plane has no restriction and runs every engine; the live plane is
+kept light. Which tool each scenario uses is documented in [problem-types/](problem-types/) and
+[frameworks/](frameworks/).
+
+1. **Live** — pure-Python scenarios run in a Pyodide Web Worker (editable params, real-time animation, zero
+   server compute): **SimPy** for DES, **Mesa 3** for ABM (with **NetLogo Web** as the alternate
+   client-side-JS ABM engine). What clears the 3-gate runs live; the rest is replayed.
+2. **Precomputed (local plane)** — the heavy/native/SOTA engines run **offline in the local `.venv`** into
+   a committed seeded trace + manifest, replayed with a scrubber: **OR-Tools** (CP-SAT / Routing / GLOP),
+   **PyVRP** (SOTA VRP), **NetworkX/OSMnx** (road graphs), **Mesa/Mesa-Geo** + **JuPedSim** (ABM/crowds),
+   **Ciw**/**Salabim** (DES queueing + offline video), **joblib + SciPy** (Monte-Carlo / CIs), and the
+   optional **CuPy/Numba/Taichi/JAX** GPU lane. See [guides/precompute-pipeline.md](guides/precompute-pipeline.md).
 3. **Host** — GitHub Pages serves the built SPA + the committed traces. No backend, no VPS.
 
 ## The 3-gate rule (`simlab/core/scenario.py`)

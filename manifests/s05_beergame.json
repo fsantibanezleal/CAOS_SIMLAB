@@ -4,14 +4,15 @@
   "title": "Beer Game (Supply-Chain Bullwhip)",
   "method": "ABM",
   "tier": 2,
-  "engine": "numpy",
+  "engine": "mesa",
   "seed": 42,
   "viz": {
     "renderer": "chart",
     "dimensionality": "2d"
   },
   "wheel_closure": [
-    "numpy"
+    "numpy",
+    "mesa"
   ],
   "param_specs": [
     {
@@ -82,7 +83,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 8.0,
+        "run_ms": 0.6,
         "trace_bytes": 2678,
         "reasons": []
       },
@@ -112,7 +113,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.8,
         "trace_bytes": 2684,
         "reasons": []
       },
@@ -142,7 +143,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.4,
         "trace_bytes": 2689,
         "reasons": []
       },
@@ -172,7 +173,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.2,
+        "run_ms": 0.4,
         "trace_bytes": 2686,
         "reasons": []
       },
@@ -202,7 +203,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.2,
+        "run_ms": 0.4,
         "trace_bytes": 2726,
         "reasons": []
       },
@@ -232,7 +233,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.2,
+        "run_ms": 0.4,
         "trace_bytes": 2684,
         "reasons": []
       },
@@ -262,7 +263,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.4,
         "trace_bytes": 2656,
         "reasons": []
       },
@@ -292,7 +293,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.2,
+        "run_ms": 0.4,
         "trace_bytes": 2687,
         "reasons": []
       },
@@ -322,7 +323,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.4,
         "trace_bytes": 2462,
         "reasons": []
       },
@@ -352,7 +353,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 0.3,
+        "run_ms": 0.4,
         "trace_bytes": 2697,
         "reasons": []
       },

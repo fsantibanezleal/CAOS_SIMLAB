@@ -14,8 +14,11 @@ curriculum.
 ## Why this exists
 
 Most simulation tutorials stop at a toy script; most simulation *tools* hide the model behind a GUI.
-CAOS_SIMLAB does both halves honestly: a **readable curriculum** that teaches the real libraries
-(SimPy, NumPy, OR-Tools) — their utility, their pitfalls, and *when each method actually applies* —
+CAOS_SIMLAB does both halves honestly: a **readable curriculum** that teaches the real **dedicated,
+state-of-the-art tools** — SimPy · Ciw · Salabim (DES) · Mesa · Mesa-Geo · NetLogo Web · JuPedSim (ABM) ·
+OR-Tools · PyVRP · NetworkX/OSMnx (optimization & routing) · joblib · SciPy · CuPy/Numba (Monte-Carlo) —
+their utility, their pitfalls, and *when each method actually applies* (full per-tool install/usage/apply
+guides + runnable examples in [`docs/`](docs/README.md)) —
 and a **modern web app** where you land straight in a running simulation, move the sliders, and watch
 the dynamics change. The same engine drives both, so what you learn is what runs.
 

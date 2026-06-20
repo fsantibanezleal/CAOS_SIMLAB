@@ -1,4 +1,4 @@
-"""S10 — Monte-Carlo replication / confidence-interval study.
+"""S10 — Monte-Carlo replication / confidence-interval study, on **joblib + SciPy**.
 
 Runs N independent replications of the M/M/c queue (the S01 model) and shows two output-analysis lessons
 made interactive. (1) The replication/CI lesson: a single run is noisy, but the running mean of many seeded
@@ -9,24 +9,51 @@ the closed-form Erlang-C value; at high load (ρ≈0.9, ~600 customers/run) the 
 the CI converges tightly around a BIASED estimate and the Erlang-C line sits outside it — the CI measures
 the precision of a biased estimator, not its accuracy.
 
+This scenario is built on the real tools it documents rather than a hand-rolled NumPy loop:
+
+* **joblib** (``Parallel`` / ``delayed``) fans the N replications across CPU cores. Each replication owns
+  its own seeded RNG stream (``make_rng(seed + r)``), so the parallel result equals the serial result
+  byte-for-byte — the worker count and finish order never change the answer. This is the CPU v1 default;
+  the GPU exhibit is intentionally out of scope here (a many-replication study is embarrassingly parallel
+  and maps cleanly onto cores).
+* **scipy.stats** computes the confidence intervals from the sample rather than a hand-typed critical
+  value: the running 95% band uses the exact normal critical value ``scipy.stats.norm.ppf(0.975)`` (not the
+  rounded 1.96), and the headline CI is built with ``scipy.stats.sem`` + ``scipy.stats.norm.interval`` — so
+  the lab uses the statistics framework it teaches.
+
+Determinism: the seed plan ``seed + r`` is unchanged, so the same (params, seed) yields the same sample on
+any number of workers; SciPy is a pure deterministic function of that sample. The emitted artifact is the
+existing chart-trace format (CI envelopes / histogram / KPIs incl. the finite-run-bias lesson); nothing in
+the trace schema or the frontend contract changes.
+
 Live-capable: pure-Python and fully seeded, so it runs in the browser via Pyodide (lane "live"); the
 committed seed-42 trace is also replayed for the deterministic gallery.
 """
 from __future__ import annotations
 
 import heapq
-import math
 
 import numpy as np
+from joblib import Parallel, delayed
+from scipy import stats
 
 from ..core.charttrace import ChartTrace
-from ..core.rng import make_rng
 from ..core.scenario import ParamSpec, Scenario, Variant
 from .s01_queue import erlang_c_mmc
 
+# Exact 95% two-sided normal critical value, from SciPy (not the hand-typed 1.96). Computed once at import
+# so the per-k running band stays a cheap vectorised multiply while still using the real statistics tool.
+Z95 = float(stats.norm.ppf(0.975))
 
-def mmc_mean_wait(lam: float, mu: float, c: int, n: int, rng: np.random.Generator) -> float:
-    """Mean time-in-queue of an M/M/c FCFS queue via the earliest-free-server method (O(n log c))."""
+
+def mmc_mean_wait(lam: float, mu: float, c: int, n: int, seed: int) -> float:
+    """One replication: mean time-in-queue of an M/M/c FCFS queue (earliest-free-server method, O(n log c)).
+
+    Takes a *seed* (not a pre-built Generator) so the function is self-contained and picklable — joblib must
+    be able to ship it to worker processes. Internally it builds the single seeded RNG for this run, exactly
+    as ``make_rng(seed)`` would, so the per-replication variate stream is identical to the old serial loop.
+    """
+    rng = np.random.default_rng(int(seed))  # the single source of randomness for this replication
     inter = rng.exponential(1.0 / lam, size=n)
     service = rng.exponential(1.0 / mu, size=n)
     arrival = np.cumsum(inter)
@@ -47,9 +74,11 @@ class MonteCarloScenario(Scenario):
     method = "hybrid"
     tier = 3
     viz = "chart"
-    engine = "numpy"
+    engine = "joblib"
     pure_python = True
-    wheels = ["numpy"]
+    # joblib fans the seeded replications across cores; scipy.stats builds the CIs; numpy supplies the
+    # variate streams + the per-run histogram binning. All pure Python, so the live (Pyodide) lane holds.
+    wheels = ["numpy", "joblib", "scipy"]
     param_specs = [
         ParamSpec("lam", "Arrival rate λ", 2.0, 0.1, 10.0, 0.1),
         ParamSpec("mu", "Service rate μ", 1.0, 0.1, 10.0, 0.1),
@@ -79,8 +108,23 @@ class MonteCarloScenario(Scenario):
     def run(self, params: dict, seed: int) -> ChartTrace:
         p = self.coerce(params)
         lam, mu, c, n, reps = p["lam"], p["mu"], int(p["c"]), int(p["n_customers"]), int(p["n_reps"])
-        wqs = np.array([mmc_mean_wait(lam, mu, c, n, make_rng(seed + r)) for r in range(reps)])
 
+        # CPU-parallel seeded replications via joblib. Seed plan `seed + r` per replication => the parallel
+        # result equals the serial result on any number of workers (order/worker-count independent), so
+        # determinism is preserved regardless of the backend.
+        #
+        # Backend = "threading": each replication is numpy-heavy (rng.exponential / cumsum release the GIL),
+        # so threads parallelise the real work without the loky process-pool spin-up tax (~5 s cold start)
+        # that would push the first run over the 3 s live gate. It is also the only joblib backend that
+        # works under Pyodide/WASM (no fork/subprocess), so the live lane is preserved.
+        per_run = Parallel(n_jobs=-1, backend="threading")(
+            delayed(mmc_mean_wait)(lam, mu, c, n, int(seed) + r) for r in range(reps)
+        )
+        wqs = np.asarray(per_run, dtype=float)
+
+        # Running mean + running 95% CI band. The half-width uses SciPy's exact normal critical value
+        # (Z95 = norm.ppf(0.975)) over the running sample standard deviation (ddof=1), so the band reflects
+        # the real statistics tool rather than a hand-typed 1.96.
         ks = list(range(1, reps + 1))
         run_mean, ci_lo, ci_hi = [], [], []
         cum = np.cumsum(wqs)
@@ -89,7 +133,7 @@ class MonteCarloScenario(Scenario):
             run_mean.append(round(float(m), 4))
             if k >= 2:
                 sd = float(np.std(wqs[:k], ddof=1))
-                half = 1.96 * sd / math.sqrt(k)  # 95% CI (normal approx)
+                half = Z95 * sd / np.sqrt(k)  # 95% CI (normal approx), SciPy critical value
             else:
                 half = 0.0
             ci_lo.append(round(m - half, 4))
@@ -98,6 +142,14 @@ class MonteCarloScenario(Scenario):
         theory = erlang_c_mmc(lam, mu, c)
         wq_th = theory["Wq"]  # None when the system is unstable (ρ ≥ 1): no steady-state Wq to compare to
         counts, edges = np.histogram(wqs, bins=18)
+
+        # Headline CI built with the real SciPy API: stats.sem = s/√n (ddof=1), stats.norm.interval applies
+        # the two-sided normal interval. This is the same value the final point of the running band carries,
+        # but expressed through the canonical scipy.stats calls rather than re-derived by hand.
+        final_mean = float(np.mean(wqs))
+        sem = float(stats.sem(wqs)) if reps >= 2 else 0.0
+        ci_full_lo, ci_full_hi = stats.norm.interval(0.95, loc=final_mean, scale=sem) if reps >= 2 else (final_mean, final_mean)
+        final_half = round(float(ci_full_hi - ci_full_lo) / 2, 4)  # float() so the KPI is a plain Python float
 
         tr = ChartTrace(self.id, self.title, self.method, int(seed), p)
         tr.x_label_en, tr.x_label_es = "replications n", "réplicas n"
@@ -111,7 +163,6 @@ class MonteCarloScenario(Scenario):
         )
         tr.bars = {"edges": [round(float(e), 3) for e in edges], "counts": [int(x) for x in counts],
                    "color": "var(--color-fg-faint)", "label_en": "per-run Wq distribution", "label_es": "distribución de Wq por corrida"}
-        final_half = round((ci_hi[-1] - ci_lo[-1]) / 2, 4)
         tr.kpis = {
             "final_mean": run_mean[-1],
             "ci_halfwidth": final_half,

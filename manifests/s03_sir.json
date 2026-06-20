@@ -4,14 +4,15 @@
   "title": "SIR Epidemic",
   "method": "ABM",
   "tier": 1,
-  "engine": "numpy",
+  "engine": "mesa",
   "seed": 42,
   "viz": {
     "renderer": "agent-grid",
     "dimensionality": "2d"
   },
   "wheel_closure": [
-    "numpy"
+    "numpy",
+    "mesa"
   ],
   "param_specs": [
     {
@@ -82,15 +83,15 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 9.3,
-        "trace_bytes": 70964,
+        "run_ms": 37.6,
+        "trace_bytes": 79749,
         "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.018,
         "peak_step": 0,
-        "attack_rate": 0.0353,
-        "duration_steps": 23,
+        "attack_rate": 0.0367,
+        "duration_steps": 26,
         "beta": 0.022,
         "gamma": 0.25
       },
@@ -113,15 +114,15 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.4,
-        "trace_bytes": 85614,
+        "run_ms": 34.3,
+        "trace_bytes": 79755,
         "reasons": []
       },
       "kpis": {
         "peak_infected_frac": 0.018,
         "peak_step": 0,
-        "attack_rate": 0.0512,
-        "duration_steps": 28,
+        "attack_rate": 0.0436,
+        "duration_steps": 26,
         "beta": 0.04,
         "gamma": 0.25
       },
@@ -144,15 +145,15 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 5.9,
-        "trace_bytes": 208699,
+        "run_ms": 25.3,
+        "trace_bytes": 147158,
         "reasons": []
       },
       "kpis": {
-        "peak_infected_frac": 0.2839,
+        "peak_infected_frac": 0.2722,
         "peak_step": 12,
-        "attack_rate": 0.9827,
-        "duration_steps": 70,
+        "attack_rate": 0.9792,
+        "duration_steps": 49,
         "beta": 0.14,
         "gamma": 0.2
       },
@@ -175,15 +176,15 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 3.9,
-        "trace_bytes": 132508,
+        "run_ms": 21.2,
+        "trace_bytes": 135433,
         "reasons": []
       },
       "kpis": {
-        "peak_infected_frac": 0.3823,
-        "peak_step": 10,
-        "attack_rate": 0.9965,
-        "duration_steps": 44,
+        "peak_infected_frac": 0.3193,
+        "peak_step": 11,
+        "attack_rate": 0.9945,
+        "duration_steps": 45,
         "beta": 0.2,
         "gamma": 0.2
       },
@@ -206,15 +207,15 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 5.2,
-        "trace_bytes": 132438,
+        "run_ms": 17.3,
+        "trace_bytes": 111987,
         "reasons": []
       },
       "kpis": {
-        "peak_infected_frac": 0.4404,
+        "peak_infected_frac": 0.4467,
         "peak_step": 7,
-        "attack_rate": 1.0,
-        "duration_steps": 44,
+        "attack_rate": 0.9986,
+        "duration_steps": 37,
         "beta": 0.3,
         "gamma": 0.2
       },
@@ -237,15 +238,15 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 4.9,
-        "trace_bytes": 179271,
+        "run_ms": 33.5,
+        "trace_bytes": 155829,
         "reasons": []
       },
       "kpis": {
-        "peak_infected_frac": 0.5561,
+        "peak_infected_frac": 0.5471,
         "peak_step": 6,
         "attack_rate": 1.0,
-        "duration_steps": 60,
+        "duration_steps": 52,
         "beta": 0.42,
         "gamma": 0.15
       },
@@ -268,15 +269,15 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 2.7,
-        "trace_bytes": 91472,
+        "run_ms": 17.5,
+        "trace_bytes": 79749,
         "reasons": []
       },
       "kpis": {
-        "peak_infected_frac": 0.2313,
-        "peak_step": 9,
-        "attack_rate": 0.9834,
-        "duration_steps": 30,
+        "peak_infected_frac": 0.2424,
+        "peak_step": 7,
+        "attack_rate": 0.9882,
+        "duration_steps": 26,
         "beta": 0.26,
         "gamma": 0.4
       },
@@ -299,14 +300,14 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 6.7,
-        "trace_bytes": 238018,
+        "run_ms": 26.8,
+        "trace_bytes": 238020,
         "reasons": []
       },
       "kpis": {
-        "peak_infected_frac": 0.5346,
-        "peak_step": 12,
-        "attack_rate": 0.9958,
+        "peak_infected_frac": 0.545,
+        "peak_step": 15,
+        "attack_rate": 0.9972,
         "duration_steps": 80,
         "beta": 0.16,
         "gamma": 0.08
@@ -330,15 +331,15 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 5.1,
-        "trace_bytes": 176471,
+        "run_ms": 32.8,
+        "trace_bytes": 196984,
         "reasons": []
       },
       "kpis": {
-        "peak_infected_frac": 0.1891,
-        "peak_step": 10,
-        "attack_rate": 0.9965,
-        "duration_steps": 59,
+        "peak_infected_frac": 0.1911,
+        "peak_step": 12,
+        "attack_rate": 0.9958,
+        "duration_steps": 66,
         "beta": 0.24,
         "gamma": 0.2
       },
@@ -361,15 +362,15 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 3.2,
-        "trace_bytes": 109061,
+        "run_ms": 15.2,
+        "trace_bytes": 120783,
         "reasons": []
       },
       "kpis": {
-        "peak_infected_frac": 0.5069,
+        "peak_infected_frac": 0.5104,
         "peak_step": 5,
         "attack_rate": 0.9979,
-        "duration_steps": 36,
+        "duration_steps": 40,
         "beta": 0.18,
         "gamma": 0.2
       },

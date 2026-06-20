@@ -2,21 +2,43 @@
 
 Teaches: arrivals, a server pool, the queue, utilisation rho, Little's Law — and crucially
 VALIDATION: the simulated mean wait is compared against the closed-form M/M/c (Erlang-C) result, so the
-learner sees "does my simulation match the theory?". Pure-Python (SimPy + NumPy) => runs live in Pyodide.
+learner sees "does my simulation match the theory?". Pure-Python (SimPy + Ciw) => runs live in Pyodide.
 
-All randomness is drawn up front from one seeded generator, so the run is reproducible from (params,
-seed) independent of the event scheduler's interleaving.
+Two independent simulators back the validation lesson, so "the sim converges to theory" is *real*:
+
+* The live, animatable run uses **SimPy** — one process per customer over a ``simpy.Resource`` pool. Its
+  per-customer event timeline is what the front end animates, and its mean waits are the headline KPIs.
+* The analytic field carries the closed-form **Erlang-C** reference *plus a real second-engine check from*
+  **Ciw**: a short, seeded M/M/c replication study (``ciw_xcheck``) whose mean Wq is compared back to the
+  Erlang-C Wq. So the trace literally records two simulators (SimPy KPIs, Ciw cross-check) both landing on
+  the same closed-form theory — the lab uses the queueing framework it documents rather than re-deriving it.
+
+All randomness is drawn from seeded generators — the SimPy variates from one ``make_rng(seed)`` drawn up
+front (so determinism is independent of the scheduler's interleaving), the Ciw replications from
+``ciw.seed(...)`` per replication — so a run is fully reproducible from (params, seed): the same input
+yields the same trace byte-for-byte.
 """
 from __future__ import annotations
 
 import math
-from statistics import fmean
+from statistics import fmean, mean, stdev
 
+import ciw
 import simpy
 
 from ..core.rng import make_rng
 from ..core.scenario import ParamSpec, Scenario, Variant
 from ..core.trace import Trace
+
+# --- Ciw cross-check controls (deterministic, kept small so the live gate still passes) -------------
+# Each replication is run long enough to see ~CIW_TARGET_ARRIVALS post-warm-up customers, so every regime
+# gets comparable statistical mass; the run length is capped so even high-throughput pools stay well under
+# the 3 s live-lane gate. Replications use ciw.seed(base + k) => the study is fully reproducible.
+CIW_REPS = 10
+CIW_TARGET_ARRIVALS = 8000
+CIW_WARMUP = 200.0
+CIW_MAX_TIME = 6000.0
+CIW_SEED_STRIDE = 1000  # replication k of a run with seed s uses ciw.seed(s * stride + k)
 
 
 def erlang_c_mmc(lam: float, mu: float, c: int) -> dict:
@@ -38,6 +60,61 @@ def erlang_c_mmc(lam: float, mu: float, c: int) -> dict:
             "Lq": round(lam * wq, 4), "stable": True}
 
 
+def _ciw_replication_wq(lam: float, mu: float, c: int, max_time: float, seed: int) -> float:
+    """One seeded Ciw M/M/c run; return the mean post-warm-up waiting time in queue.
+
+    Built on the real **Ciw** DES framework — Poisson arrivals + exponential service over ``c`` servers
+    (an M/M/c node), exactly as the queueing chapter defines it. ``ciw.seed(seed)`` makes the run
+    reproducible. Returns 0.0 if no customer cleared the warm-up (degenerate short run).
+    """
+    network = ciw.create_network(
+        arrival_distributions=[ciw.dists.Exponential(rate=lam)],
+        service_distributions=[ciw.dists.Exponential(rate=mu)],
+        number_of_servers=[c],
+    )
+    ciw.seed(int(seed))
+    sim = ciw.Simulation(network)
+    sim.simulate_until_max_time(max_time)
+    waits = [r.waiting_time for r in sim.get_all_records() if r.arrival_date >= CIW_WARMUP]
+    return mean(waits) if waits else 0.0
+
+
+def ciw_validate_mmc(lam: float, mu: float, c: int, seed: int, theory_wq: float | None) -> dict:
+    """Real second-engine validation: a short, seeded **Ciw** M/M/c replication study vs Erlang-C.
+
+    Runs ``CIW_REPS`` independent seeded replications, each long enough to clear ~``CIW_TARGET_ARRIVALS``
+    post-warm-up arrivals (run length capped at ``CIW_MAX_TIME``). Reports the across-replication mean Wq,
+    a normal 95% half-CI, and the relative error against the closed-form ``theory_wq`` — so the artifact
+    records, deterministically, that an *independent* simulator lands on the same theory the lab teaches.
+
+    For an unstable system (``theory_wq is None``) there is no finite steady-state Wq to converge to, so
+    the study is skipped and ``applicable`` is False (a teachable null, kept valid JSON).
+    """
+    if theory_wq is None or theory_wq <= 0.0:
+        return {"engine": "ciw", "applicable": False, "reps": 0,
+                "Wq_ciw": None, "ci95_half": None, "rel_err": None}
+
+    max_time = min(CIW_WARMUP + CIW_TARGET_ARRIVALS / lam, CIW_MAX_TIME)
+    base = int(seed) * CIW_SEED_STRIDE
+    per_rep = [_ciw_replication_wq(lam, mu, c, max_time, base + k) for k in range(CIW_REPS)]
+
+    wq_ciw = mean(per_rep)
+    sd = stdev(per_rep) if len(per_rep) > 1 else 0.0
+    half_ci = 1.96 * sd / math.sqrt(len(per_rep)) if per_rep else 0.0
+    rel_err = abs(wq_ciw - theory_wq) / theory_wq
+    return {
+        "engine": "ciw",
+        "applicable": True,
+        "reps": CIW_REPS,
+        "max_time": round(max_time, 1),
+        "warmup": round(CIW_WARMUP, 1),
+        "Wq_ciw": round(wq_ciw, 4),
+        "ci95_half": round(half_ci, 4),
+        "rel_err": round(rel_err, 4),
+        "theory_in_ci": bool((wq_ciw - half_ci) <= theory_wq <= (wq_ciw + half_ci)),
+    }
+
+
 class QueueScenario(Scenario):
     id = "s01_queue"
     title = "Bank / Clinic Queue (M/M/c)"
@@ -46,7 +123,10 @@ class QueueScenario(Scenario):
     viz = "queue-network"
     engine = "simpy"
     pure_python = True
-    wheels = ["simpy", "numpy"]
+    # SimPy runs the live, animatable simulation; Ciw runs the independent M/M/c cross-check against
+    # Erlang-C. Both are pure Python, so the live (Pyodide) lane is preserved. NumPy supplies the seeded
+    # variate stream for the SimPy run.
+    wheels = ["simpy", "ciw", "numpy"]
     param_specs = [
         ParamSpec("lam", "Arrival rate λ (/min)", 2.0, 0.1, 10.0, 0.1),
         ParamSpec("mu", "Service rate μ (/min)", 1.0, 0.1, 10.0, 0.1),
@@ -138,5 +218,11 @@ class QueueScenario(Scenario):
             "mean_service": round(1.0 / mu, 4),
             "utilization_offered": round(lam / (c * mu), 4),
         }
-        tr.analytic = erlang_c_mmc(lam, mu, c)
+        # Closed-form Erlang-C reference (exact) + a real second-engine Ciw replication study that should
+        # converge to it. The top-level analytic keys (rho/p_wait/Wq/Lq/stable) are unchanged; the Ciw
+        # cross-check is recorded under a nested "ciw_xcheck" key so the schema the frontend consumes is
+        # preserved while the validation lesson becomes genuinely tool-backed.
+        analytic = erlang_c_mmc(lam, mu, c)
+        analytic["ciw_xcheck"] = ciw_validate_mmc(lam, mu, c, int(seed), analytic["Wq"])
+        tr.analytic = analytic
         return tr

@@ -4,14 +4,16 @@
   "title": "Monte-Carlo Replication / CI Study",
   "method": "hybrid",
   "tier": 3,
-  "engine": "numpy",
+  "engine": "joblib",
   "seed": 42,
   "viz": {
     "renderer": "chart",
     "dimensionality": "2d"
   },
   "wheel_closure": [
-    "numpy"
+    "numpy",
+    "joblib",
+    "scipy"
   ],
   "param_specs": [
     {
@@ -82,7 +84,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 16.5,
+        "run_ms": 34.9,
         "trace_bytes": 2374,
         "reasons": []
       },
@@ -119,7 +121,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 37.4,
+        "run_ms": 62.7,
         "trace_bytes": 6036,
         "reasons": []
       },
@@ -156,7 +158,7 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 94.3,
+        "run_ms": 131.0,
         "trace_bytes": 13436,
         "reasons": []
       },
@@ -193,8 +195,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 38.5,
-        "trace_bytes": 6023,
+        "run_ms": 60.0,
+        "trace_bytes": 6024,
         "reasons": []
       },
       "kpis": {
@@ -230,8 +232,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 37.1,
-        "trace_bytes": 6015,
+        "run_ms": 64.2,
+        "trace_bytes": 6013,
         "reasons": []
       },
       "kpis": {
@@ -267,8 +269,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 36.1,
-        "trace_bytes": 6028,
+        "run_ms": 55.8,
+        "trace_bytes": 6032,
         "reasons": []
       },
       "kpis": {
@@ -304,13 +306,13 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 93.9,
+        "run_ms": 126.7,
         "trace_bytes": 13432,
         "reasons": []
       },
       "kpis": {
         "final_mean": 1.0468,
-        "ci_halfwidth": 0.05,
+        "ci_halfwidth": 0.0501,
         "theory_Wq": 1.0787,
         "rel_error_pct": 2.96,
         "n_reps": 500,
@@ -341,8 +343,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 91.4,
-        "trace_bytes": 13438,
+        "run_ms": 129.2,
+        "trace_bytes": 13444,
         "reasons": []
       },
       "kpis": {
@@ -378,8 +380,8 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 9.1,
-        "trace_bytes": 2369,
+        "run_ms": 28.2,
+        "trace_bytes": 2372,
         "reasons": []
       },
       "kpis": {
@@ -415,13 +417,13 @@
       "lane": "live",
       "gate": {
         "pure_python": true,
-        "run_ms": 95.7,
-        "trace_bytes": 13418,
+        "run_ms": 134.8,
+        "trace_bytes": 13420,
         "reasons": []
       },
       "kpis": {
         "final_mean": 0.1576,
-        "ci_halfwidth": 0.0054,
+        "ci_halfwidth": 0.0055,
         "theory_Wq": 0.1579,
         "rel_error_pct": 0.19,
         "n_reps": 500,

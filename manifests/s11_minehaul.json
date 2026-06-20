@@ -130,21 +130,21 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 14.9,
-        "trace_bytes": 41461,
+        "run_ms": 16.4,
+        "trace_bytes": 43045,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
       },
       "kpis": {
-        "plant_tons": 36.0,
+        "plant_tons": 38.0,
         "plant_demand": 60.0,
-        "grade_achieved": 2.5,
+        "grade_achieved": 2.547,
         "grade_target": 2.9,
-        "grade_dev": 0.4,
+        "grade_dev": 0.353,
         "in_band": 0,
-        "plan_adherence_pct": 60.0,
-        "loads_plant": 18,
+        "plan_adherence_pct": 63.3,
+        "loads_plant": 19,
         "loads_dump": 2,
         "loads_stock": 3,
         "n_trucks": 6
@@ -183,8 +183,8 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 2.5,
-        "trace_bytes": 28787,
+        "run_ms": 2.9,
+        "trace_bytes": 28718,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
@@ -236,7 +236,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3.2,
+        "run_ms": 3.5,
         "trace_bytes": 63572,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
@@ -289,21 +289,21 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 2.8,
-        "trace_bytes": 41461,
+        "run_ms": 2.9,
+        "trace_bytes": 43045,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
       },
       "kpis": {
-        "plant_tons": 36.0,
+        "plant_tons": 38.0,
         "plant_demand": 60.0,
-        "grade_achieved": 2.5,
+        "grade_achieved": 2.547,
         "grade_target": 2.9,
-        "grade_dev": 0.4,
+        "grade_dev": 0.353,
         "in_band": 0,
-        "plan_adherence_pct": 60.0,
-        "loads_plant": 18,
+        "plan_adherence_pct": 63.3,
+        "loads_plant": 19,
         "loads_dump": 2,
         "loads_stock": 3,
         "n_trucks": 6
@@ -342,8 +342,8 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 2.7,
-        "trace_bytes": 37391,
+        "run_ms": 3.0,
+        "trace_bytes": 37379,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
@@ -395,8 +395,8 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 4.2,
-        "trace_bytes": 105660,
+        "run_ms": 4.6,
+        "trace_bytes": 105693,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
@@ -448,21 +448,21 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 2.5,
-        "trace_bytes": 42187,
+        "run_ms": 2.9,
+        "trace_bytes": 43807,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
       },
       "kpis": {
-        "plant_tons": 36.0,
+        "plant_tons": 38.0,
         "plant_demand": 60.0,
-        "grade_achieved": 2.489,
+        "grade_achieved": 2.537,
         "grade_target": 2.9,
-        "grade_dev": 0.411,
+        "grade_dev": 0.363,
         "in_band": 0,
-        "plan_adherence_pct": 60.0,
-        "loads_plant": 18,
+        "plan_adherence_pct": 63.3,
+        "loads_plant": 19,
         "loads_dump": 4,
         "loads_stock": 0,
         "n_trucks": 6
@@ -502,8 +502,8 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 2.4,
-        "trace_bytes": 33607,
+        "run_ms": 2.6,
+        "trace_bytes": 33608,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
@@ -555,8 +555,8 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 2.7,
-        "trace_bytes": 42882,
+        "run_ms": 4.5,
+        "trace_bytes": 42890,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
@@ -608,8 +608,8 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 2.5,
-        "trace_bytes": 36501,
+        "run_ms": 2.7,
+        "trace_bytes": 36546,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
@@ -661,23 +661,23 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 2.3,
-        "trace_bytes": 39016,
+        "run_ms": 2.6,
+        "trace_bytes": 38633,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"
         ]
       },
       "kpis": {
-        "plant_tons": 48.0,
+        "plant_tons": 46.0,
         "plant_demand": 60.0,
-        "grade_achieved": 1.713,
+        "grade_achieved": 1.678,
         "grade_target": 1.75,
-        "grade_dev": 0.037,
+        "grade_dev": 0.072,
         "in_band": 1,
-        "plan_adherence_pct": 80.0,
-        "loads_plant": 24,
+        "plan_adherence_pct": 76.7,
+        "loads_plant": 23,
         "loads_dump": 2,
-        "loads_stock": 2,
+        "loads_stock": 3,
         "n_trucks": 6
       },
       "analytic": {
@@ -688,8 +688,8 @@
           0.0
         ],
         "demand_eff": 60.0,
-        "stock_peak": 4.0,
-        "stock_end": 4.0
+        "stock_peak": 6.0,
+        "stock_end": 6.0
       },
       "trace": "data/artifacts/s11_minehaul/low_target-seed42.json"
     },
@@ -714,7 +714,7 @@
       "lane": "precomputed",
       "gate": {
         "pure_python": false,
-        "run_ms": 3.0,
+        "run_ms": 3.3,
         "trace_bytes": 49430,
         "reasons": [
           "not pure-Python (cannot run in Pyodide/WASM)"

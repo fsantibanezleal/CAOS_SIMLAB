@@ -1,32 +1,123 @@
-"""S03 — SIR epidemic (Agent-Based Model on a grid).
+"""S03 — SIR epidemic (Agent-Based Model on a grid), running on **Mesa 3**.
 
-Each cell is Susceptible, Infected or Recovered. A susceptible cell becomes infected with probability
-1−(1−β)^k where k is its number of infected Moore-neighbours; an infected cell recovers with probability
-γ per step. The agent analogue of the Kermack–McKendrick compartmental model: the epidemic takes off only
-above a transmissibility threshold, peaks, and burns out, leaving an attack-rate of recovered.
-Pure-Python + NumPy, fully seeded → reproducible frame trace + epidemic curve.
+Each cell holds one agent in health state Susceptible, Infected or Recovered. A susceptible agent becomes
+infected with probability 1−(1−β)^k where k is its number of infected Moore-neighbours; an infected agent
+recovers with probability γ per step. The agent analogue of the Kermack–McKendrick compartmental model:
+the epidemic takes off only above a transmissibility threshold, peaks, and burns out, leaving an attack-rate
+of recovered.
+
+This scenario is built on the real **Mesa 3** ABM framework — ``mesa.Model`` for the world, ``mesa.Agent``
+for the cells, ``mesa.space.SingleGrid`` for the fully-occupied lattice, and the model's ``AgentSet``
+(``self.agents``) for activation — rather than a hand-rolled NumPy sweep. It follows the s02 Schelling
+template exactly. All randomness flows through Mesa's seeded RNG (``Model(rng=seed)`` seeds ``self.random``),
+so a run is fully reproducible from (params, seed): the same input yields the same trace byte-for-byte — the
+"replay = truth" contract the lab depends on.
+
+The update is a *simultaneous* batch (the classic cellular SIR sweep): all infections and recoveries for a
+step are decided against the configuration at the start of the step, then applied together. The emitted
+artifact is the existing grid-trace format (frames of a flat row-major cell array + S/I/R series + KPIs);
+nothing in the trace schema or the frontend contract changes.
 """
 from __future__ import annotations
 
-import numpy as np
+import mesa
+from mesa.space import SingleGrid
 
 from ..core.gridtrace import GridTrace
-from ..core.rng import make_rng
 from ..core.scenario import ParamSpec, Scenario, Variant
 
 S, I, R = 0, 1, 2  # noqa: E741 — standard SIR compartment names
 
 
-def _infected_neighbors(grid: np.ndarray) -> np.ndarray:
-    eq = (grid == I).astype(np.int32)
-    p = np.pad(eq, 1)
-    total = np.zeros_like(eq)
-    for di in (0, 1, 2):
-        for dj in (0, 1, 2):
-            if di == 1 and dj == 1:
-                continue
-            total += p[di:di + grid.shape[0], dj:dj + grid.shape[1]]
-    return total
+class SIRAgent(mesa.Agent):
+    """One cell carrying a health state (``S`` / ``I`` / ``R``).
+
+    The agent owns its state but the *transition* is driven by the model each tick (simultaneous batch
+    update), so the lab can record the S/I/R populations per step. ``self.pos`` is the ``(x, y)`` set by the
+    grid on placement.
+    """
+
+    def __init__(self, model: "SIRModel", state: int) -> None:
+        super().__init__(model)
+        self.state = state
+
+    def infected_neighbors(self) -> int:
+        """Count Moore-neighbours currently in the Infected state."""
+        return sum(1 for nb in self.model.grid.iter_neighbors(self.pos, moore=True) if nb.state == I)
+
+
+class SIRModel(mesa.Model):
+    """The SIR world: a (non-torus) ``SingleGrid`` with one agent per cell.
+
+    Built with Mesa 3. Activation uses the model's ``AgentSet`` (``self.agents``). The per-step update is
+    computed against the start-of-step configuration and applied simultaneously (the classic synchronous
+    SIR sweep); every draw uses ``self.random`` so the run is deterministic.
+    """
+
+    def __init__(self, size: int, beta: float, gamma: float, init_infected: float, seed: int) -> None:
+        # Mesa 3: ``rng=`` seeds both self.random (Python random.Random) and self.rng (NumPy Generator).
+        # Seeding here is what makes the whole run reproducible — the foundation of the committed trace.
+        super().__init__(rng=int(seed))
+        self.size = int(size)
+        self.beta = float(beta)
+        self.gamma = float(gamma)
+        self.grid = SingleGrid(self.size, self.size, torus=False)
+
+        # Populate: one agent per cell, visited row-major (flat index = y*size + x). Each cell starts
+        # Infected if a seeded draw clears the init fraction, else Susceptible. All draws come from the
+        # seeded self.random, so the initial board is reproducible.
+        n_cells = self.size * self.size
+        states = [I if self.random.random() < init_infected else S for _ in range(n_cells)]
+        if I not in states:  # guarantee at least one seed case (a stochastic all-S start would be inert)
+            states[n_cells // 2] = I
+        for flat in range(n_cells):
+            agent = SIRAgent(self, states[flat])
+            self.grid.place_agent(agent, (flat % self.size, flat // self.size))
+
+        self.total_agents = len(self.agents)
+
+    # --- one simultaneous SIR sweep -------------------------------------------------------------
+    def step(self) -> None:
+        """Decide all transitions against the current board, then apply them together.
+
+        Iterating ``self.agents`` in its stable order and drawing infection then recovery per agent keeps
+        the sweep deterministic; reads use the unmodified ``state`` so the update is synchronous.
+        """
+        new_infected: list[SIRAgent] = []
+        new_recovered: list[SIRAgent] = []
+        for agent in self.agents:
+            if agent.state == S:
+                k = agent.infected_neighbors()
+                if k:
+                    p_inf = 1.0 - (1.0 - self.beta) ** k
+                    if self.random.random() < p_inf:
+                        new_infected.append(agent)
+            elif agent.state == I:
+                if self.random.random() < self.gamma:
+                    new_recovered.append(agent)
+        for agent in new_infected:
+            agent.state = I
+        for agent in new_recovered:
+            agent.state = R
+
+    # --- metrics over the current configuration -------------------------------------------------
+    def counts(self) -> tuple[int, int, int]:
+        """Return the (S, I, R) population counts over all agents."""
+        ni = nr = 0
+        for agent in self.agents:
+            if agent.state == I:
+                ni += 1
+            elif agent.state == R:
+                nr += 1
+        return self.total_agents - ni - nr, ni, nr
+
+    def grid_snapshot(self) -> list[int]:
+        """Flatten the grid to a row-major list of state codes (S / I / R) for the frame trace."""
+        cells = [S] * (self.size * self.size)
+        for agent in self.agents:
+            x, y = agent.pos
+            cells[y * self.size + x] = agent.state
+        return cells
 
 
 class SIRScenario(Scenario):
@@ -35,9 +126,9 @@ class SIRScenario(Scenario):
     method = "ABM"
     tier = 1
     viz = "agent-grid"
-    engine = "numpy"
+    engine = "mesa"
     pure_python = True
-    wheels = ["numpy"]
+    wheels = ["numpy", "mesa"]
     param_specs = [
         ParamSpec("size", "Grid size", 38, 10, 60, 1, kind="int"),
         ParamSpec("beta", "Infection prob β (per infected neighbor)", 0.20, 0.02, 0.6, 0.01),
@@ -68,13 +159,8 @@ class SIRScenario(Scenario):
         n = int(p["size"])
         beta, gamma = float(p["beta"]), float(p["gamma"])
         init, steps = float(p["init_infected"]), int(p["steps"])
-        rng = make_rng(seed)
 
-        grid = np.full((n, n), S, dtype=np.int32)
-        infect0 = rng.random((n, n)) < init
-        if not infect0.any():
-            infect0[n // 2, n // 2] = True
-        grid[infect0] = I
+        model = SIRModel(size=n, beta=beta, gamma=gamma, init_infected=init, seed=int(seed))
 
         tr = GridTrace(self.id, self.title, self.method, int(seed), p, n, n, legend=[
             {"code": S, "label_en": "susceptible", "label_es": "susceptible", "color": "var(--color-accent)"},
@@ -89,10 +175,8 @@ class SIRScenario(Scenario):
         peak_i, peak_step = 0, 0
 
         for step in range(steps + 1):
-            tr.add_frame(step, grid.flatten().tolist())
-            ni = int((grid == I).sum())
-            nr = int((grid == R).sum())
-            ns_ = total - ni - nr
+            tr.add_frame(step, model.grid_snapshot())
+            ns_, ni, nr = model.counts()
             s_series.append(round(ns_ / total, 4))
             i_series.append(round(ni / total, 4))
             r_series.append(round(nr / total, 4))
@@ -101,15 +185,7 @@ class SIRScenario(Scenario):
                 peak_i, peak_step = ni, step
             if ni == 0 or step == steps:
                 break
-            inf_n = _infected_neighbors(grid)
-            p_inf = 1.0 - np.power(1.0 - beta, inf_n)
-            draws = rng.random((n, n))
-            new_inf = (grid == S) & (draws < p_inf)
-            rec_draws = rng.random((n, n))
-            new_rec = (grid == I) & (rec_draws < gamma)
-            grid = grid.copy()
-            grid[new_inf] = I
-            grid[new_rec] = R
+            model.step()
 
         tr.series = {"x": xs, "S": s_series, "I": i_series, "R": r_series}
         tr.kpis = {
