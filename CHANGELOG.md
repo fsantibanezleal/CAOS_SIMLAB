@@ -3,6 +3,29 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.17.001] - 2026-06-20
+### Fixed — 5-layer consistency (multi-round adversarial remediation) + functional
+- Removed the stale v0.16 "Mesa/joblib/SciPy = precompute-only" lane lie from every surface (it had survived on
+  the deployed Build/Introduction/Methodology pages): Build now shows the real `LIVE_WHEELS` closure, and the
+  live/precompute taxonomy matches the gate everywhere — only the native OR-Tools scenarios (S06/S08/S11)
+  precompute; S07 (SimPy replay over a committed native plan) and S09 (SimPy+NetworkX) run live.
+- Experiments tabs now use the canonical scenario ids (S07 Haul, S08 VRP, S09 Ambulance, S10 Monte-Carlo) —
+  dropped the display renumber that contradicted the docs and the Introduction page.
+- **s07 live fix:** committed the full grade×wall grid for both load/dump corridors (68 plans) so every variant
+  × every reachable slider stop resolves to a committed plan (fixed a live `RuntimeError` when toggling the wall
+  / moving the grade off the one committed point); Reset restores the variant's regime; added a plan-coverage
+  guard test.
+- Consistency/honesty: s09 `method` `des`→`DES` (regenerated trace+manifest); S08 web degree constraint
+  `Σ x_0j ≤ K` (shipped solve drops empty routes); S04 documented as a non-stationary (Lewis–Shedler thinned)
+  Poisson with FCFS triage + non-preemptive priority treatment; S05 as a fixed-order serial cascade with its
+  real emitted KPIs; S10 CI uses the exact `scipy.stats.norm.ppf(0.975)` (not a hand-typed 1.96); s11 base
+  honestly out of band; drifted numbers aligned to the manifests across docs + web.
+- Reframed the Mesa-Geo / JuPedSim "applying" docs to the honest future-variant pattern (no fabricated
+  scenarios); added the PyVRP citation (Wouda, Lan & Kool 2024) + wired the VRP refs; corrected stale
+  deploy-architecture prose (static GitHub Pages, no VPS/backend); removed internal `wip/` path citations from
+  the public docs; unified the gate name to **4-gate**.
+- CI: `deploy-pages` also triggers on `simlab/**` (the live Pyodide bundle inlines `simlab/**/*.py`).
+
 ## [0.17.000] - 2026-06-20
 ### Fixed — restore ALL 8 live modes (the v0.16 regression)
 - v0.16 wrongly demoted s02/s03/s05/s07/s09/s10 to precompute, removing their interactive Run. Restored every

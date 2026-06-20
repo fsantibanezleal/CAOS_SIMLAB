@@ -11,4 +11,4 @@ Design contract (see the repo README + ADR "deterministic-replay public simulati
   `simlab.core.scenario.classify_lane`), recorded in the manifest, never guessed.
 """
 
-__version__ = "0.17.000"
+__version__ = "0.17.001"
