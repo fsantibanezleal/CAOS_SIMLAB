@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 452" width="880" class="arch-svg" role="img" aria-label="CAOS_SIMLAB overview: the four simulation families and the design-build lifecycle">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--color-accent); }
+    .arch-svg .bx-abm { stroke: var(--color-magenta); }
+    .arch-svg .bx-web { stroke: var(--color-good); }
+    .arch-svg .bx-eng { stroke: var(--color-warn); }
+    .arch-svg .lane { fill: none; stroke: var(--color-border); stroke-dasharray: 5 4; }
+    .arch-svg .ttl { fill: var(--color-fg); font-size: 12.5px; font-weight: 600; }
+    .arch-svg .lane-ttl { fill: var(--color-accent); font-size: 11.5px; font-weight: 700; letter-spacing: .04em; }
+    .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .it { fill: var(--color-fg); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--color-accent); font-size: 10px; }
+    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 9.5px; }
+    .arch-svg .flow { fill: none; stroke: var(--color-fg-subtle); stroke-width: 1.5; }
+    .arch-svg .lbl { fill: var(--color-fg-subtle); font-size: 9.5px; }
+  </style>
+  <defs>
+    <marker id="ov-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--color-fg-subtle)"/>
+    </marker>
+  </defs>
+
+  <!-- ── band A: what it is ── -->
+  <text class="lane-ttl" x="14" y="26">WHAT IT IS — a library-led simulation lab</text>
+  <text class="sub" x="14" y="42">the best dedicated tool per problem type · 11 worked scenarios · one engine for notebooks, offline &amp; live</text>
+
+  <rect class="bx bx-hi" x="14" y="54" width="204" height="118" rx="9"/>
+  <text class="ttl" x="26" y="76">DES — discrete-event</text>
+  <text class="cd mono" x="26" y="92">SimPy · Ciw</text>
+  <text class="it" x="26" y="110">queues (M/M/c),</text>
+  <text class="it" x="26" y="125">ED flow, dispatch</text>
+  <text class="mu" x="26" y="160">S01 · S04 · S09</text>
+
+  <rect class="bx bx-abm" x="230" y="54" width="204" height="118" rx="9"/>
+  <text class="ttl" x="242" y="76">ABM — agent-based</text>
+  <text class="cd mono" x="242" y="92">Mesa 3 · NetLogo Web</text>
+  <text class="it" x="242" y="110">segregation, SIR,</text>
+  <text class="it" x="242" y="125">supply-chain bullwhip</text>
+  <text class="mu" x="242" y="160">S02 · S03 · S05</text>
+
+  <rect class="bx bx-eng" x="446" y="54" width="216" height="118" rx="9"/>
+  <text class="ttl" x="458" y="76">Optimization / OR</text>
+  <text class="cd mono" x="458" y="92">OR-Tools · PyVRP · NetworkX</text>
+  <text class="it" x="458" y="110">job-shop, VRP,</text>
+  <text class="it" x="458" y="125">haul, mine-haul blend LP</text>
+  <text class="mu" x="458" y="160">S06 · S07 · S08 · S11</text>
+
+  <rect class="bx bx-web" x="674" y="54" width="192" height="118" rx="9"/>
+  <text class="ttl" x="686" y="76">Monte-Carlo</text>
+  <text class="cd mono" x="686" y="92">joblib · SciPy</text>
+  <text class="it" x="686" y="110">replications +</text>
+  <text class="it" x="686" y="125">confidence interval</text>
+  <text class="mu" x="686" y="160">S10</text>
+
+  <!-- ── band B: design-build flow ── -->
+  <text class="lane-ttl" x="14" y="210">DESIGN-BUILD LIFECYCLE</text>
+  <text class="sub" x="200" y="210">research → implement → precompute → commit → build → deploy</text>
+
+  <rect class="bx" x="14" y="224" width="132" height="96" rx="8"/>
+  <text class="ttl" x="24" y="246">1 · Research</text>
+  <text class="it" x="24" y="266">decide the right</text>
+  <text class="it" x="24" y="281">tool per problem</text>
+  <text class="mu" x="24" y="306">deep research</text>
+
+  <rect class="bx bx-hi" x="158" y="224" width="132" height="96" rx="8"/>
+  <text class="ttl" x="168" y="246">2 · Implement</text>
+  <text class="cd mono" x="168" y="264">scenarios/&lt;id&gt;.py</text>
+  <text class="it" x="168" y="282">the real engine</text>
+  <text class="mu" x="168" y="306">shared simlab/</text>
+
+  <rect class="bx bx-eng" x="302" y="224" width="132" height="96" rx="8"/>
+  <text class="ttl" x="312" y="246">3 · Precompute</text>
+  <text class="cd mono" x="312" y="264">simlab.pipeline</text>
+  <text class="it" x="312" y="282">.venv · native</text>
+  <text class="mu" x="312" y="306">seeded run</text>
+
+  <rect class="bx" x="446" y="224" width="132" height="96" rx="8"/>
+  <text class="ttl" x="456" y="246">4 · Commit</text>
+  <text class="it" x="456" y="266">trace + manifest</text>
+  <text class="cd mono" x="456" y="284">git-as-data</text>
+  <text class="mu" x="456" y="306">no runtime DB</text>
+
+  <rect class="bx" x="590" y="224" width="132" height="96" rx="8"/>
+  <text class="ttl" x="600" y="246">5 · Build SPA</text>
+  <text class="cd mono" x="600" y="264">vite build</text>
+  <text class="it" x="600" y="282">copy-data overlay</text>
+  <text class="mu" x="600" y="306">React + Vite</text>
+
+  <rect class="bx bx-web" x="734" y="224" width="132" height="96" rx="8"/>
+  <text class="ttl" x="744" y="246">6 · Deploy</text>
+  <text class="it" x="744" y="266">GitHub Pages</text>
+  <text class="it" x="744" y="282">static, no backend</text>
+  <text class="mu" x="744" y="306">deploy-pages.yml</text>
+
+  <!-- flows -->
+  <path class="flow" d="M146,272 L156,272" marker-end="url(#ov-ar)"/>
+  <path class="flow" d="M290,272 L300,272" marker-end="url(#ov-ar)"/>
+  <path class="flow" d="M434,272 L444,272" marker-end="url(#ov-ar)"/>
+  <path class="flow" d="M578,272 L588,272" marker-end="url(#ov-ar)"/>
+  <path class="flow" d="M722,272 L732,272" marker-end="url(#ov-ar)"/>
+
+  <text class="mu" x="14" y="344">The shared <tspan class="mono">simlab/</tspan> package + its committed artifacts ARE the product; the web app replays them, and for the light scenarios re-runs the same Python live in your browser.</text>
+</svg>

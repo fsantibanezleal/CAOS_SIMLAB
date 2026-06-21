@@ -28,6 +28,13 @@ const en = {
     version: "v",
   },
   common: { loading: "Loading…", error: "Could not load" },
+  arch: {
+    title: "Architecture · how it works",
+    subtitle: "What runs where, the engine, and the data contracts — the whole system at a glance.",
+    open: "Architecture / how it works",
+    close: "Close",
+    footer: "One engine offline and live; the committed trace is the source of truth — deterministic replay.",
+  },
   viz: { source: "Arrivals", queue: "Queue", servers: "Servers", served: "Served" },
   sim: {
     play: "Play",
@@ -108,6 +115,13 @@ const es: typeof en = {
     version: "v",
   },
   common: { loading: "Cargando…", error: "No se pudo cargar" },
+  arch: {
+    title: "Arquitectura · cómo funciona",
+    subtitle: "Qué corre dónde, el motor y los contratos de datos — todo el sistema de un vistazo.",
+    open: "Arquitectura / cómo funciona",
+    close: "Cerrar",
+    footer: "Un motor offline y en vivo; la traza commiteada es la fuente de verdad — replay determinista.",
+  },
   viz: { source: "Llegadas", queue: "Cola", servers: "Servidores", served: "Atendidos" },
   sim: {
     play: "Reproducir",

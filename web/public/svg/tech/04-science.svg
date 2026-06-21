@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 478" width="880" class="arch-svg" role="img" aria-label="CAOS_SIMLAB science: the real method per family — DES, ABM, Optimization, Monte-Carlo — and the deterministic-replay contract">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--color-accent); }
+    .arch-svg .bx-abm { stroke: var(--color-magenta); }
+    .arch-svg .bx-web { stroke: var(--color-good); }
+    .arch-svg .bx-eng { stroke: var(--color-warn); }
+    .arch-svg .ttl { fill: var(--color-fg); font-size: 12.5px; font-weight: 600; }
+    .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .it { fill: var(--color-fg); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--color-accent); font-size: 10px; }
+    .arch-svg .eq { fill: var(--color-fg); font-size: 10.5px; }
+    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 9.5px; }
+  </style>
+
+  <!-- DES -->
+  <rect class="bx bx-hi" x="14" y="50" width="426" height="168" rx="10"/>
+  <text class="ttl" x="28" y="74">DES — discrete-event</text>
+  <text class="cd mono" x="28" y="92">SimPy (process-interaction) + Ciw</text>
+  <text class="it" x="28" y="113">FEL loop: pop imminent event → advance clock → run handler</text>
+  <text class="it" x="28" y="132">M/M/c queue (S01) validated against the closed form</text>
+  <rect class="bx" x="28" y="142" width="398" height="30" rx="6"/>
+  <text class="eq mono" x="38" y="161">Wq = C(c, a)·(ρ / (1−ρ)) / (c·μ)   — Erlang-C</text>
+  <text class="mu" x="28" y="194">Ciw runs 10 seeded replications as an independent second-engine cross-check.</text>
+
+  <!-- ABM -->
+  <rect class="bx bx-abm" x="452" y="50" width="414" height="168" rx="10"/>
+  <text class="ttl" x="466" y="74">ABM — agent-based</text>
+  <text class="cd mono" x="466" y="92">Mesa 3 — Agent / Model / AgentSet</text>
+  <text class="it" x="466" y="113">each step: decide vs the start-of-step state, then apply</text>
+  <text class="it" x="466" y="132">S02 relocate unhappy agents one-by-one (growing empty pool)</text>
+  <text class="it" x="466" y="151">S03 flip cells synchronously · S05 fixed-order serial cascade</text>
+  <text class="mu" x="466" y="194">KPIs: segregation index S, epidemic attack rate, bullwhip ratio (variance amplification).</text>
+
+  <!-- Optimization -->
+  <rect class="bx bx-eng" x="14" y="230" width="426" height="168" rx="10"/>
+  <text class="ttl" x="28" y="254">Optimization / OR</text>
+  <text class="cd mono" x="28" y="272">OR-Tools · PyVRP · NetworkX</text>
+  <text class="it" x="28" y="293">CP-SAT job-shop: interval vars + NoOverlap (S06)</text>
+  <text class="it" x="28" y="312">Routing VRP + PyVRP HGS head-to-head (S08)</text>
+  <rect class="bx" x="28" y="322" width="398" height="30" rx="6"/>
+  <text class="eq mono" x="38" y="341">GLOP LP: min |Σ gᵢ·xᵢ − g*·D|   — blend (S11)</text>
+  <text class="mu" x="28" y="374">Haul (S07): NetworkX Dijkstra + a CP-SAT cost certificate; route flips at g*.</text>
+
+  <!-- Monte-Carlo -->
+  <rect class="bx bx-web" x="452" y="230" width="414" height="168" rx="10"/>
+  <text class="ttl" x="466" y="254">Monte-Carlo</text>
+  <text class="cd mono" x="466" y="272">joblib (threading) + SciPy stats</text>
+  <text class="it" x="466" y="293">N independent seeded replications of the M/M/c class</text>
+  <rect class="bx" x="466" y="303" width="386" height="30" rx="6"/>
+  <text class="eq mono" x="476" y="322">X̄ ± z·s/√n,   z = norm.ppf(0.975) ≈ 1.96</text>
+  <text class="it" x="466" y="354">the 95% CI band tightens like 1/√n as n grows (S10)</text>
+  <text class="mu" x="466" y="382">no warm-up discard — the finite-run start-up bias is the deliberate lesson.</text>
+
+  <!-- contract banner -->
+  <rect class="bx bx-hi" x="14" y="410" width="852" height="54" rx="10"/>
+  <text class="ttl" x="28" y="432">Deterministic replay — the contract across all four families</text>
+  <text class="eq mono" x="28" y="452">run = f(params, seed)  ⇒  the committed trace is the source of truth; the browser re-run matches it byte-for-byte.</text>
+</svg>
