@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 484" width="880" class="arch-svg" role="img" aria-label="CAOS_SIMLAB lanes: the offline precompute pipeline, the committed-artifact replay bridge, and the live Pyodide web worker">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--color-accent); }
+    .arch-svg .bx-web { stroke: var(--color-good); }
+    .arch-svg .bx-eng { stroke: var(--color-warn); }
+    .arch-svg .lane { fill: none; stroke: var(--color-border); stroke-dasharray: 5 4; }
+    .arch-svg .ttl { fill: var(--color-fg); font-size: 12.5px; font-weight: 600; }
+    .arch-svg .lane-ttl { fill: var(--color-accent); font-size: 11.5px; font-weight: 700; letter-spacing: .04em; }
+    .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .it { fill: var(--color-fg); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--color-accent); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 9.5px; }
+    .arch-svg .good { fill: var(--color-good); font-size: 10.5px; font-weight: 600; }
+    .arch-svg .flow { fill: none; stroke: var(--color-fg-subtle); stroke-width: 1.5; }
+    .arch-svg .lbl { fill: var(--color-fg-subtle); font-size: 9px; }
+  </style>
+  <defs>
+    <marker id="ln-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--color-fg-subtle)"/>
+    </marker>
+  </defs>
+
+  <!-- lane separators -->
+  <line class="lane" x1="304" y1="20" x2="304" y2="466"/>
+  <line class="lane" x1="560" y1="20" x2="560" y2="466"/>
+
+  <!-- lane headers -->
+  <text class="lane-ttl" x="14" y="34">OFFLINE / COMPUTE</text>
+  <text class="sub" x="14" y="49">the local .venv · native solvers · deterministic</text>
+  <text class="lane-ttl" x="318" y="34">REPLAY (the bridge)</text>
+  <text class="sub" x="318" y="49">committed artifacts · git-as-data</text>
+  <text class="lane-ttl" x="574" y="34">WEB (live)</text>
+  <text class="sub" x="574" y="49">GitHub Pages · Pyodide in a Worker</text>
+
+  <!-- OFFLINE lane -->
+  <rect class="bx bx-eng" x="14" y="64" width="276" height="200" rx="10"/>
+  <text class="ttl" x="26" y="86">Precompute pipeline</text>
+  <text class="cd mono" x="26" y="101">python -m simlab.pipeline</text>
+  <rect class="bx" x="26" y="110" width="252" height="56" rx="6"/>
+  <text class="it" x="36" y="128">Native solvers — no WASM build</text>
+  <text class="cd mono" x="36" y="143">OR-Tools CP-SAT / Routing / GLOP</text>
+  <text class="mu" x="36" y="158">S06 · S08 · S11 (pure_python=False)</text>
+  <rect class="bx" x="26" y="172" width="252" height="44" rx="6"/>
+  <text class="it" x="36" y="190">S07 route plan (offline)</text>
+  <text class="cd mono" x="36" y="205">_haul_plan.py · NetworkX + CP-SAT</text>
+  <text class="mu" x="26" y="234">GPU lane (CuPy / Numba / JAX) — out of scope</text>
+  <text class="mu" x="26" y="252">→ writes seeded trace + manifest</text>
+
+  <!-- BRIDGE / replay lane -->
+  <rect class="bx bx-hi" x="318" y="104" width="228" height="150" rx="10"/>
+  <text class="ttl" x="330" y="126">Committed artifacts</text>
+  <text class="sub" x="330" y="141">the source of truth (replay = truth)</text>
+  <rect class="bx" x="330" y="150" width="204" height="40" rx="6"/>
+  <text class="cd mono" x="340" y="166">data/artifacts/**</text>
+  <text class="cd mono" x="340" y="181">manifests/**</text>
+  <rect class="bx" x="330" y="196" width="204" height="46" rx="6"/>
+  <text class="it" x="340" y="213">first paint for live runs;</text>
+  <text class="it" x="340" y="228">the ONLY path for native</text>
+
+  <!-- WEB live lane -->
+  <rect class="bx bx-web" x="572" y="64" width="294" height="200" rx="10"/>
+  <text class="ttl" x="584" y="86">Pyodide Web Worker</text>
+  <text class="cd mono" x="584" y="101">web/src/lib/pyodide.worker.ts</text>
+  <rect class="bx" x="584" y="110" width="270" height="40" rx="6"/>
+  <text class="it" x="594" y="126">loadPackage</text>
+  <text class="cd mono" x="594" y="141">numpy pandas scipy networkx sqlite3</text>
+  <rect class="bx" x="584" y="156" width="270" height="40" rx="6"/>
+  <text class="it" x="594" y="172">micropip.install (pinned)</text>
+  <text class="cd mono" x="594" y="187">simpy ciw mesa joblib</text>
+  <text class="cd mono" x="584" y="214">simlab.live.run_trace_json(params, seed)</text>
+  <text class="it" x="584" y="233">8 live scenarios: s01–s05, s07, s09, s10</text>
+  <text class="good" x="584" y="252">same engine as offline · byte-match</text>
+
+  <!-- the gate -->
+  <rect class="bx bx-hi" x="14" y="300" width="852" height="74" rx="10"/>
+  <text class="ttl" x="26" y="322">The 4-gate rule decides the lane — measured, not guessed</text>
+  <text class="cd mono" x="26" y="340">simlab/core/scenario.py · classify_lane</text>
+  <text class="it" x="26" y="360">live ⇔ pure-Python AND wheels ⊆ LIVE_WHEELS AND run_ms ≤ 3000 AND trace_bytes ≤ 1 MB — recomputed from a real run, recorded in each manifest.</text>
+
+  <!-- flows -->
+  <path class="flow" d="M290,176 C304,176 306,176 316,176" marker-end="url(#ln-ar)"/>
+  <text class="lbl" x="292" y="168">commit</text>
+  <path class="flow" d="M546,176 C560,176 562,176 570,176" marker-end="url(#ln-ar)"/>
+  <text class="lbl" x="548" y="168">serve</text>
+
+  <text class="mu" x="14" y="396">The heavy / native science runs offline in the .venv; the browser re-runs only the pure-Python lanes and otherwise replays the committed, seed-42 traces.</text>
+</svg>

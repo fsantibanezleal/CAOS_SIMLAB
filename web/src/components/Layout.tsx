@@ -1,17 +1,19 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { NavLink } from "react-router-dom";
-import { Briefcase, Github, Globe, Network } from "lucide-react";
+import { Briefcase, Github, Globe, Info, Network } from "lucide-react";
 
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { ArchitectureModal } from "@/components/ArchitectureModal";
 import { EXTERNAL_LINKS } from "@/lib/links";
 import { ROUTES } from "@/lib/routes";
 import { APP_VERSION } from "@/lib/version";
 
-/** App shell: sticky header (brand + nav + external icon-links + language/theme toggles) and footer. */
+/** App shell: sticky header (brand + nav + external icon-links + architecture/language/theme toggles) and footer. */
 export default function Layout({ children }: { children: ReactNode }) {
   const { t } = useTranslation();
+  const [archOpen, setArchOpen] = useState(false);
   return (
     <div className="app-shell">
       <header className="site-header">
@@ -48,6 +50,10 @@ export default function Layout({ children }: { children: ReactNode }) {
               <Briefcase size={18} aria-hidden="true" />
             </a>
             <span className="header-sep" aria-hidden="true" />
+            <button type="button" className="icon-btn" onClick={() => setArchOpen(true)}
+                    aria-label={t("arch.open")} title={t("arch.open")} aria-haspopup="dialog">
+              <Info size={18} aria-hidden="true" />
+            </button>
             <LanguageToggle />
             <ThemeToggle />
           </div>
@@ -55,6 +61,8 @@ export default function Layout({ children }: { children: ReactNode }) {
       </header>
 
       <main className="page">{children}</main>
+
+      {archOpen && <ArchitectureModal onClose={() => setArchOpen(false)} />}
 
       <footer className="site-footer">
         <div className="footer-inner">

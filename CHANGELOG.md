@@ -3,6 +3,20 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.17.005] - 2026-06-20
+### Added — in-app Architecture / "How it works" modal (ADR-0058)
+- A header **ⓘ button** (always visible) opens a focus-managed, Esc-to-close **Architecture modal**: a 5-tab
+  strip, each tab pairing ONE hand-authored, theme-aware SVG with a complete bilingual explanation — so a
+  visitor *sees* the whole system at a glance, proving the app is a real system, not a demo.
+- Tabs: **(1) the app + design-build lifecycle · (2) lanes — web / offline / compute · (3) the web-app flow ·
+  (4) the science (the real method per family) · (5) the data contracts (manifest · trace · the 4-gate)**.
+- The diagrams are themed SVGs in `web/public/svg/tech/` (every colour a `--color-*` palette token, **zero
+  hardcoded hex**; fetched + inlined so they follow light/dark); authored to the ADR-0058 floor (semantic class
+  vocabulary, type-coded boxes, real file/module paths, labeled flows, bands/lanes) and verified in both themes.
+- Implemented as the non-shell pattern: `components/ArchitectureModal.tsx` + `lib/architecture-tabs.ts` +
+  `arch.*` i18n (EN/ES) + the `.arch-*` styles. Screenshot-verified: all 5 tabs inline their SVG in both
+  themes, EN/ES, with 0 console errors.
+
 ## [0.17.004] - 2026-06-20
 ### Fixed — adversarial round-8 consistency tail (the loop's convergence batch)
 - **S10 monte-carlo guide (was badly out of sync):** S10 replicates only the S01 M/M/c model class (not S04),

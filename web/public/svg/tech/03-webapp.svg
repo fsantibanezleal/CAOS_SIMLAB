@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 452" width="880" class="arch-svg" role="img" aria-label="CAOS_SIMLAB web-app flow: the SPA pages, the live data path through the Pyodide worker, and the build-and-deploy pipeline">
+  <style>
+    .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
+    .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
+    .arch-svg .bx { fill: var(--color-surface-2); stroke: var(--color-border); stroke-width: 1.2; }
+    .arch-svg .bx-hi { stroke: var(--color-accent); }
+    .arch-svg .bx-web { stroke: var(--color-good); }
+    .arch-svg .bx-eng { stroke: var(--color-warn); }
+    .arch-svg .ttl { fill: var(--color-fg); font-size: 12.5px; font-weight: 600; }
+    .arch-svg .lane-ttl { fill: var(--color-accent); font-size: 11.5px; font-weight: 700; letter-spacing: .04em; }
+    .arch-svg .sub { fill: var(--color-fg-subtle); font-size: 10px; }
+    .arch-svg .it { fill: var(--color-fg); font-size: 10.5px; }
+    .arch-svg .cd { fill: var(--color-accent); font-size: 9.5px; }
+    .arch-svg .mu { fill: var(--color-fg-subtle); font-size: 9.5px; }
+    .arch-svg .flow { fill: none; stroke: var(--color-fg-subtle); stroke-width: 1.5; }
+    .arch-svg .lbl { fill: var(--color-fg-subtle); font-size: 9px; }
+  </style>
+  <defs>
+    <marker id="wb-ar" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L8,4 L0,8 z" fill="var(--color-fg-subtle)"/>
+    </marker>
+  </defs>
+
+  <!-- band A: pages -->
+  <text class="lane-ttl" x="14" y="26">THE SPA — React 19 + Vite · 4 pages</text>
+  <rect class="bx bx-hi" x="14" y="38" width="206" height="68" rx="9"/>
+  <text class="ttl" x="26" y="60">Experiments</text>
+  <text class="it" x="26" y="78">the 11 scenarios</text>
+  <text class="cd mono" x="26" y="96">pages/Experiments.tsx</text>
+  <rect class="bx" x="230" y="38" width="206" height="68" rx="9"/>
+  <text class="ttl" x="242" y="60">Introduction</text>
+  <text class="it" x="242" y="78">what it is · why</text>
+  <text class="mu" x="242" y="96">the two-lane design</text>
+  <rect class="bx" x="446" y="38" width="206" height="68" rx="9"/>
+  <text class="ttl" x="458" y="60">Theory</text>
+  <text class="it" x="458" y="78">Queueing · DES · ABM · Opt</text>
+  <text class="mu" x="458" y="96">methodology, KaTeX</text>
+  <rect class="bx" x="662" y="38" width="204" height="68" rx="9"/>
+  <text class="ttl" x="674" y="60">How to build</text>
+  <text class="it" x="674" y="78">the gate + pipeline</text>
+  <text class="mu" x="674" y="96">reproduce it yourself</text>
+
+  <!-- band B: live data path -->
+  <text class="lane-ttl" x="14" y="142">LIVE DATA PATH — inside a scenario</text>
+  <rect class="bx bx-hi" x="14" y="154" width="198" height="96" rx="9"/>
+  <text class="ttl" x="24" y="176">ScenarioExperiment</text>
+  <text class="cd mono" x="24" y="193">sim/ScenarioExperiment</text>
+  <text class="it" x="24" y="212">sub-tabs:</text>
+  <text class="it" x="24" y="228">Simulator · Live ·</text>
+  <text class="it" x="24" y="243">Summary · Context</text>
+
+  <rect class="bx bx-web" x="232" y="154" width="198" height="96" rx="9"/>
+  <text class="ttl" x="242" y="176">Live sub-tab</text>
+  <text class="cd mono" x="242" y="193">sim/LivePanel.tsx</text>
+  <text class="it" x="242" y="212">move a slider →</text>
+  <text class="it" x="242" y="228">re-compute the run</text>
+  <text class="mu" x="242" y="243">live-eligible by gate</text>
+
+  <rect class="bx bx-web" x="450" y="154" width="198" height="96" rx="9"/>
+  <text class="ttl" x="460" y="176">Pyodide client</text>
+  <text class="cd mono" x="460" y="193">lib/pyodideClient.ts</text>
+  <text class="it" x="460" y="212">→ Web Worker</text>
+  <text class="cd mono" x="460" y="229">run_trace_json()</text>
+  <text class="mu" x="460" y="243">the real simlab engine</text>
+
+  <rect class="bx" x="668" y="154" width="198" height="96" rx="9"/>
+  <text class="ttl" x="678" y="176">Trace → player</text>
+  <text class="it" x="678" y="195">same Trace the</text>
+  <text class="it" x="678" y="210">pipeline emits</text>
+  <text class="mu" x="678" y="230">live &amp; replay share</text>
+  <text class="mu" x="678" y="244">ONE render path</text>
+
+  <!-- band C: build & deploy -->
+  <text class="lane-ttl" x="14" y="288">BUILD &amp; DEPLOY</text>
+  <rect class="bx bx-eng" x="14" y="300" width="198" height="92" rx="9"/>
+  <text class="ttl" x="24" y="322">prebuild overlay</text>
+  <text class="cd mono" x="24" y="339">web/copy-data.mjs</text>
+  <text class="it" x="24" y="358">copy data/artifacts</text>
+  <text class="it" x="24" y="373">+ manifests → public</text>
+
+  <rect class="bx bx-eng" x="232" y="300" width="198" height="92" rx="9"/>
+  <text class="ttl" x="242" y="322">inline the engine</text>
+  <text class="cd mono" x="242" y="339">simlab/**/*.py →</text>
+  <text class="cd mono" x="242" y="354">simlab-sources.json</text>
+  <text class="mu" x="242" y="374">live runs exact code</text>
+
+  <rect class="bx" x="450" y="300" width="198" height="92" rx="9"/>
+  <text class="ttl" x="460" y="322">build</text>
+  <text class="cd mono" x="460" y="339">vite build</text>
+  <text class="it" x="460" y="358">static dist/</text>
+  <text class="mu" x="460" y="374">tsc + bundle</text>
+
+  <rect class="bx bx-web" x="668" y="300" width="198" height="92" rx="9"/>
+  <text class="ttl" x="678" y="322">deploy</text>
+  <text class="cd mono" x="678" y="339">deploy-pages.yml</text>
+  <text class="it" x="678" y="358">GitHub Pages</text>
+  <text class="mu" x="678" y="374">static, no backend</text>
+
+  <!-- flows -->
+  <path class="flow" d="M212,202 L230,202" marker-end="url(#wb-ar)"/>
+  <path class="flow" d="M430,202 L448,202" marker-end="url(#wb-ar)"/>
+  <path class="flow" d="M648,202 L666,202" marker-end="url(#wb-ar)"/>
+  <path class="flow" d="M212,346 L230,346" marker-end="url(#wb-ar)"/>
+  <path class="flow" d="M430,346 L448,346" marker-end="url(#wb-ar)"/>
+  <path class="flow" d="M648,346 L666,346" marker-end="url(#wb-ar)"/>
+
+  <text class="mu" x="14" y="416">Committing a new trace re-publishes the site (git-as-data); the same engine code serves the offline bake and the in-browser live run.</text>
+</svg>
