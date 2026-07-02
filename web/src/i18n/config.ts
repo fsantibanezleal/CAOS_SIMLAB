@@ -22,7 +22,7 @@ const en = {
     darkThemeShort: "Dark",
   },
   footer: {
-    attribution: "Built by Felipe Santibáñez-Leal",
+    attribution: "Developed by Felipe Santibáñez-Leal",
     complement: "A CAOS research investigation",
     license: "MIT licensed · open source",
     version: "v",
@@ -109,7 +109,7 @@ const es: typeof en = {
     darkThemeShort: "Oscuro",
   },
   footer: {
-    attribution: "Hecho por Felipe Santibáñez-Leal",
+    attribution: "Desarrollado por Felipe Santibáñez-Leal",
     complement: "Una investigación de CAOS",
     license: "Licencia MIT · código abierto",
     version: "v",
