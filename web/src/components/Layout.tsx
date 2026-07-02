@@ -64,24 +64,21 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {archOpen && <ArchitectureModal onClose={() => setArchOpen(false)} />}
 
+      {/* ADR-0016 §2: one compact line — provenance + honesty; personal/portfolio are header-only */}
       <footer className="site-footer">
         <div className="footer-inner">
           <div className="footer-meta">
-            <span>{t("footer.attribution")}</span>
+            <span>{t("product.name")}</span>
             <span aria-hidden="true">·</span>
             <span>{t("footer.complement")}</span>
-          </div>
-          <div className="footer-meta">
+            <span aria-hidden="true">·</span>
+            <span className="footer-build"><span>{t("footer.version")}{APP_VERSION}</span></span>
+            <span aria-hidden="true">·</span>
+            <span>{t("footer.attribution")}</span>
+            <span aria-hidden="true">·</span>
             <a href={EXTERNAL_LINKS.github} target="_blank" rel="noreferrer noopener">{t("header.github")}</a>
             <span aria-hidden="true">·</span>
-            <a href={EXTERNAL_LINKS.personal} target="_blank" rel="noreferrer noopener">{t("header.personal")}</a>
-            <span aria-hidden="true">·</span>
-            <a href={EXTERNAL_LINKS.portfolio} target="_blank" rel="noreferrer noopener">{t("header.portfolio")}</a>
-            <span aria-hidden="true">·</span>
             <span className="faint">{t("footer.license")}</span>
-            <span className="footer-build">
-              <span>{t("footer.version")}{APP_VERSION}</span>
-            </span>
           </div>
         </div>
       </footer>
