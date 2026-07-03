@@ -1,5 +1,10 @@
 # CAOS_SIMLAB
 
+[![CI](https://img.shields.io/github/actions/workflow/status/fsantibanezleal/CAOS_SIMLAB/ci.yml?branch=main&label=CI)](https://github.com/fsantibanezleal/CAOS_SIMLAB/actions)
+[![License](https://img.shields.io/github/license/fsantibanezleal/CAOS_SIMLAB)](LICENSE)
+[![Version](https://img.shields.io/github/v/tag/fsantibanezleal/CAOS_SIMLAB?label=version&sort=semver)](https://github.com/fsantibanezleal/CAOS_SIMLAB/tags)
+[![Live demo](https://img.shields.io/badge/demo-live-2ea44f)](https://simlab.fasl-work.com)
+
 **A public, didactic lab for Discrete-Event Simulation (DES), Agent-Based Modeling (ABM), and
 Optimization / Operations Research.**
 Learn how to model a system from zero — *define a case → write the rules → run it → read the dynamics* —
