@@ -118,7 +118,7 @@ the adversarial review:
 | **Vectorised array Monte-Carlo (drop-in NumPy on GPU)** | **[CuPy](../15_cupy.md)** | If the work is array ops (no custom per-element control flow), CuPy is cuRAND-backed NumPy-on-GPU with near-zero code change. Pair it *with* Numba — CuPy for arrays, Numba for custom kernels. |
 | **CPU-parallel replications of a pure-Python model (the v1 default)** | **[joblib](../12_joblib.md)** | No GPU, no compile gate; runs anywhere including the dev laptop's cores. The lab's default S10 driver. |
 | **Confidence intervals / distributions / stats on the reduced results** | **[SciPy](../13_scipy-stats.md)** | Numba computes the raw samples fast; SciPy does the t-intervals, KS tests, etc. on the small reduced array. |
-| **Massive-N agent-based model (millions of agents)** | *[FLAME GPU 2 — documented, NOT used](../18_gpu-abm-chapter.md)* | Cut from v1: AGPL-3.0 copyleft, CUDA-version coupling, OOM risk on 8 GB. Reference-only chapter. |
+| **Massive-N agent-based model (millions of agents)** | *[FLAME GPU 2 — documented, not used](../18_gpu-abm-chapter.md)* | Cut from v1: AGPL-3.0 copyleft, CUDA-version coupling, OOM risk on 8 GB. Reference-only chapter. |
 | **Speed up a small discrete-event loop** | **Neither GPU nor Numba — just SimPy on CPU** | Branch-heavy event scheduling is a poor SIMT fit; GPU is slower. This is the lesson, not a tooling gap. |
 
 **Deprecated, do not use:** AgentPy and desmod are deprecated upstream and are not part of

@@ -21,7 +21,7 @@ There are two stale comments in the source that pre-date the measured Mesa-in-Py
 [`simlab/live.py`](../../../simlab/live.py) — read those, not the prose comments:
 
 - [`requirements.txt`](../../../requirements.txt) keeps the live **base** install minimal (`numpy`, `simpy`).
-  Its comment now states the truth explicitly — *"Mesa/Ciw are NOT pinned here even though the ABM scenarios
+  Its comment now states the truth explicitly — *"Mesa/Ciw are not pinned here even though the ABM scenarios
   DO run live on real Mesa 3: the worker loads mesa (+ pandas/scipy/networkx/sqlite3) and ciw at runtime via
   loadPackage/micropip"* — so do **not** read its short pin list as "no Mesa in the browser". That file is the
   *local pip base*, not the browser closure: it is intentionally small because every line is also cold-start

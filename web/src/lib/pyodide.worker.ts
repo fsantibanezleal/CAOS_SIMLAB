@@ -1,5 +1,5 @@
 /// <reference lib="webworker" />
-// Pyodide worker — runs the REAL `simlab` Python package in-browser (WebAssembly) so a "live" scenario
+// Pyodide worker — runs the real `simlab` Python package in-browser (WebAssembly) so a "live" scenario
 // computes the same trace the offline pipeline would. Classic worker: importScripts the Pyodide UMD from
 // the official CDN (avoids Vite bundling a remote ESM; the Firefox module-worker indexURL bug #5923 does
 // not apply to classic workers, and we pass indexURL explicitly regardless). The simlab source is fetched
@@ -54,9 +54,9 @@ async function init(sourcesUrl: string): Promise<void> {
   importScripts(PYODIDE_JS_URL);
   pyodide = await loadPyodide({ indexURL: PYODIDE_INDEX_URL });
   post({ type: "progress", phase: "loading-packages" });
-  // Live wheel closure (must match simlab.core.scenario.LIVE_WHEELS). MEASURED, not assumed: Mesa 3 runs in
+  // Live wheel closure (must match simlab.core.scenario.LIVE_WHEELS). Measured, not assumed: Mesa 3 runs in
   // Pyodide once `sqlite3` is loaded (it imports it via mesa.experimental). pandas/scipy/networkx are Mesa's
-  // (and ciw's) deps. So ABM runs LIVE on real Mesa here — not a stand-in. numpy+simpy for DES, ciw for the
+  // (and ciw's) deps. So ABM runs live on real Mesa here — not a stand-in. numpy+simpy for DES, ciw for the
   // M/M/c validation, joblib for the Monte-Carlo replications. Only native engines (OR-Tools) stay precompute
   // (those scenarios are pure_python=False and never reach this worker). Cold start is ~3-5 s, paid in the
   // background while the first paint replays a committed trace.

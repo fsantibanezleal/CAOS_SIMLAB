@@ -53,7 +53,7 @@ same two plans.
 - **Animation timing**: a used route's grid-node polyline is expanded into timed legs at **uniform speed
   `= 1`** purely to drive the replay; speed does not change the optimization.
 
-## What is NOT modeled (out of scope)
+## What is not modeled (out of scope)
 
 This is **pure combinatorial optimization** — one instance, solved once. There is **no stochastic dynamics**:
 

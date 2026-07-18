@@ -6,7 +6,7 @@ JAX as a *vectorization primitive*, not as a simulation engine. We take one
 small, scalar "simulation" (a single seeded Monte-Carlo replication that
 estimates a tail probability) and:
 
-  1. write it once for ONE seed as a plain function of (key, params),
+  1. write it once for one seed as a plain function of (key, params),
   2. `vmap` it over a whole batch of independent RNG keys so every replication
      runs in lock-step as one vectorized computation,
   3. `jit`-compile the whole batched function so the Python overhead is paid
@@ -28,7 +28,7 @@ GPU/Monte-Carlo research flags as the highest-ROI parallel use (we run it on the
 CPU backend here; the identical code vmaps onto a GPU/TPU backend unchanged).
 
 Determinism: everything is seeded from a single root key, so this script prints
-the SAME numbers on every run, on every machine, on the CPU backend.
+the same numbers on every run, on every machine, on the CPU backend.
 
 Run (from the repo root):
     .venv/Scripts/python.exe docs/frameworks/17_jax/example.py
@@ -53,7 +53,7 @@ jax.config.update("jax_enable_x64", True)
 
 
 def one_replication(key: jax.Array, n_per_rep: int, threshold: float) -> jax.Array:
-    """ONE Monte-Carlo replication for ONE RNG key.
+    """one Monte-Carlo replication for one RNG key.
 
     Draws `n_per_rep` Exponential(1) samples, sums them, and returns a single
     Bernoulli outcome: 1.0 if the sum exceeds `threshold`, else 0.0.

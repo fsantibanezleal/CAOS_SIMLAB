@@ -37,7 +37,7 @@ export function GridComparison({
   return (
     <div className="compare card">
       <h3>{t("compare.title")}</h3>
-      <p className="hint">{es ? `${kpiLabelEs} por régimen. Haz clic para cargar uno.` : `${kpiLabelEn} per regime. Click to load one.`}</p>
+      <p className="hint">{es ? `${kpiLabelEs} por régimen. Al hacer clic se carga uno.` : `${kpiLabelEn} per regime. Click to load one.`}</p>
       <svg className="cmp-svg" viewBox={`0 0 ${W} ${H}`} role="img">
         {[0, 0.25, 0.5, 0.75, 1].map((g) => (
           <g key={g}>

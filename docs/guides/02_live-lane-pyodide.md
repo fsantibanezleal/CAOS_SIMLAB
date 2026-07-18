@@ -59,7 +59,7 @@ const { trace, runMs } = await runLive(scenarioId, params, seed);
 ```
 
 ```python
-# inside the worker, the SAME run+serialise path as `python -m simlab.pipeline`:
+# inside the worker, the same run+serialise path as `python -m simlab.pipeline`:
 from simlab.live import run_trace_json
 run_trace_json(scenario_id, params, seed)   # -> Scenario.run(coerced, seed).to_json()
 ```

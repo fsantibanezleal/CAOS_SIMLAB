@@ -43,7 +43,7 @@ each replication gets a *provably-independent* stream because JAX's PRNG is
 counter-based and splittable, not a single mutated generator. Reusing a key gives
 **identical** draws — great for reproducibility, fatal if you forget to split.
 
-### `vmap` — write for ONE, run for MANY
+### `vmap` — write for one, run for many
 
 `jax.vmap` is automatic vectorization. You write your computation for a **single**
 element (one replication, one agent), and `vmap` rewrites it to run over a whole

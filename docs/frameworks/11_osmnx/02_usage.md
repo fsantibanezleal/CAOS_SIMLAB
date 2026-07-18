@@ -64,7 +64,7 @@ node = ox.distance.nearest_nodes(G, X=lon, Y=lat)   # note: X=lon, Y=lat
 route  = ox.routing.shortest_path(G, orig, dest, weight="travel_time")  # list of node ids
 routes = ox.routing.k_shortest_paths(G, orig, dest, k=3, weight="length")  # generator
 
-# --- render (the ONLY thing we ever commit) ---
+# --- render (the only thing we ever commit) ---
 gdf = ox.routing.route_to_gdf(G, route, weight="length")  # GeoDataFrame of LineStrings
 
 # --- geodesic distance helper (no graph needed) ---

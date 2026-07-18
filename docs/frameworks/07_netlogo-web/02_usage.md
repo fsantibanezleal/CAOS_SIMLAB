@@ -1,7 +1,7 @@
 # NetLogo Web (Tortoise) — 02 · usage
 
 How to take a NetLogo model that has been exported to **standalone HTML** (see
-[`01_installation.md`](./01_installation.md)) and embed it as a **LIVE, client-side simulation card** inside
+[`01_installation.md`](./01_installation.md)) and embed it as a **live, client-side simulation card** inside
 the lab's React/Vite SPA — with the IDE chrome stripped so the visitor sees only the running model.
 
 > **No Python `example.py` here.** NetLogo Web is JavaScript, not a pip pipeline, so this node has **no
@@ -144,7 +144,7 @@ const BASE = import.meta.env.BASE_URL; // e.g. "/" locally, "/simlab/" in prod
 
 type Props = { model: string; title: string; ratio?: string };
 
-/** A LIVE NetLogo Web card: client-side ABM, zero server compute.
+/** A live NetLogo Web card: client-side ABM, zero server compute.
  *  `model` is a file under web/public/netlogo/, e.g. "schelling.html". */
 export function NetLogoCard({ model, title, ratio = "8 / 7" }: Props) {
   return (
@@ -217,7 +217,7 @@ NetLogo's own documentation rather than asserted from memory:
 
 ## 6. Grounding / references
 
-- ABM-frameworks research (LIVE-lane decision + the chrome-strip + iframe embed pattern):
+- ABM-frameworks research (live-lane decision + the chrome-strip + iframe embed pattern):
   the project's internal ABM-frameworks research note.
 - Tortoise (NetLogo → JS compiler + runtime): <https://github.com/NetLogo/Tortoise>
 - Galapagos (netlogoweb.org front-end / session API): <https://github.com/NetLogo/Galapagos>

@@ -91,7 +91,7 @@ def erlang_c_mean_wait(lam: float, mu: float, c: int) -> float:
 
 
 def main() -> None:
-    rng = random.Random(SEED)         # the ONE source of randomness -> determinism
+    rng = random.Random(SEED)         # the one source of randomness -> determinism
     env = simpy.Environment()
     servers = simpy.Resource(env, capacity=N_SERVERS)
     stats = Stats()

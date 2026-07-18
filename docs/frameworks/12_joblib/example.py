@@ -96,7 +96,7 @@ def main() -> None:
     print(f"Erlang-C steady-state Wq (reference) = {wq_theory:.4f}")
     print()
 
-    # --- run the study across ALL cores ---
+    # --- run the study across all cores ---
     mean_all, half_all, per_run = run_study(LAM, MU, C, N, K_REPS, BASE_SEED, n_jobs=-1)
     lo, hi = mean_all - half_all, mean_all + half_all
     print(f"[n_jobs=-1, all cores]  mean Wq = {mean_all:.4f}")
@@ -119,7 +119,7 @@ def main() -> None:
     print(f"  different base_seed differs? {mean_all != mean_other}  ({mean_all:.4f} vs {mean_other:.4f})")
     print()
 
-    # --- per-seed determinism of ONE replication (the atomic unit) ---
+    # --- per-seed determinism of one replication (the atomic unit) ---
     one_a = mmc_mean_wait(LAM, MU, C, N, seed=BASE_SEED + 7)
     one_b = mmc_mean_wait(LAM, MU, C, N, seed=BASE_SEED + 7)
     print(f"single replication seed={BASE_SEED + 7} reproducible? {one_a == one_b}  (Wq={one_a:.4f})")

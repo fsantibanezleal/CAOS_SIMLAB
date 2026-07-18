@@ -12,7 +12,7 @@ Determinism
 -----------
 JuPedSim's collision-free speed model is itself deterministic: given the
 same geometry, the same model parameters and the same initial agent
-positions/speeds, every iteration is reproducible. The ONLY source of
+positions/speeds, every iteration is reproducible. The only source of
 randomness here is the initial scatter of the agents, so we seed Python's
 ``random`` (via ``random.Random(SEED)``) to make the whole run repeatable.
 Re-running this file always prints the same numbers.

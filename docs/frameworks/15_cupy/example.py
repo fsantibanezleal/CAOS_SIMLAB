@@ -3,7 +3,7 @@
 What it teaches (the S10 "GPU exhibit" pattern):
 - A Monte-Carlo estimate is a *random experiment*: thousands of independent replications, summarised
   by a mean and a 95% confidence interval that narrows like 1/sqrt(N).
-- CuPy is "NumPy on the GPU": the SAME array code runs on the device. The whole replication batch is
+- CuPy is "NumPy on the GPU": the same array code runs on the device. The whole replication batch is
   drawn and reduced as array operations (no Python loop over seeds), which is exactly the shape a GPU
   accelerates. Here we estimate pi by the classic unit-quarter-circle dart throw, batched over
   N independent draws.
@@ -46,9 +46,9 @@ def select_backend():
             import cupy as cp  # noqa: PLC0415  (intentional: import only when probing GPU)
         cuda_path_warning = any("CUDA path could not be detected" in str(w.message) for w in caught)
 
-        # A successful import is NOT proof of a USABLE GPU. A machine can report a CUDA device yet lack the
+        # A successful import is not proof of a usable GPU. A machine can report a CUDA device yet lack the
         # CUDA toolkit *headers* CuPy needs to JIT-compile elementwise kernels — in which case array math
-        # (e.g. x*x) raises only when the first kernel compiles. So the probe must exercise the SAME kind
+        # (e.g. x*x) raises only when the first kernel compiles. So the probe must exercise the same kind
         # of operation the real computation uses: allocate, draw with cuRAND, run an elementwise arithmetic
         # op (forces kernel compilation), AND synchronise. Any failure here -> fall back to NumPy.
         dev_count = cp.cuda.runtime.getDeviceCount()
@@ -105,9 +105,9 @@ def main() -> None:
     print(f"abs error       : {err:.6f}")
     print(f"true pi in CI?  : {inside_ci}")
     print("-" * 64)
-    print("lesson: the SAME array code runs on GPU (CuPy) or CPU (NumPy). The GPU win is real only when")
+    print("lesson: the same array code runs on GPU (CuPy) or CPU (NumPy). The GPU win is real only when")
     print("the parallel arithmetic (millions of independent draws) dwarfs host<->device transfer -- i.e.")
-    print("big batched Monte-Carlo, NOT a small event-loop DES. See docs/frameworks/15_cupy/03_applying.md.")
+    print("big batched Monte-Carlo, not a small event-loop DES. See docs/frameworks/15_cupy/03_applying.md.")
 
 
 if __name__ == "__main__":

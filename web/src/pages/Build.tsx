@@ -69,7 +69,7 @@ export default function Build() {
             <h3>{es ? "2 · Distribuciones y semilla" : "2 · Distributions & seed"}</h3>
             <p>
               {es
-                ? "Elige distribuciones para los tiempos (aquí, exponenciales para llegadas y servicio) y saca TODA la aleatoriedad de un único generador con semilla. Muestrear los valores por adelantado hace la corrida reproducible sin depender del orden del planificador."
+                ? "Elegir distribuciones para los tiempos (aquí, exponenciales para llegadas y servicio) y extraer toda la aleatoriedad de un único generador con semilla. Muestrear los valores por adelantado hace la corrida reproducible sin depender del orden del planificador."
                 : "Choose distributions for the times (here, exponential for arrivals and service) and draw ALL randomness from a single seeded generator. Sampling the values up front makes the run reproducible independent of the scheduler's ordering."}
             </p>
           </li>
@@ -84,7 +84,7 @@ export default function Build() {
             <h3>{es ? "4 · Emitir un trace" : "4 · Emit a trace"}</h3>
             <p>
               {es
-                ? "En vez de solo devolver un número, registra cada evento (tiempo, tipo, id) y los KPIs en un objeto compacto serializable a JSON — el trace. Es lo que el visor web reproduce, y lo que se commitea al repo."
+                ? "En vez de solo devolver un número, registra cada evento (tiempo, tipo, id) y los KPIs en un objeto compacto serializable a JSON — el trace. Es lo que el visor web reproduce, y lo que se registra al repo."
                 : "Instead of just returning a number, record each event (time, kind, id) and the KPIs into a compact JSON-serializable object — the trace. It is what the web viewer replays, and what gets committed to the repo."}
             </p>
           </li>
@@ -100,7 +100,7 @@ export default function Build() {
             <h3>{es ? "6 · Decidir el carril y el manifest" : "6 · Decide the lane & manifest"}</h3>
             <p>
               {es
-                ? "Mide la corrida: si es Python puro, su cierre de wheels cabe en el worker del navegador (LIVE_WHEELS: numpy, simpy, ciw, mesa, pandas, scipy, networkx, sqlite3, joblib), corre en < 3 s y el trace pesa < 1 MB, puede ejecutarse en vivo; si no, se precomputa y se reproduce. El veredicto, con los números medidos, queda en el manifest del escenario — auditable."
+                ? "Medir la corrida: si es Python puro, su cierre de wheels cabe en el worker del navegador (LIVE_WHEELS: numpy, simpy, ciw, mesa, pandas, scipy, networkx, sqlite3, joblib), se ejecuta en < 3 s y la traza pesa < 1 MB, puede ejecutarse en vivo; si no, se precomputa y se reproduce. El veredicto, con los números medidos, queda en el manifest del escenario — auditable."
                 : "Measure the run: if it's pure-Python, its wheel closure fits the browser worker (LIVE_WHEELS: numpy, simpy, ciw, mesa, pandas, scipy, networkx, sqlite3, joblib), runs in < 3 s and the trace is < 1 MB, it can run live; otherwise it's precomputed and replayed. The verdict, with the measured numbers, is recorded in the scenario manifest — auditable."}
             </p>
             <Callout variant="note" title={es ? "La regla de compuertas" : "The gate rule"}>

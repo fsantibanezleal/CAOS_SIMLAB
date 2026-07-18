@@ -68,7 +68,7 @@ export function QueueingTheory({ es }: { es: boolean }) {
           <Callout variant="note" title={es ? "Rol en el modelado" : "Modeling role"}>
             <p>
               {es
-                ? "Fija el contrato del simulador: SimPy usa un único Resource(capacity=c) con muestreadores exponenciales de tiempos entre llegadas y de servicio. Los 12 regímenes barren (λ, μ, c) manteniendo fija la clase de modelo, de modo que cada régimen tiene un objetivo Erlang-C exacto."
+                ? "Se fija el contrato del simulador: SimPy usa un único Resource(capacity=c) con muestreadores exponenciales de tiempos entre llegadas y de servicio. Los 12 regímenes barren (λ, μ, c) manteniendo fija la clase de modelo, de modo que cada régimen tiene un objetivo Erlang-C exacto."
                 : "Sets the contract for the simulator: SimPy uses a single Resource(capacity=c) with exponential inter-arrival and service samplers. The 12 regimes sweep (λ, μ, c) holding the model class fixed, so each regime has an exact Erlang-C target."}
             </p>
           </Callout>
@@ -506,7 +506,7 @@ export function QueueingTheory({ es }: { es: boolean }) {
             <ul>
               {[
                 es
-                  ? "Requiere que el proceso de llegadas sea Poisson (la condición de no anticipación / LAA). Las llegadas de renovación pero no Poisson NO ven promedios temporales — necesitan la distribución promedio sobre clientes (p. ej. vía la cadena embebida GI/M/c)."
+                  ? "Requiere que el proceso de llegadas sea Poisson (la condición de no anticipación / LAA). Las llegadas de renovación pero no Poisson no ven promedios temporales — necesitan la distribución promedio sobre clientes (p. ej. vía la cadena embebida GI/M/c)."
                   : "Requires the arrival process to be Poisson (the lack-of-anticipation / LAA condition). Renewal-but-non-Poisson arrivals do not see time averages — they need the customer-average distribution (e.g. via the GI/M/c embedded chain).",
                 es
                   ? "PASTA iguala promedios/proporciones, no el comportamiento trayectoria a trayectoria."

@@ -18,7 +18,7 @@ This scenario USES the tools it documents — no hand-rolled NumPy event loop or
   simulation. A single arrival process injects each Poisson call at its event time; an instantaneous
   dispatcher then commits the nearest-available ambulance (the one with the earliest feasible scene arrival,
   honouring each unit's busy-until clock). Because dispatch consumes zero simulated time and the arrival
-  process fires calls strictly in time order, SimPy makes the SAME greedy decisions as the original
+  process fires calls strictly in time order, SimPy makes the same greedy decisions as the original
   sequential sweep — the DES is the *mechanism*, not a behaviour change.
 
 Determinism: every random variate (the inter-arrival gaps and the call locations) is drawn UP FRONT from a

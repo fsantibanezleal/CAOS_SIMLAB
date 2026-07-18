@@ -14,7 +14,7 @@ honestly into a NATIVE plan and a LIVE replay:
 
 * **The PLAN (offline, native).** **NetworkX** (``docs/frameworks/10_networkx``) builds a real directed road
   graph over the shared graded ``GridNetwork`` terrain in ``_geo.py`` and finds the haul route with
-  ``nx.dijkstra_path``; **OR-Tools** CP-SAT (``docs/frameworks/08_ortools``) independently re-solves the SAME
+  ``nx.dijkstra_path``; **OR-Tools** CP-SAT (``docs/frameworks/08_ortools``) independently re-solves the same
   shortest path as a min-cost single-unit-flow ILP and CERTIFIES the route cost. Both are native (no WASM
   build), so the plan is built **offline** by ``_haul_plan.py`` and COMMITTED as small rendered data
   (``s07_plans.py``: the two route polylines as node-id lists + the cost certificate + the analytic g*).
@@ -27,7 +27,7 @@ honestly into a NATIVE plan and a LIVE replay:
 
 The plan-vs-fleet split is itself the lesson: an optimal route PLAN is necessary but not sufficient — a
 fixed fleet realizes a degraded version of it, and only the grade slider (which re-selects among committed
-plans) flips the route, while the fleet sliders only change throughput/wait over the SAME route.
+plans) flips the route, while the fleet sliders only change throughput/wait over the same route.
 
 Determinism: the route is a unique shortest path on a fixed graph (NetworkX) confirmed by a seeded CP-SAT
 solve (OR-Tools), both done offline; the DES has no stochastic variates in the deterministic variants, and
@@ -54,7 +54,7 @@ def _plan_key(grid: int, grade: float, pass_col: int, lift_col: int, barrier: in
 def _network_for(grid: int, pass_col: int, lift_col: int, barrier: int) -> tuple[GridNetwork, int, int, set[int]]:
     """Rebuild the shared graded ridge network for a geometry (pure-Python: GridNetwork + numpy, no native).
 
-    This reconstructs the SAME nodes/edges/elevation/blocked cells the offline plan builder saw, so the live
+    This reconstructs the same nodes/edges/elevation/blocked cells the offline plan builder saw, so the live
     render geometry matches the plan's route polylines exactly. ``_geo`` is untouched.
     """
     g = int(grid)
@@ -163,7 +163,7 @@ class HaulScenario(Scenario):
         up_path: list[int] = list(plan["up_path"])
         down_path: list[int] = list(plan["down_path"])
 
-        # ── render geometry rebuilt live from the SAME GridNetwork (pure-Python; matches the plan) ──
+        # ── render geometry rebuilt live from the same GridNetwork (pure-Python; matches the plan) ──
         net, load_node, dump_node, blocked = _network_for(g, pass_col, lift_col, barrier)
         speed = 1.0
 

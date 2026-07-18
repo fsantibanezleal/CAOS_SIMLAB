@@ -46,7 +46,7 @@ The committed deterministic trace uses **seed 42**; each replication `r` then dr
   customers, the full-run average carries a start-up (initialisation) transient. The study surfaces this
   honestly rather than hiding it (see below).
 
-## What is NOT modeled (the honesty boundary)
+## What is not modeled (the honesty boundary)
 
 - **No warm-up / initialisation-bias removal.** Each `Wq^(r)` is the average over the *entire* run,
   transient included. At light-to-moderate load that bias is negligible and `W̄_N` lands on Erlang-C; at
