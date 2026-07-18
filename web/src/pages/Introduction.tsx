@@ -108,8 +108,8 @@ function Es() {
         <p>
           Muchos sistemas son demasiado complejos, estocásticos o riesgosos para razonarlos con una fórmula o
           una planilla: una urgencia hospitalaria, un banco de servidores, una flota de camiones, una
-          epidemia. La simulación construye un <em>modelo computacional</em> del sistema, lo corre hacia
-          adelante bajo aleatoriedad y mide qué pasa — para preguntar "¿qué pasaría si?" antes de tocar lo real.
+          epidemia. La simulación construye un <em>modelo computacional</em> del sistema, lo hace avanzar
+          bajo aleatoriedad y mide qué pasa — para preguntar "¿qué pasaría si?" antes de tocar lo real.
         </p>
         <div className="two-col">
           <div className="card">
@@ -125,7 +125,7 @@ function Es() {
             <p className="muted">
               Muchos agentes autónomos siguen reglas locales simples; <em>emerge</em> un comportamiento global
               que ningún agente buscó — segregación, epidemias, bandadas, tráfico. Motor aquí:{" "}
-              <span className="mono">Mesa 3</span> (corre en vivo en tu navegador vía Pyodide).
+              <span className="mono">Mesa 3</span> (se ejecuta en vivo en el navegador vía Pyodide).
             </p>
           </div>
         </div>
@@ -139,14 +139,14 @@ function Es() {
           honestidad y velocidad:
         </p>
         <ul className="tick-list">
-          <li><strong>Regímenes pre-simulados.</strong> Cada caso de estudio trae una familia de ≥10 juegos de parámetros, computados offline en <em>traces con semilla</em> compactos. Cambias entre ellos al instante y comparas.</li>
-          <li><strong>Replay determinista.</strong> El trace es la fuente de verdad; la animación solo lo reproduce. Lo que ves es exactamente lo que se computó — reproducible hasta la semilla.</li>
+          <li><strong>Regímenes pre-simulados.</strong> Cada caso de estudio trae una familia de ≥10 juegos de parámetros, computados offline en <em>trazas con semilla</em> compactas. Se alternan al instante para comparar.</li>
+          <li><strong>Replay determinista.</strong> La traza es la fuente de verdad; la animación solo la reproduce. Lo que se muestra es exactamente lo que se computó — reproducible hasta la semilla.</li>
           <li><strong>Validación contra la teoría.</strong> Donde existe respuesta cerrada (la hay para la cola M/M/c), cada régimen se contrasta con ella, para ver al simulador coincidir — u oscilar, cuando una sola corrida es ruidosa.</li>
         </ul>
         <Callout variant="strong" title="Es un sitio estático — ningún servidor simula bajo demanda">
           <p>
-            Todo el cómputo es offline (los traces commiteados) o, para los modelos de Python puro, en vivo en
-            tu propio navegador vía Pyodide (lo mismo DES, ABM y despacho sobre grafos). No hay backend, nada
+            Todo el cómputo es offline (las trazas registradas) o, para los modelos de Python puro, en vivo en
+            el navegador vía Pyodide (lo mismo DES, ABM y despacho sobre grafos). No hay backend, nada
             que atacar ni nada que pagar — solo los casos de solver nativo (OR-Tools: programación S06, ruteo
             de vehículos S08, LP de acarreo S11) se precomputan offline, porque no tienen build de WebAssembly.
           </p>

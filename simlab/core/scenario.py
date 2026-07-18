@@ -14,7 +14,7 @@ from .trace import Trace
 
 # --- the gates (tunable, recorded in every manifest) ---
 GATE_MAX_RUN_MS = 3000.0          # < 3 s gate. The run_ms it tests is the OFFLINE CPython proxy (perf_counter
-                                  # in the .venv, measured in pipeline.py) — a conservative stand-in, NOT the
+                                  # in the .venv, measured in pipeline.py) — a conservative stand-in, not the
                                   # in-Worker time; the real in-browser runtime is measured live in
                                   # web's pyodide.worker.ts.
 GATE_MAX_TRACE_BYTES = 1_000_000  # animatable trace must be < ~1 MB

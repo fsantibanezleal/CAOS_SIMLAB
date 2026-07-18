@@ -66,7 +66,7 @@ tick. Mesa is the engine that runs that loop with first-class agent/space abstra
 
 ## Live-vs-precompute lane for S03
 
-**S03 runs in the LIVE lane.** Verified in the committed manifest (`manifests/s03_sir.json` → `"lane":
+**S03 runs in the live lane.** Verified in the committed manifest (`manifests/s03_sir.json` → `"lane":
 "live"`, `engine: "mesa"`, `wheel_closure: ["numpy", "mesa"]`).
 
 The lab's **4-gate** (`classify_lane` in

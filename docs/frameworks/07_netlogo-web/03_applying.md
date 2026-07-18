@@ -46,7 +46,7 @@ the visitor's browser does the simulating.
 
 ## 3. Which lab scenarios use NetLogo Web
 
-NetLogo Web is the **LIVE in-browser ABM** engine — the "enter → straight to a running simulator" on-ramp.
+NetLogo Web is the **live in-browser ABM** engine — the "enter → straight to a running simulator" on-ramp.
 **One** NetLogo Web live card ships today (S02 Schelling, `web/public/netlogo/schelling.html`); a second
 (S03 SIR) is **planned, not yet shipped**:
 
@@ -65,9 +65,9 @@ Code-Example variants or author our own — see §4). Only the Schelling card is
 The lab teaches ABM with **three** representations of the *same* model, and the docs must name the split
 honestly or learners get lost:
 
-1. **LIVE / instant play (native JS) → NetLogo Web** (this node). Client-side JS, animated, sliders, **zero
+1. **live / instant play (native JS) → NetLogo Web** (this node). Client-side JS, animated, sliders, **zero
    server compute, no Pyodide**. The on-ramp: play first, understand later.
-2. **LIVE Python engine → Mesa 3** (`simlab/scenarios/s02_schelling.py`, `s03_sir.py`,
+2. **live Python engine → Mesa 3** (`simlab/scenarios/s02_schelling.py`, `s03_sir.py`,
    `engine = "mesa"`): runs **live in Pyodide** (a committed canonical trace gives the instant first paint,
    then a Run re-executes real Mesa). The full `Agent`/`Model`/space abstractions, **rules fully visible
    in-repo** for teaching.
@@ -91,7 +91,7 @@ simulation **runs live in the visitor's browser**:
 ```text
 authoring time (once)                              every visit (in the browser)
 ┌──────────────────────────┐  export   ┌──────────────────────────────────────────┐
-│ NetLogo model + Interface ├──────────►│ Tortoise engine steps the model LIVE,     │
+│ NetLogo model + Interface ├──────────►│ Tortoise engine steps the model live,     │
 │ random-seed <fixed>       │  to HTML  │ draws the view, reacts to slider drags     │
 └──────────────────────────┘           └──────────────────────────────────────────┘
         committed once as a static .html        GitHub Pages does ZERO compute

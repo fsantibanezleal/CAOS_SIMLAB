@@ -24,7 +24,7 @@ What the script does:
    ``create_xoroshiro128p_states`` (period 2**128 - 1, passes TestU01 BigCrush) and
    estimates pi on its own slice of darts; a host-side reduction averages the threads.
    If no CUDA GPU is present (the common case on a laptop without an NVIDIA card, and
-   always on the GPU-less production host), the script says so and runs the SAME
+   always on the GPU-less production host), the script says so and runs the same
    estimate on the CPU as a fallback, so it always prints a GPU-section result.
 
 Everything is deterministic: NumPy is seeded for the CPU paths and the xoroshiro states
@@ -167,7 +167,7 @@ def pi_on_gpu(n_threads: int, darts_per_thread: int, seed: int) -> float:
 # be called from inside Numba-compiled code, never from plain Python. It also needs the
 # states as a host NumPy structured array (we .copy_to_host() the states first, since
 # create_xoroshiro128p_states returns a DeviceNDArray even with no physical GPU). So the
-# no-GPU fallback wraps the device function in an @njit kernel that walks the SAME states
+# no-GPU fallback wraps the device function in an @njit kernel that walks the same states
 # the GPU path would have used. This guarantees the fallback uses the identical RNG, not a
 # different one — the whole point of the exhibit is that the arithmetic is the same on
 # both targets.
@@ -185,7 +185,7 @@ def pi_cpu_xoroshiro(rng_states, n_streams: int, darts_per_stream: int) -> int:
 
 
 def main() -> None:
-    rng = np.random.default_rng(SEED)   # the ONE host RNG -> deterministic CPU draws
+    rng = np.random.default_rng(SEED)   # the one host RNG -> deterministic CPU draws
 
     print("Numba JIT Monte-Carlo demo (CAOS_SIMLAB / S10 GPU exhibit)")
     print(f"  numba target check : cuda.is_available() = {cuda.is_available()}")
@@ -225,10 +225,10 @@ def main() -> None:
               f"abs err: {abs(pi_gpu - math.pi):.2e}")
     else:
         # No CUDA device here. We still produce the GPU-section answer by running the
-        # IDENTICAL xoroshiro128p estimator on the CPU: numba.cuda.random's
+        # identical xoroshiro128p estimator on the CPU: numba.cuda.random's
         # xoroshiro128p_uniform_float32 also has a CPU implementation, so the fallback
-        # uses the SAME RNG, not a different one.
-        print("     no CUDA device detected -> CPU fallback using the SAME xoroshiro128p RNG")
+        # uses the same RNG, not a different one.
+        print("     no CUDA device detected -> CPU fallback using the same xoroshiro128p RNG")
         n_streams = 256
         darts_per_stream = 100_000
         states = create_xoroshiro128p_states(n_streams, seed=SEED).copy_to_host()
@@ -241,7 +241,7 @@ def main() -> None:
               f"abs err: {abs(pi_fb - math.pi):.2e}")
     print()
     print("Honest verdict (S10): the GPU's win is running thousands of these independent")
-    print("streams at once. It does NOT speed up a small branch-heavy event loop (DES),")
+    print("streams at once. It does not speed up a small branch-heavy event loop (DES),")
     print("where it is measurably slower. See docs/frameworks/14_numba/03_applying.md.")
 
 

@@ -28,7 +28,7 @@ from ortools.linear_solver import pywraplp
 from ortools.sat.python import cp_model
 
 SEED = 42
-# Termination guard only (NOT a determinism knob): matches S06 and the S07 plan builder
+# Termination guard only (not a determinism knob): matches S06 and the S07 plan builder
 # (CP_TIME_LIMIT_S = 10.0). ft06 solves to OPTIMAL in tens of ms, so this cap never fires;
 # reproducibility comes from num_search_workers = 1 + random_seed.
 CP_TIME_LIMIT_S = 10.0

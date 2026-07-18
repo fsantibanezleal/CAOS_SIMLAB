@@ -1,6 +1,6 @@
 """simlab — the shared simulation engine for CAOS_SIMLAB.
 
-ONE engine imported by the notebooks (teaching), the local pipeline (precompute) and — via Pyodide —
+one engine imported by the notebooks (teaching), the local pipeline (precompute) and — via Pyodide —
 the web app (live). Building this shared interface first is what keeps the three surfaces from drifting:
 a scenario is defined once here and rendered everywhere.
 

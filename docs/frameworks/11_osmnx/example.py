@@ -11,10 +11,10 @@ WHY THIS SCRIPT BUILDS THE GRAPH BY HAND
 ----------------------------------------
 This is a PUBLIC repo and a NETWORK-FREE, deterministic example:
 
-  1. We never download a large area, and we NEVER commit raw OpenStreetMap data
+  1. We never download a large area, and we never commit raw OpenStreetMap data
      (`.graphml` / `.osm` / `.pbf`). A pruned OSM graph is an ODbL *Derivative Database*;
      committing it would put a share-alike obligation on the whole repo. See ATTRIBUTION.md.
-  2. CI / a reviewer must be able to run this with no internet and get the SAME bytes.
+  2. CI / a reviewer must be able to run this with no internet and get the same bytes.
 
 So instead of calling OpenStreetMap, we build a tiny 3x3 lattice of junctions by hand as a
 `networkx.MultiDiGraph` carrying exactly the attributes OSMnx expects (node `x`/`y`,
@@ -23,7 +23,7 @@ unchanged: `add_edge_speeds`, `add_edge_travel_times`, `routing.shortest_path`,
 `routing.k_shortest_paths`, `routing.route_to_gdf`, `distance.nearest_nodes`,
 `distance.great_circle`.
 
-The commented `live_osmnx_example()` below is the REAL OSMnx download call you would use in
+The commented `live_osmnx_example()` below is the real OSMnx download call you would use in
 the local precompute pipeline (smallest possible radius). It is intentionally not executed.
 
 Run from the repo root:
@@ -78,11 +78,11 @@ def build_hand_graph() -> tuple[nx.MultiDiGraph, dict[int, tuple[float, float]]]
     return G, coords
 
 
-def live_osmnx_example() -> None:  # pragma: no cover - NOT executed; reference only
+def live_osmnx_example() -> None:  # pragma: no cover - not executed; reference only
     """How OSMnx WOULD be used in the local precompute pipeline. Intentionally not run.
 
     Uses the smallest sensible radius (~150 m), keeps the raw graph in memory, and commits
-    ONLY rendered geometry (route line as JSON) — never the raw graph. ODbL credit required.
+    only rendered geometry (route line as JSON) — never the raw graph. ODbL credit required.
     """
     # G = ox.graph_from_point((-23.650, -70.400), dist=150, network_type="drive")
     # G = ox.add_edge_speeds(G, fallback=30)          # km/h where OSM lacks maxspeed
@@ -91,7 +91,7 @@ def live_osmnx_example() -> None:  # pragma: no cover - NOT executed; reference 
     # dest = ox.distance.nearest_nodes(G, X=-70.3995, Y=-23.6495)
     # route = ox.routing.shortest_path(G, orig, dest, weight="travel_time")
     # gdf = ox.routing.route_to_gdf(G, route, weight="travel_time")  # <- commit THIS (geometry)
-    # NOTE: do NOT ox.save_graphml(G); raw OSM is ODbL share-alike. Credit in any UI:
+    # NOTE: do not ox.save_graphml(G); raw OSM is ODbL share-alike. Credit in any UI:
     #   "Map data (c) OpenStreetMap contributors, ODbL."
     raise NotImplementedError("Reference only — see ATTRIBUTION.md before enabling.")
 
@@ -123,7 +123,7 @@ def main() -> None:
         ox.routing.k_shortest_paths(G, orig, dest, k=3, weight="length"), 3))
     print(f"k=3 shortest paths {orig}->{dest}: {alts}")
 
-    # 5) Turn the chosen route into drawable geometry (the ONLY thing we'd ever commit).
+    # 5) Turn the chosen route into drawable geometry (the only thing we'd ever commit).
     gdf = ox.routing.route_to_gdf(G, by_length, weight="length")
     total_m = float(gdf["length"].sum())
     total_s = float(gdf["travel_time"].sum())

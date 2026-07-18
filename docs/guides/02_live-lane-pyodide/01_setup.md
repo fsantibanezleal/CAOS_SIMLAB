@@ -68,7 +68,7 @@ scenarios are `pure_python = False`, the gate keeps them precompute-only, and
 [`simlab/live.py`](../../../simlab/live.py) refuses them as a hard guard. See
 [04 · Gotchas](./04_gotchas.md) for the one place the source comments still describe an older, smaller closure.
 
-## What you do NOT need
+## What you do not need
 
 - **No server.** There is no application backend; the lane is client-side WASM.
 - **No local install for visitors.** Pyodide and the wheels are fetched from the CDN at first live use.

@@ -36,7 +36,7 @@ The GPU runs one agent per thread, in parallel, and the message lists are the on
 This is what makes it scale to **millions of agents on a single GPU** — there is no shared mutable graph to
 lock.
 
-**The idiom (illustrative — NOT runnable here):**
+**The idiom (illustrative — not runnable here):**
 
 ```python
 # pseudocode in the FLAME GPU 2 Python-binding style
@@ -96,7 +96,7 @@ from jax import vmap, jit, random
 state = {"x": jnp.zeros(1_000_000), "infected": jnp.zeros(1_000_000, bool)}
 
 def agent_step(x, infected, key, beta):
-    # pure function of ONE agent's state -> its next state
+    # pure function of one agent's state -> its next state
     roll = random.uniform(key)
     new_infected = infected | (roll < beta)
     return x, new_infected
@@ -133,7 +133,7 @@ pop = pl.DataFrame({                    # one row per agent
 })
 
 def sir_tick(pop: pl.DataFrame, beta: float, seed: int) -> pl.DataFrame:
-    # an entire tick = ONE vectorized column expression (no agent loop)
+    # an entire tick = one vectorized column expression (no agent loop)
     return pop.with_columns(
         pl.when((pl.col("state") == "S")
                 & (pl.col("neighbours_infected") > 0)

@@ -52,7 +52,7 @@ and s for the surge.
 - **Per-class length-of-stay.** Total time-in-system is tracked separately for urgent vs standard patients,
   so the effect of priority (urgent LOS falls at the expense of standard LOS) is directly visible.
 
-## What is NOT modeled (out of scope)
+## What is not modeled (out of scope)
 
 These are deliberate simplifications — listed so no one mistakes the educational model for an operational
 one:

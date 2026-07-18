@@ -54,7 +54,7 @@ Mesa's `Agent` / `Model` / space / `AgentSet` abstractions map one-to-one onto t
 
 ### The honest framing (read this before claiming how the lab runs Mesa)
 
-> **The lab's S02 / S03 / S05 run on REAL Mesa 3, LIVE in the browser.** Verified in source:
+> **The lab's S02 / S03 / S05 run on real Mesa 3, live in the browser.** Verified in source:
 > `simlab/scenarios/s02_schelling.py`, `s03_sir.py` and `s05_beergame.py` all use `mesa.Agent` /
 > `mesa.Model` / `AgentSet` activation (engine = "mesa") and `import mesa`. All three carry
 > `lane: "live"` in their manifests; the browser worker `micropip.install`s `mesa` and it was *measured*

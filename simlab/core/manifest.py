@@ -1,6 +1,6 @@
 """The per-scenario manifest — the keystone that makes the live/precompute call auditable.
 
-A scenario emits ONE manifest listing its family of pre-simulated **variants**. Each variant declares its
+A scenario emits one manifest listing its family of pre-simulated **variants**. Each variant declares its
 lane, params, the MEASURED gate numbers, its KPIs and analytic reference, and its committed trace path.
 The app reads the manifest to populate the variant selector and to know how to run/replay each one; CI
 reads it to enforce that nothing tagged "live" actually breaches the gates.

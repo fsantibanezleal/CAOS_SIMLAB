@@ -2,7 +2,7 @@
 
 A Trace is a compact, JSON-serialisable record of one run: its inputs (scenario, seed, params), its
 KPIs, an optional analytic reference (for validation scenarios), and a timeline of events the front end
-animates. The SAME object is produced whether the run happened live in Pyodide or offline in the
+animates. The same object is produced whether the run happened live in Pyodide or offline in the
 pipeline — so one render path serves both lanes.
 """
 from __future__ import annotations

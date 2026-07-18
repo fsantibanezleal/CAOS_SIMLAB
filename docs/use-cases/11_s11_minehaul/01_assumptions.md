@@ -81,7 +81,7 @@ Tunable parameters (`param_specs`), default · [min, max, step]:
 - **Three destination kinds at once**: plant-feed flows, a stock-fill (or stock-drain) flow, and a dump
   flow run concurrently, with a couple of auxiliary trucks owning the housekeeping (dump + stock) flows.
 
-## What is NOT modeled (out of scope)
+## What is not modeled (out of scope)
 
 These would each be a *different* tool or scene, deliberately left out:
 

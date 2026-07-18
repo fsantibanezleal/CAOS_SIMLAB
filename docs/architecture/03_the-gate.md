@@ -61,7 +61,7 @@ Each scenario declares `wheels: list[str]` — the minimal closure its engine ne
 **every** wheel is in `LIVE_WHEELS`, the set the browser worker actually loads. `LIVE_WHEELS` is **measured,
 not assumed**: it contains `mesa` and `sqlite3` precisely because Mesa 3 was verified to run in Pyodide once
 `sqlite3` is loaded via `loadPackage` (cold start ~3 s for numpy+pandas+scipy+networkx+sqlite3+mesa; a
-20-step 2500-agent run ~2.3 s, in a real browser). So **ABM runs LIVE on real Mesa, not a stand-in.** A
+20-step 2500-agent run ~2.3 s, in a real browser). So **ABM runs live on real Mesa, not a stand-in.** A
 scenario whose closure includes a heavy/native wheel outside the set (anything OR-Tools, Mesa-Geo, OSMnx,
 PyVRP, the GPU libs) is forced to precompute, with the offending wheel named in `reasons`. Examples from the
 registry:

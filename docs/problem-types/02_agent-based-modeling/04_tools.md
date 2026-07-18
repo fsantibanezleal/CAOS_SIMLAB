@@ -127,7 +127,7 @@ lab replays — none ever runs on the live (Pages) deploy). The full write-up is
 
 ---
 
-## 7. Tools NOT for ABM (use the right problem-type)
+## 7. Tools not for ABM (use the right problem-type)
 
 ABM models *agents and emergence*. If your model is really a flow of entities through resources, that is DES —
 use **SimPy** / **Ciw** / **Salabim** (see [DES](../01_discrete-event-simulation.md)). If it is a prescriptive

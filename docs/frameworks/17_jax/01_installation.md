@@ -40,7 +40,7 @@ pip install "jax[cpu]==0.10.2"
 no system toolkit, nothing to compile — it runs anywhere Python runs, including a
 GPU-less laptop or a CI runner.
 
-GPU wheel — **NOT** installed here; documented only for completeness:
+GPU wheel — **not** installed here; documented only for completeness:
 
 ```bash
 pip install "jax[cuda12]==0.10.2"
@@ -118,7 +118,7 @@ Expected:
   `jax.config.update("jax_enable_x64", True)` (it must be set **before** any array
   is created) so the Monte-Carlo estimate matches the analytic truth tightly and
   portably.
-- **`ABMax` (the JAX-based ABM library) is NOT installed and is NOT usable here.**
+- **`ABMax` (the JAX-based ABM library) is not installed and is not usable here.**
   Its pip install **fails on Windows** with a path-length error (`MAX_PATH`
   overflow during the wheel build/unpack). This is exactly why JAX is documented
   as the bare **vectorization primitive** in this lab — `vmap` + `jit` over our

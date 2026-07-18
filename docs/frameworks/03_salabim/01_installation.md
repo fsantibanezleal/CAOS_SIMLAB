@@ -29,7 +29,7 @@ videos:
 
 ```text
 # requirements-precompute.txt  (offline lane)
-salabim==26.0.6        # DES teaching chapter + offline mp4/gif render (tkinter desktop; NOT web-embeddable)
+salabim==26.0.6        # DES teaching chapter + offline mp4/gif render (tkinter desktop; not web-embeddable)
 ```
 
 > The exact `==26.0.6` pin is what `requirements-precompute.txt` carries and what is installed +

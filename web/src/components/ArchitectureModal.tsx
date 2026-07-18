@@ -7,7 +7,7 @@ import { useLang } from "@/lib/useLang";
 
 /**
  * Architecture / "How it works" modal (ADR-0058). A centered dialog (Esc-to-close, focus-managed,
- * role="dialog") with a tab strip; each tab pairs ONE hand-authored theme-aware SVG with a bilingual
+ * role="dialog") with a tab strip; each tab pairs one hand-authored theme-aware SVG with a bilingual
  * explanation at complete depth. CAOS_SIMLAB is a non-shell app, so this implements the pattern directly.
  *
  * The SVG is FETCHED + INLINED (dangerouslySetInnerHTML) — an <img> would not inherit the app's CSS
