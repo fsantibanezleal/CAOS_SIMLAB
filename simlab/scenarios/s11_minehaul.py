@@ -2,7 +2,7 @@
 
 A mine sends ore from several PHASES (load points, each with an ore grade) to three destination KINDS:
 a PLANT (final sink with a target grade), a DUMP (waste sink) and intermediate STOCKS (a node that is a
-sink AND, once it holds material, a source for later trips). Two coupled OR problems, each on its REAL
+sink and, once it holds material, a source for later trips). Two coupled OR problems, each on its real
 framework:
 
   1. PLANT BLEND (LP, **OR-Tools GLOP**, precompute) — choose how many tonnes to draw from each source so
@@ -125,7 +125,7 @@ class MineHaulScenario(Scenario):
         dump_node = at(0.50, 0.08)         # bottom edge
         stock_node = at(0.30, 0.40) if n_stocks else None  # interior, off the central wall
 
-        # A DISTRIBUTED, irregular hills field. Broad TALL hills sit ON the corridors between the corner
+        # A distributed, irregular hills field. Broad tall hills sit on the corridors between the corner
         # stations (a central wall + a top-corridor + a right-corridor block) so the straight line is
         # expensive and each O-D pair winds a DIFFERENT way; medium scattered bumps + one basin (amp<0)
         # add irregular relief everywhere. (fx, fy, amp, sigma) as grid-coord fractions.
@@ -136,7 +136,7 @@ class MineHaulScenario(Scenario):
             (0.84, 0.70, 1.1, 0.10), (0.44, 0.66, 1.2, 0.11), (0.34, 0.16, 1.0, 0.10),
         ]
         bumps = [(fx * (g - 1), fy * (g - 1), amp, sf * (g - 1)) for fx, fy, amp, sf in raw_bumps]
-        # A wall placed ON the realized HIGH→plant haul road ONLY (so it bites the rich phase, not the
+        # A wall placed on the realized HIGH→plant haul road only (so it bites the rich phase, not the
         # near phases). The high phase (top-left) reaches the plant (bottom-right) down the left edge,
         # through the low-elevation valley around row 5, then up the right side. low→plant runs along the
         # bottom row and mid→plant up the right edge — neither touches this corner. The wall is an L
@@ -194,7 +194,7 @@ class MineHaulScenario(Scenario):
                 flows.append({"src": phase_nodes[1], "dst": stock_node, "grade": PHASE_GRADES[1],
                               "target": fill_target, "kind": "stock", "from_stock": False, "done": 0.0})
         # DUMP = the low-grade waste/excess. The low phase is mined at a roughly fixed production rate; the
-        # share NOT pulled into the plant blend is wasted to the dump. So the dump target is the slack
+        # share not pulled into the plant blend is wasted to the dump. So the dump target is the slack
         # between a nominal production level and the plant demand — when plant demand is LOW the dump
         # target is LARGE (most production routes to the dump), when demand is high the dump shrinks to a
         # floor. nominal_production is a fixed reference (not demand) so dump_heavy genuinely dumps more.
@@ -253,7 +253,7 @@ class MineHaulScenario(Scenario):
             # PLANT trucks feed the plant first; once the plant plan is served they help the housekeeping
             # flows. AUX trucks own the housekeeping flows (dump + stock) and only backstop the plant once
             # those are done. Within the housekeeping tier an aux truck takes whichever flow is FURTHEST
-            # BEHIND (lowest done/target ratio), so the dump AND the stock both progress — the dump is
+            # behind (lowest done/target ratio), so the dump and the stock both progress — the dump is
             # always serviced (loads_dump > 0 everywhere) and a buffer-build still fills the stock.
             if duty == "plant":
                 tiers = (("plant",), ("dump", "stock"))

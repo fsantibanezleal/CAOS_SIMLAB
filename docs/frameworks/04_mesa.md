@@ -11,7 +11,7 @@ concepts. Reach for something else for million-agent GPU scale ([gpu-abm-chapter
 real maps ([mesa-geo](./05_mesa-geo.md)), or an instant zero-server in-browser classic
 ([netlogo-web](./07_netlogo-web.md)).
 
-**How this lab uses it.** Mesa **runs LIVE in the browser via Pyodide** — it was *measured* to satisfy the
+**How this lab uses it.** Mesa **runs live in the browser via Pyodide** — it was *measured* to satisfy the
 4-gate live rule (pure-Python, run < 3 s, trace < 1 MB) with `mesa ⊆ LIVE_WHEELS`, and the worker
 `micropip.install`s it (a `sqlite3` load for `mesa.experimental` and a ~3 s cold start are the cost). The
 three ABM scenarios — **S02 Schelling**, **S03 SIR**, **S05 Beer Game** — are classified `lane: "live"` in

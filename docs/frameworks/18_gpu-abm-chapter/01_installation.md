@@ -1,4 +1,4 @@
-# 18 · Heavy / GPU ABM — installation (reference chapter, NOT shipped)
+# 18 · Heavy / GPU ABM — installation (reference chapter, not shipped)
 
 This is a **reference chapter**, not a pip pipeline. It documents the three heavy agent-based-modeling
 engines the research evaluated for the *million-agent* case — **FLAME GPU 2**, **ABMax**, and **AMBER** —
@@ -24,14 +24,14 @@ scenarios do not need it.
 
 ## Why none of these is in `requirements*.txt`
 
-| Engine | Backend | License | Why it is NOT installed here |
+| Engine | Backend | License | Why it is not installed here |
 |---|---|---|---|
 | **FLAME GPU 2** | CUDA (single GPU) | **AGPL-3.0** (copyleft) | No PyPI wheel — conda/source build with a pinned CUDA 12 toolchain; AGPL is a poor fit for a permissive public repo; documented laptop-class **8 GB-VRAM OOM**. |
 | **ABMax** | JAX (`vmap`/JIT, CPU or GPU) | Apache-2.0 (permissive) | `pip install abmax` **fails on this Windows box**: `WinError 206 — the filename or extension is too long` while unpacking a deep `orbax` path during the JAX-ecosystem dependency resolve. |
 | **AMBER** | Polars columnar (**CPU**) | permissive | Niche, thin upstream packaging; the columnar idiom it teaches is already covered for our scale by Mesa-headless + joblib; no scenario needs it. |
 
 All three are recorded in [`requirements-gpu.txt`](../../../requirements-gpu.txt) as a **commented
-"reference-only — NOT installed"** block, pointing at this chapter. They are deliberately **absent** from:
+"reference-only — not installed"** block, pointing at this chapter. They are deliberately **absent** from:
 
 - [`requirements.txt`](../../../requirements.txt) — the live/browser base (numpy + simpy only; the deploy
   contract is the committed trace, never a GPU);
@@ -50,7 +50,7 @@ without a CUDA toolkit, a conda environment, or a long-path Windows workaround.
 FLAME GPU 2 (`pyflamegpu`) is CUDA-coupled C++ with Python bindings. **There is no PyPI wheel**; you install
 it via conda or build from source, and the install is welded to a specific CUDA toolkit version.
 
-**Conda (the least painful path), reference only — do NOT run here:**
+**Conda (the least painful path), reference only — do not run here:**
 
 ```bash
 # Requires a working NVIDIA driver + CUDA 12 toolkit already present
@@ -121,7 +121,7 @@ AMBER is a **Polars-columnar, CPU-only** big-ABM accelerator: it stores the whol
 DataFrame and expresses each tick as vectorized column operations, reporting large speedups over
 object-per-agent Mesa on big, homogeneous models (e.g. large SIR).
 
-**Reference only — do NOT run here:**
+**Reference only — do not run here:**
 
 ```bash
 pip install polars        # the columnar engine AMBER is built on

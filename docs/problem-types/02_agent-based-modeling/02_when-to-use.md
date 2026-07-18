@@ -26,7 +26,7 @@ you can write down in advance.
 - Behavior is **adaptive** — an agent's action depends on what it currently perceives.
 - You care about the **dynamics and the mechanism**, not a single optimal number.
 
-**Do NOT reach for ABM when the model is really one of these:**
+**Do not reach for ABM when the model is really one of these:**
 
 | If your model is really… | …then it's | Use instead |
 |---|---|---|
@@ -56,7 +56,7 @@ Model the object you care about: here that object is the policy/feedback loop, s
 This is the architectural heart of ABM in this lab. There are **two lanes**, matching the product's two
 execution modes, and each ABM scenario picks exactly one:
 
-| | **LIVE lane** | **PRECOMPUTE lane** |
+| | **live lane** | **PRECOMPUTE lane** |
 |---|---|---|
 | **Engine** | [Mesa 3](../../frameworks/04_mesa.md) **in Pyodide** (the lab's ABM scenarios S02/S03/S05 — measured live), or [NetLogo Web](../../frameworks/07_netlogo-web.md) (Tortoise) | [Mesa 3](../../frameworks/04_mesa.md) (or [Mesa-Geo](../../frameworks/05_mesa-geo.md)) **headless** for heavy/large-N/geo ABM |
 | **Where it runs** | the visitor's browser (Pyodide-WASM for Mesa, native JS for NetLogo) | offline, on the local box |

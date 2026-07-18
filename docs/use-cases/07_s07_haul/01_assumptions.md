@@ -41,7 +41,7 @@ forcing a detour regardless of grade.
 - A **finite shift** of length `H` (transient, not steady state): a load that cannot finish before `H` is
   dropped, so the shift end truncates the run.
 
-## What is NOT modeled
+## What is not modeled
 
 The following are deliberately out of scope for this scenario:
 

@@ -5,7 +5,7 @@ to serve every customer minimizing total travel distance. The classic optimize-t
 solvers here are real, native-code optimizers, so the scenario is precomputed; the committed trace holds
 the plans, which the web replays as vehicles driving the network.
 
-This scenario runs the SAME capacitated instance through TWO state-of-the-art VRP solvers and exposes BOTH
+This scenario runs the same capacitated instance through two state-of-the-art VRP solvers and exposes both
 plans so the lab can show the contrast:
 
 * **OR-Tools routing** (Google) — the *primary* plan, carried in the trace's ``routes``/``agents``/``kpis``
@@ -62,7 +62,7 @@ class Instance:
 
 
 def build_instance(g: int, nc: int, nv: int, cap: int, inst_seed: int) -> Instance:
-    """Build the synthetic instance from ONE seeded RNG (the only source of randomness)."""
+    """Build the synthetic instance from one seeded RNG (the only source of randomness)."""
     rng = make_rng(int(inst_seed))
     net = GridNetwork(g, g, spacing=1.0)
     n_nodes = g * g
@@ -126,7 +126,7 @@ def _plan_from_special_seqs(inst: Instance, seqs: list[list[int]], speed: float 
 
 
 def solve_ortools(inst: Instance) -> list[list[int]]:
-    """Solve with OR-Tools routing (GUIDED_LOCAL_SEARCH) + a DETERMINISTIC stop. Returns per-vehicle
+    """Solve with OR-Tools routing (GUIDED_LOCAL_SEARCH) + a deterministic stop. Returns per-vehicle
     `special`-index sequences (each depot..customers..depot)."""
     from ortools.constraint_solver import pywrapcp, routing_enums_pb2  # lazy: native, precompute-only
 
@@ -164,7 +164,7 @@ def solve_ortools(inst: Instance) -> list[list[int]]:
 
 
 def solve_pyvrp(inst: Instance) -> list[list[int]]:
-    """Solve the SAME instance with PyVRP (Hybrid Genetic Search) + a DETERMINISTIC stop (MaxIterations)
+    """Solve the same instance with PyVRP (Hybrid Genetic Search) + a deterministic stop (MaxIterations)
     and a fixed seed. Returns per-vehicle `special`-index sequences (each depot..customers..depot)."""
     from pyvrp import Model  # lazy: native, precompute-only
     from pyvrp.stop import MaxIterations
@@ -174,7 +174,7 @@ def solve_pyvrp(inst: Instance) -> list[list[int]]:
 
     m = Model()
     # Use the same grid coordinates so PyVRP's own bookkeeping matches the instance; the explicit edges
-    # below (the SAME scaled shortest-path matrix OR-Tools uses) are what actually drive the cost, making
+    # below (the same scaled shortest-path matrix OR-Tools uses) are what actually drive the cost, making
     # the comparison fair and the run reproducible.
     dx, dy = net.coords[depot]
     dep = m.add_depot(x=dx, y=dy)
@@ -240,7 +240,7 @@ class VRPScenario(Scenario):
         inst = build_instance(g, nc, nv, cap, int(p["inst_seed"]))
         net, depot, customers = inst.net, inst.depot, inst.customers
 
-        # --- solve the SAME instance with both engines ---------------------------------------------
+        # --- solve the same instance with both engines ---------------------------------------------
         or_plan = _plan_from_special_seqs(inst, solve_ortools(inst))
         pv_plan = _plan_from_special_seqs(inst, solve_pyvrp(inst))
 

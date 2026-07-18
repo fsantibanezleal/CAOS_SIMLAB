@@ -8,7 +8,7 @@ What this demonstrates (the statistics half of the S10 pattern):
      kind of output a Monte-Carlo replication study produces.
 
   2. Two 95% confidence intervals for the population mean, computed with
-     `scipy.stats` (NOT hand-typed critical values):
+     `scipy.stats` (not hand-typed critical values):
        - normal-approximation (z):  X̄ ± z · s/√n   via `scipy.stats.norm.interval`
        - Student-t (small n):       X̄ ± t · s/√n   via `scipy.stats.t.interval`
      plus the building blocks `scipy.stats.sem` (standard error) and

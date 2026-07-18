@@ -139,9 +139,9 @@ true pi         : 3.141593
 abs error       : 0.000223
 true pi in CI?  : True
 ----------------------------------------------------------------
-lesson: the SAME array code runs on GPU (CuPy) or CPU (NumPy). The GPU win is real only when
+lesson: the same array code runs on GPU (CuPy) or CPU (NumPy). The GPU win is real only when
 the parallel arithmetic (millions of independent draws) dwarfs host<->device transfer -- i.e.
-big batched Monte-Carlo, NOT a small event-loop DES. See docs/frameworks/15_cupy/03_applying.md.
+big batched Monte-Carlo, not a small event-loop DES. See docs/frameworks/15_cupy/03_applying.md.
 ```
 
 **Reading the result:**

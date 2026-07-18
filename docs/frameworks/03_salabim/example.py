@@ -7,14 +7,14 @@ statistics and compare them against the closed-form M/M/1 theory.
 
 Why ``yieldless=False``?
     Salabim 26.x defaults to a "yieldless" process style that relies on the native
-    ``greenlet`` extension. This lab does NOT carry greenlet (it is not in any
+    ``greenlet`` extension. This lab does not carry greenlet (it is not in any
     requirements file), so we use the classic generator style instead: each process
     is a Python generator and every wait is a ``yield`` (``yield self.request(...)``,
     ``yield self.hold(...)``). This is the same process-interaction worldview taught
     for SimPy and needs no native dependency.
 
 This is the OFFLINE/precompute lane only. Salabim's animation renders with tkinter
-(a desktop GUI) and CANNOT be embedded in a web page — see applying.md. The live web
+(a desktop GUI) and cannot be embedded in a web page — see applying.md. The live web
 viewer is driven by SimPy event traces instead.
 
 Run (cwd = repo root):

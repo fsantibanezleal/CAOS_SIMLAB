@@ -6,7 +6,7 @@ you **author a model** (in NetLogo desktop or on netlogoweb.org) and **export a 
 already contains the engine inlined. That HTML is then embedded in the lab's React/Vite SPA and runs
 **entirely in the visitor's browser** — zero server compute.
 
-This is the **native-JS LIVE on-ramp lane** for ABM: the visitor lands on a page and a real, animated
+This is the **native-JS live on-ramp lane** for ABM: the visitor lands on a page and a real, animated
 simulator is already running, with sliders, on GitHub Pages, which only serves static files (zero server
 compute) — with no Pyodide download at all. (The Mesa lane *also* runs live, but via Pyodide-Python, backed by a committed canonical
 trace for instant first paint; see the [Mesa node](../04_mesa.md).)
@@ -39,8 +39,8 @@ trace for instant first paint; see the [Mesa node](../04_mesa.md).)
 
 | Lane | Engine | Where it runs | Cold start |
 |---|---|---|---|
-| **LIVE / native JS** (this node) | NetLogo Web (Tortoise) | visitor's browser, native JS | smallest — no runtime download beyond the HTML |
-| **LIVE / Python-in-browser** | SimPy, Ciw, **Mesa**, joblib/SciPy, NetworkX via **Pyodide** (`⊆ LIVE_WHEELS`) | visitor's browser, WASM | larger — must fetch/micropip the wheel closure first (~3 s for Mesa) |
+| **live / native JS** (this node) | NetLogo Web (Tortoise) | visitor's browser, native JS | smallest — no runtime download beyond the HTML |
+| **live / Python-in-browser** | SimPy, Ciw, **Mesa**, joblib/SciPy, NetworkX via **Pyodide** (`⊆ LIVE_WHEELS`) | visitor's browser, WASM | larger — must fetch/micropip the wheel closure first (~3 s for Mesa) |
 | **Offline → replay (native code only)** | OR-Tools / JuPedSim / GPU engines | precompute box, committed trace, static replay | n/a — the browser only replays a JSON/Arrow trace |
 
 NetLogo Web is the only engine that **simulates live in the browser without Pyodide** (compiled JS), which is
@@ -133,7 +133,7 @@ card before deploy (the lab's screenshot-verify rule applies — building blind 
 
 ## 7. Grounding / references
 
-- ABM-frameworks research (decision: "Power the LIVE in-browser ABM scenarios with NetLogo Web (Tortoise);
+- ABM-frameworks research (decision: "Power the live in-browser ABM scenarios with NetLogo Web (Tortoise);
   compiles to JavaScript and runs entirely client-side, so GitHub Pages just serves static files (zero
   server compute)"):
   the project's internal ABM-frameworks research note.

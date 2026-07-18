@@ -84,7 +84,7 @@ From the GPU-acceleration research dimension and the
   *slower* than a CPU core once you count transfer + launch overhead, and a single run finishes in
   milliseconds anyway. joblib is the right tool right up to the point where you are running so many heavy
   replications that the GPU's data-parallel throughput pays for its overhead.
-- **GPU does NOT accelerate the event loop.** Classic discrete-event simulation is asynchronous,
+- **GPU does not accelerate the event loop.** Classic discrete-event simulation is asynchronous,
   branch-heavy scheduling — the antithesis of SIMT. The only honest published DES-on-GPU result is
   **1.4×–3.21×** (SimPy-style DES via TensorFlow, Hofmann et al., IEEE 2021). So you never put the *model*
   on the GPU; if you go parallel at all, you parallelise *across replications* — which is precisely what

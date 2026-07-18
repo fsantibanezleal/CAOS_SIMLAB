@@ -119,12 +119,12 @@ Numba JIT Monte-Carlo demo (CAOS_SIMLAB / S10 GPU exhibit)
      P(wait) MC     : 0.646893   theory(Erlang-C): 0.647191   abs err: 2.98e-04
 
 3) GPU @cuda.jit - estimate pi, one xoroshiro128p stream per thread
-     no CUDA device detected -> CPU fallback using the SAME xoroshiro128p RNG
+     no CUDA device detected -> CPU fallback using the same xoroshiro128p RNG
      streams        : 256 x 100,000 darts = 25,600,000 total
      pi (CPU xoro)  : 3.141904   true pi: 3.141593   abs err: 3.11e-04
 
 Honest verdict (S10): the GPU's win is running thousands of these independent
-streams at once. It does NOT speed up a small branch-heavy event loop (DES),
+streams at once. It does not speed up a small branch-heavy event loop (DES),
 where it is measurably slower. See docs/frameworks/14_numba/03_applying.md.
 ```
 

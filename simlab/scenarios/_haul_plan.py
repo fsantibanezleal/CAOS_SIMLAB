@@ -1,6 +1,6 @@
 """Offline haul-route PLAN builder for S07 (native: NetworkX geometry + OR-Tools CP-SAT cost certificate).
 
-This is the OPTIMIZE half of S07's optimize-then-simulate split, and it is the ONLY part that needs native
+This is the OPTIMIZE half of S07's optimize-then-simulate split, and it is the only part that needs native
 code. It builds a haul-route plan over the graded ``_geo`` grid — the loaded climb + empty return node paths,
 the OR-Tools CP-SAT route-cost certificate, the analytic ``g*`` references and the route-trace rendering
 geometry (nodes/edges/elev/bounds/barriers) — and emits it as a small, JSON-serialisable dict of *rendered
@@ -115,7 +115,7 @@ def _make_net(grid: int, pass_col: int, lift_col: int, barrier: int) -> tuple[Gr
 
 
 def build_plan(grid: int, grade: float, pass_col: int, lift_col: int, barrier: int) -> dict[str, Any]:
-    """Build ONE committed haul plan (NetworkX geometry + OR-Tools cost certificate + render geometry).
+    """Build one committed haul plan (NetworkX geometry + OR-Tools cost certificate + render geometry).
 
     Returns a JSON-serialisable dict of rendered data only — node ids, numeric coords/elevations and the two
     route polylines as node-id lists. No graph object is serialised. Raises if the dump is unreachable or if
@@ -161,7 +161,7 @@ def build_plan(grid: int, grade: float, pass_col: int, lift_col: int, barrier: i
     via_col = int(round(net.coords[cross][0]))
     detoured = abs(via_col - lift_col) > 0.5
 
-    # The plan stores ONLY what is native to compute: the two route polylines (NetworkX geometry), the
+    # The plan stores only what is native to compute: the two route polylines (NetworkX geometry), the
     # OR-Tools cost certificate and the analytic g* reference. The render geometry (nodes/edges/elev/bounds/
     # barriers) is a pure-Python function of the geometry params and is rebuilt live from ``GridNetwork`` in
     # the worker — so the committed data is small and free of any duplicated grid render.
@@ -189,7 +189,7 @@ def build_plan(grid: int, grade: float, pass_col: int, lift_col: int, barrier: i
 
 def enumerate_plan_geometries() -> list[tuple[int, float, int, int, int]]:
     """The deterministic set of geometries to precompute: every grade slider step at the default geometry,
-    for BOTH wall states (barrier 0 and 1), so the two free geometry sliders — grade AND the wall toggle —
+    for both wall states (barrier 0 and 1), so the two free geometry sliders — grade AND the wall toggle —
     re-select among committed plans across their whole range with no live OR-Tools miss. Plus the off-default
     pass column the r_passR variant uses. (grid, grade, pass_col, lift_col, barrier).
     """

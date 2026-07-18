@@ -139,7 +139,7 @@ inter-arrival times are exactly what makes the arrivals Poisson.
 
 ```python
 def main():
-    rng = random.Random(SEED)                          # the ONE source of randomness
+    rng = random.Random(SEED)                          # the one source of randomness
     env = simpy.Environment()
     servers = simpy.Resource(env, capacity=N_SERVERS)  # c identical servers
     stats = Stats()

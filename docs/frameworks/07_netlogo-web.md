@@ -1,9 +1,9 @@
-# 07 · NetLogo Web (Tortoise) — the LIVE in-browser ABM engine
+# 07 · NetLogo Web (Tortoise) — the live in-browser ABM engine
 
 **NetLogo Web** is the classic NetLogo agent-based-modeling language compiled to **JavaScript** by the
 **Tortoise** compiler/runtime. It is not a Python package — you author a model (in NetLogo desktop or on
 netlogoweb.org), **export it to a self-contained HTML file** with the engine inlined, and that file runs the
-simulation **entirely in the visitor's browser**. In this lab it owns the **LIVE on-ramp lane**: a visitor
+simulation **entirely in the visitor's browser**. In this lab it owns the **live on-ramp lane**: a visitor
 lands on a scenario page and a real, animated simulator is *already running* — sliders, plots, a 2-D view —
 served as a static file by GitHub Pages, which does **zero compute**. It is the only engine here that
 simulates live in the browser without Pyodide (native JS, smaller cold-start), which is precisely why it

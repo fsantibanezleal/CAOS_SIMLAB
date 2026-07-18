@@ -53,7 +53,7 @@ gate, not by `requirements.txt`:
 
 > The browser worker loads the live wheels itself: it `loadPackage`s numpy/pandas/scipy/networkx/sqlite3 and
 > `micropip.install`s simpy/ciw/**mesa**/joblib. Because `mesa ⊆ LIVE_WHEELS` (`simlab/core/scenario.py`) and
-> the ABM scenarios are pure-Python and pass the 4-gate rule, **Mesa runs LIVE in Pyodide**. What Mesa cannot
+> the ABM scenarios are pure-Python and pass the 4-gate rule, **Mesa runs live in Pyodide**. What Mesa cannot
 > serve is **SolaraViz** — its first-class visualization is a stateful Python (Solara) server bound to a
 > localhost port, fine for local teaching but wrong for a static SPA on GitHub Pages (zero server compute). The lab's
 > React/SVG viewer owns the pixels instead; SolaraViz never runs on the live (Pages) deploy, but the Mesa *engine* does.
@@ -102,7 +102,7 @@ precompute path this lab uses. The example in [02_usage.md](./02_usage.md) impor
 
 - Mesa-frameworks research: the project's internal ABM-frameworks research note (decision: "Teach
   ABM with Mesa 3 … de-facto Python standard, Apache-2.0"). Note: the research's earlier
-  "NOT for serving live sims" caveat was about SolaraViz (the server-bound viz); a later measurement showed
+  "not for serving live sims" caveat was about SolaraViz (the server-bound viz); a later measurement showed
   the Mesa *engine* itself runs live in Pyodide, which is why the ABM scenarios are classified `live`.
 - Mesa 3 (JOSS 2025): <https://joss.theoj.org/papers/10.21105/joss.07668>
 - Mesa docs / repo (Apache-2.0): <https://mesa.readthedocs.io/latest/> · <https://github.com/projectmesa/mesa>

@@ -88,7 +88,7 @@ S07 is split honestly into a **native plan** and a **live replay**:
   grade-slider step at the default geometry (so the route-flip lesson is live across the grade slider) plus the
   off-default geometries the variants use. No raw graph is serialised.
 - **The REPLAY runs live.** The SimPy stochastic-replay over that fixed plan is pure-Python (`pure_python =
-  True`, `engine = "simpy"`, `wheels = ["numpy", "simpy"]`), so it runs **LIVE in Pyodide**. OR-Tools is
+  True`, `engine = "simpy"`, `wheels = ["numpy", "simpy"]`), so it runs **live in Pyodide**. OR-Tools is
   lazy-imported only in the offline plan builder and is **never reached in the worker** — the live `run()`
   loads the committed plan and runs only the DES. The fleet sliders (trucks, loaders, load/dump times,
   breakdown rate, seed) mutate the **replay**, not the plan; the grade slider re-selects among committed plans.

@@ -48,7 +48,7 @@ shuffles) flows through Mesa's seeded RNG (`Model(rng=seed)` seeds `self.random`
 - **An isolated agent (no occupied neighbours) is content by convention** — there is no same-type ratio to
   fail, so it is excluded from both the unhappy set and the segregation index.
 
-## 3. What is NOT modeled (deliberately out of scope)
+## 3. What is not modeled (deliberately out of scope)
 
 The Context block is explicit that the model is intentionally minimal — it demonstrates *sufficiency*, not
 that this is the only mechanism behind real segregation. Excluded, on purpose:
