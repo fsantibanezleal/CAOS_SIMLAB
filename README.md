@@ -8,7 +8,7 @@
 **A public, didactic lab for Discrete-Event Simulation (DES), Agent-Based Modeling (ABM), and
 Optimization / Operations Research.**
 Learn how to model a system from zero — *define a case → write the rules → run it → read the dynamics* —
-across worked scenarios you can tune and watch run, with a companion web app and a from-scratch
+across worked scenarios to tune and watch run, with a companion web app and a from-scratch
 curriculum.
 
 **▶ Live app: [simlab.fasl-work.com](https://simlab.fasl-work.com)**  ·  📖 [Docs / wiki](docs/README.md)  ·  📝 [Changelog](CHANGELOG.md)
@@ -28,15 +28,15 @@ state-of-the-art tools** — SimPy · Ciw · Salabim (DES) · Mesa · Mesa-Geo �
 OR-Tools · PyVRP · NetworkX/OSMnx (optimization & routing) · joblib · SciPy · CuPy/Numba (Monte-Carlo) —
 their utility, their pitfalls, and *when each method actually applies* (full per-tool install/usage/apply
 guides + runnable examples in [`docs/`](docs/README.md)) —
-and a **modern web app** where you land straight in a running simulation, move the sliders, and watch
-the dynamics change. The same engine drives both, so what you learn is what runs.
+and a **modern web app** that opens straight into a running simulation: move the sliders and watch
+the dynamics change. The same engine drives both, so the app runs what the package computes.
 
 ## The two-lane design (read this first)
 
 Simulation cost varies enormously, so scenarios run in one of two lanes — and the choice is **measured,
 not guessed**:
 
-- **Live** — light, pure-Python scenarios run **in your browser** (via [Pyodide](https://pyodide.org)).
+- **Live** — light, pure-Python scenarios run **in the browser** (via [Pyodide](https://pyodide.org)).
   Edit parameters, re-run, watch it animate in real time. No server, nothing to install.
 - **Precomputed** — heavy scenarios (native solvers like OR-Tools, large state) are run **offline** by a
   local pipeline into a compact, **seeded trace**, which the app **replays** with a timeline scrubber under
@@ -73,7 +73,7 @@ simulated KPIs, and the closed-form reference. Artifacts land in `data/artifacts
 ## Scenarios
 
 A progression from a 30-line live queue to map-scale optimize-then-simulate. All 11 ship in the app today;
-**Lane** is the *measured* verdict (live = runs in your browser, precomputed = replayed from a seeded trace).
+**Lane** is the *measured* verdict (live = runs in the browser, precomputed = replayed from a seeded trace).
 
 | # | Scenario | Method | Lane | Teaches |
 |---|---|---|---|---|
