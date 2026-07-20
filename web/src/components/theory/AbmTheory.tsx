@@ -540,7 +540,7 @@ export function AbmTheory({ es }: { es: boolean }) {
               ))}
               <text x="60" y="420" fontSize={10} fill="var(--color-fg-faint)">
                 {es
-                  ? "7 elementos; replica un modelo solo desde su bloque Details"
+                  ? "7 elementos; replicar un modelo solo desde su bloque Details"
                   : "7 elements; replicate a model from its Details block alone"}
               </text>
             </svg>
@@ -1156,7 +1156,7 @@ export function AbmTheory({ es }: { es: boolean }) {
                   : "Discrete grid + axis-only vision — geometry shapes outcomes; results are not rotation-invariant.",
                 es
                   ? "Las variantes de reglas ricas multiplican parámetros rápido (la equifinalidad, Sub-pestaña 5, acecha en cuanto se añade comercio/combate)."
-                  : "Rich-rule variants multiply parameters fast (equifinality, Sub-tab 5, looms once you add trade/combat).",
+                  : "Rich-rule variants multiply parameters fast (equifinality, Sub-tab 5, looms once trade/combat are added).",
               ].map((x, i) => (
                 <li key={i}>{x}</li>
               ))}
@@ -1176,7 +1176,7 @@ export function AbmTheory({ es }: { es: boolean }) {
             <p>
               {es
                 ? "Los escenarios de agentes de este laboratorio se ejecutan sobre Mesa 3, el marco de ABM en Python de referencia (Kazil, Masad y Crooks 2020; originalmente Masad y Kazil 2015; Mesa 3 en ter Hoeven et al. 2025). S02 Schelling, S03 SIR y S05 Beer Game están construidos con sus abstracciones reales — mesa.Agent para las entidades, mesa.Model para el mundo, mesa.space.SingleGrid para las grillas (S02/S03; el Beer Game es una red serial sin espacio) y el AgentSet del modelo (self.agents) para la activación. El patrón concreto en el código es:"
-                : "This lab's agent scenarios run on Mesa 3, the reference Python ABM framework (Kazil, Masad & Crooks 2020; originally Masad & Kazil 2015; Mesa 3 in ter Hoeven et al. 2025). S02 Schelling, S03 SIR and S05 Beer Game are built on its real abstractions — mesa.Agent for the entities, mesa.Model for the world, mesa.space.SingleGrid for the grids (S02/S03; the Beer Game is a serial network with no space), and the model's AgentSet (self.agents) for activation. The concrete pattern you will see in the code is:"}
+                : "This lab's agent scenarios run on Mesa 3, the reference Python ABM framework (Kazil, Masad & Crooks 2020; originally Masad & Kazil 2015; Mesa 3 in ter Hoeven et al. 2025). S02 Schelling, S03 SIR and S05 Beer Game are built on its real abstractions — mesa.Agent for the entities, mesa.Model for the world, mesa.space.SingleGrid for the grids (S02/S03; the Beer Game is a serial network with no space), and the model's AgentSet (self.agents) for activation. The concrete pattern in the code is:"}
             </p>
             <ul>
               <li>
@@ -1204,7 +1204,7 @@ export function AbmTheory({ es }: { es: boolean }) {
               <li>
                 {es
                   ? "Clases base Model y Agent — se hereda de Agent (dándole estado y un método step() que codifica su regla local) y de Model (que contiene la población de agentes, el entorno y el planificador) — útil cuando los agentes son heterogéneos y no se reducen a una sola operación de grilla."
-                  : "Model and Agent base classes — you subclass Agent (giving it state and a step() method encoding its local rule) and Model (holding the agent population, the environment, and the schedule) — useful when agents are heterogeneous and do not reduce to a single grid operation."}
+                  : "Model and Agent base classes — subclass Agent (giving it state and a step() method encoding its local rule) and Model (holding the agent population, the environment, and the schedule) — useful when agents are heterogeneous and do not reduce to a single grid operation."}
               </li>
               <li>
                 {es
@@ -1214,7 +1214,7 @@ export function AbmTheory({ es }: { es: boolean }) {
               <li>
                 {es
                   ? "Regímenes de activación — históricamente los planificadores RandomActivation, SimultaneousActivation y StagedActivation del módulo time (Mesa 3 los generaliza mediante métodos de activación de AgentSet como shuffle_do y do) — la realización directa de la Sub-pestaña 2 cuando se necesita elegir y alternar el orden de actualización."
-                  : "Activation regimes — historically the time module's RandomActivation, SimultaneousActivation, and StagedActivation schedulers (Mesa 3 generalizes these via AgentSet activation methods like shuffle_do and do) — the direct realization of Sub-tab 2 when you need to choose and switch the update order."}
+                  : "Activation regimes — historically the time module's RandomActivation, SimultaneousActivation, and StagedActivation schedulers (Mesa 3 generalizes these via AgentSet activation methods like shuffle_do and do) — the direct realization of Sub-tab 2 for choosing and switching the update order."}
               </li>
               <li>
                 {es
