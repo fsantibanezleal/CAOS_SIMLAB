@@ -1,4 +1,4 @@
-"""OSMnx (2.1.0) — minimal, deterministic, offline example for CAOS_SIMLAB.
+"""OSMnx (2.1.0), minimal, deterministic, offline example for CAOS_SIMLAB.
 
 WHAT THIS SHOWS
 ---------------
@@ -82,7 +82,7 @@ def live_osmnx_example() -> None:  # pragma: no cover - not executed; reference 
     """How OSMnx WOULD be used in the local precompute pipeline. Intentionally not run.
 
     Uses the smallest sensible radius (~150 m), keeps the raw graph in memory, and commits
-    only rendered geometry (route line as JSON) — never the raw graph. ODbL credit required.
+    only rendered geometry (route line as JSON), never the raw graph. ODbL credit required.
     """
     # G = ox.graph_from_point((-23.650, -70.400), dist=150, network_type="drive")
     # G = ox.add_edge_speeds(G, fallback=30)          # km/h where OSM lacks maxspeed
@@ -93,7 +93,7 @@ def live_osmnx_example() -> None:  # pragma: no cover - not executed; reference 
     # gdf = ox.routing.route_to_gdf(G, route, weight="travel_time")  # <- commit THIS (geometry)
     # NOTE: do not ox.save_graphml(G); raw OSM is ODbL share-alike. Credit in any UI:
     #   "Map data (c) OpenStreetMap contributors, ODbL."
-    raise NotImplementedError("Reference only — see ATTRIBUTION.md before enabling.")
+    raise NotImplementedError("Reference only, see ATTRIBUTION.md before enabling.")
 
 
 def main() -> None:

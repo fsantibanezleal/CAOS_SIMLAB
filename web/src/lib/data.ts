@@ -3,7 +3,7 @@ import type { ChartTrace, FlowTrace, GanttTrace, GridTrace, RouteTrace, Scenario
 const BASE = import.meta.env.BASE_URL; // "/" on the custom domain
 
 // In-memory traces produced by the Pyodide live lane. The loaders below consult this first, so a freshly
-// computed in-browser trace is replayed by the EXACT same players that replay committed traces — we just
+// computed in-browser trace is replayed by the EXACT same players that replay committed traces, we just
 // hand them a synthetic path (e.g. "live://s01_queue/3") instead of a file under public/.
 const liveTraces = new Map<string, unknown>();
 
@@ -16,8 +16,8 @@ export function registerLiveTrace(key: string, trace: unknown): void {
 
 async function fetchJson<T>(path: string, what: string): Promise<T> {
   if (liveTraces.has(path)) return liveTraces.get(path) as T;
-  // A synthetic live:// key that's no longer in the registry was pruned — never hit the network with it.
-  if (path.startsWith("live://")) throw new Error("live trace expired — run it again");
+  // A synthetic live:// key that's no longer in the registry was pruned, never hit the network with it.
+  if (path.startsWith("live://")) throw new Error("live trace expired, run it again");
   const res = await fetch(`${BASE}${path}`);
   if (!res.ok) throw new Error(`${what} ${path}: HTTP ${res.status}`);
   return (await res.json()) as T;

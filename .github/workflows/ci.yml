@@ -20,7 +20,7 @@ jobs:
           cache: pip
       # core + dev + the precompute engines (mesa, ciw, ortools, pyvrp, networkx, osmnx, joblib, scipy, ...):
       # the tests + pipeline exercise every scenario's real dedicated tool. GPU lane is not installed (no CUDA
-      # on the runner) and not needed — s10 uses joblib on CPU.
+      # on the runner) and not needed, s10 uses joblib on CPU.
       - run: pip install -r requirements.txt -r requirements-dev.txt
       - name: Lint
         run: ruff check .
@@ -36,7 +36,7 @@ jobs:
             echo "::error::a real .env is tracked"; fail=1
           fi
           if git ls-files | grep -qiE '\.(graphml|osm|pbf|h5|nc|parquet)$'; then
-            echo "::error::raw/heavy data tracked — commit rendered artifacts only (see data/README.md)"; fail=1
+            echo "::error::raw/heavy data tracked, commit rendered artifacts only (see data/README.md)"; fail=1
           fi
           # No local machine paths in tracked files (this guard file itself is excluded).
           if git grep -nIE 'D:\\_Repos|/d/_Repos|C:\\Users\\' -- ':!.github/**' ; then
@@ -45,3 +45,5 @@ jobs:
           exit $fail
       - name: CI budget, trunk-only triggers, no training (ADR-0074)
         run: python3 scripts/check_ci_budget.py
+      - name: No em-dash and no emoji in tracked content (ADR-0067)
+        run: python3 scripts/check_content_standards.py

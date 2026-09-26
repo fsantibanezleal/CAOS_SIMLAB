@@ -1,4 +1,4 @@
-# SimPy — Usage
+# SimPy: Usage
 
 This is the practical how-to for SimPy in CAOS_SIMLAB: the handful of concepts that make up the whole
 API, a minimal runnable example walked through line by line, and the **real captured output** of that
@@ -10,7 +10,7 @@ Next: [`03_applying.md`](./03_applying.md). Landing page: [`../01_simpy.md`](../
 > SimPy is a **process-based discrete-event simulation** library. You describe the *life-story* of each
 > entity as a Python generator; each `yield` is a point where the entity *waits* and hands control back
 > to the engine. The engine advances a single simulated clock by jumping from event to event. There is
-> no animation and no GUI — SimPy is the headless physics; in this lab the browser owns the pixels.
+> no animation and no GUI, SimPy is the headless physics; in this lab the browser owns the pixels.
 
 ## 1. The whole API, in five concepts
 
@@ -32,7 +32,7 @@ Two facts make the model click:
    current instant.
 2. **`with resource.request() as req:` is the idiomatic queue.** Entering the `with` joins the FIFO
    queue; `yield req` blocks until a server frees up; leaving the `with` block **releases** the server
-   so the next waiting entity is served. Forgetting to release is the classic deadlock — the `with`
+   so the next waiting entity is served. Forgetting to release is the classic deadlock, the `with`
    form prevents it.
 
 ### The mental model: an event loop over simulated time
@@ -41,25 +41,25 @@ There is **no real-time waiting**. `env.run()` keeps a sorted future-event list 
 event time). Each step it pops the earliest event, jumps `env.now` to that event's time, and resumes
 whatever process was waiting on it. Resuming a process runs its Python code (instantaneously, in
 simulated time) up to its *next* `yield`, which schedules a new future event. The loop ends when the
-FEL is empty or the clock reaches `until=`. That is the entire engine — a priority queue plus
+FEL is empty or the clock reaches `until=`. That is the entire engine, a priority queue plus
 generator resumption. Understanding this is enough to debug almost any SimPy model.
 
 ### Useful extras (not in the minimal example)
 
-- **`Container`** — a quantity of a continuous/bulk resource (fuel, ore, blood units) with `put`/`get`.
-- **`Store`** — a queue of *discrete items* (parts on a conveyor, jobs) with `put`/`get`.
-- **`env.event()`** + `succeed()` — a custom event you trigger yourself (e.g. a breakdown signal).
-- **Conditions** — `yield a & b` (both) or `yield a | b` (first), e.g. "served OR reneged after T".
-- **`req.priority`** via `PriorityResource` / `PreemptiveResource` — triage classes (used in S04).
+- **`Container`**: a quantity of a continuous/bulk resource (fuel, ore, blood units) with `put`/`get`.
+- **`Store`**: a queue of *discrete items* (parts on a conveyor, jobs) with `put`/`get`.
+- **`env.event()`** + `succeed()`: a custom event you trigger yourself (e.g. a breakdown signal).
+- **Conditions**: `yield a & b` (both) or `yield a | b` (first), e.g. "served OR reneged after T".
+- **`req.priority`** via `PriorityResource` / `PreemptiveResource`: triage classes (used in S04).
 
-## 2. Determinism — the contract
+## 2. Determinism: the contract
 
 SimPy itself is deterministic: given the same sequence of sampled durations, it always produces the
 same trace. The randomness comes from *you*, so the rule in this lab is:
 
 > Create **one** `random.Random(seed)` instance and pass it to every process. Never call the module-level
 > `random.expovariate(...)` (it uses a hidden global generator and breaks reproducibility). The same
-> `(params, seed)` must reproduce the same numbers exactly — that is what makes a committed precomputed
+> `(params, seed)` must reproduce the same numbers exactly, that is what makes a committed precomputed
 > run trustworthy and lets the front end *replay* instead of *recompute*.
 
 This contract is why the lab's "precomputed due to cost" artifacts are still honest science: a
@@ -68,7 +68,7 @@ committed trace is not a snapshot of one lucky run, it is the *reproducible* out
 
 ## 3. The minimal example
 
-The file [`example.py`](./example.py) is a complete, self-contained **M/M/c queue** — the DES "hello
+The file [`example.py`](./example.py) is a complete, self-contained **M/M/c queue**, the DES "hello
 world": Poisson arrivals, a pool of `c` servers, a FIFO queue, exponential service, and a warm-up
 period. It records each customer's waiting time and the server busy-time, then prints the mean wait and
 utilization **next to the closed-form queueing theory** so you can see the simulation converge to a
@@ -87,9 +87,9 @@ dataclass collects observations so the generator processes can mutate shared sta
 
 ```python
 SEED = 42
-N_SERVERS = 3          # c  — number of identical parallel servers
-ARRIVAL_RATE = 2.4     # lambda — mean arrivals per unit time (Poisson process)
-SERVICE_RATE = 1.0     # mu     — mean services per unit time per busy server
+N_SERVERS = 3          # c , number of identical parallel servers
+ARRIVAL_RATE = 2.4     # lambda, mean arrivals per unit time (Poisson process)
+SERVICE_RATE = 1.0     # mu    , mean services per unit time per busy server
 SIM_TIME = 20_000.0    # simulated-time horizon (long enough for a tight estimate)
 WARMUP = 1_000.0       # discard the initial transient before collecting stats
 
@@ -148,15 +148,15 @@ def main():
 ```
 
 `env.run(until=SIM_TIME)` is the whole simulation loop: pop the earliest event, advance the clock,
-execute it (which may schedule more events), repeat — until the clock reaches `SIM_TIME`.
+execute it (which may schedule more events), repeat, until the clock reaches `SIM_TIME`.
 
 ### The theory check
 
 Because an M/M/c queue has a **closed-form** mean wait (the Erlang-C result), the example also computes
 the analytic `Wq` and the theoretical utilization `ρ = λ / (c·μ)`, and prints them beside the simulated
-values. A simulation that does not converge to a known answer *when one exists* is a bug — so this
+values. A simulation that does not converge to a known answer *when one exists* is a bug, so this
 side-by-side is the cheapest, most credible validation a learner can witness. (When the model gets
-realistic enough that no closed form exists — e.g. the multi-stage S04 ED — the validation method is
+realistic enough that no closed form exists, e.g. the multi-stage S04 ED, the validation method is
 replications + confidence intervals, which the lab demonstrates in **S10** (the Monte-Carlo study), not in
 the single S04 run; see [`03_applying.md`](./03_applying.md).)
 
@@ -190,19 +190,19 @@ M/M/c queue simulation (SimPy)
 
 How to read it:
 
-- **45414 customers** were measured after the warm-up cut — a large sample, hence a tight estimate.
-- **Mean wait `Wq` = 1.0555** vs **Erlang-C theory 1.0787** — the simulation lands within ~2% of the
+- **45414 customers** were measured after the warm-up cut: a large sample, hence a tight estimate.
+- **Mean wait `Wq` = 1.0555** vs **Erlang-C theory 1.0787**: the simulation lands within ~2% of the
   exact analytic answer. They are not identical (this is *one* long run, a single random sample), and
   that gap is itself the lesson: a simulation estimates; it does not compute the exact value. Running
   many seeds and reporting a confidence interval (scenario S10) makes the gap quantifiable.
-- **Utilization `ρ` = 0.7969** vs **theory `λ/(c·μ)` = 0.8000** — essentially exact, because over a
+- **Utilization `ρ` = 0.7969** vs **theory `λ/(c·μ)` = 0.8000**: essentially exact, because over a
   20 000-unit horizon the measured busy fraction is a very stable quantity.
 
 ## 5. Common pitfalls (and the fix)
 
 - **Reporting a single run as "the answer."** One run is one noisy sample. The honest output is N
   replications with a confidence interval. (The example here is intentionally *one* run to keep it
-  minimal — the CI story lives in scenario S10 and the
+  minimal, the CI story lives in scenario S10 and the
   [Monte-Carlo replications](../../problem-types/04_monte-carlo-replications.md) guide.)
 - **No warm-up.** A model starting empty and idle is biased low; discard the initial transient. The
   example does this with the `WARMUP` guard.
@@ -211,7 +211,7 @@ How to read it:
 - **Forgetting to release a resource.** Use `with resource.request() as req:`; the `with` releases it
   for you and prevents deadlock.
 - **Putting blocking work between `yield`s.** Any non-trivial computation between two yields happens at
-  a single simulated instant — it does not consume simulated time and it *does* consume wall-clock
+  a single simulated instant, it does not consume simulated time and it *does* consume wall-clock
   time. Keep per-event work tiny; this is also what keeps the live lane under its 3-second gate.
 - **Expecting SimPy to animate.** It has no viz by design. Emit an event trace and render it in the
   front end.
@@ -220,4 +220,4 @@ How to read it:
 
 - SimPy docs (Environment, Resource, processes, `yield`): <https://simpy.readthedocs.io/>
 - "Discrete Event Simulation: It's Easy with SimPy!" (arXiv 2405.01562): <https://arxiv.org/html/2405.01562v1>
-- Erlang-C / M/M/c queueing reference — paired with the simulation per research report 01 (Ciw lesson).
+- Erlang-C / M/M/c queueing reference: paired with the simulation per research report 01 (Ciw lesson).

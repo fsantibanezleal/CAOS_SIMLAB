@@ -1,4 +1,4 @@
-# 04 · Outputs — exactly what lands on disk
+# 04 · Outputs: exactly what lands on disk
 
 A pipeline run produces (or refreshes) three kinds of artifact. All paths are repo-relative; the pipeline
 takes `out_root` (defaulting to the repo root) so it can also write to a scratch tree in tests.
@@ -10,7 +10,7 @@ data/artifacts/<scenario_id>/<variant_id>-seed<seed>.json
 ```
 
 One compact JSON trace per variant. The filename encodes the seed, so different seeds coexist instead of
-overwriting. The file is written with compact separators (no spaces) to keep bytes small — the byte count is
+overwriting. The file is written with compact separators (no spaces) to keep bytes small, the byte count is
 what the gate measures.
 
 Shape (`simlab.trace/v1`, from [`simlab/core/trace.py`](../../../simlab/core/trace.py)):
@@ -29,11 +29,11 @@ Shape (`simlab.trace/v1`, from [`simlab/core/trace.py`](../../../simlab/core/tra
 }
 ```
 
-- `params` — the coerced params for this exact run.
-- `kpis` — the headline numbers the app shows.
-- `analytic` — an optional closed-form / second-engine reference (e.g. S01 carries the Erlang-C reference
+- `params`: the coerced params for this exact run.
+- `kpis`: the headline numbers the app shows.
+- `analytic`: an optional closed-form / second-engine reference (e.g. S01 carries the Erlang-C reference
   plus a Ciw replication check); empty for scenarios without one.
-- `timeline.events` — the `{t, kind, ...payload}` stream the player animates; `t_end` is the last event time.
+- `timeline.events`: the `{t, kind, ...payload}` stream the player animates; `t_end` is the last event time.
 
 ## 2. The per-scenario manifest
 
@@ -73,7 +73,7 @@ Sketch:
 }
 ```
 
-A `precomputed` variant carries non-empty `reasons` explaining why — e.g.
+A `precomputed` variant carries non-empty `reasons` explaining why, e.g.
 `"not pure-Python (cannot run in Pyodide/WASM)"`, `"run 4200ms > 3000ms gate"`,
 `"trace 1500000B > 1000000B gate"`, or
 `"needs wheels ['ortools'] not in the live worker (precompute + replay)"`.
@@ -98,8 +98,8 @@ in-browser filesystem so it can `import simlab` and run the **same** engine code
 
 ## What to commit
 
-Commit `data/artifacts/` and `manifests/` **together** after a run — they are the deployable artifact
+Commit `data/artifacts/` and `manifests/` **together** after a run, they are the deployable artifact
 ("git-as-data"). Do **not** commit raw upstream data (`.graphml`/`.osm`/`.pbf`); see
 [05_gotchas.md](./05_gotchas.md).
 
-Next: [05_gotchas.md](./05_gotchas.md) — the determinism & honesty rules and the practical traps.
+Next: [05_gotchas.md](./05_gotchas.md), the determinism & honesty rules and the practical traps.

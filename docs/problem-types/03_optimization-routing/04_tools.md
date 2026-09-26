@@ -3,7 +3,7 @@
 > Node: [Optimization & Routing](../03_optimization-routing.md) · prev: [03 · Methods & KPIs](./03_methods-and-kpis.md) · next: [05 · Scenarios](./05_scenarios.md)
 
 The methods in [03 · Methods & KPIs](./03_methods-and-kpis.md) map onto a small set of real, dedicated
-solvers. Every tool below is a genuine OR engine — none of this is "minimize a loss with a `for`-loop by
+solvers. Every tool below is a genuine OR engine, none of this is "minimize a loss with a `for`-loop by
 hand." The recommendations and trade-offs come directly from the CAOS_SIMLAB optimization & routing research
 dimension.
 
@@ -14,9 +14,9 @@ dimension.
 | **OR-Tools** (Routing + CP-SAT + GLOP) | **Teaching default** | LP (GLOP), MILP (CBC / branch & bound), CP-SAT scheduling/assignment, TSP, CVRP, VRPTW, PDPTW | Apache-2.0 | **No** (native C++) → precompute |
 | **PyVRP** | The "what *good* looks like" contrast | CVRP, VRPTW, PD, MDVRP, prize-collecting, heterogeneous/multi-trip | MIT | No (C++/Python) → precompute |
 | **NetworkX + OSMnx** | Road graph + shortest paths + travel-time matrix | Dijkstra, A\*, k-shortest paths, graph download | MIT | **Yes** (pure Python, small graphs) |
-| **OSRM / VROOM** | Heavy precompute backends: fast all-pairs matrix + out-of-the-box VRP | `Table` (matrix), `Route`, TSP, CVRP, VRPTW, PDPTW | BSD-2 | No — **local-only**, commit JSON |
+| **OSRM / VROOM** | Heavy precompute backends: fast all-pairs matrix + out-of-the-box VRP | `Table` (matrix), `Route`, TSP, CVRP, VRPTW, PDPTW | BSD-2 | No, **local-only**, commit JSON |
 
-> **Deprecated — do not use.** `AgentPy` and `desmod` show up in older OR/simulation tutorials but are
+> **Deprecated, do not use.** `AgentPy` and `desmod` show up in older OR/simulation tutorials but are
 > deprecated and excluded from this lab. If you see them recommended elsewhere, ignore it. For ABM use
 > **Mesa / Mesa-Geo**; for DES use **SimPy / Ciw / Salabim** (see the sibling guides:
 > [DES](../01_discrete-event-simulation.md) · [ABM](../02_agent-based-modeling.md)).
@@ -26,14 +26,14 @@ dimension.
 ## OR-Tools
 
 [**OR-Tools**](../../frameworks/08_ortools.md) (Google, Apache-2.0) is the teaching default for one reason: a
-single `pip install ortools` gives you almost the entire OR curriculum in one importable library — linear
+single `pip install ortools` gives you almost the entire OR curriculum in one importable library, linear
 programming (GLOP), mixed-integer programming (CBC), constraint programming (CP-SAT), *and* a dedicated
 vehicle-routing layer. That breadth is exactly what a didactic lab wants: the maximum number of teachable
 problem types for the minimum infrastructure, CPU-only, on Windows/macOS/Linux.
 
 ### The mandatory routing template
 
-OR-Tools Routing returns the *first feasible solution* and stops unless told otherwise — which would make the
+OR-Tools Routing returns the *first feasible solution* and stops unless told otherwise, which would make the
 OR-Tools-vs-PyVRP comparison dishonest (see
 [03 · Methods & KPIs](./03_methods-and-kpis.md#routing--tsp-cvrp-vrptw)). Every routing scenario therefore
 sets, explicitly and committed into the manifest:
@@ -69,28 +69,28 @@ attribution).
 
 > **Attribution is mandatory.** OpenStreetMap data is **ODbL** (share-alike + attribution). Wherever map data
 > appears, display **"© OpenStreetMap contributors"**, and per the public-repo hygiene rules commit only
-> *rendered geometry* (a pruned OSM graph is a derivative database) — never raw `.graphml`. See
+> *rendered geometry* (a pruned OSM graph is a derivative database), never raw `.graphml`. See
 > [`../../../ATTRIBUTION.md`](../../../ATTRIBUTION.md).
 
 ## OSRM / VROOM
 
-For large, geography-real instances, an all-pairs matrix from OSMnx/NetworkX is *slow* — and **the matrix, not
+For large, geography-real instances, an all-pairs matrix from OSMnx/NetworkX is *slow*, and **the matrix, not
 the solver, is usually the real bottleneck.** For N stops you need an N×N travel-time matrix, and OSMnx
 all-pairs on a big graph does not scale.
 
-**OSRM / VROOM (Docker precompute backends — local-only, not a pip pipeline)** run via Docker on the local
+**OSRM / VROOM (Docker precompute backends, local-only, not a pip pipeline)** run via Docker on the local
 precompute machine only:
 
 - [**OSRM**](https://github.com/Project-OSRM/osrm-backend) (BSD-2) is a high-performance C++ engine over
   OpenStreetMap; its `Table` service returns all-pairs durations/distances fast, and it also yields real road
   geometry. Preprocessing an OSM extract is RAM- and disk-heavy and stateful.
 - [**VROOM**](https://github.com/VROOM-Project/vroom) (BSD-2) is an out-of-the-box VRP engine that wraps OSRM
-  for real matrices and solves CVRP/VRPTW/PDPTW in milliseconds — convenient, but a *black box* relative to
+  for real matrices and solves CVRP/VRPTW/PDPTW in milliseconds, convenient, but a *black box* relative to
   OR-Tools/PyVRP, so it teaches less.
 
 Neither belongs on the host: this is a static GitHub Pages site with no application server (see the
-[precompute pipeline](../../architecture/05_precompute-pipeline.md)). **Commit only their JSON output** — the
-matrices, the routes, the geometry — never the running service.
+[precompute pipeline](../../architecture/05_precompute-pipeline.md)). **Commit only their JSON output**, the
+matrices, the routes, the geometry, never the running service.
 
 > **Rule of thumb:** keep *live* instances small (≈ ≤ 20–30 stops) using OSMnx/NetworkX; **precompute the
 > matrix** for anything larger using OSRM, and commit the JSON.
@@ -99,7 +99,7 @@ matrices, the routes, the geometry — never the running service.
 
 ## Where this runs: precompute-only, never live
 
-OR-Tools is **native C++ with a Python wrapper** — it cannot be compiled to WASM and therefore **never runs
+OR-Tools is **native C++ with a Python wrapper**, it cannot be compiled to WASM and therefore **never runs
 live** in the Pyodide Worker. PyVRP (C++/Python) and the OSRM/VROOM backends are in the same boat. Per the
 lab's [measured live/precompute gate](../../architecture/03_the-gate.md):
 
@@ -108,7 +108,7 @@ lab's [measured live/precompute gate](../../architecture/03_the-gate.md):
   manifest**, and the front end only **replays** it with a scrubber under the *"precomputed due to cost; full
   pipeline in the repo"* banner.
 - **Live knobs over a precomputed plan:** the editable parameters in routing scenarios mutate only the SimPy
-  stochastic-delay replay over a fixed optimized plan (or a toy ≤ 20-stop heuristic in Pyodide) — they do
+  stochastic-delay replay over a fixed optimized plan (or a toy ≤ 20-stop heuristic in Pyodide), they do
   **not** re-solve OR-Tools in the browser.
 
 The only pure-Python optimization piece that *can* touch the live tier is **NetworkX/OSMnx shortest paths on a
@@ -126,7 +126,7 @@ All optimization/routing tools here are permissive and mutually compatible:
 | PyVRP | MIT |
 | NetworkX, OSMnx | MIT |
 | OSRM, VROOM | BSD-2-Clause |
-| **OpenStreetMap data** | **ODbL** — display "© OpenStreetMap contributors", commit rendered geometry only |
+| **OpenStreetMap data** | **ODbL**, display "© OpenStreetMap contributors", commit rendered geometry only |
 | Benchmark instances (Solomon, Gehring-Homberger, CVRPLIB, OR-Library) | cite the originating papers |
 
 See [`../../../LICENSES.md`](../../../LICENSES.md) and [`../../../ATTRIBUTION.md`](../../../ATTRIBUTION.md).
@@ -136,13 +136,13 @@ Repo: <https://github.com/fsantibanezleal/CAOS_SIMLAB>.
 
 This node is the map; the implementation detail for each tool lives in its own framework node:
 
-- [OR-Tools](../../frameworks/08_ortools.md) — Routing API, CP-SAT modelling, GLOP LP, the mandatory
+- [OR-Tools](../../frameworks/08_ortools.md): Routing API, CP-SAT modelling, GLOP LP, the mandatory
   `GUIDED_LOCAL_SEARCH` + time-limit + seed template.
-- [PyVRP](../../frameworks/09_pyvrp.md) — Hybrid Genetic Search, seeding, the fair-comparison setup against
+- [PyVRP](../../frameworks/09_pyvrp.md): Hybrid Genetic Search, seeding, the fair-comparison setup against
   OR-Tools.
-- [NetworkX](../../frameworks/10_networkx.md) · [OSMnx](../../frameworks/11_osmnx.md) — the road graph,
+- [NetworkX](../../frameworks/10_networkx.md) · [OSMnx](../../frameworks/11_osmnx.md): the road graph,
   Dijkstra/A\*, the travel-time matrix, ODbL attribution.
-- [SimPy](../../frameworks/01_simpy.md) — the DES that replays optimized plans under uncertainty.
+- [SimPy](../../frameworks/01_simpy.md): the DES that replays optimized plans under uncertainty.
 
 ## Sources
 

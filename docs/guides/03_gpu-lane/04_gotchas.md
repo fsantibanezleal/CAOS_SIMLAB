@@ -1,13 +1,13 @@
-# 04 · Gotchas — traps & the reference-only engines
+# 04 · Gotchas: traps & the reference-only engines
 
 The GPU stack is the most fragile part of the lab. This page collects the traps that bite when the lane is
-turned on, and records the heavy-ABM engines that are **documented but deliberately not installed** — so the
+turned on, and records the heavy-ABM engines that are **documented but deliberately not installed**, so the
 "why not" is captured honestly rather than rediscovered.
 
 ## Performance traps (the verdict, made concrete)
 
 - **Don't put the DES model on the GPU.** A small, branch-heavy discrete-event loop (a queue, an ED) is
-  *measurably slower* on a GPU — async event scheduling fights the SIMT execution model. The GPU lane is scoped
+  *measurably slower* on a GPU, async event scheduling fights the SIMT execution model. The GPU lane is scoped
   to S10's data-parallel replications precisely to avoid misteaching this. See the
   [honest verdict](../03_gpu-lane.md#the-honest-verdict-teach-this-dont-oversell-it).
 - **Transfer/launch overhead can erase the win.** Below the crossover, host↔device copy and kernel-launch cost
@@ -19,7 +19,7 @@ turned on, and records the heavy-ABM engines that are **documented but deliberat
 ## Platform / install traps
 
 - **`CUDA path could not be detected`.** Set `CUDA_PATH` to your CUDA 12 toolkit. Basic array ops
-  (`getDeviceCount()`, elementwise) may still work, but anything that JITs a kernel will not — see next.
+  (`getDeviceCount()`, elementwise) may still work, but anything that JITs a kernel will not, see next.
 - **Headers required for kernel JIT.** CuPy compiles custom kernels at runtime; without the CUDA toolkit
   *headers* present, kernel-JIT paths fail even when simple ops succeed. A full CUDA 12 toolkit (not just the
   driver) is needed for the kernel exhibits.
@@ -31,28 +31,28 @@ turned on, and records the heavy-ABM engines that are **documented but deliberat
 
 ## Determinism trap
 
-GPU thread-scheduling is non-deterministic across runs. **Never** rely on run-order reproducibility — seed
+GPU thread-scheduling is non-deterministic across runs. **Never** rely on run-order reproducibility, seed
 **per replication** and snapshot the deterministic reduced state into the trace, as detailed in
 [03 · Internals](./03_internals.md#reproducibility-the-seeding-rule). A "GPU result that won't reproduce" is
 almost always a missing per-replication seed, not a hardware issue.
 
-## Reference-only — documented, not installed
+## Reference-only: documented, not installed
 
 Three heavy / GPU agent-based-modeling engines were evaluated for the *million-agent* case and deliberately
-**not** shipped. They live as a reference chapter — [Heavy / GPU ABM](../../frameworks/18_gpu-abm-chapter.md) —
+**not** shipped. They live as a reference chapter, [Heavy / GPU ABM](../../frameworks/18_gpu-abm-chapter.md), 
 not as pipelines:
 
 | Engine | What it is | Why not installed |
 |---|---|---|
 | **FLAME GPU 2** | CUDA message-passing million-agent GPU-ABM | AGPL-3.0, CUDA-coupled, **no PyPI wheel** (conda/source only) |
-| **ABMax** | JAX `vmap`-over-population ABM | pip install **fails on Windows** (WinError 206 — path too long, via orbax) |
+| **ABMax** | JAX `vmap`-over-population ABM | pip install **fails on Windows** (WinError 206, path too long, via orbax) |
 | **AMBER** | Polars-columnar big-ABM accelerator (CPU) | niche packaging, no payoff at this lab's scale |
 
 The discipline behind not installing them is the lab's own: the ABM scenarios (S02 Schelling, S03 SIR, S05 Beer
 Game) are already legible at [Mesa](../../frameworks/04_mesa.md) scale, and the one genuinely "heavy" scenario,
 S10, is a Monte-Carlo replication study that is embarrassingly parallel on plain CPU cores via
 [joblib](../../frameworks/12_joblib.md). The research punchline holds: **replications, not population size, are
-the high-ROI parallel workload here** — reach for a heavy-ABM engine only when you are *provably* above ~10⁵
+the high-ROI parallel workload here**, reach for a heavy-ABM engine only when you are *provably* above ~10⁵
 agents, the model is vectorizable, and the arithmetic dwarfs the overhead.
 
 ## Next

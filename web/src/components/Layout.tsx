@@ -64,7 +64,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
       {archOpen && <ArchitectureModal onClose={() => setArchOpen(false)} />}
 
-      {/* ADR-0016 §2: one compact line — provenance + honesty; personal/portfolio are header-only */}
+      {/* ADR-0016 §2: one compact line, provenance + honesty; personal/portfolio are header-only */}
       <footer className="site-footer">
         <div className="footer-inner">
           <div className="footer-meta">

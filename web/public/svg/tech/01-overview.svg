@@ -24,18 +24,18 @@
   </defs>
 
   <!-- ── band A: what it is ── -->
-  <text class="lane-ttl" x="14" y="26">WHAT IT IS — a library-led simulation lab</text>
+  <text class="lane-ttl" x="14" y="26">WHAT IT IS, a library-led simulation lab</text>
   <text class="sub" x="14" y="42">the best dedicated tool per problem type · 11 worked scenarios · one engine for notebooks, offline &amp; live</text>
 
   <rect class="bx bx-hi" x="14" y="54" width="204" height="118" rx="9"/>
-  <text class="ttl" x="26" y="76">DES — discrete-event</text>
+  <text class="ttl" x="26" y="76">DES, discrete-event</text>
   <text class="cd mono" x="26" y="92">SimPy · Ciw</text>
   <text class="it" x="26" y="110">queues (M/M/c),</text>
   <text class="it" x="26" y="125">ED flow, dispatch</text>
   <text class="mu" x="26" y="160">S01 · S04 · S09</text>
 
   <rect class="bx bx-abm" x="230" y="54" width="204" height="118" rx="9"/>
-  <text class="ttl" x="242" y="76">ABM — agent-based</text>
+  <text class="ttl" x="242" y="76">ABM, agent-based</text>
   <text class="cd mono" x="242" y="92">Mesa 3 · NetLogo Web</text>
   <text class="it" x="242" y="110">segregation, SIR,</text>
   <text class="it" x="242" y="125">supply-chain bullwhip</text>

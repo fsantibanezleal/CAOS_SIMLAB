@@ -1,38 +1,38 @@
-# 02 — Formalization
+# 02: Formalization
 
 > Reading order: file 2 of 4 in the [S10 use-case node](../10_s10_montecarlo.md).
-> Previous: [01 — Assumptions & scope](./01_assumptions.md) · Next:
-> [03 — Solvers applied](./03_solvers-applied.md).
+> Previous: [01, Assumptions & scope](./01_assumptions.md) · Next:
+> [03, Solvers applied](./03_solvers-applied.md).
 
 The math below is pulled verified from the scenario Context block (`S10Desc` in
 `web/src/pages/Experiments.tsx`) and from the code
 ([`s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo.py),
 `erlang_c_mmc` in [`s01_queue.py`](../../../simlab/scenarios/s01_queue.py)). It is kept consistent with the
-code — nothing here is invented.
+code, nothing here is invented.
 
 ## Model class
 
 **M/M/c** (Poisson arrivals, exponential service, `c` servers, FCFS), studied by
 **independent-replication Monte-Carlo**. It is the same M/M/c *model class* as S01, but a **different
 engine**: S10 uses a fast NumPy heap-based earliest-free-server estimator (`mmc_mean_wait`), not S01's
-SimPy `Resource` simulation — so a per-run `Wq` here is not byte-identical to an S01 run, only the same
+SimPy `Resource` simulation, so a per-run `Wq` here is not byte-identical to an S01 run, only the same
 underlying queue. S10 wraps that estimator in an output-analysis study.
 
 ## Sets & indices
 
-- Replication index `r = 1, …, N` — each is one independent seeded run.
+- Replication index `r = 1, …, N`: each is one independent seeded run.
 - Customer index `i = 1, …, n` *within* a replication.
-- Running prefix length `k = 1, …, N` — the "how many replications so far" axis of the chart.
+- Running prefix length `k = 1, …, N`: the "how many replications so far" axis of the chart.
 
 ## Parameters (fixed per study)
 
-- `λ` — arrival rate (`lam`).
-- `μ` — per-server service rate (`mu`).
-- `c` — number of servers.
-- `n` — customers simulated per replication (`n_customers`).
-- `N` — number of replications (`n_reps`).
-- `seed` — base seed; replication `r` uses `seed + r`.
-- `z` — the 95% two-sided normal critical value. In the code this is the **exact** SciPy value
+- `λ`: arrival rate (`lam`).
+- `μ`: per-server service rate (`mu`).
+- `c`: number of servers.
+- `n`: customers simulated per replication (`n_customers`).
+- `N`: number of replications (`n_reps`).
+- `seed`: base seed; replication `r` uses `seed + r`.
+- `z`: the 95% two-sided normal critical value. In the code this is the **exact** SciPy value
   `Z95 = scipy.stats.norm.ppf(0.975) ≈ 1.959964` (the Context's `z = 1.96` is the rounded narrative form
   of the same constant).
 
@@ -57,7 +57,7 @@ The **utilization** (the load axis of the whole study):
 
 ## Objective / quantities computed
 
-This is an **estimation** study (no decision variable to optimise) — the "objective" is to estimate `Wq`
+This is an **estimation** study (no decision variable to optimise), the "objective" is to estimate `Wq`
 with a quantified uncertainty and compare it to the analytic truth.
 
 **Running mean** after `k` replications:
@@ -104,14 +104,14 @@ Wq = C(c,a) / (c·μ − λ).
 
 This matches `erlang_c_mmc` in [`s01_queue.py`](../../../simlab/scenarios/s01_queue.py), which also
 returns `Lq = λ·Wq` and `p_wait = C(c,a)`. **Unstable regime:** when `ρ ≥ 1` (`λ ≥ c·μ`) there is no
-finite steady state, so the function returns `Wq = None` (null, not ∞) — the chart then draws no theory
+finite steady state, so the function returns `Wq = None` (null, not ∞), the chart then draws no theory
 line and the sample mean grows with `n` instead of converging.
 
 ## Convergence properties (what the math predicts)
 
 - **Consistency.** By the law of large numbers `W̄_k → Wq` as `k → ∞`.
 - **Precision scaling.** `h_k ∝ 1/√k`: quadrupling the replications halves the CI.
-- **Load → variance.** As `ρ` rises the `Wq^(r)` spread widens, so `s_k` (and hence `h_k`) grow — more
+- **Load → variance.** As `ρ` rises the `Wq^(r)` spread widens, so `s_k` (and hence `h_k`) grow: more
   replications are needed for the same precision.
 - **Bias caveat (the finite-run lesson).** Consistency/precision are about the *sampling distribution of
   the estimator*. They say nothing about bias: with a short run length `n` and high load, each `Wq^(r)`
@@ -127,7 +127,7 @@ From `tr.kpis` in [`s10_montecarlo.py`](../../../simlab/scenarios/s10_montecarlo
 | `final_mean` | `W̄_N`, the final running mean (the headline estimate of `Wq`) |
 | `ci_halfwidth` | `h_N`, the 95% CI half-width at the final replication |
 | `theory_Wq` | the Erlang-C `Wq` (null when `ρ ≥ 1`) |
-| `rel_error_pct` | `100·|W̄_N − Wq| / Wq` — relative error vs theory (null when there is no positive theory `Wq` to compare against: the unstable regime `ρ ≥ 1` where `Wq` is itself null, or the degenerate `Wq = 0` case) |
+| `rel_error_pct` | `100·|W̄_N − Wq| / Wq`, relative error vs theory (null when there is no positive theory `Wq` to compare against: the unstable regime `ρ ≥ 1` where `Wq` is itself null, or the degenerate `Wq = 0` case) |
 | `n_reps` | `N`, the replication budget |
 | `rho` | the utilization `ρ` |
 

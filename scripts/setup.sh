@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# CAOS_SIMLAB — create the local Python .venv and install deps (macOS / Linux / Git-Bash).
+# CAOS_SIMLAB: create the local Python .venv and install deps (macOS / Linux / Git-Bash).
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -17,7 +17,7 @@ VENV_PY=".venv/bin/python"
 "$VENV_PY" -m pip install -r requirements.txt -r requirements-dev.txt -r requirements-precompute.txt
 
 echo
-echo "Optional GPU lane (CuPy/Numba/Taichi/JAX) for the Monte-Carlo exhibit — only on a CUDA box:"
+echo "Optional GPU lane (CuPy/Numba/Taichi/JAX) for the Monte-Carlo exhibit, only on a CUDA box:"
 echo "  $VENV_PY -m pip install -r requirements-gpu.txt   # see docs/guides/03_gpu-lane.md"
 echo
 echo "Ready. Next:"

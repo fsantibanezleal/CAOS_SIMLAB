@@ -5,7 +5,7 @@ simulations. The division of labour in CAOS_SIMLAB is deliberate:
 
 - **NumPy** (and the seeded `Generator`) draws the randomness for one replication.
 - **joblib** (CPU) fans thousands of independent, seeded replications across cores/threads. This is the
-  shipped driver in every scenario — **no shipped scenario imports CuPy or Numba**; the GPU variants
+  shipped driver in every scenario, **no shipped scenario imports CuPy or Numba**; the GPU variants
   (CuPy / Numba CUDA) live only as standalone appendices in the relevant frameworks' `example.py`, wired
   into no scenario.
 - **`scipy.stats`** reduces that resulting sample to an honest **confidence interval**.
@@ -31,7 +31,7 @@ you want to report the population mean `E[X]` *with a defensible uncertainty ban
   (`t_{1−α/2, K−1}` for Student-t, or `z_{1−α/2}` for the normal approximation).
 
 That is exactly the shape `scipy.stats` solves with `stats.sem`, `stats.t.interval` and
-`stats.norm.interval`. The decision variable is *which critical value* — see §4.
+`stats.norm.interval`. The decision variable is *which critical value*, see §4.
 
 ## 2. The pattern: replicate → summarise
 
@@ -56,51 +56,51 @@ trace for the deterministic gallery). See [`01_installation.md`](./01_installati
 
 | Scenario | Use of `scipy.stats` |
 |---|---|
-| **S10 — Monte-Carlo Replication / CI Study** | the confidence intervals. S10 runs `K` seeded replications of the S01 M/M/c queue, then reports the running mean and a 95% CI. The CI half-width is the deliverable; `scipy.stats` is the canonical way to compute it. |
+| **S10, Monte-Carlo Replication / CI Study** | the confidence intervals. S10 runs `K` seeded replications of the S01 M/M/c queue, then reports the running mean and a 95% CI. The CI half-width is the deliverable; `scipy.stats` is the canonical way to compute it. |
 
-S10 is the methodology backbone scenario — see
+S10 is the methodology backbone scenario, see
 [`docs/problem-types/04_monte-carlo-replications.md`](../../problem-types/04_monte-carlo-replications.md) and the
 [scenario map](../../README.md). It is the only scenario whose *primary output* is a confidence interval,
-hence the only one that pins `scipy`. (Other scenarios *consume* the lesson — any KPI in the lab could be
-wrapped in a CI — but S10 is where it is taught and exercised.)
+hence the only one that pins `scipy`. (Other scenarios *consume* the lesson, any KPI in the lab could be
+wrapped in a CI, but S10 is where it is taught and exercised.)
 
 A note on the shipped S10 code: it computes its intervals **through `scipy.stats`, never a hand-typed
 critical value**. The running 95% band uses the **exact** normal critical value
 `scipy.stats.norm.ppf(0.975)` (≈ `1.959964`, *not* the rounded `1.96`) over the running sample sd
-(`ddof=1`), and the headline CI is built with `scipy.stats.sem` + `scipy.stats.norm.interval(0.95, …)` — so
+(`ddof=1`), and the headline CI is built with `scipy.stats.sem` + `scipy.stats.norm.interval(0.95, …)`, so
 the lab uses the statistics framework it teaches rather than re-deriving the formula by hand. It uses the
 **normal approximation** (z, not Student-t) because S10's variants run hundreds of replications, where z and
 t agree to within ~2% (at `K=200`, `df=199`, `t.ppf(0.975)=1.972` vs `z≈1.960`). `scipy.stats` is the
-reference implementation the methodology page points to, and the small-`K` regime — where the choice
-actually matters and you should prefer Student-t — is exactly what [`example.py`](./example.py) demonstrates.
+reference implementation the methodology page points to, and the small-`K` regime, where the choice
+actually matters and you should prefer Student-t, is exactly what [`example.py`](./example.py) demonstrates.
 
 ## 4. Choosing the interval: z vs t
 
 | Situation | Pick | Why |
 |---|---|---|
-| Small `K` (rule of thumb `K < 30`), variance estimated from the sample | **Student-t** (`stats.t.interval`) | the t-critical value is larger, widening the interval to admit we don't know the variance — it never under-covers |
-| Large `K` and a roughly normal sampling distribution | normal-approx (`stats.norm.interval`) is fine | z and t are within ~2% by `K ≈ 30`; the constant `1.96` (the *rounded* `norm.ppf(0.975)`≈`1.959964`) is acceptable — though the lab still calls `scipy.stats` rather than hand-typing it |
+| Small `K` (rule of thumb `K < 30`), variance estimated from the sample | **Student-t** (`stats.t.interval`) | the t-critical value is larger, widening the interval to admit we don't know the variance, it never under-covers |
+| Large `K` and a roughly normal sampling distribution | normal-approx (`stats.norm.interval`) is fine | z and t are within ~2% by `K ≈ 30`; the constant `1.96` (the *rounded* `norm.ppf(0.975)`≈`1.959964`) is acceptable, though the lab still calls `scipy.stats` rather than hand-typing it |
 | **Default when unsure** | **Student-t** | it costs nothing extra and converges to z anyway; the lab's honest default is "use t unless you have a genuinely large `K`" |
 
 ## 5. Honest trade-offs (grounded in the research)
 
-The research dimensions for this lab — *07 GPU-acceleration* and the *monte-carlo-replications* problem
-type — make several points that constrain how `scipy.stats` should be applied:
+The research dimensions for this lab, *07 GPU-acceleration* and the *monte-carlo-replications* problem
+type, make several points that constrain how `scipy.stats` should be applied:
 
 - **A CI captures sampling error only, never model error.** The interval says how precisely you estimated
   *this model's* mean; it says nothing about whether the model is right. A tight CI around a wrong arrival
-  process is a precise lie. SciPy can't detect this — the curriculum insists you state it.
+  process is a precise lie. SciPy can't detect this, the curriculum insists you state it.
 - **Replications cure variance, not bias.** The initial-transient (warm-up) bias is a *different disease*.
   At high load (ρ ≈ 0.9, ~600 customers/run) S10 shows the CI converging tightly around a value ~16% below
   the Erlang-C theory: the band is narrow and **excludes** the true value. A CI computed by `scipy.stats`
-  on biased samples is still biased — narrowness is not accuracy. (See the S10 audit and fix notes.)
+  on biased samples is still biased, narrowness is not accuracy. (See the S10 audit and fix notes.)
 - **The mean can be the wrong target.** For heavy-tailed KPIs (queue waits near saturation, response-time
   tails) report quantiles (p90/p95) and *their* intervals too. `scipy.stats` supports distribution-aware
-  estimators, but the lab's default CI is for the *mean* — know when that's not what operations care about.
+  estimators, but the lab's default CI is for the *mean*, know when that's not what operations care about.
 - **`1/√K` is a hard wall.** Halving a CI costs 4× the replications. This is why the *generation* step is
-  the one to parallelise — in the shipped scenarios via **joblib (CPU)**; `scipy.stats` is microseconds and
+  the one to parallelise, in the shipped scenarios via **joblib (CPU)**; `scipy.stats` is microseconds and
   never the bottleneck. Per research 07, a GPU *would* help by running **thousands of replications at once**
-  (the highest-ROI place a GPU could go), not by speeding up the summary — but that GPU path is a standalone
+  (the highest-ROI place a GPU could go), not by speeding up the summary, but that GPU path is a standalone
   framework appendix (CuPy / Numba CUDA in `example.py`), wired into **no shipped scenario**; the summary is
   always cheap CPU SciPy.
 
@@ -113,10 +113,10 @@ type — make several points that constrain how `scipy.stats` should be applied:
   (`scipy==1.18.0`) and loaded into the live worker, and is sufficient for means and standard CIs.
 - **vs bootstrap (`scipy.stats.bootstrap`).** When the sampling distribution is *not* approximately
   normal and you want a distribution-free interval (e.g. for a quantile or a ratio), `scipy.stats.bootstrap`
-  is the right tool — and it lives in the same package, so adopting it costs no new dependency. For the
+  is the right tool, and it lives in the same package, so adopting it costs no new dependency. For the
   *mean* of many replications, the CLT-backed t-interval is simpler and standard; reach for the bootstrap
   for awkward statistics or small, clearly non-normal samples.
-- **Deprecated tools — do not use.** This lab uses only real, maintained tools. The deprecated DES/ABM
-  packages **AgentPy** and **desmod** are mentioned in the research only as *deprecated — don't use*; they
+- **Deprecated tools: do not use.** This lab uses only real, maintained tools. The deprecated DES/ABM
+  packages **AgentPy** and **desmod** are mentioned in the research only as *deprecated, don't use*; they
   are not part of any scenario and are unrelated to the statistics layer. `scipy.stats` has no deprecated
-  competitor here — it is the standard choice.
+  competitor here, it is the standard choice.

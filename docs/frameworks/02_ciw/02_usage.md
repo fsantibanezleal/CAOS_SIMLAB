@@ -1,4 +1,4 @@
-# Ciw — 02 · Usage
+# Ciw: 02 · Usage
 
 > Wiki node: [02_ciw](../02_ciw.md) · prev: [01 · Installation](./01_installation.md) · next: [03 · Applying](./03_applying.md)
 
@@ -6,13 +6,13 @@ Ciw simulates **open queueing networks**. You describe the network *declarativel
 (arrival process, service process, number of servers, routing between nodes), build a
 `Simulation`, run it to a horizon, and then read back a list of per-customer **records**.
 Ciw is *headless*: it produces data, not pictures. In this lab the visualization belongs
-to the web client — the engine stays the headless physics, the browser owns the pixels.
+to the web client, the engine stays the headless physics, the browser owns the pixels.
 
 ---
 
 ## 1. The core concepts and API
 
-### 1.1 The network — `ciw.create_network(...)`
+### 1.1 The network: `ciw.create_network(...)`
 
 You pass **one list per node**. For a single-node M/M/c queue, each list has length 1:
 
@@ -26,35 +26,35 @@ network = ciw.create_network(
 )
 ```
 
-- **`arrival_distributions`** — the inter-arrival sampler per node. `Exponential(rate=λ)`
+- **`arrival_distributions`**: the inter-arrival sampler per node. `Exponential(rate=λ)`
   ⇒ a Poisson arrival process with rate λ (this is the M/M model's first "M").
-- **`service_distributions`** — the service-time sampler per node. `Exponential(rate=μ)`
+- **`service_distributions`**: the service-time sampler per node. `Exponential(rate=μ)`
   ⇒ exponential service (the second "M"). Each of the `c` servers draws from this.
-- **`number_of_servers`** — `c`, the number of parallel identical servers at the node.
+- **`number_of_servers`**: `c`, the number of parallel identical servers at the node.
 - **Optional, for richer models:** `routing` (matrix or process-based) for **multi-node**
   networks; `queue_capacities` / `system_capacity` for **blocking** (finite buffers);
   `baulking_functions` for customers who refuse to join a long queue;
   `reneging_time_distributions` for impatient customers who abandon; multiple **customer
   classes**; and server `Schedule`s for shift changes. For S01 we only need the three
-  lists above — but those optional knobs are exactly what lets S01 extend *beyond* the
+  lists above, but those optional knobs are exactly what lets S01 extend *beyond* the
   closed form (see [03 · Applying](./03_applying.md)).
 
-### 1.2 Distributions — `ciw.dists`
+### 1.2 Distributions: `ciw.dists`
 
 Ciw ships a rich set: `Exponential`, `Deterministic`, `Uniform`, `Normal`, `Gamma`,
 `Erlang`, `Lognormal`, `Weibull`, `Poisson`, `Sequential`, `Empirical`, `PhaseType`, and
 more. For M/M/c you use `Exponential` for both arrivals and service; swapping in a
-non-exponential service distribution turns it into an **M/G/c** queue (no closed form —
+non-exponential service distribution turns it into an **M/G/c** queue (no closed form, 
 simulation becomes the only tool).
 
-### 1.3 Reproducibility — `ciw.seed(s)`
+### 1.3 Reproducibility: `ciw.seed(s)`
 
 Call `ciw.seed(s)` **before** constructing the `Simulation` (or before the `simulate_*`
-call) to make a run deterministic. Different seeds give **independent replications** — the
+call) to make a run deterministic. Different seeds give **independent replications**, the
 basis for a confidence interval. Determinism is the lab's hard contract: the same
 `(params, seed)` must reproduce the same trace, exactly.
 
-### 1.4 Running — `ciw.Simulation` + `simulate_until_max_time`
+### 1.4 Running: `ciw.Simulation` + `simulate_until_max_time`
 
 ```python
 ciw.seed(0)
@@ -65,7 +65,7 @@ sim.simulate_until_max_time(8000.0)   # run to t = 8000 time units
 There is also `simulate_until_max_customers(n)` if you prefer to stop after `n` customers
 have passed through.
 
-### 1.5 Reading results — `get_all_records()`
+### 1.5 Reading results: `get_all_records()`
 
 ```python
 recs = sim.get_all_records()
@@ -78,7 +78,7 @@ queue_size_at_departure, server_id, record_type`.
 
 For M/M/c validation the field of interest is **`waiting_time`** (time spent in queue
 before service starts). To estimate the *steady-state* mean you **discard a warm-up
-transient** — records whose `arrival_date` is below a cutoff — and average the rest.
+transient**, records whose `arrival_date` is below a cutoff, and average the rest.
 
 ---
 
@@ -96,7 +96,7 @@ Wq      = C(c, a) / (c·μ − λ)    # mean time in queue
 ```
 
 A correct simulation must reproduce `Wq` within Monte-Carlo error. That single
-sim-vs-theory check is the strongest didactic asset in the queueing block — and it
+sim-vs-theory check is the strongest didactic asset in the queueing block, and it
 cross-checks against **Little's Law** (`Lq = λ·Wq`), the cheapest sanity check in all of
 simulation (see the [DES guide](../../problem-types/01_discrete-event-simulation.md)).
 
@@ -106,7 +106,7 @@ simulation (see the [DES guide](../../problem-types/01_discrete-event-simulation
 
 The full script is [`example.py`](./example.py) in this folder. Structure:
 
-1. **Sets M/M/c parameters** — `λ=3`, `μ=1`, `c=4`, so `ρ=0.75` (stable).
+1. **Sets M/M/c parameters**: `λ=3`, `μ=1`, `c=4`, so `ρ=0.75` (stable).
 2. **Computes the Erlang-C `Wq`** in `erlang_c_wq(...)` using a numerically stable sum
    (it raises `ValueError` if you push the system to `ρ ≥ 1`, where no finite mean wait
    exists).
@@ -155,7 +155,7 @@ PASS: sim ~= theory
 
 The closed-form Erlang-C gives `Wq = 0.50943`; the Ciw estimate is `0.52268` with a 95%
 CI of `[0.50771, 0.53765]`. The theoretical value lies **inside** that interval and the
-point estimate is within **2.60%** — the simulation matches theory. This is exactly the
+point estimate is within **2.60%**, the simulation matches theory. This is exactly the
 validation story S01 teaches.
 
 The estimate sits *slightly above* theory, a classic finite-run effect: even after
@@ -163,7 +163,7 @@ warm-up removal, the tail of the queue is under-sampled in a finite horizon, so 
 sample mean is mildly biased high. Increasing `MAX_TIME` and `WARMUP` tightens both the
 bias and the CI; the run length here is deliberately chosen to keep the example fast
 (sub-second) while still covering theory. This is the honest-DES lesson in miniature: a
-number alone is not the answer — the number *with its CI, after a warm-up* is.
+number alone is not the answer, the number *with its CI, after a warm-up* is.
 
 ---
 

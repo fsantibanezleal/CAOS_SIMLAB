@@ -1,8 +1,8 @@
-# 03 — Solvers applied
+# 03: Solvers applied
 
 > Reading order: file 3 of 4 in the [S10 use-case node](../10_s10_montecarlo.md).
-> Previous: [02 — Formalization](./02_formalization.md) · Next:
-> [04 — Results & reading](./04_results-and-reading.md).
+> Previous: [02, Formalization](./02_formalization.md) · Next:
+> [04, Results & reading](./04_results-and-reading.md).
 
 S10 is solved by **two dedicated tools in series**: [joblib](../../frameworks/12_joblib.md) *generates*
 the replication sample (fans the independent runs across CPU cores), and
@@ -10,9 +10,9 @@ the replication sample (fans the independent runs across CPU cores), and
 The model itself is plain NumPy + a heap. The lab deliberately builds the scenario on the very tools it
 documents rather than a hand-rolled loop.
 
-## joblib — the CPU replication driver
+## joblib: the CPU replication driver
 
-**What it does here.** The N replications are embarrassingly parallel — independent, seeded, and each only
+**What it does here.** The N replications are embarrassingly parallel, independent, seeded, and each only
 returns one float (`Wq^(r)`). joblib turns "run N seeded replications and collect their KPIs" into one
 line with order-preserving result collection.
 
@@ -35,7 +35,7 @@ wqs = np.asarray(per_run, dtype=float)
 - The worker function takes a **seed**, not a pre-built `Generator`, so it is self-contained and picklable
   (`mmc_mean_wait` builds its own `np.random.default_rng(seed)` inside). Each replication `r` is seeded
   `seed + r`, so the parallel result equals the serial result **byte-for-byte** on any worker count or
-  finish order — determinism is independent of the backend.
+  finish order, determinism is independent of the backend.
 
 **Why `backend="threading"` (not the default loky process pool).** Each replication is NumPy-heavy
 (`rng.exponential` / `cumsum` release the GIL), so threads parallelise the real work without the loky
@@ -43,22 +43,22 @@ process-pool cold-start tax (~5 s) that would push the first run over the 3 s li
 the only joblib backend that works under Pyodide/WASM (no fork/subprocess), so the same code path serves
 the live lane.
 
-**Why this tool.** The honest deliverable of a stochastic simulation is never one run — it is a *mean with
+**Why this tool.** The honest deliverable of a stochastic simulation is never one run, it is a *mean with
 a confidence interval* over many seeded replications, and that standard error only shrinks like `1/√n`.
 joblib is the lab's v1 default for exactly this "run K independent seeded runs and aggregate" pattern: one
 line of parallelism, results stay in order, bit-reproducible across worker counts. A GPU is intentionally
-out of scope here — a many-replication study of a cheap model is embarrassingly parallel and maps cleanly
+out of scope here, a many-replication study of a cheap model is embarrassingly parallel and maps cleanly
 onto cores; the GPU lane ([Numba](../../frameworks/14_numba.md) / [CuPy](../../frameworks/15_cupy.md))
 only earns its transfer/launch overhead far above the crossover, and the discrete-event model itself never
 goes on the GPU.
 
-→ Framework wiki: [12 — joblib](../../frameworks/12_joblib.md) (install · usage · applying · runnable
+→ Framework wiki: [12, joblib](../../frameworks/12_joblib.md) (install · usage · applying · runnable
 example).
 
-## `scipy.stats` — the confidence-interval layer
+## `scipy.stats`: the confidence-interval layer
 
-**What it does here.** It turns the replication sample into the interval — both the running band and the
-headline CI — using the real statistics API rather than hand-typed constants.
+**What it does here.** It turns the replication sample into the interval, both the running band and the
+headline CI, using the real statistics API rather than hand-typed constants.
 
 **The concrete API** (from the same `run()`):
 
@@ -76,22 +76,22 @@ ci_lo, ci_hi = stats.norm.interval(0.95, loc=final_mean, scale=sem)
 final_half = (ci_hi - ci_lo) / 2                       # == h_N
 ```
 
-- `stats.norm.ppf(0.975)` supplies the **exact** critical value `≈ 1.959964` for the running band — the
+- `stats.norm.ppf(0.975)` supplies the **exact** critical value `≈ 1.959964` for the running band: the
   lab uses the statistics framework it teaches instead of a rounded 1.96.
 - `stats.sem(wqs)` is the standard error of the mean (`s/√N`, ddof=1); `stats.norm.interval(0.95, …)`
   applies the two-sided normal interval around `final_mean`. The headline half-width equals the final
   point of the running band, but expressed through the canonical SciPy calls.
 
-**Why this tool.** `scipy.stats` is the statistics layer of a replication study — it decides whether the
+**Why this tool.** `scipy.stats` is the statistics layer of a replication study, it decides whether the
 headline number is defensible or a precise lie. It is a pure deterministic function of the sample joblib
 produced, so it adds no nondeterminism. (The lab's house default for *small* `N` is the Student-t
 interval; S10 ships the normal-approximation interval, valid by the CLT for the moderate `N ∈ {50…500}`
-the variants use — see [01 — Assumptions](./01_assumptions.md).)
+the variants use, see [01, Assumptions](./01_assumptions.md).)
 
-→ Framework wiki: [13 — `scipy.stats`](../../frameworks/13_scipy-stats.md) (install · usage · applying ·
+→ Framework wiki: [13, `scipy.stats`](../../frameworks/13_scipy-stats.md) (install · usage · applying ·
 runnable example).
 
-## The oracle (no solver — closed form)
+## The oracle (no solver: closed form)
 
 The comparison line is **not** simulated: `erlang_c_mmc(λ, μ, c)` in
 [`s01_queue.py`](../../../simlab/scenarios/s01_queue.py) returns the analytic `Wq` directly (or `None`
@@ -102,10 +102,10 @@ when `ρ ≥ 1`). It is the ground truth the Monte-Carlo estimate is judged agai
 | Lane | What runs | How the tools appear |
 |---|---|---|
 | **Offline trace generation** (committed gallery) | the offline `.venv` runs `joblib + scipy` to generate the seed-42 CI sweep; the result is committed as a deterministic chart trace for instant first paint | full native joblib (`threading`) + full `scipy.stats` |
-| **Live** (Pyodide, in-browser) | the **same** joblib + scipy engines run on demand (S10 is a `live` scenario) | `joblib` + `scipy` are heavy native deps, so they are **imported lazily inside `run()`** (never at module import) — the registry import and the whole live lane work even before they load; the `threading` backend is the only one that works under WASM, so the browser runs the real engines, not a fallback |
+| **Live** (Pyodide, in-browser) | the **same** joblib + scipy engines run on demand (S10 is a `live` scenario) | `joblib` + `scipy` are heavy native deps, so they are **imported lazily inside `run()`** (never at module import), the registry import and the whole live lane work even before they load; the `threading` backend is the only one that works under WASM, so the browser runs the real engines, not a fallback |
 
 S10's lane is **live**; the committed seed-42 trace is only the first-paint replay, not a separate
-precompute lane — the same joblib + scipy engines re-run in the browser on demand.
+precompute lane, the same joblib + scipy engines re-run in the browser on demand.
 
 The module-level scenario definition (the `Scenario` subclass, `variants()`, `param_specs`) needs **zero**
 heavy deps (NumPy only, which exists in the live worker). Because the seed plan and SciPy reduction are

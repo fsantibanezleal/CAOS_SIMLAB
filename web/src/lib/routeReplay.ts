@@ -1,5 +1,5 @@
 // Deterministic replay for route/network traces: interpolate each agent's position at time t from its
-// timed legs, resolve active incident markers, and surface event cues for the temporal coloring — node
+// timed legs, resolve active incident markers, and surface event cues for the temporal coloring, node
 // arrival flashes (an agent reaching a special node), a "served" set (visited destinations), per-marker
 // spawn pops, and running terminal counters. Mirrors simlab.routetrace/v1.
 import type { RouteAgent, RouteMarker, RouteTrace } from "./types";

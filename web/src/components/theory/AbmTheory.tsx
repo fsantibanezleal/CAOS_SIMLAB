@@ -13,8 +13,8 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "Un modelo basado en agentes (ABM) representa un sistema como una colección de entidades autónomas que toman decisiones — los agentes — situadas en un entorno, que interactúan entre sí y con dicho entorno según un conjunto de reglas de comportamiento. El compromiso metodológico que lo define es de abajo hacia arriba (bottom-up): el modelador especifica únicamente las entidades de micro-nivel y sus reglas locales, y el comportamiento de macro-nivel (a escala de sistema) no está escrito en ninguna parte — debe emerger de las interacciones simuladas. Esto invierte la postura clásica top-down de los modelos de ecuaciones agregadas, donde se escribe directamente la ley a escala de sistema (p. ej. una ecuación diferencial para una media poblacional) y los individuos nunca aparecen."
-                : "An agent-based model (ABM) represents a system as a collection of autonomous decision-making entities — agents — situated in an environment, interacting with one another and with that environment according to a set of behavioral rules. The defining methodological commitment is bottom-up: the modeler specifies only the micro-level entities and their local rules, and the macro-level (system-level) behavior is not written down anywhere — it must emerge from the simulated interactions. This inverts the classical top-down stance of aggregate equation models, in which one writes the system-level law directly (e.g. a differential equation for a population mean) and the individuals never appear."}
+                ? "Un modelo basado en agentes (ABM) representa un sistema como una colección de entidades autónomas que toman decisiones, los agentes, situadas en un entorno, que interactúan entre sí y con dicho entorno según un conjunto de reglas de comportamiento. El compromiso metodológico que lo define es de abajo hacia arriba (bottom-up): el modelador especifica únicamente las entidades de micro-nivel y sus reglas locales, y el comportamiento de macro-nivel (a escala de sistema) no está escrito en ninguna parte, debe emerger de las interacciones simuladas. Esto invierte la postura clásica top-down de los modelos de ecuaciones agregadas, donde se escribe directamente la ley a escala de sistema (p. ej. una ecuación diferencial para una media poblacional) y los individuos nunca aparecen."
+                : "An agent-based model (ABM) represents a system as a collection of autonomous decision-making entities, agents, situated in an environment, interacting with one another and with that environment according to a set of behavioral rules. The defining methodological commitment is bottom-up: the modeler specifies only the micro-level entities and their local rules, and the macro-level (system-level) behavior is not written down anywhere, it must emerge from the simulated interactions. This inverts the classical top-down stance of aggregate equation models, in which one writes the system-level law directly (e.g. a differential equation for a population mean) and the individuals never appear."}
             </p>
             <p>
               {es
@@ -25,8 +25,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ul>
               <li>
                 {es
-                  ? "Agentes. Entidades discretas con un estado interno (atributos como posición, riqueza, estado de salud, opinión), un campo perceptivo (qué del entorno y de los demás agentes pueden percibir) y un comportamiento (una regla que mapea el estado percibido a una acción). Los agentes pueden ser heterogéneos —diferir en atributos o incluso en conjuntos de reglas— y adaptativos, cambiando su regla o parámetros en respuesta a la experiencia."
-                  : "Agents. Discrete entities with internal state (attributes such as position, wealth, health status, opinion), a perceptual field (what of the environment and of other agents they can sense), and a behavior (a rule mapping perceived state to action). Agents may be heterogeneous — differing in attributes or even in rule sets — and may be adaptive, changing their rule or parameters in response to experience."}
+                  ? "Agentes. Entidades discretas con un estado interno (atributos como posición, riqueza, estado de salud, opinión), un campo perceptivo (qué del entorno y de los demás agentes pueden percibir) y un comportamiento (una regla que mapea el estado percibido a una acción). Los agentes pueden ser heterogéneos, diferir en atributos o incluso en conjuntos de reglas, y adaptativos, cambiando su regla o parámetros en respuesta a la experiencia."
+                  : "Agents. Discrete entities with internal state (attributes such as position, wealth, health status, opinion), a perceptual field (what of the environment and of other agents they can sense), and a behavior (a rule mapping perceived state to action). Agents may be heterogeneous, differing in attributes or even in rule sets, and may be adaptive, changing their rule or parameters in response to experience."}
               </li>
               <li>
                 {es
@@ -41,8 +41,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             </ul>
             <p>
               {es
-                ? "El tiempo avanza en pasos discretos (ticks). En cada tick un planificador (scheduler) decide qué agentes actúan y en qué orden (tema de la Sub-pestaña 2). Como las reglas leen y escriben estado compartido, el orden y la concurrencia de las actualizaciones son en sí mismos decisiones de modelado que pueden cambiar los resultados — un hecho que distingue la contabilidad del ABM de la contabilidad por cola de eventos del DES."
-                : "Time advances in discrete steps (ticks). On each tick a scheduler decides which agents act and in what order (the subject of Sub-tab 2). Because agent rules read and write shared state, the order and concurrency of updates are themselves modeling choices that can change results — a fact that distinguishes ABM bookkeeping from the event-queue bookkeeping of DES."}
+                ? "El tiempo avanza en pasos discretos (ticks). En cada tick un planificador (scheduler) decide qué agentes actúan y en qué orden (tema de la Sub-pestaña 2). Como las reglas leen y escriben estado compartido, el orden y la concurrencia de las actualizaciones son en sí mismos decisiones de modelado que pueden cambiar los resultados, un hecho que distingue la contabilidad del ABM de la contabilidad por cola de eventos del DES."
+                : "Time advances in discrete steps (ticks). On each tick a scheduler decides which agents act and in what order (the subject of Sub-tab 2). Because agent rules read and write shared state, the order and concurrency of updates are themselves modeling choices that can change results, a fact that distinguishes ABM bookkeeping from the event-queue bookkeeping of DES."}
             </p>
           </div>
 
@@ -71,8 +71,8 @@ export function AbmTheory({ es }: { es: boolean }) {
                   ? "Micro-especificación cerrada. El modelo vale solo lo que vale su conjunto de reglas; no hay macro-ley de respaldo, así que un comportamiento omitido está silenciosamente ausente de la dinámica."
                   : "Closed micro-specification. The model is only as good as the rule set; there is no macro-law to fall back on, so an omitted behavior is silently absent from the dynamics.",
                 es
-                  ? "La semántica de acceso al estado importa. Los resultados pueden depender de si los agentes leen el estado actual (ya actualizado) o previo (pre-paso) de los vecinos — ver Sub-pestaña 2."
-                  : "State-access semantics matter. Results can depend on whether agents read the current (already updated) or previous (pre-step) state of neighbors — see Sub-tab 2.",
+                  ? "La semántica de acceso al estado importa. Los resultados pueden depender de si los agentes leen el estado actual (ya actualizado) o previo (pre-paso) de los vecinos, ver Sub-pestaña 2."
+                  : "State-access semantics matter. Results can depend on whether agents read the current (already updated) or previous (pre-step) state of neighbors, see Sub-tab 2.",
                 es
                   ? "Estocasticidad → distribuciones, no puntos. Una sola corrida es un único sorteo; las conclusiones requieren ensembles sobre semillas aleatorias."
                   : "Stochasticity → distributions, not points. A single run is one draw; conclusions require ensembles over random seeds.",
@@ -97,8 +97,8 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "El planificador (scheduler) o régimen de activación determina qué agentes se actualizan en cada tick y en qué orden, y cómo cada agente lee el estado compartido. Como los agentes de un ABM mutan un mundo común, el planificador no es un detalle de implementación: es parte del modelo, y cambiarlo puede cambiar el resultado emergente. Conceptualmente existen tres regímenes canónicos. Mesa 2 los exponía como objetos planificador explícitos (RandomActivation / SimultaneousActivation / StagedActivation); Mesa 3 — el motor sobre el que se ejecuta este laboratorio — los eliminó y entrega en su lugar un AgentSet en model.agents, sobre el que el régimen se expresa directamente con métodos como do() (orden fijo) y shuffle_do() (orden barajado). Los escenarios de agentes en grilla de este laboratorio (S02 Schelling, S03 SIR) recorren su AgentSet (self.agents) y aplican una actualización en bloque (batch update): todas las transiciones de un paso se deciden contra la configuración del inicio del paso y luego se confirman juntas, emparentada con la activación simultánea/síncrona descrita más abajo. El matiz por escenario importa: S03 (SIR) cambia las celdas de forma sincrónica, S02 (Schelling) reubica los agentes descontentos uno a uno en el pool de vacías que crece (movimientos secuenciales), y S05 (Beer Game) es en cambio una cascada serial de orden fijo — sus cuatro eslabones actúan por turno (aguas abajo-a-aguas arriba), cada uno sobre el pedido que recibe ese tick, no un lote del inicio del paso. Los regímenes aleatorio y por etapas se presentan aquí como la taxonomía conceptual completa, no como modos que el laboratorio alterne."
-                : "The scheduler (activation regime) governs which agents are stepped on each tick and in what order, and how each agent reads shared state. Because ABM agents mutate a common world, the scheduler is not an implementation detail — it is part of the model, and changing it can change the emergent outcome. Conceptually there are three canonical regimes. Mesa 2 exposed them as explicit scheduler objects (RandomActivation / SimultaneousActivation / StagedActivation); Mesa 3 — the engine this lab runs on — removed those and instead gives every model an AgentSet at model.agents, on which the regime is expressed directly through methods like do() (fixed order) and shuffle_do() (shuffled order). This lab's grid agent scenarios (S02 Schelling, S03 SIR) iterate their AgentSet (self.agents) and apply a batch update: every transition for a step is decided against the start-of-step configuration and then committed together — akin to the simultaneous/synchronous activation described below. The per-scenario nuance matters: S03 (SIR) flips cells synchronously, S02 (Schelling) relocates unhappy agents one-by-one into the growing empty pool (sequential moves), and S05 (Beer Game) is instead a fixed-order serial cascade — its four echelons act in turn (downstream-to-upstream), each on the order it receives that tick, not a start-of-step batch. The random and staged regimes are presented here as the full conceptual taxonomy, not as modes the lab switches between."}
+                ? "El planificador (scheduler) o régimen de activación determina qué agentes se actualizan en cada tick y en qué orden, y cómo cada agente lee el estado compartido. Como los agentes de un ABM mutan un mundo común, el planificador no es un detalle de implementación: es parte del modelo, y cambiarlo puede cambiar el resultado emergente. Conceptualmente existen tres regímenes canónicos. Mesa 2 los exponía como objetos planificador explícitos (RandomActivation / SimultaneousActivation / StagedActivation); Mesa 3, el motor sobre el que se ejecuta este laboratorio, los eliminó y entrega en su lugar un AgentSet en model.agents, sobre el que el régimen se expresa directamente con métodos como do() (orden fijo) y shuffle_do() (orden barajado). Los escenarios de agentes en grilla de este laboratorio (S02 Schelling, S03 SIR) recorren su AgentSet (self.agents) y aplican una actualización en bloque (batch update): todas las transiciones de un paso se deciden contra la configuración del inicio del paso y luego se confirman juntas, emparentada con la activación simultánea/síncrona descrita más abajo. El matiz por escenario importa: S03 (SIR) cambia las celdas de forma sincrónica, S02 (Schelling) reubica los agentes descontentos uno a uno en el pool de vacías que crece (movimientos secuenciales), y S05 (Beer Game) es en cambio una cascada serial de orden fijo, sus cuatro eslabones actúan por turno (aguas abajo-a-aguas arriba), cada uno sobre el pedido que recibe ese tick, no un lote del inicio del paso. Los regímenes aleatorio y por etapas se presentan aquí como la taxonomía conceptual completa, no como modos que el laboratorio alterne."
+                : "The scheduler (activation regime) governs which agents are stepped on each tick and in what order, and how each agent reads shared state. Because ABM agents mutate a common world, the scheduler is not an implementation detail, it is part of the model, and changing it can change the emergent outcome. Conceptually there are three canonical regimes. Mesa 2 exposed them as explicit scheduler objects (RandomActivation / SimultaneousActivation / StagedActivation); Mesa 3, the engine this lab runs on, removed those and instead gives every model an AgentSet at model.agents, on which the regime is expressed directly through methods like do() (fixed order) and shuffle_do() (shuffled order). This lab's grid agent scenarios (S02 Schelling, S03 SIR) iterate their AgentSet (self.agents) and apply a batch update: every transition for a step is decided against the start-of-step configuration and then committed together, akin to the simultaneous/synchronous activation described below. The per-scenario nuance matters: S03 (SIR) flips cells synchronously, S02 (Schelling) relocates unhappy agents one-by-one into the growing empty pool (sequential moves), and S05 (Beer Game) is instead a fixed-order serial cascade, its four echelons act in turn (downstream-to-upstream), each on the order it receives that tick, not a start-of-step batch. The random and staged regimes are presented here as the full conceptual taxonomy, not as modes the lab switches between."}
             </p>
             <p>
               {es
@@ -107,8 +107,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             </p>
             <p>
               {es
-                ? "Activación simultánea (síncrona) — el régimen que usa S03 SIR. Todos los agentes calculan primero su próximo estado a partir de una instantánea congelada del tick anterior (fase step), y luego se confirman todos los estados juntos (fase advance); ningún agente ve el movimiento de otro dentro del tick. El Model.step() de S03 hace exactamente esto: decide todas las infecciones/recuperaciones contra el estado del inicio del paso y recién entonces las aplica en bloque. (S02 Schelling no es simultáneo: reubica a los descontentos uno a uno en el pool de vacías que crece, así que un agente posterior puede ver el movimiento de uno anterior; S05 Beer Game es una cascada serial de orden fijo. Ambos leen las entradas del inicio del paso pero aplican secuencialmente.) Es el régimen correcto cuando el modelo busca aproximar un sistema de ecuaciones en diferencias acopladas actualizadas en bloque — p. ej. flocking tipo autómata celular, donde cada boid reacciona a dónde estaban sus vecinos. Las actualizaciones síncronas pueden crear sus propios artefactos (dos agentes intercambiando celdas, oscilaciones tipo «blinker») que los esquemas asíncronos evitan."
-                : "Simultaneous activation (synchronous) — the regime S03 SIR uses. All agents first compute their next state from a frozen snapshot of the previous tick (a step phase), then all states are committed together (an advance phase); no agent sees another's move within the tick. S03's Model.step() does exactly this: it decides every infection/recovery against the start-of-step state and only then applies them in a batch. (S02 Schelling is not simultaneous: it relocates unhappy agents one-by-one into a growing empty pool, so a later mover can see an earlier move; S05 Beer Game is a fixed-order serial cascade. Both read the start-of-step inputs but apply sequentially.) This is the correct regime when the model is meant to approximate a system of coupled difference equations updated in lockstep — e.g. cellular-automaton style flocking where every boid reacts to where its neighbors were. Synchronous updates can create artifacts of their own (e.g. two agents swapping cells, “blinker” oscillations) that asynchronous schemes avoid."}
+                ? "Activación simultánea (síncrona), el régimen que usa S03 SIR. Todos los agentes calculan primero su próximo estado a partir de una instantánea congelada del tick anterior (fase step), y luego se confirman todos los estados juntos (fase advance); ningún agente ve el movimiento de otro dentro del tick. El Model.step() de S03 hace exactamente esto: decide todas las infecciones/recuperaciones contra el estado del inicio del paso y recién entonces las aplica en bloque. (S02 Schelling no es simultáneo: reubica a los descontentos uno a uno en el pool de vacías que crece, así que un agente posterior puede ver el movimiento de uno anterior; S05 Beer Game es una cascada serial de orden fijo. Ambos leen las entradas del inicio del paso pero aplican secuencialmente.) Es el régimen correcto cuando el modelo busca aproximar un sistema de ecuaciones en diferencias acopladas actualizadas en bloque, p. ej. flocking tipo autómata celular, donde cada boid reacciona a dónde estaban sus vecinos. Las actualizaciones síncronas pueden crear sus propios artefactos (dos agentes intercambiando celdas, oscilaciones tipo «blinker») que los esquemas asíncronos evitan."
+                : "Simultaneous activation (synchronous), the regime S03 SIR uses. All agents first compute their next state from a frozen snapshot of the previous tick (a step phase), then all states are committed together (an advance phase); no agent sees another's move within the tick. S03's Model.step() does exactly this: it decides every infection/recovery against the start-of-step state and only then applies them in a batch. (S02 Schelling is not simultaneous: it relocates unhappy agents one-by-one into a growing empty pool, so a later mover can see an earlier move; S05 Beer Game is a fixed-order serial cascade. Both read the start-of-step inputs but apply sequentially.) This is the correct regime when the model is meant to approximate a system of coupled difference equations updated in lockstep, e.g. cellular-automaton style flocking where every boid reacts to where its neighbors were. Synchronous updates can create artifacts of their own (e.g. two agents swapping cells, “blinker” oscillations) that asynchronous schemes avoid."}
             </p>
             <p>
               {es
@@ -230,8 +230,8 @@ export function AbmTheory({ es }: { es: boolean }) {
                   ? "La activación por etapas asume que la descomposición en fases es parte de la ciencia, no una conveniencia."
                   : "Staged activation assumes the phase decomposition is part of the science, not a convenience.",
                 es
-                  ? "Las tres asumen que el modelador eligió explícitamente — un bucle de orden fijo implícito es un bug latente."
-                  : "All three assume the modeler has explicitly chosen — an implicit fixed-order loop is a latent bug.",
+                  ? "Las tres asumen que el modelador eligió explícitamente, un bucle de orden fijo implícito es un bug latente."
+                  : "All three assume the modeler has explicitly chosen, an implicit fixed-order loop is a latent bug.",
               ].map((x, i) => (
                 <li key={i}>{x}</li>
               ))}
@@ -250,18 +250,18 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "La emergencia es la aparición de estructura, regularidad o función a escala de sistema que no está codificada en la regla de ningún agente y que no se predeciría al inspeccionar las reglas aisladamente. Es el fenómeno para cuyo estudio existe el ABM. El resultado canónico de Schelling —que una preferencia individual leve por vecinos similares produce segregación espacial casi total (Sub-pestaña 6)— es el ejemplo de libro de texto: ningún agente quiere una ciudad segregada, y sin embargo la ciudad se segrega. Los boids de Reynolds (Sub-pestaña 8) son otro: tres reglas locales de dirección, sin líder ni plan global, y aun así emerge una bandada coherente."
-                : "Emergence is the appearance of system-level structure, regularity, or function that is not encoded in any agent's rule and that one would not predict by inspecting the rules in isolation. It is the phenomenon ABM exists to study. The canonical Schelling result — that mild individual preference for like-neighbors produces near-total spatial segregation (Sub-tab 6) — is the textbook example: no agent wants a segregated city, yet the city segregates. Reynolds's boids (Sub-tab 8) are another: three local steering rules, no leader and no global plan, yet coherent flocking emerges."}
+                ? "La emergencia es la aparición de estructura, regularidad o función a escala de sistema que no está codificada en la regla de ningún agente y que no se predeciría al inspeccionar las reglas aisladamente. Es el fenómeno para cuyo estudio existe el ABM. El resultado canónico de Schelling, que una preferencia individual leve por vecinos similares produce segregación espacial casi total (Sub-pestaña 6), es el ejemplo de libro de texto: ningún agente quiere una ciudad segregada, y sin embargo la ciudad se segrega. Los boids de Reynolds (Sub-pestaña 8) son otro: tres reglas locales de dirección, sin líder ni plan global, y aun así emerge una bandada coherente."
+                : "Emergence is the appearance of system-level structure, regularity, or function that is not encoded in any agent's rule and that one would not predict by inspecting the rules in isolation. It is the phenomenon ABM exists to study. The canonical Schelling result, that mild individual preference for like-neighbors produces near-total spatial segregation (Sub-tab 6), is the textbook example: no agent wants a segregated city, yet the city segregates. Reynolds's boids (Sub-tab 8) are another: three local steering rules, no leader and no global plan, yet coherent flocking emerges."}
             </p>
             <p>
               {es
-                ? "El lema de Epstein para la lógica explicativa es generativo: «Si no lo hiciste crecer, no lo explicaste.» Un ABM explica un macro-patrón exhibiendo un conjunto de agentes y reglas locales cuya interacción genera ese patrón en la simulación. Es una afirmación de suficiencia (estas micro-reglas bastan para producir el macro-hecho), no de unicidad — que es justamente el origen de la dificultad de validación de la Sub-pestaña 5."
-                : "Epstein's slogan for the explanatory logic is generative: “If you didn't grow it, you didn't explain it.” An ABM explains a macro-pattern by exhibiting a set of agents and local rules whose interaction generates that pattern in simulation. This is a sufficiency claim (these micro-rules suffice to produce the macro-fact), not a uniqueness claim — which is precisely the source of the validation difficulty in Sub-tab 5."}
+                ? "El lema de Epstein para la lógica explicativa es generativo: «Si no lo hiciste crecer, no lo explicaste.» Un ABM explica un macro-patrón exhibiendo un conjunto de agentes y reglas locales cuya interacción genera ese patrón en la simulación. Es una afirmación de suficiencia (estas micro-reglas bastan para producir el macro-hecho), no de unicidad, que es justamente el origen de la dificultad de validación de la Sub-pestaña 5."
+                : "Epstein's slogan for the explanatory logic is generative: “If you didn't grow it, you didn't explain it.” An ABM explains a macro-pattern by exhibiting a set of agents and local rules whose interaction generates that pattern in simulation. This is a sufficiency claim (these micro-rules suffice to produce the macro-fact), not a uniqueness claim, which is precisely the source of the validation difficulty in Sub-tab 5."}
             </p>
             <p>
               {es
-                ? "La emergencia está ligada a la no linealidad y la interacción: si los agentes no interactuaran (o lo hicieran solo de forma aditiva), el agregado sería una simple suma de partes independientes y la agregación de campo medio no perdería nada. La emergencia requiere que el macro-observable sea un funcional no separable de la configuración — que el todo difiera genuinamente de la suma de las partes. En la práctica, los regímenes emergentes suelen estar separados por umbrales tipo transición de fase en un parámetro de control (la tolerancia de Schelling, el R₀ de la epidemia), donde un cambio pequeño del parámetro produce un cambio cualitativo del estado global."
-                : "Emergence is tied to nonlinearity and interaction: if agents did not interact (or interacted only additively), the aggregate would be a simple sum of independent parts and mean-field aggregation would lose nothing. Emergence requires that the macro-observable be a non-separable functional of the configuration — that the whole genuinely differ from the sum of parts. Practically, emergent regimes are often separated by phase-transition-like thresholds in a control parameter (Schelling's tolerance, the epidemic's R₀), where a small parameter change produces a qualitative change in the global state."}
+                ? "La emergencia está ligada a la no linealidad y la interacción: si los agentes no interactuaran (o lo hicieran solo de forma aditiva), el agregado sería una simple suma de partes independientes y la agregación de campo medio no perdería nada. La emergencia requiere que el macro-observable sea un funcional no separable de la configuración, que el todo difiera genuinamente de la suma de las partes. En la práctica, los regímenes emergentes suelen estar separados por umbrales tipo transición de fase en un parámetro de control (la tolerancia de Schelling, el R₀ de la epidemia), donde un cambio pequeño del parámetro produce un cambio cualitativo del estado global."
+                : "Emergence is tied to nonlinearity and interaction: if agents did not interact (or interacted only additively), the aggregate would be a simple sum of independent parts and mean-field aggregation would lose nothing. Emergence requires that the macro-observable be a non-separable functional of the configuration, that the whole genuinely differ from the sum of parts. Practically, emergent regimes are often separated by phase-transition-like thresholds in a control parameter (Schelling's tolerance, the epidemic's R₀), where a small parameter change produces a qualitative change in the global state."}
             </p>
             <p>
               {es
@@ -367,8 +367,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             tex={String.raw`m(\theta) = 0 \ \text{ for } \theta<\theta_c, \qquad m(\theta) > 0 \ \text{ for } \theta>\theta_c.`}
             caption={
               es
-                ? "Cerca de un parámetro de control θ, un parámetro de orden tipo transición de fase m(θ) exhibe un umbral θ_c — p. ej. índice de segregación vs. tolerancia, o tamaño final de la epidemia vs. R₀ cruzando R₀=1."
-                : "Near a control parameter θ, a phase-transition-like order parameter m(θ) exhibits a threshold θ_c — e.g. the segregation index vs. tolerance, or epidemic final size vs. R₀ across R₀=1."
+                ? "Cerca de un parámetro de control θ, un parámetro de orden tipo transición de fase m(θ) exhibe un umbral θ_c, p. ej. índice de segregación vs. tolerancia, o tamaño final de la epidemia vs. R₀ cruzando R₀=1."
+                : "Near a control parameter θ, a phase-transition-like order parameter m(θ) exhibits a threshold θ_c, e.g. the segregation index vs. tolerance, or epidemic final size vs. R₀ across R₀=1."
             }
           />
 
@@ -377,14 +377,14 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ul>
               {[
                 es
-                  ? "Suficiencia, no necesidad: generar un patrón muestra que las reglas pueden producirlo, nunca que son las únicas reglas que podrían (equifinalidad — Sub-pestaña 5)."
-                  : "Sufficiency, not necessity: generating a pattern shows the rules can produce it, never that they are the only rules that could (equifinality — Sub-tab 5).",
+                  ? "Suficiencia, no necesidad: generar un patrón muestra que las reglas pueden producirlo, nunca que son las únicas reglas que podrían (equifinalidad, Sub-pestaña 5)."
+                  : "Sufficiency, not necessity: generating a pattern shows the rules can produce it, never that they are the only rules that could (equifinality, Sub-tab 5).",
                 es
                   ? "La sorpresa es relativa al observador; la robustez a través de semillas/regímenes es la prueba objetiva."
                   : "Surprise is observer-relative; robustness across seeds/regimes is the objective test.",
                 es
-                  ? "Requiere interacción genuina (macro-funcional no separable) — de lo contrario, el campo medio basta."
-                  : "Requires genuine interaction (non-separable macro-functional) — otherwise mean-field suffices.",
+                  ? "Requiere interacción genuina (macro-funcional no separable), de lo contrario, el campo medio basta."
+                  : "Requires genuine interaction (non-separable macro-functional), otherwise mean-field suffices.",
               ].map((x, i) => (
                 <li key={i}>{x}</li>
               ))}
@@ -409,40 +409,40 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ol>
               <li>
                 {es
-                  ? "Propósito y patrones — por qué existe el modelo y los patrones con que se juzga su utilidad (la actualización de 2020 integra los patrones en el elemento de propósito para apoyar el modelado orientado a patrones)."
-                  : "Purpose and patterns — why the model exists, and the patterns used to judge its usefulness (the 2020 update folds patterns into the purpose element to support pattern-oriented modeling)."}
+                  ? "Propósito y patrones, por qué existe el modelo y los patrones con que se juzga su utilidad (la actualización de 2020 integra los patrones en el elemento de propósito para apoyar el modelado orientado a patrones)."
+                  : "Purpose and patterns, why the model exists, and the patterns used to judge its usefulness (the 2020 update folds patterns into the purpose element to support pattern-oriented modeling)."}
               </li>
               <li>
                 {es
-                  ? "Entidades, variables de estado y escalas — los tipos de agentes y el entorno, las variables de estado que caracterizan a cada uno, y la resolución y extensión espacial/temporal."
-                  : "Entities, state variables, and scales — the kinds of agents and the environment, the state variables that characterize each, and the spatial/temporal resolution and extent."}
+                  ? "Entidades, variables de estado y escalas, los tipos de agentes y el entorno, las variables de estado que caracterizan a cada uno, y la resolución y extensión espacial/temporal."
+                  : "Entities, state variables, and scales, the kinds of agents and the environment, the state variables that characterize each, and the spatial/temporal resolution and extent."}
               </li>
               <li>
                 {es
-                  ? "Visión general de procesos y planificación — qué hacen los agentes y el entorno en cada paso de tiempo y en qué orden (aquí se declara el régimen de activación de la Sub-pestaña 2)."
-                  : "Process overview and scheduling — what the agents and environment do each time step and in what order (this is where the activation regime of Sub-tab 2 is declared)."}
+                  ? "Visión general de procesos y planificación, qué hacen los agentes y el entorno en cada paso de tiempo y en qué orden (aquí se declara el régimen de activación de la Sub-pestaña 2)."
+                  : "Process overview and scheduling, what the agents and environment do each time step and in what order (this is where the activation regime of Sub-tab 2 is declared)."}
               </li>
             </ol>
             <p>
               {es
-                ? "Estos tres constituyen el Overview. El único elemento Design concepts documenta luego cómo encarna el modelo once conceptos recurrentes: Principios básicos; Emergencia; Adaptación; Objetivos; Aprendizaje; Predicción; Percepción (sensing); Interacción; Estocasticidad; Colectivos; Observación. Es la auditoría conceptual del modelo — p. ej. «qué emerge realmente vs. qué se impone», «qué perciben los agentes», «dónde se usa el azar». Por último, el bloque Details entrega todo lo necesario para reimplementar:"
-                : "These three constitute the Overview. The single Design concepts element then documents how the model embodies eleven recurring concepts: Basic principles; Emergence; Adaptation; Objectives; Learning; Prediction; Sensing; Interaction; Stochasticity; Collectives; Observation. It is the conceptual audit of the model — e.g. “what truly emerges vs. what is imposed,” “what do agents sense,” “where is randomness used.” Finally the Details block gives everything needed to re-implement:"}
+                ? "Estos tres constituyen el Overview. El único elemento Design concepts documenta luego cómo encarna el modelo once conceptos recurrentes: Principios básicos; Emergencia; Adaptación; Objetivos; Aprendizaje; Predicción; Percepción (sensing); Interacción; Estocasticidad; Colectivos; Observación. Es la auditoría conceptual del modelo, p. ej. «qué emerge realmente vs. qué se impone», «qué perciben los agentes», «dónde se usa el azar». Por último, el bloque Details entrega todo lo necesario para reimplementar:"
+                : "These three constitute the Overview. The single Design concepts element then documents how the model embodies eleven recurring concepts: Basic principles; Emergence; Adaptation; Objectives; Learning; Prediction; Sensing; Interaction; Stochasticity; Collectives; Observation. It is the conceptual audit of the model, e.g. “what truly emerges vs. what is imposed,” “what do agents sense,” “where is randomness used.” Finally the Details block gives everything needed to re-implement:"}
             </p>
             <ol start={4}>
               <li>
                 {es
-                  ? "Inicialización — el estado inicial (cuántos agentes, dónde, con qué distribución de atributos; ¿es siempre igual o estocástico?)."
-                  : "Initialization — the initial state (how many agents, where, with what attribute distribution; is it always the same or stochastic)."}
+                  ? "Inicialización, el estado inicial (cuántos agentes, dónde, con qué distribución de atributos; ¿es siempre igual o estocástico?)."
+                  : "Initialization, the initial state (how many agents, where, with what attribute distribution; is it always the same or stochastic)."}
               </li>
               <li>
                 {es
-                  ? "Datos de entrada — datos externos que dirigen el modelo, si los hay (a menudo «el modelo no usa datos de entrada externos»)."
-                  : "Input data — external driving data, if any (often “the model uses no external input data”)."}
+                  ? "Datos de entrada, datos externos que dirigen el modelo, si los hay (a menudo «el modelo no usa datos de entrada externos»)."
+                  : "Input data, external driving data, if any (often “the model uses no external input data”)."}
               </li>
               <li>
                 {es
-                  ? "Submodelos — la especificación completa de cada proceso nombrado en el elemento 3, con todas las ecuaciones y los valores de los parámetros."
-                  : "Submodels — the full specification of every process named in element 3, with all equations and parameter values."}
+                  ? "Submodelos, la especificación completa de cada proceso nombrado en el elemento 3, con todas las ecuaciones y los valores de los parámetros."
+                  : "Submodels, the full specification of every process named in element 3, with all equations and parameter values."}
               </li>
             </ol>
             <p>
@@ -494,7 +494,7 @@ export function AbmTheory({ es }: { es: boolean }) {
               <rect x="60" y="155" width="640" height="120" rx={10} fill="transparent" stroke="var(--color-border)" />
               <rect x="60" y="155" width="8" height="120" rx={3} fill="var(--color-magenta)" />
               <text x="80" y="175" fontSize={12} fill="var(--color-magenta)">
-                {es ? "DESIGN CONCEPTS (conceptos de diseño) — 11" : "DESIGN CONCEPTS — 11"}
+                {es ? "DESIGN CONCEPTS (conceptos de diseño), 11" : "DESIGN CONCEPTS, 11"}
               </text>
               {[
                 es ? "Principios básicos" : "Basic principles",
@@ -564,8 +564,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ul>
               {[
                 es
-                  ? "ODD estandariza la descripción, no el diseño — un modelo bien descrito puede seguir siendo un mal modelo."
-                  : "ODD standardizes description, not design — a well-described model can still be a bad model.",
+                  ? "ODD estandariza la descripción, no el diseño, un modelo bien descrito puede seguir siendo un mal modelo."
+                  : "ODD standardizes description, not design, a well-described model can still be a bad model.",
                 es
                   ? "El elemento Design concepts es cualitativo; su rigor depende de la honestidad del autor."
                   : "The Design concepts element is qualitative; its rigor depends on author honesty.",
@@ -598,8 +598,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             </p>
             <p>
               {es
-                ? "Equifinalidad (el problema inverso está mal planteado). Como un ABM solo demuestra suficiencia — un conjunto de reglas que puede generar el patrón objetivo — muchos conjuntos de reglas distintos pueden reproducir igual de bien los mismos macro-datos. Ajustar la salida agregada, por tanto, no identifica el micro-mecanismo. La mitigación estándar es el modelado orientado a patrones (POM): exigir que el modelo reproduzca múltiples patrones a múltiples escalas simultáneamente, lo que poda el espacio de mecanismos admisibles mucho más que un único ajuste agregado."
-                : "Equifinality (the inverse problem is ill-posed). Because an ABM only demonstrates sufficiency — a rule set that can generate the target pattern — many distinct rule sets may reproduce the same macro-data equally well. Matching aggregate output therefore does not identify the micro-mechanism. The standard mitigation is pattern-oriented modeling (POM): require the model to reproduce multiple patterns at multiple scales simultaneously, which prunes the space of admissible mechanisms far more sharply than a single aggregate fit."}
+                ? "Equifinalidad (el problema inverso está mal planteado). Como un ABM solo demuestra suficiencia, un conjunto de reglas que puede generar el patrón objetivo, muchos conjuntos de reglas distintos pueden reproducir igual de bien los mismos macro-datos. Ajustar la salida agregada, por tanto, no identifica el micro-mecanismo. La mitigación estándar es el modelado orientado a patrones (POM): exigir que el modelo reproduzca múltiples patrones a múltiples escalas simultáneamente, lo que poda el espacio de mecanismos admisibles mucho más que un único ajuste agregado."
+                : "Equifinality (the inverse problem is ill-posed). Because an ABM only demonstrates sufficiency, a rule set that can generate the target pattern, many distinct rule sets may reproduce the same macro-data equally well. Matching aggregate output therefore does not identify the micro-mechanism. The standard mitigation is pattern-oriented modeling (POM): require the model to reproduce multiple patterns at multiple scales simultaneously, which prunes the space of admissible mechanisms far more sharply than a single aggregate fit."}
             </p>
             <p>
               {es
@@ -613,8 +613,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             </p>
             <p>
               {es
-                ? "Verificación vs. validación. La verificación pregunta «¿construimos el modelo correctamente?» (el código implementa las reglas previstas — pruebas unitarias, invariantes, chequeos de conservación). La validación pregunta «¿construimos el modelo correcto?» (el modelo corresponde al sistema objetivo). Un contraste útil es el docking / alineamiento (Axtell et al.): reimplementar el modelo en un segundo marco y confirmar que los resultados coinciden, separando la dinámica genuina de los artefactos de implementación. La biblioteca aplica la verificación más fuerte disponible a su modelo insignia de cola M/M/c: las métricas de estado estacionario del simulador DES se contrastan con la fórmula cerrada de Erlang-C, un oráculo analítico exacto — un lujo que la mayoría de los ABM no tiene, y justamente por eso la cola ancla la credibilidad de la biblioteca."
-                : "Verification vs. validation. Verification asks “did we build the model right?” (the code implements the intended rules — unit tests, invariants, conservation checks). Validation asks “did we build the right model?” (the model corresponds to the target system). A useful cross-check is docking / alignment (Axtell et al.): re-implement the model in a second framework and confirm the results coincide, separating genuine dynamics from implementation artifacts. The lab applies the strongest available verification to its M/M/c queue flagship: the DES simulator's steady-state metrics are checked against the closed-form Erlang-C result, an exact analytic oracle — a luxury most ABMs lack, and precisely why the queue anchors the lab's credibility."}
+                ? "Verificación vs. validación. La verificación pregunta «¿construimos el modelo correctamente?» (el código implementa las reglas previstas, pruebas unitarias, invariantes, chequeos de conservación). La validación pregunta «¿construimos el modelo correcto?» (el modelo corresponde al sistema objetivo). Un contraste útil es el docking / alineamiento (Axtell et al.): reimplementar el modelo en un segundo marco y confirmar que los resultados coinciden, separando la dinámica genuina de los artefactos de implementación. La biblioteca aplica la verificación más fuerte disponible a su modelo insignia de cola M/M/c: las métricas de estado estacionario del simulador DES se contrastan con la fórmula cerrada de Erlang-C, un oráculo analítico exacto, un lujo que la mayoría de los ABM no tiene, y justamente por eso la cola ancla la credibilidad de la biblioteca."
+                : "Verification vs. validation. Verification asks “did we build the model right?” (the code implements the intended rules, unit tests, invariants, conservation checks). Validation asks “did we build the right model?” (the model corresponds to the target system). A useful cross-check is docking / alignment (Axtell et al.): re-implement the model in a second framework and confirm the results coincide, separating genuine dynamics from implementation artifacts. The lab applies the strongest available verification to its M/M/c queue flagship: the DES simulator's steady-state metrics are checked against the closed-form Erlang-C result, an exact analytic oracle, a luxury most ABMs lack, and precisely why the queue anchors the lab's credibility."}
             </p>
             <p>
               {es
@@ -677,13 +677,13 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "Dynamic Models of Segregation (1971) de Thomas C. Schelling es el ABM fundacional de las ciencias sociales y la demostración más limpia de emergencia. Agentes de dos tipos ocupan celdas de una grilla; algunas celdas están vacías. Cada agente está satisfecho si la fracción de sus vecinos de Moore ocupados que comparten su tipo es al menos un umbral de tolerancia τ (el caso famoso de Schelling: un agente solo quiere no estar en minoría estricta localmente). Los agentes insatisfechos se reubican — a una celda vacía aleatoria o a la satisfactoria más cercana — y el proceso itera hasta una (casi) estacionariedad."
-                : "Thomas C. Schelling's Dynamic Models of Segregation (1971) is the founding ABM of the social sciences and the cleanest demonstration of emergence. Agents of two types occupy cells of a grid; some cells are empty. Each agent is satisfied if the fraction of its occupied Moore-neighbors that share its type is at least a tolerance threshold τ (Schelling's famous case: an agent wants merely not to be in a strict minority locally). Unsatisfied agents relocate — to a random empty cell, or the nearest satisfactory one — and the process iterates until (near-)stationarity."}
+                ? "Dynamic Models of Segregation (1971) de Thomas C. Schelling es el ABM fundacional de las ciencias sociales y la demostración más limpia de emergencia. Agentes de dos tipos ocupan celdas de una grilla; algunas celdas están vacías. Cada agente está satisfecho si la fracción de sus vecinos de Moore ocupados que comparten su tipo es al menos un umbral de tolerancia τ (el caso famoso de Schelling: un agente solo quiere no estar en minoría estricta localmente). Los agentes insatisfechos se reubican, a una celda vacía aleatoria o a la satisfactoria más cercana, y el proceso itera hasta una (casi) estacionariedad."
+                : "Thomas C. Schelling's Dynamic Models of Segregation (1971) is the founding ABM of the social sciences and the cleanest demonstration of emergence. Agents of two types occupy cells of a grid; some cells are empty. Each agent is satisfied if the fraction of its occupied Moore-neighbors that share its type is at least a tolerance threshold τ (Schelling's famous case: an agent wants merely not to be in a strict minority locally). Unsatisfied agents relocate, to a random empty cell, or the nearest satisfactory one, and the process iterates until (near-)stationarity."}
             </p>
             <p>
               {es
-                ? "El resultado sorprendente: incluso una preferencia leve por el propio tipo (p. ej. τ=1/3 a 1/2 — agentes felices de vivir como minoría de un tercio o la mitad) lleva al sistema a una fuerte segregación global, con un índice de segregación (fracción media de vecinos similares) muy por encima de lo que cualquier agente exige. La segregación es un macro-estado emergente y no intencionado: ningún agente es «suficientemente racista» para querer una ciudad segregada, y aun así la ciudad se segrega. Esta disociación entre micro-preferencia y macro-resultado es justamente la lección de la Sub-pestaña 3, y hace de Schelling la primera demo interactiva de la biblioteca (deslizador en τ, índice de segregación en vivo, formación visible de clusters)."
-                : "The startling result: even a mild own-type preference (e.g. τ=1/3 to 1/2 — agents happy to live in a one-third or half minority) drives the system to strong global segregation, with a segregation index (mean fraction of like-neighbors) far above what any agent demands. Segregation is an emergent, unintended macro-state: no agent is “racist enough” to want a segregated city, yet the city segregates. This dissociation between micro-preference and macro-outcome is exactly the lesson of Sub-tab 3, and it makes Schelling the lab's first interactive demo (slider on τ, live segregation index, visible cluster formation)."}
+                ? "El resultado sorprendente: incluso una preferencia leve por el propio tipo (p. ej. τ=1/3 a 1/2, agentes felices de vivir como minoría de un tercio o la mitad) lleva al sistema a una fuerte segregación global, con un índice de segregación (fracción media de vecinos similares) muy por encima de lo que cualquier agente exige. La segregación es un macro-estado emergente y no intencionado: ningún agente es «suficientemente racista» para querer una ciudad segregada, y aun así la ciudad se segrega. Esta disociación entre micro-preferencia y macro-resultado es justamente la lección de la Sub-pestaña 3, y hace de Schelling la primera demo interactiva de la biblioteca (deslizador en τ, índice de segregación en vivo, formación visible de clusters)."
+                : "The startling result: even a mild own-type preference (e.g. τ=1/3 to 1/2, agents happy to live in a one-third or half minority) drives the system to strong global segregation, with a segregation index (mean fraction of like-neighbors) far above what any agent demands. Segregation is an emergent, unintended macro-state: no agent is “racist enough” to want a segregated city, yet the city segregates. This dissociation between micro-preference and macro-outcome is exactly the lesson of Sub-tab 3, and it makes Schelling the lab's first interactive demo (slider on τ, live segregation index, visible cluster formation)."}
             </p>
             <p>
               {es
@@ -722,8 +722,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ul>
               {[
                 es
-                  ? "Dos tipos, una sola tolerancia — la forma clásica ignora gradientes de intensidad, ingreso, escuelas, etc."
-                  : "Two types, single tolerance — the classic form ignores intensity gradients, income, schools, etc.",
+                  ? "Dos tipos, una sola tolerancia, la forma clásica ignora gradientes de intensidad, ingreso, escuelas, etc."
+                  : "Two types, single tolerance, the classic form ignores intensity gradients, income, schools, etc.",
                 es
                   ? "Solo percepción local (vecindario de Moore/von Neumann); sin información global."
                   : "Local sensing only (Moore/von Neumann neighborhood); no global information.",
@@ -731,8 +731,8 @@ export function AbmTheory({ es }: { es: boolean }) {
                   ? "Se requieren celdas vacías para la movilidad; la densidad afecta si el equilibrio es alcanzable."
                   : "Empty cells required for mobility; density affects whether equilibrium is reachable.",
                 es
-                  ? "El resultado depende de la regla de reubicación (aleatoria vs. satisfactoria más cercana) y del régimen de activación — reportarlo."
-                  : "Outcome depends on relocation rule (random vs. nearest-satisfactory) and on activation regime — report it.",
+                  ? "El resultado depende de la regla de reubicación (aleatoria vs. satisfactoria más cercana) y del régimen de activación, reportarlo."
+                  : "Outcome depends on relocation rule (random vs. nearest-satisfactory) and on activation regime, report it.",
               ].map((x, i) => (
                 <li key={i}>{x}</li>
               ))}
@@ -764,8 +764,8 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "El número reproductivo básico — el número esperado de infecciones secundarias a partir de un individuo infeccioso en una población totalmente susceptible — es:"
-                : "The basic reproduction number — the expected number of secondary infections from one infectious individual in a fully susceptible population — is:"}
+                ? "El número reproductivo básico, el número esperado de infecciones secundarias a partir de un individuo infeccioso en una población totalmente susceptible, es:"
+                : "The basic reproduction number, the expected number of secondary infections from one infectious individual in a fully susceptible population, is:"}
             </p>
           </div>
 
@@ -794,8 +794,8 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "La versión de agentes. En la implementación del laboratorio sobre Mesa 3 (mesa.space.SingleGrid, un agente mesa.Agent por celda), cada celda lleva un estado de salud discreto ∈{S,I,R} sobre una retícula con vecindarios de Moore. En cada tick, una celda susceptible se infecta con probabilidad 1−(1−β)^k a partir de sus k vecinos infectados, y una celda infectada se recupera con probabilidad γ por tick (de modo que el período infeccioso medio es 1/γ ticks). Bajo mezcla suficiente y N grande, estas micro-reglas reproducen la EDO anterior — el grado de vecindario de Moore juega el papel de ⟨k⟩, de modo que la β efectiva ≈ ⟨k⟩·β_por-contacto y la tasa de recuperación ≈ γ — lo que permite comparar el modelo de agentes contra el R₀ cerrado, el umbral de inmunidad de rebaño y la curva de tamaño final. El valor del modelo de agentes está justamente donde la EDO falla: estructura espacial (el clustering en la grilla baja el R₀ efectivo y la tasa de ataque por debajo de la predicción de mezcla perfecta), discretitud (extinción estocástica cuando I es pequeño aun con R₀>1) y heterogeneidad local. El rédito didáctico es mostrar las corridas de agentes apartándose de la EDO de campo medio porque el contagio sólo viaja entre vecinos espaciales, no entre pares cualesquiera."
-                : "The agent version. In the lab's Mesa 3 implementation (mesa.space.SingleGrid, one mesa.Agent per cell), each cell carries a discrete health state ∈{S,I,R} on a lattice with Moore neighborhoods. On each tick a susceptible cell becomes infected with probability 1−(1−β)^k from its k infected neighbors, and an infected cell recovers with probability γ per tick (so the mean infectious period is 1/γ ticks). Under sufficient mixing and large N these micro-rules reproduce the ODE above — the Moore-neighborhood degree plays the role of ⟨k⟩, so the effective β ≈ ⟨k⟩·β_per-contact and the recovery rate ≈ γ — letting one compare the agent model against the closed-form R₀, herd-immunity threshold, and final-size curve. The agent model's value is precisely where the ODE fails: spatial structure (grid clustering lowers the effective R₀ and the attack rate below the well-mixed prediction), discreteness (stochastic fade-out when I is small even with R₀>1), and local heterogeneity. The didactic payoff is showing the agent runs departing from the mean-field ODE because contagion only travels between spatial neighbors, not between arbitrary pairs."}
+                ? "La versión de agentes. En la implementación del laboratorio sobre Mesa 3 (mesa.space.SingleGrid, un agente mesa.Agent por celda), cada celda lleva un estado de salud discreto ∈{S,I,R} sobre una retícula con vecindarios de Moore. En cada tick, una celda susceptible se infecta con probabilidad 1−(1−β)^k a partir de sus k vecinos infectados, y una celda infectada se recupera con probabilidad γ por tick (de modo que el período infeccioso medio es 1/γ ticks). Bajo mezcla suficiente y N grande, estas micro-reglas reproducen la EDO anterior, el grado de vecindario de Moore juega el papel de ⟨k⟩, de modo que la β efectiva ≈ ⟨k⟩·β_por-contacto y la tasa de recuperación ≈ γ, lo que permite comparar el modelo de agentes contra el R₀ cerrado, el umbral de inmunidad de rebaño y la curva de tamaño final. El valor del modelo de agentes está justamente donde la EDO falla: estructura espacial (el clustering en la grilla baja el R₀ efectivo y la tasa de ataque por debajo de la predicción de mezcla perfecta), discretitud (extinción estocástica cuando I es pequeño aun con R₀>1) y heterogeneidad local. El rédito didáctico es mostrar las corridas de agentes apartándose de la EDO de campo medio porque el contagio sólo viaja entre vecinos espaciales, no entre pares cualesquiera."
+                : "The agent version. In the lab's Mesa 3 implementation (mesa.space.SingleGrid, one mesa.Agent per cell), each cell carries a discrete health state ∈{S,I,R} on a lattice with Moore neighborhoods. On each tick a susceptible cell becomes infected with probability 1−(1−β)^k from its k infected neighbors, and an infected cell recovers with probability γ per tick (so the mean infectious period is 1/γ ticks). Under sufficient mixing and large N these micro-rules reproduce the ODE above, the Moore-neighborhood degree plays the role of ⟨k⟩, so the effective β ≈ ⟨k⟩·β_per-contact and the recovery rate ≈ γ, letting one compare the agent model against the closed-form R₀, herd-immunity threshold, and final-size curve. The agent model's value is precisely where the ODE fails: spatial structure (grid clustering lowers the effective R₀ and the attack rate below the well-mixed prediction), discreteness (stochastic fade-out when I is small even with R₀>1), and local heterogeneity. The didactic payoff is showing the agent runs departing from the mean-field ODE because contagion only travels between spatial neighbors, not between arbitrary pairs."}
             </p>
           </div>
 
@@ -873,8 +873,8 @@ export function AbmTheory({ es }: { es: boolean }) {
                   ? "Población cerrada, sin demografía (sin nacimientos/muertes) en la escala de tiempo de la epidemia; N constante."
                   : "Closed population, no demography (no births/deaths) over the epidemic timescale; constant N.",
                 es
-                  ? "Acción de masas / mezcla perfecta en la forma EDO — todo par igualmente probable de contactarse (el supuesto que el modelo de agentes existe para relajar)."
-                  : "Mass action / well-mixed in the ODE form — every pair equally likely to contact (the assumption the agent model exists to relax).",
+                  ? "Acción de masas / mezcla perfecta en la forma EDO, todo par igualmente probable de contactarse (el supuesto que el modelo de agentes existe para relajar)."
+                  : "Mass action / well-mixed in the ODE form, every pair equally likely to contact (the assumption the agent model exists to relax).",
                 es
                   ? "Tasas constantes β, γ; inmunidad permanente (sin S←R; para pérdida de inmunidad, añadir un término SIRS)."
                   : "Constant rates β, γ; permanent immunity (no S←R; for waning add an SIRS term).",
@@ -905,24 +905,24 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ol>
               <li>
                 {es
-                  ? "Separación — dirigirse para evitar amontonarse con los compañeros locales (repulsión de corto alcance)."
-                  : "Separation — steer to avoid crowding local flockmates (short-range repulsion)."}
+                  ? "Separación, dirigirse para evitar amontonarse con los compañeros locales (repulsión de corto alcance)."
+                  : "Separation, steer to avoid crowding local flockmates (short-range repulsion)."}
               </li>
               <li>
                 {es
-                  ? "Alineación — dirigirse hacia el rumbo (velocidad) medio de los compañeros locales."
-                  : "Alignment — steer toward the average heading (velocity) of local flockmates."}
+                  ? "Alineación, dirigirse hacia el rumbo (velocidad) medio de los compañeros locales."
+                  : "Alignment, steer toward the average heading (velocity) of local flockmates."}
               </li>
               <li>
                 {es
-                  ? "Cohesión — dirigirse hacia la posición media (centro de masa) de los compañeros locales."
-                  : "Cohesion — steer toward the average position (center of mass) of local flockmates."}
+                  ? "Cohesión, dirigirse hacia la posición media (centro de masa) de los compañeros locales."
+                  : "Cohesion, steer toward the average position (center of mass) of local flockmates."}
               </li>
             </ol>
             <p>
               {es
-                ? "Cada regla produce un vector de aceleración; la dirección del boid es una suma ponderada, limitada por una fuerza y una velocidad máximas. La bandada emergente es fluida, se divide y se reúne alrededor de obstáculos, y fue célebremente usada para los enjambres de murciélagos en Batman Returns (1992) — una demostración contundente de que el movimiento colectivo complejo no necesita un controlador central, solo reglas locales: la emergencia prototípica de la Sub-pestaña 3 en espacio continuo."
-                : "Each rule yields an acceleration vector; the boid's steering is a weighted sum, capped by a maximum force and speed. The emergent flock is fluid, splits and merges around obstacles, and was famously used for the bat swarms in Batman Returns (1992) — a striking demonstration that complex collective motion needs no central controller, only local rules, the prototypical Sub-tab 3 emergence in continuous space."}
+                ? "Cada regla produce un vector de aceleración; la dirección del boid es una suma ponderada, limitada por una fuerza y una velocidad máximas. La bandada emergente es fluida, se divide y se reúne alrededor de obstáculos, y fue célebremente usada para los enjambres de murciélagos en Batman Returns (1992), una demostración contundente de que el movimiento colectivo complejo no necesita un controlador central, solo reglas locales: la emergencia prototípica de la Sub-pestaña 3 en espacio continuo."
+                : "Each rule yields an acceleration vector; the boid's steering is a weighted sum, capped by a maximum force and speed. The emergent flock is fluid, splits and merges around obstacles, and was famously used for the bat swarms in Batman Returns (1992), a striking demonstration that complex collective motion needs no central controller, only local rules, the prototypical Sub-tab 3 emergence in continuous space."}
             </p>
           </div>
 
@@ -1010,17 +1010,17 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ul>
               {[
                 es
-                  ? "Solo percepción local — el radio y el campo de visión definen el vecindario; los resultados dependen de ambos."
-                  : "Local perception only — radius and FOV define the neighborhood; results depend on both.",
+                  ? "Solo percepción local, el radio y el campo de visión definen el vecindario; los resultados dependen de ambos."
+                  : "Local perception only, radius and FOV define the neighborhood; results depend on both.",
                 es
-                  ? "Suma ponderada de tres aceleraciones — los pesos relativos sintonizan el régimen (bandada apretada vs. suelta); ningún conjunto de pesos es «correcto», son perillas de modelado."
-                  : "Weighted sum of three accelerations — relative weights tune the regime (tight vs. loose flock); no weight set is “correct,” they are modeling knobs.",
+                  ? "Suma ponderada de tres aceleraciones, los pesos relativos sintonizan el régimen (bandada apretada vs. suelta); ningún conjunto de pesos es «correcto», son perillas de modelado."
+                  : "Weighted sum of three accelerations, relative weights tune the regime (tight vs. loose flock); no weight set is “correct,” they are modeling knobs.",
                 es
                   ? "Se requieren topes de fuerza/velocidad para un movimiento estable; el paso de integración afecta la estabilidad."
                   : "Force/speed caps required for stable motion; integration step affects stability.",
                 es
-                  ? "Puramente conductual/descriptivo — los Boids reproducen la apariencia del flocking, no la biomecánica ni la biología de decisión de animales reales."
-                  : "Purely behavioral/descriptive — Boids reproduce appearance of flocking, not the biomechanics or decision biology of real animals.",
+                  ? "Puramente conductual/descriptivo, los Boids reproducen la apariencia del flocking, no la biomecánica ni la biología de decisión de animales reales."
+                  : "Purely behavioral/descriptive, Boids reproduce appearance of flocking, not the biomechanics or decision biology of real animals.",
               ].map((x, i) => (
                 <li key={i}>{x}</li>
               ))}
@@ -1039,13 +1039,13 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "Sugarscape, del libro de Epstein y Axtell Growing Artificial Societies: Social Science from the Bottom Up (MIT Press / Brookings, 1996), es el ABM fundacional de la ciencia social generativa: hace crecer fenómenos macro-sociales — distribuciones de riqueza sesgadas, migración, comercio, transmisión cultural, combate, enfermedad — a partir de agentes que siguen unas pocas reglas locales simples sobre un paisaje de recursos. El entorno es una grilla de celdas, cada una con una capacidad de azúcar y un nivel actual que se regenera con el tiempo. Cada agente tiene atributos genéticos fijos: visión (qué tan lejos ve a lo largo de los ejes), metabolismo (azúcar quemada por paso) y una dotación de azúcar almacenada (riqueza)."
-                : "Sugarscape, from Epstein & Axtell's Growing Artificial Societies: Social Science from the Bottom Up (MIT Press / Brookings, 1996), is the foundational generative social science ABM: it grows macro-social phenomena — skewed wealth distributions, migration, trade, cultural transmission, combat, disease — from agents following a few simple local rules on a resource landscape. The environment is a grid of cells, each with a sugar capacity and current sugar level that regrows over time. Each agent has fixed genetic attributes: vision (how far it can see along the axes), metabolism (sugar burned per step), and an endowment of stored sugar (wealth)."}
+                ? "Sugarscape, del libro de Epstein y Axtell Growing Artificial Societies: Social Science from the Bottom Up (MIT Press / Brookings, 1996), es el ABM fundacional de la ciencia social generativa: hace crecer fenómenos macro-sociales, distribuciones de riqueza sesgadas, migración, comercio, transmisión cultural, combate, enfermedad, a partir de agentes que siguen unas pocas reglas locales simples sobre un paisaje de recursos. El entorno es una grilla de celdas, cada una con una capacidad de azúcar y un nivel actual que se regenera con el tiempo. Cada agente tiene atributos genéticos fijos: visión (qué tan lejos ve a lo largo de los ejes), metabolismo (azúcar quemada por paso) y una dotación de azúcar almacenada (riqueza)."
+                : "Sugarscape, from Epstein & Axtell's Growing Artificial Societies: Social Science from the Bottom Up (MIT Press / Brookings, 1996), is the foundational generative social science ABM: it grows macro-social phenomena, skewed wealth distributions, migration, trade, cultural transmission, combat, disease, from agents following a few simple local rules on a resource landscape. The environment is a grid of cells, each with a sugar capacity and current sugar level that regrows over time. Each agent has fixed genetic attributes: vision (how far it can see along the axes), metabolism (sugar burned per step), and an endowment of stored sugar (wealth)."}
             </p>
             <p>
               {es
-                ? "La regla de movimiento base, M, es local y voraz: mira hasta el límite de su visión en las cuatro direcciones de la retícula, identifica la celda desocupada con más azúcar, muévete allí y cosecha toda su azúcar. En cada paso, la riqueza del agente cambia según el azúcar cosechada menos el metabolismo; un agente cuya riqueza llega a cero muere (inanición). De este montaje mínimo emerge una distribución de riqueza robusta y muy sesgada (una desigualdad tipo Pareto / Gini alto) puramente por la heterogeneidad en visión, metabolismo y posición — no por una regla que prescriba la desigualdad. Al añadir más reglas (reemplazo/reproducción, estaciones, contaminación, un segundo recurso «especia» con comercio, combate, cultura y enfermedad transmisibles) se generan los fenómenos sociales correspondientes, todos de abajo hacia arriba. Sugarscape es el ejemplo canónico de emergencia impulsada por recursos y de la planificación por etapas (Sub-pestaña 2); se trata aquí como modelo de referencia, no como un escenario que el laboratorio ejecute en vivo."
-                : "The base movement rule, M, is local and greedy: look out to the limit of your vision along the four lattice directions, identify the unoccupied cell with the most sugar, move there, and harvest all its sugar. Each step the agent's wealth changes by harvested sugar minus metabolism; an agent whose wealth hits zero dies (starvation). From this minimal setup a robust, highly skewed wealth distribution emerges (a Pareto-like / Gini-large inequality) purely from heterogeneity in vision, metabolism, and position — not from any rule that prescribes inequality. Layering further rules (replacement/reproduction, seasons, pollution, a second resource “spice” with trade, combat, transmissible culture and disease) generates the corresponding social phenomena, all bottom-up. Sugarscape is the canonical exemplar of resource-driven emergence and of staged scheduling (Sub-tab 2); it is treated here as a reference model, not as a scenario the lab runs live."}
+                ? "La regla de movimiento base, M, es local y voraz: mira hasta el límite de su visión en las cuatro direcciones de la retícula, identifica la celda desocupada con más azúcar, muévete allí y cosecha toda su azúcar. En cada paso, la riqueza del agente cambia según el azúcar cosechada menos el metabolismo; un agente cuya riqueza llega a cero muere (inanición). De este montaje mínimo emerge una distribución de riqueza robusta y muy sesgada (una desigualdad tipo Pareto / Gini alto) puramente por la heterogeneidad en visión, metabolismo y posición, no por una regla que prescriba la desigualdad. Al añadir más reglas (reemplazo/reproducción, estaciones, contaminación, un segundo recurso «especia» con comercio, combate, cultura y enfermedad transmisibles) se generan los fenómenos sociales correspondientes, todos de abajo hacia arriba. Sugarscape es el ejemplo canónico de emergencia impulsada por recursos y de la planificación por etapas (Sub-pestaña 2); se trata aquí como modelo de referencia, no como un escenario que el laboratorio ejecute en vivo."
+                : "The base movement rule, M, is local and greedy: look out to the limit of your vision along the four lattice directions, identify the unoccupied cell with the most sugar, move there, and harvest all its sugar. Each step the agent's wealth changes by harvested sugar minus metabolism; an agent whose wealth hits zero dies (starvation). From this minimal setup a robust, highly skewed wealth distribution emerges (a Pareto-like / Gini-large inequality) purely from heterogeneity in vision, metabolism, and position, not from any rule that prescribes inequality. Layering further rules (replacement/reproduction, seasons, pollution, a second resource “spice” with trade, combat, transmissible culture and disease) generates the corresponding social phenomena, all bottom-up. Sugarscape is the canonical exemplar of resource-driven emergence and of staged scheduling (Sub-tab 2); it is treated here as a reference model, not as a scenario the lab runs live."}
             </p>
           </div>
 
@@ -1111,8 +1111,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             </svg>
             <figcaption className="fig-cap">
               {es
-                ? "Izquierda: la regla M voraz — el agente mira en los cuatro ejes y se mueve a la celda libre con más azúcar. Derecha: la curva de Lorenz que se hunde bajo la línea de igualdad; el área entre ambas es el coeficiente de Gini emergente."
-                : "Left: the greedy rule M — the agent looks along the four axes and moves to the free cell with the most sugar. Right: the Lorenz curve sagging below the equality line; the area between them is the emergent Gini coefficient."}
+                ? "Izquierda: la regla M voraz, el agente mira en los cuatro ejes y se mueve a la celda libre con más azúcar. Derecha: la curva de Lorenz que se hunde bajo la línea de igualdad; el área entre ambas es el coeficiente de Gini emergente."
+                : "Left: the greedy rule M, the agent looks along the four axes and moves to the free cell with the most sugar. Right: the Lorenz curve sagging below the equality line; the area between them is the emergent Gini coefficient."}
             </figcaption>
           </figure>
 
@@ -1146,14 +1146,14 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ul>
               {[
                 es
-                  ? "Estilizado, no empírico — Sugarscape demuestra mecanismos (la desigualdad puede surgir de la heterogeneidad); no es un modelo calibrado de ninguna economía real."
-                  : "Stylized, not empirical — Sugarscape demonstrates mechanisms (inequality can arise from heterogeneity); it is not a calibrated model of any real economy.",
+                  ? "Estilizado, no empírico, Sugarscape demuestra mecanismos (la desigualdad puede surgir de la heterogeneidad); no es un modelo calibrado de ninguna economía real."
+                  : "Stylized, not empirical, Sugarscape demonstrates mechanisms (inequality can arise from heterogeneity); it is not a calibrated model of any real economy.",
                 es
-                  ? "Optimización local voraz — la regla base no tiene previsión, planificación ni interacción estratégica."
-                  : "Greedy local optimization — the base rule has no foresight, planning, or strategic interaction.",
+                  ? "Optimización local voraz, la regla base no tiene previsión, planificación ni interacción estratégica."
+                  : "Greedy local optimization, the base rule has no foresight, planning, or strategic interaction.",
                 es
-                  ? "Grilla discreta + visión solo en los ejes — la geometría moldea los resultados; estos no son invariantes a la rotación."
-                  : "Discrete grid + axis-only vision — geometry shapes outcomes; results are not rotation-invariant.",
+                  ? "Grilla discreta + visión solo en los ejes, la geometría moldea los resultados; estos no son invariantes a la rotación."
+                  : "Discrete grid + axis-only vision, geometry shapes outcomes; results are not rotation-invariant.",
                 es
                   ? "Las variantes de reglas ricas multiplican parámetros rápido (la equifinalidad, Sub-pestaña 5, acecha en cuanto se añade comercio/combate)."
                   : "Rich-rule variants multiply parameters fast (equifinality, Sub-tab 5, looms once trade/combat are added).",
@@ -1175,62 +1175,62 @@ export function AbmTheory({ es }: { es: boolean }) {
           <div className="prose">
             <p>
               {es
-                ? "Los escenarios de agentes de este laboratorio se ejecutan sobre Mesa 3, el marco de ABM en Python de referencia (Kazil, Masad y Crooks 2020; originalmente Masad y Kazil 2015; Mesa 3 en ter Hoeven et al. 2025). S02 Schelling, S03 SIR y S05 Beer Game están construidos con sus abstracciones reales — mesa.Agent para las entidades, mesa.Model para el mundo, mesa.space.SingleGrid para las grillas (S02/S03; el Beer Game es una red serial sin espacio) y el AgentSet del modelo (self.agents) para la activación. El patrón concreto en el código es:"
-                : "This lab's agent scenarios run on Mesa 3, the reference Python ABM framework (Kazil, Masad & Crooks 2020; originally Masad & Kazil 2015; Mesa 3 in ter Hoeven et al. 2025). S02 Schelling, S03 SIR and S05 Beer Game are built on its real abstractions — mesa.Agent for the entities, mesa.Model for the world, mesa.space.SingleGrid for the grids (S02/S03; the Beer Game is a serial network with no space), and the model's AgentSet (self.agents) for activation. The concrete pattern in the code is:"}
+                ? "Los escenarios de agentes de este laboratorio se ejecutan sobre Mesa 3, el marco de ABM en Python de referencia (Kazil, Masad y Crooks 2020; originalmente Masad y Kazil 2015; Mesa 3 en ter Hoeven et al. 2025). S02 Schelling, S03 SIR y S05 Beer Game están construidos con sus abstracciones reales, mesa.Agent para las entidades, mesa.Model para el mundo, mesa.space.SingleGrid para las grillas (S02/S03; el Beer Game es una red serial sin espacio) y el AgentSet del modelo (self.agents) para la activación. El patrón concreto en el código es:"
+                : "This lab's agent scenarios run on Mesa 3, the reference Python ABM framework (Kazil, Masad & Crooks 2020; originally Masad & Kazil 2015; Mesa 3 in ter Hoeven et al. 2025). S02 Schelling, S03 SIR and S05 Beer Game are built on its real abstractions, mesa.Agent for the entities, mesa.Model for the world, mesa.space.SingleGrid for the grids (S02/S03; the Beer Game is a serial network with no space), and the model's AgentSet (self.agents) for activation. The concrete pattern in the code is:"}
             </p>
             <ul>
               <li>
                 {es
-                  ? "Subclase de mesa.Agent — cada hogar (S02), celda (S03) o eslabón (S05) es un mesa.Agent con su estado propio (grupo, estado de salud, pronóstico) y su regla local; al construirse con super().__init__(model) Mesa lo registra solo en model.agents y le asigna un unique_id."
-                  : "Subclass mesa.Agent — each household (S02), cell (S03) or echelon (S05) is a mesa.Agent carrying its own state (group, health state, forecast) and its local rule; built with super().__init__(model), Mesa registers it into model.agents and assigns a unique_id automatically."}
+                  ? "Subclase de mesa.Agent, cada hogar (S02), celda (S03) o eslabón (S05) es un mesa.Agent con su estado propio (grupo, estado de salud, pronóstico) y su regla local; al construirse con super().__init__(model) Mesa lo registra solo en model.agents y le asigna un unique_id."
+                  : "Subclass mesa.Agent, each household (S02), cell (S03) or echelon (S05) is a mesa.Agent carrying its own state (group, health state, forecast) and its local rule; built with super().__init__(model), Mesa registers it into model.agents and assigns a unique_id automatically."}
               </li>
               <li>
                 {es
-                  ? "Subclase de mesa.Model con un espacio Mesa — el mundo es un mesa.Model; S02/S03 usan mesa.space.SingleGrid (un agente por celda, vecindarios de Moore vía grid.iter_neighbors(..., moore=True)), mientras que el Beer Game prescinde del espacio por ser una red serial de cuatro etapas."
-                  : "Subclass mesa.Model with a Mesa space — the world is a mesa.Model; S02/S03 use mesa.space.SingleGrid (one agent per cell, Moore neighborhoods via grid.iter_neighbors(..., moore=True)), while the Beer Game drops the space because it is a four-stage serial network."}
+                  ? "Subclase de mesa.Model con un espacio Mesa, el mundo es un mesa.Model; S02/S03 usan mesa.space.SingleGrid (un agente por celda, vecindarios de Moore vía grid.iter_neighbors(..., moore=True)), mientras que el Beer Game prescinde del espacio por ser una red serial de cuatro etapas."
+                  : "Subclass mesa.Model with a Mesa space, the world is a mesa.Model; S02/S03 use mesa.space.SingleGrid (one agent per cell, Moore neighborhoods via grid.iter_neighbors(..., moore=True)), while the Beer Game drops the space because it is a four-stage serial network."}
               </li>
               <li>
                 {es
-                  ? "Activación por el AgentSet (self.agents) — para los escenarios en grilla (S02/S03) una actualización en bloque (batch update): el paso del modelo recorre self.agents (el AgentSet de Mesa 3, sin los planificadores eliminados de Mesa 2), decide todas las transiciones contra la configuración del inicio del paso y las aplica en bloque; el matiz por escenario importa: en S02 (Schelling) los agentes descontentos se reubican uno a uno en el pool de vacías que crece (movimientos secuenciales), en S03 (SIR) las celdas cambian de estado de forma sincrónica, y S05 (Beer Game) en cambio ejecuta una cascada serial de orden fijo — sus cuatro eslabones actúan por turno (aguas abajo-a-aguas arriba), cada uno sobre el pedido que recibe ese tick, no un lote del inicio del paso. Toda la aleatoriedad fluye por el RNG sembrado de Mesa (Model(rng=seed) siembra self.random y self.rng), así run(params, seed) es una función pura — la base del visor de reproducción determinista."
-                  : "Activation via the AgentSet (self.agents) — for the grid scenarios (S02/S03) a batch update: the model's step iterates self.agents (Mesa 3's AgentSet, without Mesa 2's removed schedulers), decides every transition against the start-of-step configuration, then applies them in a batch; the per-scenario nuance matters: in S02 (Schelling) the unhappy agents relocate one-by-one into the growing empty pool (sequential moves), in S03 (SIR) the cells flip state synchronously, and S05 (Beer Game) instead runs a fixed-order serial cascade — its four echelons act in turn (downstream-to-upstream), each on the order received that tick, not a start-of-step batch. All randomness flows through Mesa's seeded RNG (Model(rng=seed) seeds self.random and self.rng), so run(params, seed) is a pure function — the basis of the deterministic-replay viewer."}
+                  ? "Activación por el AgentSet (self.agents), para los escenarios en grilla (S02/S03) una actualización en bloque (batch update): el paso del modelo recorre self.agents (el AgentSet de Mesa 3, sin los planificadores eliminados de Mesa 2), decide todas las transiciones contra la configuración del inicio del paso y las aplica en bloque; el matiz por escenario importa: en S02 (Schelling) los agentes descontentos se reubican uno a uno en el pool de vacías que crece (movimientos secuenciales), en S03 (SIR) las celdas cambian de estado de forma sincrónica, y S05 (Beer Game) en cambio ejecuta una cascada serial de orden fijo, sus cuatro eslabones actúan por turno (aguas abajo-a-aguas arriba), cada uno sobre el pedido que recibe ese tick, no un lote del inicio del paso. Toda la aleatoriedad fluye por el RNG sembrado de Mesa (Model(rng=seed) siembra self.random y self.rng), así run(params, seed) es una función pura, la base del visor de reproducción determinista."
+                  : "Activation via the AgentSet (self.agents), for the grid scenarios (S02/S03) a batch update: the model's step iterates self.agents (Mesa 3's AgentSet, without Mesa 2's removed schedulers), decides every transition against the start-of-step configuration, then applies them in a batch; the per-scenario nuance matters: in S02 (Schelling) the unhappy agents relocate one-by-one into the growing empty pool (sequential moves), in S03 (SIR) the cells flip state synchronously, and S05 (Beer Game) instead runs a fixed-order serial cascade, its four echelons act in turn (downstream-to-upstream), each on the order received that tick, not a start-of-step batch. All randomness flows through Mesa's seeded RNG (Model(rng=seed) seeds self.random and self.rng), so run(params, seed) is a pure function, the basis of the deterministic-replay viewer."}
               </li>
             </ul>
             <p>
               {es
-                ? "Eso vale para los tres modelos del laboratorio, y las mismas abstracciones de Mesa son las que lo llevan más allá cuando un modelo propio crece. Lo que el marco ofrece — y lo que justifica elegirlo tanto aquí como en un proyecto propio — es:"
-                : "That holds for all three of the lab's models, and the same Mesa abstractions are what carry it further as your own model grows. What the framework offers — and what justifies choosing it both here and for your own work — is:"}
+                ? "Eso vale para los tres modelos del laboratorio, y las mismas abstracciones de Mesa son las que lo llevan más allá cuando un modelo propio crece. Lo que el marco ofrece, y lo que justifica elegirlo tanto aquí como en un proyecto propio, es:"
+                : "That holds for all three of the lab's models, and the same Mesa abstractions are what carry it further as your own model grows. What the framework offers, and what justifies choosing it both here and for your own work, is:"}
             </p>
             <ul>
               <li>
                 {es
-                  ? "Clases base Model y Agent — se hereda de Agent (dándole estado y un método step() que codifica su regla local) y de Model (que contiene la población de agentes, el entorno y el planificador) — útil cuando los agentes son heterogéneos y no se reducen a una sola operación de grilla."
-                  : "Model and Agent base classes — subclass Agent (giving it state and a step() method encoding its local rule) and Model (holding the agent population, the environment, and the schedule) — useful when agents are heterogeneous and do not reduce to a single grid operation."}
+                  ? "Clases base Model y Agent, se hereda de Agent (dándole estado y un método step() que codifica su regla local) y de Model (que contiene la población de agentes, el entorno y el planificador), útil cuando los agentes son heterogéneos y no se reducen a una sola operación de grilla."
+                  : "Model and Agent base classes, subclass Agent (giving it state and a step() method encoding its local rule) and Model (holding the agent population, the environment, and the schedule), useful when agents are heterogeneous and do not reduce to a single grid operation."}
               </li>
               <li>
                 {es
-                  ? "Módulos de espacio — grillas (SingleGrid, MultiGrid, con vecindarios de Moore/von Neumann), ContinuousSpace (p. ej. para Boids), HexGrid y espacios de red — que proveen el entorno de la Sub-pestaña 1 sin reimplementarlo."
-                  : "Space modules — grids (SingleGrid, MultiGrid, with Moore/von Neumann neighborhoods), ContinuousSpace (e.g. for Boids), HexGrid, and network spaces — supplying the environment of Sub-tab 1 without reimplementing it."}
+                  ? "Módulos de espacio, grillas (SingleGrid, MultiGrid, con vecindarios de Moore/von Neumann), ContinuousSpace (p. ej. para Boids), HexGrid y espacios de red, que proveen el entorno de la Sub-pestaña 1 sin reimplementarlo."
+                  : "Space modules, grids (SingleGrid, MultiGrid, with Moore/von Neumann neighborhoods), ContinuousSpace (e.g. for Boids), HexGrid, and network spaces, supplying the environment of Sub-tab 1 without reimplementing it."}
               </li>
               <li>
                 {es
-                  ? "Regímenes de activación — históricamente los planificadores RandomActivation, SimultaneousActivation y StagedActivation del módulo time (Mesa 3 los generaliza mediante métodos de activación de AgentSet como shuffle_do y do) — la realización directa de la Sub-pestaña 2 cuando se necesita elegir y alternar el orden de actualización."
-                  : "Activation regimes — historically the time module's RandomActivation, SimultaneousActivation, and StagedActivation schedulers (Mesa 3 generalizes these via AgentSet activation methods like shuffle_do and do) — the direct realization of Sub-tab 2 for choosing and switching the update order."}
+                  ? "Regímenes de activación, históricamente los planificadores RandomActivation, SimultaneousActivation y StagedActivation del módulo time (Mesa 3 los generaliza mediante métodos de activación de AgentSet como shuffle_do y do), la realización directa de la Sub-pestaña 2 cuando se necesita elegir y alternar el orden de actualización."
+                  : "Activation regimes, historically the time module's RandomActivation, SimultaneousActivation, and StagedActivation schedulers (Mesa 3 generalizes these via AgentSet activation methods like shuffle_do and do), the direct realization of Sub-tab 2 for choosing and switching the update order."}
               </li>
               <li>
                 {es
-                  ? "DataCollector — registra variables a nivel de modelo y de agente en cada paso, en tablas ordenadas para el análisis de ensembles que exige la Sub-pestaña 5."
-                  : "DataCollector — records model- and agent-level variables each step into tidy tables for the ensemble analysis Sub-tab 5 requires."}
+                  ? "DataCollector, registra variables a nivel de modelo y de agente en cada paso, en tablas ordenadas para el análisis de ensembles que exige la Sub-pestaña 5."
+                  : "DataCollector, records model- and agent-level variables each step into tidy tables for the ensemble analysis Sub-tab 5 requires."}
               </li>
               <li>
                 {es
-                  ? "Visualización — un servidor interactivo en navegador (deslizadores de parámetros + gráficos y grillas en vivo) para prototipar modelos rápidamente."
-                  : "Visualization — a browser-based interactive server (parameter sliders + live plots and grids) for prototyping models quickly."}
+                  ? "Visualización, un servidor interactivo en navegador (deslizadores de parámetros + gráficos y grillas en vivo) para prototipar modelos rápidamente."
+                  : "Visualization, a browser-based interactive server (parameter sliders + live plots and grids) for prototyping models quickly."}
               </li>
             </ul>
             <p>
               {es
-                ? "Un matiz de despliegue honesto: el cierre de wheels de Mesa (numpy + mesa, con pandas/scipy/networkx/sqlite3 como dependencias) sí carga en Pyodide — fue medido, no asumido — así que el ABM se re-ejecuta en vivo en el navegador (S02 Schelling, S03 SIR, S05 Beer Game), con un arranque en frío de ≈3 s durante el cual una traza canónica registrada pinta el primer cuadro al instante. Las colas DES (SimPy: S01 Banco/Clínica, S04 Urgencias) también se ejecutan en vivo. Lo único que se precomputa son los escenarios de solver nativo (OR-Tools), que no tienen build de WebAssembly. Misma honestidad para ambas pistas: la semilla fija el resultado, la traza es la verdad, el visor la reproduce."
-                : "An honest deployment nuance: Mesa's wheel closure (numpy + mesa, with pandas/scipy/networkx/sqlite3 as dependencies) does load in Pyodide — measured, not assumed — so the ABM re-runs live in the browser (S02 Schelling, S03 SIR, S05 Beer Game), with a ~3 s cold start during which a committed canonical trace paints the first frame instantly. The DES queues (SimPy: S01 Bank/Clinic, S04 ED) also run live. The only precomputed scenarios are the native-solver ones (OR-Tools), which have no WebAssembly build. Same honesty for both lanes: the seed fixes the result, the trace is the truth, the viewer replays it."}
+                ? "Un matiz de despliegue honesto: el cierre de wheels de Mesa (numpy + mesa, con pandas/scipy/networkx/sqlite3 como dependencias) sí carga en Pyodide, fue medido, no asumido, así que el ABM se re-ejecuta en vivo en el navegador (S02 Schelling, S03 SIR, S05 Beer Game), con un arranque en frío de ≈3 s durante el cual una traza canónica registrada pinta el primer cuadro al instante. Las colas DES (SimPy: S01 Banco/Clínica, S04 Urgencias) también se ejecutan en vivo. Lo único que se precomputa son los escenarios de solver nativo (OR-Tools), que no tienen build de WebAssembly. Misma honestidad para ambas pistas: la semilla fija el resultado, la traza es la verdad, el visor la reproduce."
+                : "An honest deployment nuance: Mesa's wheel closure (numpy + mesa, with pandas/scipy/networkx/sqlite3 as dependencies) does load in Pyodide, measured, not assumed, so the ABM re-runs live in the browser (S02 Schelling, S03 SIR, S05 Beer Game), with a ~3 s cold start during which a committed canonical trace paints the first frame instantly. The DES queues (SimPy: S01 Bank/Clinic, S04 ED) also run live. The only precomputed scenarios are the native-solver ones (OR-Tools), which have no WebAssembly build. Same honesty for both lanes: the seed fixes the result, the trace is the truth, the viewer replays it."}
             </p>
           </div>
 
@@ -1286,8 +1286,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             tex={String.raw`\text{run}(\text{seed}) \ \text{is a pure function of inputs given a fixed seed and update rule.}`}
             caption={
               es
-                ? "Contrato de determinismo: dada una semilla fija (el RNG sembrado de Mesa, Model(rng=seed)) y la regla de actualización por lotes, run(seed) es función pura de las entradas — la base del visor de reproducción determinista, ya se ejecute Mesa en vivo en el navegador o desde la traza registrada."
-                : "Determinism contract: given a fixed seed (Mesa's seeded RNG, Model(rng=seed)) and the batch update rule, run(seed) is a pure function of inputs — the basis of the deterministic-replay viewer, whether Mesa runs live in the browser or from the committed trace."
+                ? "Contrato de determinismo: dada una semilla fija (el RNG sembrado de Mesa, Model(rng=seed)) y la regla de actualización por lotes, run(seed) es función pura de las entradas, la base del visor de reproducción determinista, ya se ejecute Mesa en vivo en el navegador o desde la traza registrada."
+                : "Determinism contract: given a fixed seed (Mesa's seeded RNG, Model(rng=seed)) and the batch update rule, run(seed) is a pure function of inputs, the basis of the deterministic-replay viewer, whether Mesa runs live in the browser or from the committed trace."
             }
           />
 
@@ -1296,8 +1296,8 @@ export function AbmTheory({ es }: { es: boolean }) {
             <ul>
               {[
                 es
-                  ? "Mesa 3 se ejecuta en vivo en el navegador vía Pyodide: las escenas ABM (S02 Schelling, S03 SIR, S05 Beer Game) cargan su cierre de wheels (numpy + mesa, con pandas/scipy/networkx/sqlite3 como dependencias) en el worker y se ejecutan ahí — medido, no asumido (≈3 s de arranque en frío). Mientras el runtime calienta, una traza canónica registrada pinta el primer cuadro al instante. Lo único que se precomputa son los escenarios de solver nativo (OR-Tools: S06, S08, S11), que no tienen build de WebAssembly."
-                  : "Mesa 3 runs live in the browser via Pyodide: the ABM scenes (S02 Schelling, S03 SIR, S05 Beer Game) load their wheel closure (numpy + mesa, with pandas/scipy/networkx/sqlite3 as dependencies) into the worker and execute there — measured, not assumed (~3 s cold start). While the runtime warms up, a committed canonical trace paints the first frame instantly. The only precomputed scenarios are the native-solver ones (OR-Tools: S06, S08, S11), which have no WebAssembly build.",
+                  ? "Mesa 3 se ejecuta en vivo en el navegador vía Pyodide: las escenas ABM (S02 Schelling, S03 SIR, S05 Beer Game) cargan su cierre de wheels (numpy + mesa, con pandas/scipy/networkx/sqlite3 como dependencias) en el worker y se ejecutan ahí, medido, no asumido (≈3 s de arranque en frío). Mientras el runtime calienta, una traza canónica registrada pinta el primer cuadro al instante. Lo único que se precomputa son los escenarios de solver nativo (OR-Tools: S06, S08, S11), que no tienen build de WebAssembly."
+                  : "Mesa 3 runs live in the browser via Pyodide: the ABM scenes (S02 Schelling, S03 SIR, S05 Beer Game) load their wheel closure (numpy + mesa, with pandas/scipy/networkx/sqlite3 as dependencies) into the worker and execute there, measured, not assumed (~3 s cold start). While the runtime warms up, a committed canonical trace paints the first frame instantly. The only precomputed scenarios are the native-solver ones (OR-Tools: S06, S08, S11), which have no WebAssembly build.",
                 es
                   ? "Cada escenario decide contra el estado del inicio del paso y luego lo aplica (Sub-pestaña 2): S03 es un lote sincrónico verdadero, mientras que S02 reubica a los agentes que cambian uno a uno en el nuevo estado y S05 es una cascada serial de orden fijo. Explorar activación aleatoria o por etapas sería trivial sobre el mismo AgentSet de Mesa (shuffle_do / do por etapas), pero el laboratorio no lo alterna."
                   : "Each scenario decides against the start-of-step state, then applies it (Sub-tab 2): S03 is a true synchronous batch, while S02 relocates changed agents one-by-one into the new state and S05 is a fixed-order serial cascade. Exploring random or staged activation would be trivial on the same Mesa AgentSet (shuffle_do / staged do), but the lab does not switch between them.",

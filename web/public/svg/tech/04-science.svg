@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 478" width="880" class="arch-svg" role="img" aria-label="CAOS_SIMLAB science: the real method per family — DES, ABM, Optimization, Monte-Carlo — and the deterministic-replay contract">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 478" width="880" class="arch-svg" role="img" aria-label="CAOS_SIMLAB science: the real method per family, DES, ABM, Optimization, Monte-Carlo, and the deterministic-replay contract">
   <style>
     .arch-svg text { font-family: Inter, "Segoe UI", system-ui, sans-serif; }
     .arch-svg .mono { font-family: ui-monospace, Consolas, monospace; }
@@ -17,18 +17,18 @@
 
   <!-- DES -->
   <rect class="bx bx-hi" x="14" y="50" width="426" height="168" rx="10"/>
-  <text class="ttl" x="28" y="74">DES — discrete-event</text>
+  <text class="ttl" x="28" y="74">DES, discrete-event</text>
   <text class="cd mono" x="28" y="92">SimPy (process-interaction) + Ciw</text>
   <text class="it" x="28" y="113">FEL loop: pop imminent event → advance clock → run handler</text>
   <text class="it" x="28" y="132">M/M/c queue (S01) validated against the closed form</text>
   <rect class="bx" x="28" y="142" width="398" height="30" rx="6"/>
-  <text class="eq mono" x="38" y="161">Wq = C(c, a)·(ρ / (1−ρ)) / (c·μ)   — Erlang-C</text>
+  <text class="eq mono" x="38" y="161">Wq = C(c, a)·(ρ / (1−ρ)) / (c·μ)  , Erlang-C</text>
   <text class="mu" x="28" y="194">Ciw runs 10 seeded replications as an independent second-engine cross-check.</text>
 
   <!-- ABM -->
   <rect class="bx bx-abm" x="452" y="50" width="414" height="168" rx="10"/>
-  <text class="ttl" x="466" y="74">ABM — agent-based</text>
-  <text class="cd mono" x="466" y="92">Mesa 3 — Agent / Model / AgentSet</text>
+  <text class="ttl" x="466" y="74">ABM, agent-based</text>
+  <text class="cd mono" x="466" y="92">Mesa 3, Agent / Model / AgentSet</text>
   <text class="it" x="466" y="113">each step: decide vs the start-of-step state, then apply</text>
   <text class="it" x="466" y="132">S02 relocate unhappy agents one-by-one (growing empty pool)</text>
   <text class="it" x="466" y="151">S03 flip cells synchronously · S05 fixed-order serial cascade</text>
@@ -41,7 +41,7 @@
   <text class="it" x="28" y="293">CP-SAT job-shop: interval vars + NoOverlap (S06)</text>
   <text class="it" x="28" y="312">Routing VRP + PyVRP HGS head-to-head (S08)</text>
   <rect class="bx" x="28" y="322" width="398" height="30" rx="6"/>
-  <text class="eq mono" x="38" y="341">GLOP LP: min |Σ gᵢ·xᵢ − g*·D|   — blend (S11)</text>
+  <text class="eq mono" x="38" y="341">GLOP LP: min |Σ gᵢ·xᵢ − g*·D|  , blend (S11)</text>
   <text class="mu" x="28" y="374">Haul (S07): NetworkX Dijkstra + a CP-SAT cost certificate; route flips at g*.</text>
 
   <!-- Monte-Carlo -->
@@ -52,10 +52,10 @@
   <rect class="bx" x="466" y="303" width="386" height="30" rx="6"/>
   <text class="eq mono" x="476" y="322">X̄ ± z·s/√n,   z = norm.ppf(0.975) ≈ 1.96</text>
   <text class="it" x="466" y="354">the 95% CI band tightens like 1/√n as n grows (S10)</text>
-  <text class="mu" x="466" y="382">no warm-up discard — the finite-run start-up bias is the deliberate lesson.</text>
+  <text class="mu" x="466" y="382">no warm-up discard, the finite-run start-up bias is the deliberate lesson.</text>
 
   <!-- contract banner -->
   <rect class="bx bx-hi" x="14" y="410" width="852" height="54" rx="10"/>
-  <text class="ttl" x="28" y="432">Deterministic replay — the contract across all four families</text>
+  <text class="ttl" x="28" y="432">Deterministic replay, the contract across all four families</text>
   <text class="eq mono" x="28" y="452">run = f(params, seed)  ⇒  the committed trace is the source of truth; the browser re-run matches it byte-for-byte.</text>
 </svg>

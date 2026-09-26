@@ -1,46 +1,46 @@
-# Mesa — Agent-Based Modeling (framework node)
+# Mesa: Agent-Based Modeling (framework node)
 
 **Mesa 3** is the canonical Python framework for **Agent-Based Modeling (ABM)** and this lab's default ABM
 engine. You describe many autonomous **agents** (each with state and one local `step()` rule), place them
-in a **space** (grid, network, or real geometry), choose an **activation** regime, and run time forward —
+in a **space** (grid, network, or real geometry), choose an **activation** regime, and run time forward, 
 then watch the **global pattern emerge**. Nobody programs the macro outcome: segregated neighborhoods, an
 epidemic wave, the supply-chain bullwhip effect all appear *from the interactions*. Reach for Mesa when the
 question is "what behavior will these local rules produce?", the model is small-to-medium (≤ ~1e5 agents),
-and you want clean, teachable abstractions — `Agent` / `Model` / space / `AgentSet` — that *are* the ABM
+and you want clean, teachable abstractions, `Agent` / `Model` / space / `AgentSet`, that *are* the ABM
 concepts. Reach for something else for million-agent GPU scale ([gpu-abm-chapter](./18_gpu-abm-chapter.md)),
 real maps ([mesa-geo](./05_mesa-geo.md)), or an instant zero-server in-browser classic
 ([netlogo-web](./07_netlogo-web.md)).
 
-**How this lab uses it.** Mesa **runs live in the browser via Pyodide** — it was *measured* to satisfy the
+**How this lab uses it.** Mesa **runs live in the browser via Pyodide**, it was *measured* to satisfy the
 4-gate live rule (pure-Python, run < 3 s, trace < 1 MB) with `mesa ⊆ LIVE_WHEELS`, and the worker
 `micropip.install`s it (a `sqlite3` load for `mesa.experimental` and a ~3 s cold start are the cost). The
-three ABM scenarios — **S02 Schelling**, **S03 SIR**, **S05 Beer Game** — are classified `lane: "live"` in
+three ABM scenarios, **S02 Schelling**, **S03 SIR**, **S05 Beer Game**, are classified `lane: "live"` in
 their manifests and expose a live Run button: move a slider and real Mesa 3 re-runs in the browser. The same
 models are *also* run headless and seeded in the local `.venv` to commit the canonical replay artifact (the
 deterministic first-paint trace), so the page renders instantly and a clone reproduces the run byte-for-byte;
 the live Run then re-executes the model on top of that. What Mesa cannot serve is **SolaraViz**, its
-first-class visualization — a stateful Python server bound to a localhost port, wrong for a static SPA on
+first-class visualization, a stateful Python server bound to a localhost port, wrong for a static SPA on
 GitHub Pages (zero server compute); the lab's React/SVG viewer owns the pixels instead. The `mesa.Agent` / `mesa.Model`
 subclasses are in-repo so the abstractions stay the curriculum, not a blackbox. (Note the in-repo S02 model
-drives a **manual batch update** — all unhappy agents are decided against the start-of-step configuration,
-then relocated one-by-one — rather than the generic Mesa `self.agents.shuffle_do("step")` idiom shown in the
+drives a **manual batch update**, all unhappy agents are decided against the start-of-step configuration,
+then relocated one-by-one, rather than the generic Mesa `self.agents.shuffle_do("step")` idiom shown in the
 standalone example; see [02_usage.md](./04_mesa/02_usage.md).) This split (live Mesa engine + a
 committed canonical replay; React owns the rendering) is documented in
 [03_applying.md](./04_mesa/03_applying.md).
 
 ## Read in order
 
-1. [01_installation.md](./04_mesa/01_installation.md) — the `pip install "mesa>=3.0"` floor and the exact
+1. [01_installation.md](./04_mesa/01_installation.md): the `pip install "mesa>=3.0"` floor and the exact
    committed pin **`mesa==3.5.1`**, the requirements lanes (hard-pinned in `requirements-precompute.txt`; the
    browser worker `micropip.install`s it so it also runs **live**, `mesa ⊆ LIVE_WHEELS`), key transitive deps
    (numpy 2.4.6 / pandas 3.0.3 / networkx 3.6.1 / tqdm), and platform / no-CUDA notes.
-2. [02_usage.md](./04_mesa/02_usage.md) — the real API and concepts (the four ingredients; the Mesa-2→3
+2. [02_usage.md](./04_mesa/02_usage.md): the real API and concepts (the four ingredients; the Mesa-2→3
    activation break; `rng=` seeding), the Schelling example walked through step by step, and its **real
    captured output** (re-run and verified).
-3. [03_applying.md](./04_mesa/03_applying.md) — how to *formalize* an ABM and *solve* it with Mesa, the
+3. [03_applying.md](./04_mesa/03_applying.md): how to *formalize* an ABM and *solve* it with Mesa, the
    live-Mesa-in-Pyodide lane plus the committed canonical-replay artifact, the honest trade-offs, and when
    to pick Mesa vs the alternatives.
-4. [example.py](./04_mesa/example.py) — the runnable, ruff-clean Schelling model.
+4. [example.py](./04_mesa/example.py): the runnable, ruff-clean Schelling model.
 
 Run the example from the repo root with the project venv:
 

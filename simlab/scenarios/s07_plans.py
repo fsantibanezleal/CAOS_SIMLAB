@@ -1,8 +1,8 @@
-"""Committed S07 haul-route PLANS — GENERATED, do not edit by hand.
+"""Committed S07 haul-route PLANS, GENERATED, do not edit by hand.
 
 Each entry is one haul-route plan (loaded climb + empty return node paths, the OR-Tools CP-SAT cost
 certificate, the analytic g* reference, and the route-trace render geometry) for one fixed geometry. They are
-*rendered data only* — node ids + numbers, never a raw graph — so they ship safely in the public repo and the
+*rendered data only*, node ids + numbers, never a raw graph, so they ship safely in the public repo and the
 live SimPy replay (``s07_haul.py``) loads them WITHOUT importing OR-Tools/NetworkX (no WASM build).
 
 Regenerate with:  python -m simlab.scenarios._haul_plan   (runs the native NetworkX+OR-Tools builder offline).

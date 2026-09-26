@@ -1,4 +1,4 @@
-"""Salabim M/M/1 — headless (no GUI), seeded, deterministic.
+"""Salabim M/M/1, headless (no GUI), seeded, deterministic.
 
 A tiny single-server queue (M/M/1) modelled in Salabim and run with NO display:
 ``blind_animation=True`` means the animation engine is wired up but never opens a
@@ -14,7 +14,7 @@ Why ``yieldless=False``?
     for SimPy and needs no native dependency.
 
 This is the OFFLINE/precompute lane only. Salabim's animation renders with tkinter
-(a desktop GUI) and cannot be embedded in a web page — see applying.md. The live web
+(a desktop GUI) and cannot be embedded in a web page, see applying.md. The live web
 viewer is driven by SimPy event traces instead.
 
 Run (cwd = repo root):

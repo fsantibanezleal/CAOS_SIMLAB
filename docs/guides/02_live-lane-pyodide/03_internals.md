@@ -1,12 +1,12 @@
-# 03 · Internals — worker/client split, protocol, FS write, and `verify`
+# 03 · Internals: worker/client split, protocol, FS write, and `verify`
 
 How the live lane is actually wired. Three files implement it:
 
-- [`web/src/lib/pyodide.worker.ts`](../../../web/src/lib/pyodide.worker.ts) — the Web Worker: boots Pyodide,
+- [`web/src/lib/pyodide.worker.ts`](../../../web/src/lib/pyodide.worker.ts): the Web Worker: boots Pyodide,
   loads the closure, writes the `simlab` sources, runs / verifies scenarios.
-- [`web/src/lib/pyodideClient.ts`](../../../web/src/lib/pyodideClient.ts) — the main-thread client: a lazily
+- [`web/src/lib/pyodideClient.ts`](../../../web/src/lib/pyodideClient.ts): the main-thread client: a lazily
   created singleton worker, promise-based `runLive` / `verifyLive`, and a progress subscription.
-- [`web/src/lib/pyodideProtocol.ts`](../../../web/src/lib/pyodideProtocol.ts) — the message types that cross the
+- [`web/src/lib/pyodideProtocol.ts`](../../../web/src/lib/pyodideProtocol.ts): the message types that cross the
   boundary.
 
 The Python side is [`simlab/live.py`](../../../simlab/live.py) (`run_trace_json`, `live_lanes`, `_is_live`).
@@ -15,7 +15,7 @@ The Python side is [`simlab/live.py`](../../../simlab/live.py) (`run_trace_json`
 
 A Pyodide run can take a second or more. Running it on the **Worker** keeps the UI thread responsive while the
 simulation computes; the main thread only posts requests and animates the JSON that comes back. This is also why
-the client is a **singleton** — one warm runtime is reused across runs rather than re-booting per slider move.
+the client is a **singleton**, one warm runtime is reused across runs rather than re-booting per slider move.
 
 ## Why a *classic* worker (not a module worker)
 
@@ -29,7 +29,7 @@ purpose:
 
 ## The message protocol (JSON only)
 
-The worker ↔ main-thread boundary is **JSON only** — plain objects via structured clone. **No `PyProxy` ever
+The worker ↔ main-thread boundary is **JSON only**, plain objects via structured clone. **No `PyProxy` ever
 crosses threads**; the Python trace is serialised to a JSON string inside the worker and `JSON.parse`d on the
 main thread. The shapes (`PyRequest` / `PyResponse` in
 [`pyodideProtocol.ts`](../../../web/src/lib/pyodideProtocol.ts)):
@@ -66,7 +66,7 @@ The "same engine, not a port" guarantee lives here. On `init` the worker:
    import simlab.live
    ```
 
-After this the browser holds the **exact same engine code** the offline pipeline ran — the registry and the live
+After this the browser holds the **exact same engine code** the offline pipeline ran, the registry and the live
 entrypoint are imported from the freshly written tree, not from a bundled JS re-implementation.
 
 ## verify (replay is truth, enforced)
@@ -75,15 +75,15 @@ Because a run is a pure function of `(params, seed)`, a **live** run must equal 
 same inputs. The `verify` path re-runs the scenario live and compares its serialised JSON string to the committed
 text (`firstNumericDiff` in the worker), producing a tri-state `match`:
 
-- **`byte`** — the live JSON string is **identical** to the committed string. The strong result.
-- **`numeric`** — the strings differ, but no number differs beyond a **1e-9 relative tolerance** and the
+- **`byte`**: the live JSON string is **identical** to the committed string. The strong result.
+- **`numeric`**: the strings differ, but no number differs beyond a **1e-9 relative tolerance** and the
   structures match (key counts and array lengths equal). Acceptable float-formatting drift.
-- **`differ`** — a real divergence. The worker reports `firstDiffPath` + `firstDiffDelta`. This means the lane is
+- **`differ`**: a real divergence. The worker reports `firstDiffPath` + `firstDiffDelta`. This means the lane is
   **wrong**, and CI / the verify check treats it as a failure.
 
 `firstNumericDiff` recurses structurally: numbers compare within relative tolerance; arrays must match length
 then element-wise; objects must match key count then key-wise; anything else compares by strict equality. So
-**live and precomputed render through one code path** — "live" is the slider responsiveness, not a different
+**live and precomputed render through one code path**, "live" is the slider responsiveness, not a different
 model. If they ever diverge, the build catches it. The same contract at the architecture level:
 [architecture/02_determinism-and-trace.md](../../architecture/02_determinism-and-trace.md).
 
@@ -107,13 +107,13 @@ returns the list of ids the browser may run, matching each manifest's lane verdi
 - **Run-time Python errors** come back as `error` with `kind: "python"` and the exception message, scoped to the
   request `id`, so a single bad run rejects only its own promise.
 - **Boot failures** (no `id`) reject the `warmUp()` promise *and* tear the worker down (`disposeWorker()`), so a
-  retry boots a fresh worker — a dead worker would otherwise never reply.
+  retry boots a fresh worker, a dead worker would otherwise never reply.
 - **`worker.onerror`** rejects all pending requests and disposes the worker.
 
 ## Related
 
-- [02 · Run](./02_run.md) — the boot phases and the run round-trip from the caller's side.
-- [04 · Gotchas](./04_gotchas.md) — the non-obvious constraints behind these choices.
-- [the precompute pipeline](../01_precompute-pipeline.md) — where the committed traces `verify` compares against
+- [02 · Run](./02_run.md): the boot phases and the run round-trip from the caller's side.
+- [04 · Gotchas](./04_gotchas.md): the non-obvious constraints behind these choices.
+- [the precompute pipeline](../01_precompute-pipeline.md): where the committed traces `verify` compares against
   come from.
-- [architecture/03_the-gate.md](../../architecture/03_the-gate.md) — the measured gate `_is_live` mirrors.
+- [architecture/03_the-gate.md](../../architecture/03_the-gate.md): the measured gate `_is_live` mirrors.

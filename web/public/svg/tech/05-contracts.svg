@@ -35,7 +35,7 @@
   <text class="cd mono" x="38" y="144">gate { pure_python, run_ms, trace_bytes, reasons }</text>
   <text class="mu" x="38" y="160">the measured verdict, per variant</text>
   <rect class="in" x="28" y="176" width="392" height="32" rx="6"/>
-  <text class="it" x="38" y="196">param_specs[] <tspan class="mu">— drive the UI sliders</tspan></text>
+  <text class="it" x="38" y="196">param_specs[] <tspan class="mu">, drive the UI sliders</tspan></text>
   <rect class="in" x="28" y="214" width="392" height="58" rx="6"/>
   <text class="it" x="38" y="233">variants[] (≥10 regimes)</text>
   <text class="cd mono" x="38" y="251">{ params, kpis, gate, trace → }</text>
@@ -45,26 +45,26 @@
   <rect class="bx bx-web" x="454" y="40" width="412" height="248" rx="10"/>
   <text class="ttl" x="468" y="62">Trace</text>
   <text class="cd mono" x="520" y="62">data/artifacts/&lt;id&gt;/&lt;v&gt;-seed42.json</text>
-  <text class="sub" x="468" y="78">the rendered run — the source of truth</text>
+  <text class="sub" x="468" y="78">the rendered run, the source of truth</text>
   <rect class="in" x="468" y="88" width="384" height="48" rx="6"/>
-  <text class="it" x="478" y="107">events / frames — the animatable timeline</text>
+  <text class="it" x="478" y="107">events / frames, the animatable timeline</text>
   <text class="cd mono" x="478" y="125">tr.add_event(t, kind, id=…)</text>
   <rect class="in" x="468" y="142" width="384" height="44" rx="6"/>
-  <text class="it" x="478" y="161">kpis — what the HUD &amp; table read</text>
+  <text class="it" x="478" y="161">kpis, what the HUD &amp; table read</text>
   <text class="mu" x="478" y="177">e.g. Wq, segregation S, makespan, CI half-width</text>
   <text class="mu" x="468" y="212">byte-stable: identical (params, seed) ⇒ identical trace.</text>
   <text class="good" x="468" y="236">live &amp; precompute render through ONE path.</text>
 
   <!-- gate -->
   <rect class="bx bx-eng" x="14" y="306" width="420" height="92" rx="10"/>
-  <text class="ttl" x="28" y="328">classify_lane — the 4-gate AND</text>
+  <text class="ttl" x="28" y="328">classify_lane, the 4-gate AND</text>
   <text class="cd mono" x="28" y="346">simlab/core/scenario.py</text>
   <text class="it" x="28" y="366">pure-Python · wheels ⊆ LIVE_WHEELS</text>
   <text class="it" x="28" y="384">· run_ms ≤ 3000 · trace_bytes ≤ 1 MB</text>
 
   <!-- git-as-data -->
   <rect class="bx bx-hi" x="454" y="306" width="412" height="92" rx="10"/>
-  <text class="ttl" x="468" y="328">git-as-data — no runtime database</text>
+  <text class="ttl" x="468" y="328">git-as-data, no runtime database</text>
   <text class="it" x="468" y="349">the git history IS the data layer;</text>
   <text class="it" x="468" y="368">committing a new trace re-publishes the site.</text>
   <text class="mu" x="468" y="387">static GitHub Pages · zero backend</text>

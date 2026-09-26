@@ -1,4 +1,4 @@
-# S05 Beer Game — the canonical instance, scope & assumptions
+# S05 Beer Game: the canonical instance, scope & assumptions
 
 ← Back to the use-case index: [../05_s05_beergame.md](../05_s05_beergame.md) ·
 Next: [02_formalization.md](./02_formalization.md)
@@ -29,23 +29,23 @@ The classic MIT **Beer Distribution Game** as a deterministic, seeded simulation
 
 The shock is applied to **end-customer demand only**: base demand of 8 units/week receives a step (or a
 one-week spike, or AR(1) noise) starting at **displayed week 7** (the code's `warmup = 6` is the 0-indexed
-array position — `demand[6:]` — and the chart's x-axis is `range(1, weeks+1)`, so array index 6 is the 7th
+array position, `demand[6:]`, and the chart's x-axis is `range(1, weeks+1)`, so array index 6 is the 7th
 plotted week), and the question is how that small, downstream change propagates upstream. Same parameters
 across all four echelons (homogeneous policy).
 
 ## 2. What the model **does** capture
 
-- **The order-decision dynamics of each echelon** — a forecast that adapts to incoming demand, and an
+- **The order-decision dynamics of each echelon**: a forecast that adapts to incoming demand, and an
   order-up-to target sized for the lead time. These are the two structural drivers of the bullwhip in the
   Lee–Padmanabhan–Whang (1997) account: **demand-signal processing** (forecast updating) and the
   **order-up-to / lead-time** sizing.
-- **The serial coupling** — one echelon's placed order *is* the demand the next echelon upstream sees, so
+- **The serial coupling**: one echelon's placed order *is* the demand the next echelon upstream sees, so
   amplification compounds stage by stage. Within a single week the model activates the echelons
   **downstream → upstream**, so the order an agent places this tick is the demand its upstream neighbour
   reads this same tick (information ripples up one stage per activation).
-- **Amplification, measured** — the per-echelon **bullwhip ratio** `Bᵢ = Var(oᵢ)/Var(d)`, the order variance
+- **Amplification, measured**: the per-echelon **bullwhip ratio** `Bᵢ = Var(oᵢ)/Var(d)`, the order variance
   relative to the original customer-demand variance (cumulative amplification, not the stage-local ratio).
-- **Determinism** — for the step and spike patterns the run is exact; the noisy pattern is an AR(1) process
+- **Determinism**: for the step and spike patterns the run is exact; the noisy pattern is an AR(1) process
   driven entirely by the seeded model RNG, so `(params, seed)` reproduces the trace exactly.
 
 ## 3. What is **out of scope** (deliberately not modeled)
@@ -53,16 +53,16 @@ across all four echelons (homogeneous policy).
 This instance is a clean teaching model of *order amplification*, not a full inventory simulation. It does
 **not** model:
 
-- **Physical inventory and backorders** — there is no on-hand stock variable, no unmet-demand queue. Only
+- **Physical inventory and backorders**: there is no on-hand stock variable, no unmet-demand queue. Only
   the *order signal* and its variance are tracked.
-- **Costs** — no holding cost, no stockout/backorder penalty, no objective function. **Nothing is
+- **Costs**: no holding cost, no stockout/backorder penalty, no objective function. **Nothing is
   optimized**; the goal is to *exhibit* the amplification, not minimize it. (Contrast the optimization
   scenarios S06–S11, which do minimize a real cost.)
-- **Information delays other than the shipping lead time** — order information is assumed to reach the
+- **Information delays other than the shipping lead time**: order information is assumed to reach the
   upstream neighbour the same week it is placed.
-- **Per-echelon heterogeneity** — every echelon uses the same `L` and `θ`. Mixed policies, different
+- **Per-echelon heterogeneity**: every echelon uses the same `L` and `θ`. Mixed policies, different
   lead times per stage, or strategic behaviour (e.g. order batching, gaming, rationing) are not modeled.
-- **Capacity limits at the factory** — orders are unbounded above; the only clamp is non-negativity
+- **Capacity limits at the factory**: orders are unbounded above; the only clamp is non-negativity
   (`order = max(0, …)`).
 
 ## 4. Initial / steady-state assumptions
@@ -74,9 +74,9 @@ Before the week-7 shock every echelon is assumed to sit in steady state at the b
 - Order-up-to seeded at the steady-state level: `S^{(i)}_0 = (L+1)·d₀` (verified `self.s_prev = (lead + 1) *
   base`, so the pre-shock order equals base demand and `Bᵢ = 1` until the shock perturbs the chain).
 
-These seeds are why a flat demand produces flat orders — the bullwhip only appears once the customer-demand
+These seeds are why a flat demand produces flat orders, the bullwhip only appears once the customer-demand
 signal changes. (The seed is the order-up-to level *carried into* the first week's order, so it is indexed
-`S^{(i)}_0` — subscript 0, not −1 — consistent with the order recurrence that indexes from `t = 1`; the
+`S^{(i)}_0`, subscript 0, not −1, consistent with the order recurrence that indexes from `t = 1`; the
 numeric value `(L+1)·d₀` is the same regardless of how the subscript is written.)
 
 ---

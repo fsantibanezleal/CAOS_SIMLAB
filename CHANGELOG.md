@@ -3,12 +3,20 @@
 All notable changes to CAOS_SIMLAB. Format: [Keep a Changelog](https://keepachangelog.com); version
 scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newest on top.
 
+## [0.17.006] - 2026-09-26
+
+### Changed
+
+- No em-dash and no emoji in the product's content (ADR-0067): 3,797 lines across the site, the package, the
+  docs, the notebooks' text and the tests; the data records keep their text. The archetype's content guard
+  runs in CI.
+
 ## [0.17.005] - 2026-06-20
-### Added — in-app Architecture / "How it works" modal (ADR-0058)
+### Added: in-app Architecture / "How it works" modal (ADR-0058)
 - A header **ⓘ button** (always visible) opens a focus-managed, Esc-to-close **Architecture modal**: a 5-tab
-  strip, each tab pairing ONE hand-authored, theme-aware SVG with a complete bilingual explanation — so a
+  strip, each tab pairing ONE hand-authored, theme-aware SVG with a complete bilingual explanation, so a
   visitor *sees* the whole system at a glance, proving the app is a real system, not a demo.
-- Tabs: **(1) the app + design-build lifecycle · (2) lanes — web / offline / compute · (3) the web-app flow ·
+- Tabs: **(1) the app + design-build lifecycle · (2) lanes: web / offline / compute · (3) the web-app flow ·
   (4) the science (the real method per family) · (5) the data contracts (manifest · trace · the 4-gate)**.
 - The diagrams are themed SVGs in `web/public/svg/tech/` (every colour a `--color-*` palette token, **zero
   hardcoded hex**; fetched + inlined so they follow light/dark); authored to the ADR-0058 floor (semantic class
@@ -18,19 +26,19 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
   themes, EN/ES, with 0 console errors.
 
 ## [0.17.004] - 2026-06-20
-### Fixed — adversarial round-8 consistency tail (the loop's convergence batch)
+### Fixed: adversarial round-8 consistency tail (the loop's convergence batch)
 - **S10 monte-carlo guide (was badly out of sync):** S10 replicates only the S01 M/M/c model class (not S04),
   via its own NumPy heap estimator `mmc_mean_wait` (not S01's SimPy); removed the false optional-CuPy/Numba-GPU,
-  the "warm-up-corrected" claim + warm-up/base-model presets (S10 does no warm-up by design — the finite-run
+  the "warm-up-corrected" claim + warm-up/base-model presets (S10 does no warm-up by design, the finite-run
   bias is the lesson), and corrected the preset list to the real param_specs (lam/mu/c/n_customers/n_reps, 95% CI).
 - **Mesa-live + NetLogo honesty:** `02_when-to-use.md` no longer says "Mesa is never served live" (Mesa runs
   live in Pyodide for S02/S03/S05; only its SolaraViz *server* is never served) and now states the 4-gate (was
   "three gates"); the NetLogo SIR card is marked **not shipped** (only the Schelling card ships, off-nav, linked
   from S02) and the "twin card per scenario" overstatement softened to a standalone sandbox.
-- **Engine summaries:** architecture/05_precompute-pipeline.md — S07 = NetworkX + OR-Tools CP-SAT plan + live
+- **Engine summaries:** architecture/05_precompute-pipeline.md: S07 = NetworkX + OR-Tools CP-SAT plan + live
   SimPy replay (not "OSMnx"); S08 = OR-Tools + PyVRP, **no SimPy**; added NetworkX to the live-plane list.
 - **OR-Tools seed honesty:** OR-Tools Routing gets **no** random seed (determinism = single-thread GLS +
-  `solution_limit`); only PyVRP uses seed 42 — corrected the s08 docstring/comment, S08Desc, assumptions, and
+  `solution_limit`); only PyVRP uses seed 42, corrected the s08 docstring/comment, S08Desc, assumptions, and
   the routing scenarios table.
 - Minor accuracy: S03 docstring scoped ("structural template", S03 synchronous vs S02 one-by-one); S11 tiered
   dispatch (plant reachable-soonest, aux furthest-behind) across docstrings + S11Desc + OptimizationTheory;
@@ -39,16 +47,16 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 - Convergence: 8 adversarial rounds, **0 critical since round 4**; this batch closes the round-8 findings.
 
 ## [0.17.003] - 2026-06-20
-### Fixed — adversarial round-7 (full 15-auditor pass) consistency tail
+### Fixed: adversarial round-7 (full 15-auditor pass) consistency tail
 - **S01 web/docs:** S01Desc now names **Ciw** as the independent second DES engine (was SimPy + Erlang-C only);
-  the lane prose corrected to "comfortable headroom (heaviest c10 ~1 s, ~1/3 of the cap)" — a prior edit had
+  the lane prose corrected to "comfortable headroom (heaviest c10 ~1 s, ~1/3 of the cap)", a prior edit had
   overstated it as "close to the cap".
 - **S02:** fixed the wrong web figure `S≈0.99` → `S≈0.94` (t70; peak ≈0.97 at t625). Scoped "simultaneous
-  activation" to S03 only — S02 is a sequential relocate, S05 a fixed-order serial cascade (AbmTheory + docs).
+  activation" to S03 only, S02 is a sequential relocate, S05 a fixed-order serial cascade (AbmTheory + docs).
 - **S05:** removed non-existent tunables ("number of echelons", "base-stock/target inventory") and the
   inventory/backlog agent-state + inventory-series KPI from the ABM guide and the s05 docstring (the model
   carries no on-hand stock; it emits the demand + four order series; no DataCollector).
-- **LP theory:** GLOP is simplex-only — interior-point is OR-Tools' separate PDLP solver (was "GLOP exposes
+- **LP theory:** GLOP is simplex-only: interior-point is OR-Tools' separate PDLP solver (was "GLOP exposes
   both"); added the S11 `D_eff = min(D, Σaᵢ)` blend caveat.
 - **Accuracy:** S07 route uses a single grade-weighted `nx.dijkstra_path` + two separate Dijkstra runs for g*
   (not k-shortest/Yen's); no scenario imports CuPy/Numba (doc-only GPU appendix); S09 has no OR-Tools (fixed
@@ -59,9 +67,9 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
   committed traces. README hero/links unchanged from 0.17.002.
 
 ## [0.17.002] - 2026-06-20
-### Fixed — adversarial round-6 tail + presentation
+### Fixed: adversarial round-6 tail + presentation
 - **Drift-proof run-time docs:** stopped citing specific non-deterministic `gate.run_ms` millisecond figures in
-  the S01/S02/S06 lane prose (they vary 2–9× per regen with host load) — anchored the argument on the stable
+  the S01/S02/S06 lane prose (they vary 2–9× per regen with host load), anchored the argument on the stable
   trace-size + engine gates and "see the manifest's measured `gate.run_ms`". For S06, made explicit it fails the
   lane on the **engine gate** (native OR-Tools, no WASM), not on time.
 - AbmTheory: scoped the `Model.step()` claim to S03/S05 and noted S02 Schelling uses a direct batch `relocate()`
@@ -74,12 +82,12 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
   cross-cutting auditors (coverage/depth/reality/live) completed and their findings are remediated above.
 
 ## [0.17.001] - 2026-06-20
-### Fixed — 5-layer consistency (multi-round adversarial remediation) + functional
+### Fixed: 5-layer consistency (multi-round adversarial remediation) + functional
 - Removed the stale v0.16 "Mesa/joblib/SciPy = precompute-only" lane lie from every surface (it had survived on
   the deployed Build/Introduction/Methodology pages): Build now shows the real `LIVE_WHEELS` closure, and the
-  live/precompute taxonomy matches the gate everywhere — only the native OR-Tools scenarios (S06/S08/S11)
+  live/precompute taxonomy matches the gate everywhere, only the native OR-Tools scenarios (S06/S08/S11)
   precompute; S07 (SimPy replay over a committed native plan) and S09 (SimPy+NetworkX) run live.
-- Experiments tabs now use the canonical scenario ids (S07 Haul, S08 VRP, S09 Ambulance, S10 Monte-Carlo) —
+- Experiments tabs now use the canonical scenario ids (S07 Haul, S08 VRP, S09 Ambulance, S10 Monte-Carlo), 
   dropped the display renumber that contradicted the docs and the Introduction page.
 - **s07 live fix:** committed the full grade×wall grid for both load/dump corridors (68 plans) so every variant
   × every reachable slider stop resolves to a committed plan (fixed a live `RuntimeError` when toggling the wall
@@ -97,7 +105,7 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 - CI: `deploy-pages` also triggers on `simlab/**` (the live Pyodide bundle inlines `simlab/**/*.py`).
 
 ## [0.17.000] - 2026-06-20
-### Fixed — restore ALL 8 live modes (the v0.16 regression)
+### Fixed: restore ALL 8 live modes (the v0.16 regression)
 - v0.16 wrongly demoted s02/s03/s05/s07/s09/s10 to precompute, removing their interactive Run. Restored every
   one with its real tool: **s02/s03/s05 on real Mesa 3 live in Pyodide** (measured: loads with `sqlite3`,
   ~3 s cold start), **s09** NetworkX+SimPy, **s10** joblib, and **s07** via the OR-Tools/NetworkX route plan
@@ -110,19 +118,19 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
   `example.py`** (NetLogo Web is an in-browser JS card and the GPU-ABM chapter is reference-only, so both are
   doc-only by design), `docs/use-cases/NN_<scenario>/` (assumptions+formalization+solvers+results, 11), deep
   `docs/architecture/` (7 files), granular problem-types/guides, master + section indexes.
-### Fixed — cross-layer consistency
-- Hard adversarial validation (15 independent auditors) found **83 defects**; all remediated — docs,
+### Fixed: cross-layer consistency
+- Hard adversarial validation (15 independent auditors) found **83 defects**; all remediated: docs,
   docstrings, in-code comments, web content and manifests aligned to the code+manifest truth (Mesa = live not
   precompute; S01 = SimPy live + Ciw cross-check; replications/CI = S10 not S04; S10 = heap M/M/c + joblib).
 - 40 tests pass; ruff (whole repo) clean; tsc + vite build green.
 
 ## [0.16.000] - 2026-06-20
-### Changed — major: every scenario now runs on its REAL dedicated tool (no more hand-rolled NumPy stand-ins)
+### Changed: major: every scenario now runs on its REAL dedicated tool (no more hand-rolled NumPy stand-ins)
 - **ABM → Mesa 3** (was hand-rolled NumPy): s02 Schelling, s03 SIR, s05 Beer Game now use `mesa.Agent` /
   `mesa.Model` / AgentSet activation. The earlier docs/Theory claim of "uses Mesa" is now TRUE.
 - **DES → SimPy** (real): s01 Bank/Clinic queue + a real **Ciw** M/M/c (Erlang-C) cross-validation; s04 ED.
 - **Optimization/routing → OR-Tools** (CP-SAT/Routing/GLOP) for s06/s07/s11, **PyVRP** SOTA contrast for
-  s08, **NetworkX/OSMnx** road graphs for s07/s09 (s09 dispatch is a closed-form nearest-available argmin — no OR-Tools).
+  s08, **NetworkX/OSMnx** road graphs for s07/s09 (s09 dispatch is a closed-form nearest-available argmin, no OR-Tools).
 - **Monte-Carlo → joblib** (CPU-parallel seeded replications) + **scipy.stats** confidence intervals (s10),
   replacing the hand-rolled NumPy loop.
 ### Added
@@ -142,11 +150,11 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 ### Fixed
 - **Adversarial truth-audit remediation.** A full audit (equations vs code, citations web-verified, each
   case re-executed) found the simulation/OR cores correct and **all 50 citations real (0 fabricated)**, but
-  surfaced real defects — now fixed:
+  surfaced real defects, now fixed:
   - **QueueingTheory pooling figure was wrong by 2×** (showed Wq 0.889/0.277/0.102 for c=2/5/10; correct
     1.778/0.554/0.205). Fixed the values, bar heights, trend overlay, caption, and the "cuts to a third" →
     "to a bit under half" prose. *(The headline figure now matches the code's own Erlang-C.)*
-  - **DES methodology tab described features the code doesn't implement** — a "Welch warm-up the lab
+  - **DES methodology tab described features the code doesn't implement**: a "Welch warm-up the lab
     applies", "spawned substreams / CRN", Student-t CIs, and "inside the CI across all 12 regimes". Reworded
     to the truth: no warm-up (n is large), sequential PCG64 seeds, a normal-approximation CI, 11 stable
     regimes. OptimizationTheory: S07 infers the match-factor regime from throughput/loader-wait (no MF KPI).
@@ -169,17 +177,17 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 - **S11 terrain made genuinely diverse.** The previous hills were clustered centrally, leaving flat
   corridors so routes between (centrally-spread) stations were still straight. Now: the stations sit at
   opposite **corners/edges** (only the stock stays interior), the hills field is **distributed and
-  irregular** — broad tall hills placed **on the corridors** between stations (a central wall + a
-  top-corridor + a right-corridor block), medium scattered bumps, and a **basin** (amp&lt;0) — and the
+  irregular**, broad tall hills placed **on the corridors** between stations (a central wall + a
+  top-corridor + a right-corridor block), medium scattered bumps, and a **basin** (amp&lt;0), and the
   loaded-climb penalty was strengthened (`ROAD_GRADE` 2.5→6.0). Routes now visibly **wind** around the
   relief (route/straight ≈ 1.03 → 1.15+), and each corner→plant flow takes a different path. The
   plan-vs-fleet grade-slip lesson is unchanged (undertrucked 1.6 → overtrucked 2.86, in band).
 
 ## [0.15.000] - 2026-06-19
 ### Added
-- **Theory page completed — new "Optimization & routing" section** (the page had Queueing, DES, ABM but
+- **Theory page completed: new "Optimization & routing" section** (the page had Queueing, DES, ABM but
   nothing on the optimization/routing the lab now teaches via S06/S07/S08/S11). A deep `OptimizationTheory`
-  component matching the existing depth: 7 sub-tabs — **Linear programming & duality** (simplex vs
+  component matching the existing depth: 7 sub-tabs, **Linear programming & duality** (simplex vs
   interior-point, LP duality + complementary slackness, GLOP, the S11 blend LP), **Integer/MILP**
   (branch-and-bound, cutting planes, total unimodularity, NP-hardness), **Constraint programming / CP-SAT**
   (the disjunctive job-shop, no-overlap, makespan, FT06=55), **Shortest paths & graded routing** (Dijkstra
@@ -195,7 +203,7 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 ### Changed
 - **Every scenario's Context rewritten to a deep, formalized standard** (the prior write-ups were too
   terse). Each of the 11 cases now answers, in order: **the problem** (with the canonical real instance);
-  **Components & variables** (sets, parameters, decision/state variables); **Formalization** — the detailed
+  **Components & variables** (sets, parameters, decision/state variables); **Formalization**, the detailed
   math, **rendered with KaTeX** (`Equation`/`InlineMath`), with the model class named correctly (M/M/c;
   finite-source M/M/1//N + match factor; Schelling happiness rule; SIR threshold; priority M/M/c +
   thinning; order-up-to + bullwhip ratio; CP-SAT disjunctive; CVRP/MILP; nearest-available EMS;
@@ -203,7 +211,7 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
   assumptions** (what's modeled, the Markovian/seeded/stationary assumptions, what's out of scope); then
   what each variant shows + how to read the viz. Authored + adversarially math-checked by a per-scenario
   workflow (read code → write → verify vs code). 29–62 rendered equations per scenario.
-- **S11 mine haul — much bigger, richer map** (the small bordered map made every trip hug the edge). New
+- **S11 mine haul: much bigger, richer map** (the small bordered map made every trip hug the edge). New
   **"hills" terrain** in `_geo.py` (a sum of Gaussian bumps → a varied landscape); a 14×14 grid with the
   phases / plant / dump / stock placed in the **interior**, spread out, so haul routes **wind through the
   valleys** (now 100% interior, no border-hugging). The plan-vs-fleet grade-slip lesson still holds
@@ -211,19 +219,19 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 
 ## [0.13.000] - 2026-06-19
 ### Added
-- **S11 — Multi-destination mine haul (plan-then-simulate).** A new case study that is genuinely new vs
+- **S11: Multi-destination mine haul (plan-then-simulate).** A new case study that is genuinely new vs
   S07/S08: ore flows from several **phases** (load points, each with an ore grade) to three destination
-  **kinds** — a **plant** (grade target), a **dump** (waste), and intermediate **stockpiles** (a node that
+  **kinds**, a **plant** (grade target), a **dump** (waste), and intermediate **stockpiles** (a node that
   is a sink AND, once it holds material, a source for later trips). Two coupled OR problems:
   - **Blending LP** (OR-Tools **GLOP**): choose the per-source plant feed to hit the grade target within
     demand (linearized deviation); the phase grades straddle the target so the plan is a genuine blend.
   - **Execution DES** (seeded): a **fixed fleet** runs graded haul cycles with a duty-based, reachable-
     soonest dispatch. Because the rich phase is far, an under-sized fleet can't deliver its planned tonnage
-    and the **plant grade slips first** (undertrucked 1.78 vs target 2.9 → overtrucked 2.86, in band) —
+    and the **plant grade slips first** (undertrucked 1.78 vs target 2.9 → overtrucked 2.86, in band), 
     *an optimal plan is necessary but not sufficient*. 12 variants (fleet sizing, demand surge, tight band,
     stock-as-source/buffer, barrier, low target, dump-heavy).
   - New **stock fill-bar** primitive in RouteViz (a `gauges` trace field; level interpolated against the
-    replay clock — rises on tip-in, falls on draw-out) + a plant-delivery HUD counter (plant is a pure
+    replay clock, rises on tip-in, falls on draw-out) + a plant-delivery HUD counter (plant is a pure
     sink, so the count is unambiguous). `routetrace.py` `gauges` is only serialized when present, so other
     route traces stay byte-identical. Native solver ⇒ **precompute lane** (no live lane; the Live tab shows
     the native-only explainer). New tab **S11**; lede updated to eleven cases / four routing problems.
@@ -234,24 +242,24 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 
 ## [0.12.000] - 2026-06-19
 ### Changed
-- **S07 haul redesigned — the route now genuinely depends on the terrain (was degenerate).** The old grid
+- **S07 haul redesigned: the route now genuinely depends on the terrain (was degenerate).** The old grid
   used a smooth monotone elevation ramp, so *every* load→dump path climbed the same total amount: the grade
-  weight only scaled a constant and never changed the optimal route — it was an invariant border path
+  weight only scaled a constant and never changed the optimal route, it was an invariant border path
   across all variants. Replaced with a deterministic **Gaussian ridge + low pass** field (`_geo.py` gains
   backward-compatible keyword-only `terrain`/`terrain_opts`/`blocked`; the `ramp` default reproduces S08/S09
   byte-for-byte). Now the optimal haul route **switches direct↔pass at a critical grade g\* ≈ 3.4**
   (Dijkstra-verified), moving the pass sends the detour the other way, and a **barrier** (true node removal)
   reroutes it independent of grade. 13 variants spanning the route trade-off AND the loader-bottleneck
   fleet-sizing story (no monotone clones). New `analytic.switch_grade_est` + `route_via`.
-- **S07 description rewritten + formalized** — grounds the model as a **closed finite-source (machine-
+- **S07 description rewritten + formalized**: grounds the model as a **closed finite-source (machine-
   repair, M/M/1//N) queue** with the **match factor** MF = trucks·t_load ÷ (loaders·t_cycle), the graded
   route cost, and what each variant shows (the old copy was too terse and skipped the formalization).
-- **RouteViz: elevation field render** — a paint-once normalized terrain heatmap behind the roads (ridge
+- **RouteViz: elevation field render**: a paint-once normalized terrain heatmap behind the roads (ridge
   warm, pass cool) so the route trade-off is visible; **barriers** drawn as impassable cells; the elev
   colour ramp is now normalized to [0,1] (the ridge peak exceeds 1). `routetrace.py` gains an optional
   `barriers` field (only serialized when present → S08/S09 stay byte-identical).
 - **Case order**: Monte-Carlo moved to the **S07** slot (right after S06) so the three geospatial routing
-  cases group together at the end (now S08 haul · S09 VRP · S10 ambulance). Display labels only — internal
+  cases group together at the end (now S08 haul · S09 VRP · S10 ambulance). Display labels only, internal
   `manifestId`s and tab ids are unchanged (deep-links preserved).
 - Tests: route-switch + tie-stability (±1e-9) + updated loader-saturation tests; S08/S09 byte-identity
   regression. 35 tests.
@@ -260,19 +268,19 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 ### Fixed
 - **S10 live lane crashed on unstable regimes.** Tuning the Monte-Carlo sliders to ρ ≥ 1 (e.g. high λ /
   few servers) made `erlang_c_mmc` return `Wq=None` (no steady-state), and `round(None, 4)` raised
-  `TypeError` — a live-only crash (committed variants are all stable, so it never surfaced offline). Now
+  `TypeError`, a live-only crash (committed variants are all stable, so it never surfaced offline). Now
   the scenario drops the Erlang-C reference line and nulls the theory KPIs when unstable; the simulated
   running mean + CI band still render (illustrating non-convergence). Committed traces unchanged
   (byte-equality preserved); added a regression test for the ρ ≥ 1 case.
 
 ## [0.11.001] - 2026-06-19
 ### Fixed
-- **Dynamism parity across every viz** — the S01 queue's "temporal coloring" (event flash rings + counter
+- **Dynamism parity across every viz**: the S01 queue's "temporal coloring" (event flash rings + counter
   pulse + traveling dots) was inconsistent: some scenes felt static. Brought every scene up to that bar
   with the topology-appropriate analogue (guided by a multi-agent adversarial viz review):
   - **S04 ED flow** now flashes each station on receive/hand-off, pulses the arrival/served counts, and
     sends priority-coloured patients **traveling between stations** (source→triage→treatment→discharge→out)
-    — previously static (the original report). New flash/transit computation in `flowReplay`.
+   , previously static (the original report). New flash/transit computation in `flowReplay`.
   - **S07/S08/S09 route** destination nodes now **flash on arrival** (an expanding glow ring); served VRP
     customers **dim** so route progress reads at a glance (was: a served customer was pixel-identical to an
     unserved one); the HUD gains a **pulsing running counter** (loads / served N/total / resolved) and
@@ -288,12 +296,12 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 
 ## [0.11.000] - 2026-06-19
 ### Added
-- **Pyodide live param-tuning lane — the architecture's reason-for-being is now interactive.** A new 4th
+- **Pyodide live param-tuning lane: the architecture's reason-for-being is now interactive.** A new 4th
   **"Live (your browser)"** sub-tab per case study loads Pyodide (Python 3.13 + numpy + simpy) in a Web
   Worker from the jsdelivr CDN, writes the inlined `simlab` sources into the WASM filesystem, and runs the
-  **exact same `Scenario.run`** the offline pipeline runs — so tuning the sliders + seed and pressing Run
+  **exact same `Scenario.run`** the offline pipeline runs, so tuning the sliders + seed and pressing Run
   computes a fresh trace **in the browser, no server**, animated by the very same per-renderer player.
-  - **`simlab/live.py`** (`run_trace_json`, `live_lanes`) — the in-browser entrypoint, sharing the
+  - **`simlab/live.py`** (`run_trace_json`, `live_lanes`): the in-browser entrypoint, sharing the
     `Scenario.run → Trace.to_json` path; a hard guard refuses native-engine scenarios.
   - **Worker stack:** `pyodide.worker.ts` (classic worker, `importScripts` the pinned Pyodide v0.28.3 UMD;
     explicit `indexURL`), `pyodideClient.ts` (lazy singleton, `warmUp`/`runLive`/`verifyLive` + phase
@@ -304,33 +312,33 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
     X" badge. Players are reused unchanged via an in-memory trace registry in `data.ts` (synthetic
     `live://` keys) + a shared `PlayerSwitch`.
   - **"Verify against the committed trace"** (replay = truth): re-runs the active regime in WASM and
-    compares its serialized trace to the committed file — **byte-equality**, with a 1e-9 numeric-tolerance
+    compares its serialized trace to the committed file, **byte-equality**, with a 1e-9 numeric-tolerance
     fallback that warns (never crashes). Verified live: **all 8 live-capable scenarios reproduce their
     committed traces byte-for-byte** (S01–S05, S07, S09, S10) even across the numpy 2.4.6→2.2.5 gap, so no
     trace regeneration was needed.
   - **Gate:** native-engine scenarios (S06 CP-SAT, S08 OR-Tools) show a read-only "precomputed only"
-    explainer driven by `gate.reasons` — no Run button, so the ~runtime download never fires for them.
+    explainer driven by `gate.reasons`, no Run button, so the ~runtime download never fires for them.
 - **32 tests** (3 new `test_live.py`, incl. a CPython byte-equality regression vs every committed trace).
   Verified end-to-end in a real browser (Playwright): run + verify + native-only gate, zero console errors.
 
 ## [0.10.000] - 2026-06-19
 ### Added
-- **Geospatial routing lane — the final three case studies, all on a self-contained synthetic road
+- **Geospatial routing lane: the final three case studies, all on a self-contained synthetic road
   network** (grid of junctions + adjacency + an elevation field; Dijkstra shortest paths with a pluggable
-  edge cost; no OSM / tiles / external maps — fully reproducible from `(params, seed)`). New shared
+  edge cost; no OSM / tiles / external maps, fully reproducible from `(params, seed)`). New shared
   `simlab/scenarios/_geo.py`, trace schema `simlab.routetrace/v1`, and a new **route visualization**
   (`RouteViz` + `RouteVariantPlayer`): roads, planned-route polylines, agents interpolated along timed
   legs with a motion trail, pulsing incident markers, elevation-shaded junctions, and a live HUD. Brings
   the case-study player to **six renderers** and **all 10 scenarios live**.
-  - **S07 — Construction haul routing** (hybrid optimize-then-simulate, pure-Python DES): trucks cycle
+  - **S07: Construction haul routing** (hybrid optimize-then-simulate, pure-Python DES): trucks cycle
     load↔dump where elevation grades the loaded climb; a shared **loader is the bottleneck**. 10 regimes
     show throughput **saturating** as the fleet is over-trucked (9 vs 12 trucks: same loads, double the
     loader wait), extra loaders lifting the ceiling, and grade lengthening the cycle.
-  - **S08 — Vehicle routing problem** (capacitated VRP, **OR-Tools** routing solver → precompute lane): K
+  - **S08: Vehicle routing problem** (capacitated VRP, **OR-Tools** routing solver → precompute lane): K
     capacity-limited vehicles serve N customers minimizing distance, with a global-span cost that balances
     routes. 10 regimes surface the **total-distance ↔ longest-route** trade-off across capacity, fleet
     size and customer density.
-  - **S09 — Ambulance dispatch** (stochastic EMS, pure-Python DES): Poisson calls, nearest-available
+  - **S09: Ambulance dispatch** (stochastic EMS, pure-Python DES): Poisson calls, nearest-available
     dispatch (accounting for busy units), scene → hospital → base. 10 regimes cover **fleet sizing and
     station siting** (offered load >100% = overwhelmed; more well-sited stations cut response; surges
     collapse coverage), reporting mean/p90 response and coverage within the response target.
@@ -338,11 +346,11 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 
 ## [0.09.000] - 2026-06-19
 ### Added
-- **S04 — Emergency department (multi-stage DES)**: triage → treatment (priority pool) → discharge, with
+- **S04: Emergency department (multi-stage DES)**: triage → treatment (priority pool) → discharge, with
   non-stationary arrivals + an optional surge; SimPy, seeded. 10 regimes (load / staffing / surge / urgent
   mix); reports length-of-stay by class. New **flow visualization** (`FlowViz`): patients (coloured by
   priority) flowing through station queues + servers; new trace schema `simlab.flowtrace/v1`.
-- **S06 — Job-shop scheduling (OR-Tools CP-SAT)**: minimize makespan over machines/jobs/precedences;
+- **S06: Job-shop scheduling (OR-Tools CP-SAT)**: minimize makespan over machines/jobs/precedences;
   includes the classic **Fisher–Thompson ft06** benchmark (proven optimal makespan 55) + generated
   instances. 10 regimes. New **Gantt visualization** (`GanttViz`): job-coloured bars per machine with a
   sweeping playhead; new trace schema `simlab.gantt/v1`. Native solver → precompute lane
@@ -353,24 +361,24 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 ## [0.08.000] - 2026-06-19
 ### Added
 - **Two new chart/series scenarios** (pure-Python + NumPy, seeded):
-  - **S10 — Monte-Carlo / CI study**: N replications of the M/M/c (S01 model) → running mean + a 95%
+  - **S10: Monte-Carlo / CI study**: N replications of the M/M/c (S01 model) → running mean + a 95%
     confidence band that narrows like 1/√n toward the closed-form Erlang-C value, plus a per-run Wq
     histogram. 10 regimes (replications × load). Makes the replications/CI lesson interactive.
-  - **S05 — Beer Game (bullwhip)**: 4 serial echelons with an order-up-to + smoothed-forecast policy and
+  - **S05: Beer Game (bullwhip)**: 4 serial echelons with an order-up-to + smoothed-forecast policy and
     a shipping lead time; a demand change is amplified upstream. 10 regimes (lead time / smoothing /
     demand pattern); reports the bullwhip ratio per echelon.
 - **Chart/series visualization** (`ChartViz` + `ChartVariantPlayer`): multi-line chart with an optional
   confidence band, horizontal reference lines, a histogram, and a playhead that reveals the series while
   playing. New trace schema `simlab.charttrace/v1`. The case-study player now branches across three
   renderers (queue-network · agent-grid · chart); the KPI comparison is reused for grid + chart scenarios.
-- Experiments now shows the **full 10-scenario roadmap** — 5 live (S01 queue, S02 Schelling, S03 SIR,
+- Experiments now shows the **full 10-scenario roadmap**: 5 live (S01 queue, S02 Schelling, S03 SIR,
   S05 Beer Game, S10 Monte-Carlo) + 5 upcoming (S04 ED, S06 job-shop, S07 haul, S08 VRP, S09 ambulance).
   18 tests total.
 ### Added
 - **Two new ABM scenarios** (live-capable, pure-Python + NumPy, fully seeded):
-  - **S02 — Schelling segregation**: a grid of two groups; unhappy agents relocate. 10 regimes (a
+  - **S02: Schelling segregation**: a grid of two groups; unhappy agents relocate. 10 regimes (a
     tolerance sweep + density variants); tracks the segregation index over time.
-  - **S03 — SIR epidemic**: grid contagion (β per infected neighbour, γ recovery). 10 regimes (β/γ
+  - **S03: SIR epidemic**: grid contagion (β per infected neighbour, γ recovery). 10 regimes (β/γ
     sweep across the epidemic threshold); tracks the S/I/R curves and the attack rate.
 - **Agent-grid visualization**: a canvas grid player (theme-aware cell colours, legend, frame scrubber)
   + an over-time **series chart** (segregation / epidemic curves) + a per-regime **comparison** (bars +
@@ -381,11 +389,11 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 - **Graduate-level Theory**, transcribed from a deep-research workflow (3 reports, web-verified). Three
   domains as vertical sub-tab sections, each sub-tab carrying full bilingual prose, governing **equations
   (KaTeX)**, an assumptions/limits block, a theme-aware **bilingual SVG figure**, and DOI references:
-  - **Queueing (M/M/c)** — 9 sub-tabs: Kendall notation, birth–death CTMC + steady state, stability,
+  - **Queueing (M/M/c)**: 9 sub-tabs: Kendall notation, birth–death CTMC + steady state, stability,
     Erlang-C (Wq/Lq/W/L), Little's Law, PASTA, the ρ→1 knee + Kingman, pooling/square-root staffing.
-  - **DES methodology** — 7 sub-tabs: the FEL worldview, the study lifecycle, input modeling + GoF,
+  - **DES methodology**: 7 sub-tabs: the FEL worldview, the study lifecycle, input modeling + GoF,
     RNG/seeding/CRN, replications & CIs, V&V (Erlang-C as the worked check), warm-up/run-length.
-  - **ABM** — 10 sub-tabs: agents/scheduler/activation, emergence, the ODD protocol, validation, and the
+  - **ABM**: 10 sub-tabs: agents/scheduler/activation, emergence, the ODD protocol, validation, and the
     canonical models (Schelling, SIR/Kermack–McKendrick, Boids, Sugarscape, Mesa).
 - ~17 **bilingual, theme-aware SVG diagrams** across the theory (event-loop, CTMC, Erlang-C knee,
   replications/CI, SIR, emergence, ODD, Boids, …) and a full **bibliography** tab (25+ verified refs).
@@ -408,12 +416,12 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
   as transit dots travelling queue→server and server→sink, so you can see who is doing the work and
   where the flow goes. Servers flash a ring when they receive/deliver; the Arrivals/Served counters pulse
   when they change. Reconstructed server assignment is deterministic from the trace.
-- **Each case study is now 3 sub-tabs** under the regime selector — Simulator · Summary charts · Context —
+- **Each case study is now 3 sub-tabs** under the regime selector: Simulator · Summary charts · Context, 
   so the simulator is visible without scrolling.
 - **Width fix.** Content prose now fills the page width (the previous 75ch cap left pages half-empty);
   added figure/text rows, definition grids and assumption blocks for wide layouts.
 ### Changed
-- **You now land directly on the simulator** (`/` = the Experiments simulator) — entering the app drops
+- **You now land directly on the simulator** (`/` = the Experiments simulator): entering the app drops
   you straight into a running sim, per the product intent. Introduction moved to `/introduction`
   (`/experiments` redirects to `/`).
 - In a case study, the **live simulator (regime selector + animated player) now renders first**, with the
@@ -438,7 +446,7 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 
 ## [0.02.000] - 2026-06-19
 ### Added
-- **Web viewer (Phase 1a)** — React 19 + Vite static SPA, deployed to GitHub Pages at
+- **Web viewer (Phase 1a)**: React 19 + Vite static SPA, deployed to GitHub Pages at
   `simlab.fasl-work.com` (no backend). Lands in a running simulation.
 - **S01 simulator**: animated M/M/c queue (SVG) replaying the committed seeded trace
   (arrivals → queue → c servers → served) with play/pause/scrub + speed.
@@ -451,11 +459,11 @@ scheme `X.XX.XXX` (see [conventions](https://github.com/fsantibanezleal)). Newes
 
 ## [0.01.000] - 2026-06-18
 ### Added
-- Project foundation (Phase 0): the shared `simlab` engine — RNG seeding (`core/rng.py`), the trace
-  schema (`core/trace.py`), the `Scenario` interface + the live/precompute classifier — then 3 gates,
-  later the 4-gate once the wheel-closure gate was added (`core/scenario.py`) — and the manifest builder
+- Project foundation (Phase 0): the shared `simlab` engine: RNG seeding (`core/rng.py`), the trace
+  schema (`core/trace.py`), the `Scenario` interface + the live/precompute classifier, then 3 gates,
+  later the 4-gate once the wheel-closure gate was added (`core/scenario.py`), and the manifest builder
   (`core/manifest.py`).
-- **S01 — Bank / Clinic Queue (M/M/c)**: a SimPy DES with a closed-form Erlang-C reference for
+- **S01: Bank / Clinic Queue (M/M/c)**: a SimPy DES with a closed-form Erlang-C reference for
   validation; the live-lane landing scenario.
 - The local precompute pipeline + CLI (`python -m simlab.pipeline`), writing compact seeded traces to
   `data/artifacts/` and manifests to `manifests/`.

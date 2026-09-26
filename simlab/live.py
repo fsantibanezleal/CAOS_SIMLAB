@@ -17,7 +17,7 @@ def _is_live(sc) -> bool:
     """A scenario runs live only if its engine is pure-Python AND its wheel closure is one the browser
     worker actually loads (LIVE_WHEELS = numpy, simpy, ciw, mesa, pandas, scipy, networkx, sqlite3,
     joblib). Mesa (ABM), joblib/scipy (Monte-Carlo) and networkx (graphs) are all IN LIVE_WHEELS and run
-    live — only NATIVE engines (OR-Tools, pure_python=False) are precompute-only and replayed."""
+    live, only NATIVE engines (OR-Tools, pure_python=False) are precompute-only and replayed."""
     return sc.pure_python and set(sc.wheels) <= LIVE_WHEELS
 
 

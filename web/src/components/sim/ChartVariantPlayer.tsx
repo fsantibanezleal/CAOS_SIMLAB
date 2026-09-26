@@ -7,10 +7,10 @@ import type { ChartTrace, VariantEntry } from "@/lib/types";
 import { ChartViz } from "./ChartViz";
 
 const KPI_MAP: Record<string, { en: string; es: string }> = {
-  bullwhip_factory: { en: "Bullwhip — factory", es: "Bullwhip — fábrica" },
-  bullwhip_distributor: { en: "Bullwhip — distributor", es: "Bullwhip — distribuidor" },
-  bullwhip_wholesaler: { en: "Bullwhip — wholesaler", es: "Bullwhip — mayorista" },
-  bullwhip_retailer: { en: "Bullwhip — retailer", es: "Bullwhip — minorista" },
+  bullwhip_factory: { en: "Bullwhip, factory", es: "Bullwhip, fábrica" },
+  bullwhip_distributor: { en: "Bullwhip, distributor", es: "Bullwhip, distribuidor" },
+  bullwhip_wholesaler: { en: "Bullwhip, wholesaler", es: "Bullwhip, mayorista" },
+  bullwhip_retailer: { en: "Bullwhip, retailer", es: "Bullwhip, minorista" },
   peak_factory_order: { en: "Peak factory order", es: "Pico orden fábrica" },
   final_mean: { en: "Final mean Wq", es: "Media final Wq" },
   ci_halfwidth: { en: "CI half-width", es: "Semiancho IC" },

@@ -1,7 +1,7 @@
 """The Pyodide live-lane entrypoint (simlab/live.py).
 
 These run in CPython, but they pin the contract the browser relies on: which scenarios may run live, the
-native-engine guard, and — the keystone — that ``run_trace_json`` reproduces the COMMITTED trace byte-for-
+native-engine guard, and, the keystone, that ``run_trace_json`` reproduces the COMMITTED trace byte-for-
 byte. That byte-equality is exactly what the in-browser "Verify against the committed trace" feature checks
 in WASM; asserting it here catches any drift (a scenario change without a trace regen) at PR time.
 """
@@ -23,7 +23,7 @@ def test_live_lanes_are_pyodide_loadable_only():
     # (with sqlite3), so the ABM scenarios run live on real Mesa; SimPy/Ciw/NetworkX/joblib also load. S07
     # runs live too: its OR-Tools+NetworkX route PLAN is precomputed offline and COMMITTED (s07_plans.py),
     # and only the pure-Python SimPy stochastic-replay over that fixed plan runs in the worker. The native
-    # solver scenarios (s06/s08/s11) stay precompute-only — they re-solve in run(), which can't run in WASM.
+    # solver scenarios (s06/s08/s11) stay precompute-only: they re-solve in run(), which can't run in WASM.
     assert lanes == {"s01_queue", "s02_schelling", "s03_sir", "s04_ed", "s05_beergame",
                      "s07_haul", "s09_ambulance", "s10_montecarlo"}
     assert {"s06_jobshop", "s08_vrp", "s11_minehaul"}.isdisjoint(lanes)  # native OR-Tools solve → precompute

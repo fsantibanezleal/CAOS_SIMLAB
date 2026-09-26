@@ -1,15 +1,15 @@
-# 12 · joblib — usage
+# 12 · joblib: usage
 
 [← back to the joblib wiki node](../12_joblib.md) · [← 01 Installation](./01_installation.md)
 
 joblib gives you parallelism with essentially one idea: build a **list of deferred calls**, hand it to a
-**`Parallel`** executor, and get back a list of results in the *same order you submitted them* — regardless
+**`Parallel`** executor, and get back a list of results in the *same order you submitted them*, regardless
 of which worker finished first. For Monte-Carlo replications that order-preservation plus per-call seeding
 is exactly what makes a parallel study reproducible.
 
 ## Key API and concepts
 
-### `delayed(func)(*args, **kwargs)` — capture a call without running it
+### `delayed(func)(*args, **kwargs)`: capture a call without running it
 
 `delayed` wraps a function so that calling it records `(func, args, kwargs)` as a *task* instead of
 executing immediately. You build a generator/list of these tasks:
@@ -19,7 +19,7 @@ from joblib import delayed
 tasks = (delayed(replication)(base_seed + r) for r in range(K))
 ```
 
-### `Parallel(n_jobs=..., backend=...)(tasks)` — run them in parallel
+### `Parallel(n_jobs=..., backend=...)(tasks)`: run them in parallel
 
 `Parallel` is a callable executor. You call it with the iterable of `delayed` tasks; it dispatches them to
 workers and returns a **list of results in submission order**.
@@ -34,7 +34,7 @@ Key parameters:
 | Parameter | Meaning | Typical value here |
 |---|---|---|
 | `n_jobs` | number of workers; `-1` = all cores, `1` = serial (no subprocess), `2` = two workers | `-1` for the sweep; `1` to debug |
-| `backend` | `"loky"` (default, separate processes — true CPU parallelism, bypasses the GIL), `"threading"` (shared-memory threads — only helps for releasing-GIL / I/O work), `"multiprocessing"` (legacy fork pool) | default `"loky"` for CPU-bound replications |
+| `backend` | `"loky"` (default, separate processes, true CPU parallelism, bypasses the GIL), `"threading"` (shared-memory threads, only helps for releasing-GIL / I/O work), `"multiprocessing"` (legacy fork pool) | default `"loky"` for CPU-bound replications |
 | `verbose` | progress messages to stderr (higher = more) | `0` in artifacts, `>0` when watching a long sweep |
 | `batch_size` | how many tasks each worker grabs at once; `"auto"` adapts | `"auto"` |
 | `return_as` | `"list"` (default) or `"generator"` to stream results as they arrive | `"list"` for CI aggregation |
@@ -55,7 +55,7 @@ Key parameters:
 > `backend="threading"` only when the inner work releases the GIL (e.g. heavy NumPy/BLAS) or is I/O-bound.
 > The shipped **S10** scenario does exactly this: it overrides the default with `backend="threading"` because
 > its inner loop is GIL-releasing NumPy *and* because threading is the only joblib backend that runs under
-> Pyodide/WASM (loky needs subprocesses the browser can't spawn) — so the same code serves the live lane. `loky`
+> Pyodide/WASM (loky needs subprocesses the browser can't spawn), so the same code serves the live lane. `loky`
 > remains the generic CPU default for the offline pipeline.
 
 ## Minimal runnable example, walked through
@@ -66,10 +66,10 @@ determinism checks.
 
 Step by step:
 
-1. **The cheap stochastic function — one replication.**
+1. **The cheap stochastic function: one replication.**
    `mmc_mean_wait(lam, mu, c, n, seed)` simulates a small M/M/c FCFS queue with the earliest-free-server
    method and returns the per-run mean wait. It takes a **seed** (not a pre-built generator) and constructs
-   `np.random.default_rng(seed)` *inside* the function, so it is self-contained and picklable — joblib can
+   `np.random.default_rng(seed)` *inside* the function, so it is self-contained and picklable, joblib can
    ship it to worker processes. This mirrors `mmc_mean_wait` in the S10 scenario.
 
 2. **Fan K seeded replications across cores.**
@@ -122,9 +122,9 @@ single replication seed=49 reproducible? True  (Wq=0.3554)
 
 - **The CI brackets the theory.** At ρ≈0.67 the 400-replication mean (`0.4346`) lands close to the
   closed-form Erlang-C value (`0.4444`), and the 95% CI `[0.4167, 0.4526]` **contains** it. This is the
-  well-behaved load regime — exactly what the S10 audit found for `rep*_mod` variants (rel. error ~0.7%,
+  well-behaved load regime, exactly what the S10 audit found for `rep*_mod` variants (rel. error ~0.7%,
   theory inside CI). At high load (ρ≈0.9) a finite 600-customer run would instead show a transient bias that
-  pulls the CI *below* theory — see [03 Applying](./03_applying.md) and the S10 docstring; that is a
+  pulls the CI *below* theory, see [03 Applying](./03_applying.md) and the S10 docstring; that is a
   model/methodology lesson, not a joblib issue.
 - **Determinism holds across worker counts.** `n_jobs=1` and `n_jobs=-1` give the **same** mean to the last
   digit. This is the whole reason the seed-per-task pattern matters: parallelism is an implementation detail,
@@ -147,5 +147,5 @@ single replication seed=49 reproducible? True  (Wq=0.3554)
 
 ---
 
-**Next:** [03 — Applying it](./03_applying.md) — how to formalize the problem, which scenarios use joblib,
+**Next:** [03, Applying it](./03_applying.md), how to formalize the problem, which scenarios use joblib,
 and when to pick it vs the alternatives.

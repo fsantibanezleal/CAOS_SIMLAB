@@ -1,16 +1,16 @@
-"""S09 — Ambulance dispatch (stochastic EMS, nearest-available), on **SimPy + NetworkX**.
+"""S09, Ambulance dispatch (stochastic EMS, nearest-available), on **SimPy + NetworkX**.
 
 Emergency calls arrive as a Poisson process at random locations on a city road grid. A fleet of ambulances
 sits at stations; each call is served by the ambulance that can REACH the scene earliest (nearest-available,
 accounting for whoever is still busy). The chosen ambulance drives to the scene, treats on-scene, transports
 to a hospital, and returns to base. KPIs: response-time distribution, coverage within an 8-minute threshold,
-fleet utilization — the canonical EMS fleet-sizing / station-siting question.
+fleet utilization, the canonical EMS fleet-sizing / station-siting question.
 
-This scenario USES the tools it documents — no hand-rolled NumPy event loop or graph search:
+This scenario USES the tools it documents, no hand-rolled NumPy event loop or graph search:
 
 * **NetworkX** (``docs/frameworks/10_networkx``) builds a real undirected road graph over the shared city
-  ``GridNetwork`` in ``_geo.py`` (same nodes/edges/coordinates). Travel routes — base→scene, scene→hospital,
-  hospital→base — and the dispatch metric (earliest possible arrival across the fleet) come from
+  ``GridNetwork`` in ``_geo.py`` (same nodes/edges/coordinates). Travel routes, base→scene, scene→hospital,
+  hospital→base, and the dispatch metric (earliest possible arrival across the fleet) come from
   ``nx.single_source_dijkstra`` (memoised per origin, yielding both the node paths and the path *lengths*) on
   the distance-weighted graph. On the unit grid these reproduce the lab's previous Dijkstra byte-for-byte, so
   the committed trace is unchanged.
@@ -19,12 +19,12 @@ This scenario USES the tools it documents — no hand-rolled NumPy event loop or
   dispatcher then commits the nearest-available ambulance (the one with the earliest feasible scene arrival,
   honouring each unit's busy-until clock). Because dispatch consumes zero simulated time and the arrival
   process fires calls strictly in time order, SimPy makes the same greedy decisions as the original
-  sequential sweep — the DES is the *mechanism*, not a behaviour change.
+  sequential sweep, the DES is the *mechanism*, not a behaviour change.
 
 Determinism: every random variate (the inter-arrival gaps and the call locations) is drawn UP FRONT from a
 single seeded NumPy ``Generator`` (``make_rng(seed)``) into a fixed call list, exactly as before, so the run
 never depends on the event scheduler's interleaving. NetworkX shortest paths are deterministic on the fixed
-graph. The same (params, seed) therefore yields the same trace byte-for-byte — the "replay = truth" contract
+graph. The same (params, seed) therefore yields the same trace byte-for-byte, the "replay = truth" contract
 the lab depends on. The emitted artifact is the existing routetrace format (nodes/edges/agents/markers/
 legend/kpis); nothing in the trace schema or the frontend contract changes. Pure-Python (SimPy + NetworkX),
 so the scenario keeps its live lane. The shared ``_geo.py`` is untouched.
@@ -150,7 +150,7 @@ class AmbulanceScenario(Scenario):
         amb = [{"home": stations[k % len(stations)], "node": stations[k % len(stations)],
                 "free": 0.0, "legs": []} for k in range(na)]
 
-        # Poisson calls — drawn UP FRONT from the single seeded RNG (determinism is independent of the
+        # Poisson calls: drawn UP FRONT from the single seeded RNG (determinism is independent of the
         # event scheduler's interleaving; SimPy then replays this fixed stream).
         calls = []
         t = 0.0
@@ -200,8 +200,8 @@ class AmbulanceScenario(Scenario):
         """SimPy discrete-event replay of the call stream + nearest-available dispatch.
 
         A single ``arrivals`` process advances simulated time to each call's event instant (drawn up front),
-        then dispatches synchronously: it scores every unit by its earliest feasible scene arrival —
-        ``max(call_time, unit.free) + travel_time / speed`` over the NetworkX road graph — and commits the
+        then dispatches synchronously: it scores every unit by its earliest feasible scene arrival, 
+        ``max(call_time, unit.free) + travel_time / speed`` over the NetworkX road graph, and commits the
         best one. The chosen unit drives base→scene (NetworkX path), treats on-scene, transports to the
         hospital, returns to base, and its busy-until clock advances. Dispatch consumes zero simulated time
         and arrivals fire in time order, so the DES reproduces the original greedy sweep exactly; results are

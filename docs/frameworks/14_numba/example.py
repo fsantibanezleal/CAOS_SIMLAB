@@ -1,10 +1,10 @@
-"""Numba — JIT Monte-Carlo on the CPU, plus an optional CUDA kernel for the GPU exhibit.
+"""Numba, JIT Monte-Carlo on the CPU, plus an optional CUDA kernel for the GPU exhibit.
 
 This is the smallest honest demonstration of why Numba is in CAOS_SIMLAB at all. The
 product's GPU page (S10) makes one claim and proves it: a GPU helps *thousands of
 independent Monte-Carlo replications*, not a small branch-heavy discrete-event loop.
-Numba is the tool that lets us write the *same* per-replication kernel twice — once with
-``@njit`` for the CPU and once as a ``@cuda.jit`` kernel for the GPU — so the speed-up
+Numba is the tool that lets us write the *same* per-replication kernel twice, once with
+``@njit`` for the CPU and once as a ``@cuda.jit`` kernel for the GPU, so the speed-up
 (or the lack of one) is measured on identical arithmetic, not on two different programs.
 
 What the script does:
@@ -15,8 +15,8 @@ What the script does:
    compiles to machine code on first call. We seed NumPy *outside* the kernel so the
    draws are deterministic.
 
-2. A second ``@njit`` kernel estimates a real simulation statistic — the probability
-   that a 3-server queue is *all busy* (the Erlang-C "probability of wait") — by Monte
+2. A second ``@njit`` kernel estimates a real simulation statistic: the probability
+   that a 3-server queue is *all busy* (the Erlang-C "probability of wait"), by Monte
    Carlo, to show Numba on a queueing quantity, not just a geometry toy.
 
 3. ``@cuda.jit`` GPU Monte-Carlo, **guarded by ``cuda.is_available()``**. Each GPU
@@ -77,7 +77,7 @@ def pi_cpu(xs: np.ndarray, ys: np.ndarray) -> float:
 # 2. @njit CPU Monte-Carlo of a queueing statistic.
 #    Estimate P(all c servers busy) for an M/M/c via the embedded steady-state idea:
 #    sample a Poisson(a) number-in-system surrogate is overkill here, so we use the
-#    simplest faithful estimator — sample the stationary "number busy" of an
+#    simplest faithful estimator: sample the stationary "number busy" of an
 #    M/M/c/c (Erlang-B) loss view is also off-topic; instead we Monte-Carlo the
 #    Erlang-C wait probability directly from its definition by sampling the
 #    stationary number-in-system N of an M/M/c and asking P(N >= c).
@@ -123,7 +123,7 @@ def mmc_stationary_cdf(lam: float, mu: float, c: int, max_n: int = 200) -> np.nd
 
 
 def erlang_c_prob_wait(lam: float, mu: float, c: int) -> float:
-    """Closed-form Erlang-C P(wait) = P(N >= c) — the analytic reference for check 2."""
+    """Closed-form Erlang-C P(wait) = P(N >= c), the analytic reference for check 2."""
     a = lam / mu
     rho = a / c
     sum_terms = sum(a ** n / math.factorial(n) for n in range(c))
@@ -169,7 +169,7 @@ def pi_on_gpu(n_threads: int, darts_per_thread: int, seed: int) -> float:
 # create_xoroshiro128p_states returns a DeviceNDArray even with no physical GPU). So the
 # no-GPU fallback wraps the device function in an @njit kernel that walks the same states
 # the GPU path would have used. This guarantees the fallback uses the identical RNG, not a
-# different one — the whole point of the exhibit is that the arithmetic is the same on
+# different one: the whole point of the exhibit is that the arithmetic is the same on
 # both targets.
 @njit(cache=True)
 def pi_cpu_xoroshiro(rng_states, n_streams: int, darts_per_stream: int) -> int:
