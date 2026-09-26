@@ -1,4 +1,4 @@
-"""JAX vmap + jit vectorized Monte-Carlo — CAOS_SIMLAB framework demo.
+"""JAX vmap + jit vectorized Monte-Carlo, CAOS_SIMLAB framework demo.
 
 What this demonstrates
 ----------------------
@@ -22,7 +22,7 @@ probability; the analytic truth is the survival function of a Gamma(n, 1)
 Why this shape matters for the lab: a stochastic simulation KPI is a random
 variable, and the honest answer is *mean over many independent replications*.
 JAX's `jax.random` is splittable/counter-based, so `n_reps` independent keys are
-provably non-overlapping streams — exactly the property a replication study
+provably non-overlapping streams, exactly the property a replication study
 needs. This is the same "thousands of independent replications" workload the
 GPU/Monte-Carlo research flags as the highest-ROI parallel use (we run it on the
 CPU backend here; the identical code vmaps onto a GPU/TPU backend unchanged).
@@ -58,7 +58,7 @@ def one_replication(key: jax.Array, n_per_rep: int, threshold: float) -> jax.Arr
     Draws `n_per_rep` Exponential(1) samples, sums them, and returns a single
     Bernoulli outcome: 1.0 if the sum exceeds `threshold`, else 0.0.
 
-    Written for a single seed only — `vmap` turns it into a batch with no edit.
+    Written for a single seed only, `vmap` turns it into a batch with no edit.
     """
     samples = random.exponential(key, shape=(n_per_rep,))  # i.i.d. Exp(1)
     total = jnp.sum(samples)

@@ -1,20 +1,20 @@
 """Offline haul-route PLAN builder for S07 (native: NetworkX geometry + OR-Tools CP-SAT cost certificate).
 
 This is the OPTIMIZE half of S07's optimize-then-simulate split, and it is the only part that needs native
-code. It builds a haul-route plan over the graded ``_geo`` grid — the loaded climb + empty return node paths,
+code. It builds a haul-route plan over the graded ``_geo`` grid, the loaded climb + empty return node paths,
 the OR-Tools CP-SAT route-cost certificate, the analytic ``g*`` references and the route-trace rendering
-geometry (nodes/edges/elev/bounds/barriers) — and emits it as a small, JSON-serialisable dict of *rendered
+geometry (nodes/edges/elev/bounds/barriers), and emits it as a small, JSON-serialisable dict of *rendered
 data* (node ids + numbers, never a raw graph object).
 
 It runs OFFLINE in the local ``.venv`` (it lazy-imports ``networkx`` and ``ortools``, neither of which has a
 WASM build), and its output is committed to ``s07_plans.py`` by ``regenerate_committed_plans()``. The live
-SimPy replay in ``s07_haul.py`` then loads those committed plans WITHOUT importing this module — so OR-Tools
+SimPy replay in ``s07_haul.py`` then loads those committed plans WITHOUT importing this module, so OR-Tools
 is never reached in the Pyodide worker.
 
 Determinism: NetworkX Dijkstra is byte-stable on the fixed graph; CP-SAT is pinned to a single worker + a
 fixed seed + a bounded stop, and only CERTIFIES the cost (equal-cost optimal routes let the ILP tie-break the
 path arbitrarily, so the path geometry is always taken from NetworkX). The committed plan is therefore a pure
-function of the geometry params — reproducible across machines and runs.
+function of the geometry params, reproducible across machines and runs.
 """
 from __future__ import annotations
 
@@ -40,7 +40,7 @@ def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.
     (plain distance for an empty return, grade-penalised distance for a loaded climb). Nodes/edges mirror
     ``_geo`` exactly, so ``nx.dijkstra_path`` reproduces the lab's graded shortest path byte-for-byte.
     """
-    import networkx as nx  # lazy: offline-only — this plan builder is never imported in the live worker
+    import networkx as nx  # lazy: offline-only, this plan builder is never imported in the live worker
 
     g = nx.DiGraph()
     g.add_nodes_from(net.coords)
@@ -52,7 +52,7 @@ def build_road_graph(net: GridNetwork, cost: Callable[[int, int], float]) -> nx.
 
 def nx_route(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst: int) -> list[int]:
     """The cheapest haul route src->dst on the graded road graph (NetworkX Dijkstra)."""
-    import networkx as nx  # lazy: offline-only — this plan builder is never imported in the live worker
+    import networkx as nx  # lazy: offline-only, this plan builder is never imported in the live worker
 
     g = build_road_graph(net, cost)
     return nx.dijkstra_path(g, src, dst, weight="weight")
@@ -61,7 +61,7 @@ def nx_route(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst:
 def ortools_route_cost(net: GridNetwork, cost: Callable[[int, int], float], src: int, dst: int) -> float:
     """Confirm the optimal route COST with OR-Tools CP-SAT (a min-cost single-unit flow).
 
-    Decision : x[a,b] in {0,1} selects each directed arc. Constraint: unit flow conservation — out-in is
+    Decision : x[a,b] in {0,1} selects each directed arc. Constraint: unit flow conservation, out-in is
     +1 at the source, -1 at the destination, 0 elsewhere, so the selected arcs form a single src->dst path.
     Objective: minimise the (integer-scaled) total route cost. Single worker + fixed ``random_seed`` make
     the optimum reproducible; equal-cost routes let CP-SAT tie-break the *path* arbitrarily, so the path
@@ -117,7 +117,7 @@ def _make_net(grid: int, pass_col: int, lift_col: int, barrier: int) -> tuple[Gr
 def build_plan(grid: int, grade: float, pass_col: int, lift_col: int, barrier: int) -> dict[str, Any]:
     """Build one committed haul plan (NetworkX geometry + OR-Tools cost certificate + render geometry).
 
-    Returns a JSON-serialisable dict of rendered data only — node ids, numeric coords/elevations and the two
+    Returns a JSON-serialisable dict of rendered data only, node ids, numeric coords/elevations and the two
     route polylines as node-id lists. No graph object is serialised. Raises if the dump is unreachable or if
     OR-Tools disagrees with NetworkX on the route cost.
     """
@@ -164,7 +164,7 @@ def build_plan(grid: int, grade: float, pass_col: int, lift_col: int, barrier: i
     # The plan stores only what is native to compute: the two route polylines (NetworkX geometry), the
     # OR-Tools cost certificate and the analytic g* reference. The render geometry (nodes/edges/elev/bounds/
     # barriers) is a pure-Python function of the geometry params and is rebuilt live from ``GridNetwork`` in
-    # the worker — so the committed data is small and free of any duplicated grid render.
+    # the worker: so the committed data is small and free of any duplicated grid render.
     return {
         "key": plan_key(g, grade, pass_col, lift_col, barrier),
         "grid": g,
@@ -189,14 +189,14 @@ def build_plan(grid: int, grade: float, pass_col: int, lift_col: int, barrier: i
 
 def enumerate_plan_geometries() -> list[tuple[int, float, int, int, int]]:
     """The deterministic set of geometries to precompute: every grade slider step at the default geometry,
-    for both wall states (barrier 0 and 1), so the two free geometry sliders — grade AND the wall toggle —
+    for both wall states (barrier 0 and 1), so the two free geometry sliders, grade AND the wall toggle, 
     re-select among committed plans across their whole range with no live OR-Tools miss. Plus the off-default
     pass column the r_passR variant uses. (grid, grade, pass_col, lift_col, barrier).
     """
     geoms: list[tuple[int, float, int, int, int]] = []
     # The two load/dump corridors any variant pins: the default (pass 2, lift 4) and r_passR's right pass
-    # (pass 9, lift 7). For each corridor commit the FULL free-slider grid — grade 0.0..8.0 step 0.5 × wall
-    # off/on — so the only sliders a learner can move (grade + the wall toggle) always hit a committed plan at
+    # (pass 9, lift 7). For each corridor commit the FULL free-slider grid: grade 0.0..8.0 step 0.5 × wall
+    # off/on: so the only sliders a learner can move (grade + the wall toggle) always hit a committed plan at
     # every position, for every variant, with no live OR-Tools miss. (pass/lift columns are pinned in the
     # param_specs, so no other corridor is reachable.)
     corridors = [(2, 4), (9, 7)]
@@ -223,11 +223,11 @@ def build_all_plans() -> dict[str, dict[str, Any]]:
     return plans
 
 
-_HEADER = '''"""Committed S07 haul-route PLANS — GENERATED, do not edit by hand.
+_HEADER = '''"""Committed S07 haul-route PLANS, GENERATED, do not edit by hand.
 
 Each entry is one haul-route plan (loaded climb + empty return node paths, the OR-Tools CP-SAT cost
 certificate, the analytic g* reference, and the route-trace render geometry) for one fixed geometry. They are
-*rendered data only* — node ids + numbers, never a raw graph — so they ship safely in the public repo and the
+*rendered data only*, node ids + numbers, never a raw graph, so they ship safely in the public repo and the
 live SimPy replay (``s07_haul.py``) loads them WITHOUT importing OR-Tools/NetworkX (no WASM build).
 
 Regenerate with:  python -m simlab.scenarios._haul_plan   (runs the native NetworkX+OR-Tools builder offline).

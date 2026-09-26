@@ -1,4 +1,4 @@
-# 03 · JuPedSim — Applying it to a real problem
+# 03 · JuPedSim: Applying it to a real problem
 
 > Prerequisites: [01_installation.md](01_installation.md) · [02_usage.md](02_usage.md).
 > Landing page: [../06_jupedsim.md](../06_jupedsim.md).
@@ -9,7 +9,7 @@ JuPedSim answers **spatial pedestrian questions** that aggregate models cannot:
 
 - **How long does it take to clear a space?** Total evacuation time as a function of exit
   width / number, crowd size, and walking speed.
-- **Where does congestion form?** Bottlenecks at doors, corridors, corners — *emergent*
+- **Where does congestion form?** Bottlenecks at doors, corridors, corners: *emergent*
   from individual collision-avoidance, not assumed.
 - **What is the spatial density / flow** through a gate over time?
 
@@ -22,23 +22,23 @@ cheaper DES / queueing model is the honest choice.
 ## How to formalize the problem
 
 Before reaching for the engine, state the egress problem in the four terms JuPedSim
-consumes — this is the modelling contract:
+consumes, this is the modelling contract:
 
-1. **Walkable domain Ω** — the floor as a polygon with holes (walls, furniture, columns are
+1. **Walkable domain Ω**: the floor as a polygon with holes (walls, furniture, columns are
    holes / cut-outs). Source it from the floor plan; keep all spawn points a margin inside
    ∂Ω.
-2. **Exits E = {e₁ … e_k}** — each an exit stage (a strip of ∂Ω). Width and count are the
+2. **Exits E = {e₁ … e_k}**: each an exit stage (a strip of ∂Ω). Width and count are the
    primary *design levers* you sweep.
-3. **Population P** — N agents, each with a start position, desired speed v_d (from a
+3. **Population P**: N agents, each with a start position, desired speed v_d (from a
    walking-speed distribution) and radius r. Occupancy and the v_d distribution are the
    *demand* you vary; respect the `2r` minimum spacing at spawn.
-4. **Routing R** — a journey per agent class mapping start → exit(s). The simplest is
+4. **Routing R**: a journey per agent class mapping start → exit(s). The simplest is
    "everyone to the nearest single exit"; richer studies assign exits or add waypoints.
 
 The **objective / readouts** are then well defined: total evacuation time
 T = `iteration_count() * dt` at `agent_count() == 0`; the remaining-agents-over-time curve;
 and exit flow / density (frames per gate). A study is a *sweep* of (exit width, N, v_d)
-producing a surface of T and the density maps — that surface is the deliverable, not a
+producing a surface of T and the density maps, that surface is the deliverable, not a
 single run.
 
 ## How to solve it: the lab pattern (simulate-then-replay, precompute lane)
@@ -55,7 +55,7 @@ follow (none ships today):
 3. **Reduce** the trajectory to a compact Arrow/JSON artifact (frames of agent positions +
    the headline metrics: total evacuation time, density-over-time at the exit) and
    **commit** it.
-4. **Replay** in the React/Vite SPA — animate the recorded frames over the floor plan. The
+4. **Replay** in the React/Vite SPA: animate the recorded frames over the floor plan. The
    viewer is labelled "precomputed due to cost; full pipeline + seed in the repo,"
    consistent with the lab's deterministic-replay policy
    ([../../architecture.md](../../architecture.md)).
@@ -81,11 +81,11 @@ If a spatial-egress variant were added, JuPedSim *would supply* the pedestrian-p
 
 - **A future Emergency-Department egress / room-evacuation variant** *would be* the spatial
   counterpart to the **Hospital ED Patient-Flow DES scenario (S04)**. S04 (SimPy) models the
-  *care pathway* (arrival → triage → treatment → discharge) as resource queues — see the
+  *care pathway* (arrival → triage → treatment → discharge) as resource queues, see the
   DES problem-type page ([../../problem-types/01_discrete-event-simulation.md](../../problem-types/01_discrete-event-simulation.md)).
   A JuPedSim variant *would* model the *physical clearance* of the ED waiting area and
   corridors under an evacuation order: how exit width and crowd size drive total evacuation
-  time and where people pile up. Together they *would* make the point the lab teaches —
+  time and where people pile up. Together they *would* make the point the lab teaches, 
   **pick the dedicated tool for the question**: queueing / DES for throughput and waiting, a
   microscopic pedestrian ABM for spatial egress.
 
@@ -111,7 +111,7 @@ From the ABM-frameworks dimension and the architecture audits:
   Mesa would be reinventing a specialist tool. So: Mesa for emergence-from-simple-rules
   teaching, JuPedSim for the pedestrian-physics use case (if such a variant is added).
 - **CPU-only, no GPU.** JuPedSim does not use CUDA. Its sweet spot is
-  hundreds-to-low-thousands of agents on CPU — comfortably enough for an ED floor.
+  hundreds-to-low-thousands of agents on CPU, comfortably enough for an ED floor.
   *Million-agent, city-scale* crowd egress is a different lane entirely (FLAME GPU 2 in the
   [GPU-ABM reference chapter](../18_gpu-abm-chapter.md)), not JuPedSim.
 - **Native → not live.** Because it ships compiled C++ / VTK / PySide6, it cannot run in the
@@ -138,7 +138,7 @@ From the ABM-frameworks dimension and the architecture audits:
 | Pedestrian egress but Java/GUI tooling is acceptable and you want its analysis suite | Vadere | (JuPedSim still preferred for a Python pipeline) |
 | Million-agent, city-scale crowd egress on a GPU | FLAME GPU 2 ([GPU-ABM chapter](../18_gpu-abm-chapter.md)) | JuPedSim (CPU-only) |
 
-## Deprecated — do not use
+## Deprecated: do not use
 
 For ABM generally in this lab, **AgentPy** and **desmod** are deprecated and must not be
 adopted (AgentPy's own authors now point users to Mesa). They are mentioned only so nobody

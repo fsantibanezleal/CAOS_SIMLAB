@@ -7,7 +7,7 @@ This page answers two questions: **when does a problem belong to the optimizatio
 choice. Every model class has a real limit; naming the limit is as important as naming the use, because in
 this lab the limits are *pedagogical features*, not bugs.
 
-## 1. Decide vs simulate — which half of the lab?
+## 1. Decide vs simulate: which half of the lab?
 
 | You want to… | Half of the lab | Tool family |
 |---|---|---|
@@ -18,7 +18,7 @@ this lab the limits are *pedagogical features*, not bugs.
 
 The lab's defining move is that these are **not exclusive**: the optimizer *proposes* a plan and the
 simulator *disposes* of it under uncertainty. Almost every optimization scenario here is therefore an
-**optimize-then-simulate** pair — see the bridge in
+**optimize-then-simulate** pair, see the bridge in
 [03 · Methods & KPIs](./03_methods-and-kpis.md#the-optimize-then-simulate-bridge-simheuristics).
 
 ## 2. Picking the model class
@@ -41,17 +41,17 @@ an **exact optimum, fast**, with no combinatorial explosion.
 …the structure is "linear costs and constraints, **but** with indivisible / yes-no decisions": facility
 location, fixed-charge network design, "open this depot or not", integer fleet sizing.
 
-> **Don't use MILP when** the model is heavily logical/combinatorial (sequencing, no-overlap, alldifferent) —
+> **Don't use MILP when** the model is heavily logical/combinatorial (sequencing, no-overlap, alldifferent), 
 > **CP-SAT** will usually express it more naturally and solve it faster.
 >
 > **Honest limit.** Branch & bound is *exact* but can be *exponential*. On small instances you get a proven
 > optimum; on large ones you set a time limit and accept a **gap** (best bound vs best solution). That
-> trade-off — proof of optimality vs wall-clock — is exactly what a learner should feel.
+> trade-off, proof of optimality vs wall-clock, is exactly what a learner should feel.
 
 ### Use **CP-SAT** when…
 
 …the model is dominated by **logical, combinatorial constraints**: job-shop / flow-shop scheduling, crew and
-machine assignment, rostering, sequencing — anything where "two tasks can't overlap on one machine" or "all
+machine assignment, rostering, sequencing, anything where "two tasks can't overlap on one machine" or "all
 different" is the natural language. CP-SAT can *also* model routing (via `AddCircuit`), but for vehicle
 routing the dedicated Routing layer is the better-trodden teaching path.
 
@@ -63,10 +63,10 @@ routing the dedicated Routing layer is the better-trodden teaching path.
 
 …vehicles must visit nodes: TSP, CVRP, VRPTW, PDPTW (the ladder is detailed in
 [03 · Methods & KPIs](./03_methods-and-kpis.md#routing--tsp-cvrp-vrptw)). This is the lab's headline family
-and the place where "fragile under uncertainty" bites hardest — a single delay in a VRPTW cascades into
+and the place where "fragile under uncertainty" bites hardest, a single delay in a VRPTW cascades into
 downstream time-window violations.
 
-> **Critical configuration — or the lesson lies.** Out of the box, OR-Tools Routing returns the *first
+> **Critical configuration, or the lesson lies.** Out of the box, OR-Tools Routing returns the *first
 > feasible* solution and stops; that is **not** optimized, and comparing it to PyVRP would defame OR-Tools.
 > Every routing scenario **must** set a first-solution strategy, `GUIDED_LOCAL_SEARCH`, a time limit, and a
 > fixed seed. The detail is in [03 · Methods & KPIs](./03_methods-and-kpis.md#routing--tsp-cvrp-vrptw) and
@@ -76,9 +76,9 @@ downstream time-window violations.
 
 …you need the **cost matrix** that *feeds* a router, or a single best path across a road network (Dijkstra,
 A\*, k-shortest paths). It is also the **only** optimization piece in the lab that is pure Python and can run
-*live* in the browser — but only on **small** graphs.
+*live* in the browser, but only on **small** graphs.
 
-> **Honest limit.** All-pairs shortest paths on a big OSMnx graph **does not scale** — the matrix, not the
+> **Honest limit.** All-pairs shortest paths on a big OSMnx graph **does not scale**, the matrix, not the
 > solver, is usually the real bottleneck. Keep *live* instances small (≈ ≤ 20–30 stops); for anything larger,
 > **precompute** the matrix with OSRM and commit the JSON. See [04 · Tools](./04_tools.md#osrm--vroom).
 
@@ -88,10 +88,10 @@ Because OR-Tools, PyVRP, and the OSRM/VROOM backends are **native code**, they f
 [live/precompute gate](../../architecture/03_the-gate.md) and **always precompute**. The only optimization
 piece that can touch the live tier is NetworkX/OSMnx shortest paths on a small graph. This shapes *every*
 "when to use" answer: if your instance is large or your solver is native, the answer is "use it offline and
-commit a seeded trace" — see [04 · Tools](./04_tools.md#where-this-runs-precompute-only-never-live).
+commit a seeded trace", see [04 · Tools](./04_tools.md#where-this-runs-precompute-only-never-live).
 
 ## Related
 
-- [01 · What it is](./01_what-it-is.md) — the model anatomy and the fragility framing.
-- [03 · Methods & KPIs](./03_methods-and-kpis.md) — each class in depth + the simheuristic bridge.
-- [05 · Scenarios](./05_scenarios.md) — which scenario exercises which class.
+- [01 · What it is](./01_what-it-is.md): the model anatomy and the fragility framing.
+- [03 · Methods & KPIs](./03_methods-and-kpis.md): each class in depth + the simheuristic bridge.
+- [05 · Scenarios](./05_scenarios.md): which scenario exercises which class.

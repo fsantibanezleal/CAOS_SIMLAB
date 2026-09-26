@@ -1,4 +1,4 @@
-"""CuPy GPU Monte-Carlo demo — vectorized, seeded, with a graceful CPU fallback.
+"""CuPy GPU Monte-Carlo demo, vectorized, seeded, with a graceful CPU fallback.
 
 What it teaches (the S10 "GPU exhibit" pattern):
 - A Monte-Carlo estimate is a *random experiment*: thousands of independent replications, summarised
@@ -14,7 +14,7 @@ What it teaches (the S10 "GPU exhibit" pattern):
 
 Determinism: a fixed seed (12345) is used for whichever backend runs, so the printed estimate is
 reproducible on that backend. (NumPy's Generator and CuPy's cuRAND-backed Generator are seeded the same
-way; bit-exact equality ACROSS backends is not guaranteed — different RNG implementations — but each
+way; bit-exact equality ACROSS backends is not guaranteed, different RNG implementations, but each
 backend is reproducible with itself.)
 
 Run (cwd = repo root):
@@ -35,7 +35,7 @@ def select_backend():
 
     Importing cupy on a machine with no detectable CUDA toolkit emits:
         UserWarning: CUDA path could not be detected. Set CUDA_PATH environment variable ...
-    That warning is expected and harmless here — it just means CuPy could not find a CUDA install, so we
+    That warning is expected and harmless here, it just means CuPy could not find a CUDA install, so we
     will fall back. We surface it so the learner sees exactly why the GPU path was skipped.
     """
     try:
@@ -47,7 +47,7 @@ def select_backend():
         cuda_path_warning = any("CUDA path could not be detected" in str(w.message) for w in caught)
 
         # A successful import is not proof of a usable GPU. A machine can report a CUDA device yet lack the
-        # CUDA toolkit *headers* CuPy needs to JIT-compile elementwise kernels — in which case array math
+        # CUDA toolkit *headers* CuPy needs to JIT-compile elementwise kernels: in which case array math
         # (e.g. x*x) raises only when the first kernel compiles. So the probe must exercise the same kind
         # of operation the real computation uses: allocate, draw with cuRAND, run an elementwise arithmetic
         # op (forces kernel compilation), AND synchronise. Any failure here -> fall back to NumPy.

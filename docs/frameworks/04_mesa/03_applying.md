@@ -1,4 +1,4 @@
-# Mesa — applying it
+# Mesa: applying it
 
 How to take Mesa from the toy in [02_usage.md](./02_usage.md) to a real ABM, where it fits in **this lab's**
 scenarios, the honest trade-offs from the research, and when to pick it over the alternatives.
@@ -10,25 +10,25 @@ scenarios, the honest trade-offs from the research, and when to pick it over the
 
 ## 1. Formalize the problem, then solve it with Mesa
 
-ABM is the right lens when the question is **"what global pattern do these local rules produce?"** — not
+ABM is the right lens when the question is **"what global pattern do these local rules produce?"**, not
 "what is the optimal decision?" (that is [optimization](../../problem-types/03_optimization-routing.md), a
 different problem type) and not "how do entities flow through resources?" (that is
 [discrete-event simulation](../../problem-types/01_discrete-event-simulation.md)). To formalize an ABM you
-specify four things — and each maps one-to-one onto a Mesa abstraction:
+specify four things, and each maps one-to-one onto a Mesa abstraction:
 
 | Formal element | Question it answers | Mesa expression |
 |---|---|---|
 | **Agents + state** | who acts, and what do they remember? | `mesa.Agent` subclass with attributes |
 | **Environment / topology** | who is a neighbor of whom? | a space: `SingleGrid` / `NetworkGrid` / `MultiGrid` / Mesa-Geo |
 | **Local rule** | what does one agent do per tick, given its neighbors? | `Agent.step()` |
-| **Activation + time** | in what order, and how is "a tick" defined? | a per-tick update over `self.agents` — the generic Mesa idiom is `self.agents.shuffle_do("step")`; the in-repo S02 model instead drives a **manual batch update** (decide all unhappy agents against the start-of-step config, then relocate them one-by-one) |
+| **Activation + time** | in what order, and how is "a tick" defined? | a per-tick update over `self.agents`, the generic Mesa idiom is `self.agents.shuffle_do("step")`; the in-repo S02 model instead drives a **manual batch update** (decide all unhappy agents against the start-of-step config, then relocate them one-by-one) |
 | **(plus) Seed** | how do we make the run reproducible? | `super().__init__(rng=<int>)` |
 
 The **solve loop** is then: instantiate the `Model` with a fixed `rng=`, drive each tick (the generic Mesa
-call is `self.agents.shuffle_do("step")`; S02 hand-rolls a **batch update** — see the note below), and read
+call is `self.agents.shuffle_do("step")`; S02 hand-rolls a **batch update**, see the note below), and read
 out an observable each tick (a `DataCollector` reporter, or a hand-written metric like the segregation index
 in the example). Because every random draw flows through the seeded RNG, the resulting trajectory is the
-*one true run* — which is exactly what the lab commits and replays. There is no separate "solver"; in ABM
+*one true run*, which is exactly what the lab commits and replays. There is no separate "solver"; in ABM
 the **run is the answer**.
 
 > **In-repo model vs. the standalone example.** The runnable [`example.py`](./example.py) is the *generic*
@@ -47,10 +47,10 @@ Mesa is the **ABM** framework. Three lab scenarios are agent-based models:
 |---|---|---|---|---|
 | **S02 Schelling** | [`s02_schelling.py`](../../../simlab/scenarios/s02_schelling.py) | segregation | 2-D grid, Moore neighborhood | strong segregation from a mild local preference |
 | **S03 SIR** | [`s03_sir.py`](../../../simlab/scenarios/s03_sir.py) | epidemic | 2-D grid (lattice contacts) | an epidemic wave from per-cell infection/recovery |
-| **S05 Beer Game** | [`s05_beergame.py`](../../../simlab/scenarios/s05_beergame.py) | supply chain | serial echelons (a small network) | the *bullwhip effect* — demand swings amplify upstream |
+| **S05 Beer Game** | [`s05_beergame.py`](../../../simlab/scenarios/s05_beergame.py) | supply chain | serial echelons (a small network) | the *bullwhip effect*, demand swings amplify upstream |
 
 Mesa's `Agent` / `Model` / space / `AgentSet` abstractions map one-to-one onto these, which is why the lab
-**teaches** ABM through Mesa's vocabulary — *the abstractions are the curriculum*.
+**teaches** ABM through Mesa's vocabulary, *the abstractions are the curriculum*.
 
 ### The honest framing (read this before claiming how the lab runs Mesa)
 
@@ -62,11 +62,11 @@ Mesa's `Agent` / `Model` / space / `AgentSet` abstractions map one-to-one onto t
 > same seeded models are *also* run headless in the local pipeline to commit a canonical replay artifact
 > for instant first paint and byte-for-byte reproducibility.
 
-That split — live Mesa engine *plus* a committed canonical replay — is the architecture for Mesa:
+That split, live Mesa engine *plus* a committed canonical replay, is the architecture for Mesa:
 
 1. **Mesa runs live; a committed trace is the first paint.** The page loads instantly from a deterministic
    committed trace (Arrow/JSON), then a live Run button re-executes real Mesa 3 in Pyodide on top of it.
-   What does *not* ship is **SolaraViz** (Mesa's server-bound visualization) — the lab's React/SVG viewer
+   What does *not* ship is **SolaraViz** (Mesa's server-bound visualization), the lab's React/SVG viewer
    owns the pixels instead, on a static SPA with zero server compute.
 2. **Mesa rules are fully visible in the code and the paper.** The lab is didactic. The `mesa.Agent` /
    `mesa.Model` subclasses and the per-tick update (the generic `shuffle_do("step")` idiom in the example; a
@@ -74,12 +74,12 @@ That split — live Mesa engine *plus* a committed canonical replay — is the a
    the source, not hidden inside a framework blackbox.
 3. **Live for pure-Python; precompute only for native code.** Pure-Python engines whose wheels ⊆
    `LIVE_WHEELS` (SimPy, Ciw, **Mesa**, joblib/scipy, networkx) run live under Pyodide. The precompute lane
-   is reserved for the **native-code** engines that cannot run in WASM — OR-Tools CP-SAT/GLOP (S06, S07,
-   S08, S11) — which are seeded offline, committed, and replayed.
+   is reserved for the **native-code** engines that cannot run in WASM, OR-Tools CP-SAT/GLOP (S06, S07,
+   S08, S11), which are seeded offline, committed, and replayed.
 
 So Mesa's role in this lab is **the real ABM engine, run live in the browser**, teaching the curriculum via
 `Agent`/`Model`/space abstractions; the committed trace is only the canonical replay (first paint), and the
-precompute path is just where that canonical artifact is produced — not a claim that Mesa cannot run live.
+precompute path is just where that canonical artifact is produced, not a claim that Mesa cannot run live.
 
 ---
 
@@ -100,7 +100,7 @@ local .venv (Mesa, headless)        committed artifact      web SPA (Pyodide liv
 
 The committed seeded trace gives instant first paint and a *one true* run reproducible by anyone who clones
 the repo; the live Run then re-executes real Mesa 3 in the browser (same `rng=` ⇒ same trajectory). Native
-engines (OR-Tools) cannot do the live step and stay replay-only — but Mesa can and does.
+engines (OR-Tools) cannot do the live step and stay replay-only, but Mesa can and does.
 
 For ABM specifically the variant is **build-then-observe** rather than *optimize-then-simulate*: ABM does
 not prescribe a decision, it reveals the dynamics a rule set produces. (Contrast Optimization scenarios
@@ -116,21 +116,21 @@ live-lane rationale: [../../guides/02_live-lane-pyodide.md](../../guides/02_live
 Grounded in the project's internal ABM-frameworks research note:
 
 **Strengths**
-- **De-facto Python ABM standard** — Apache-2.0, actively maintained, JOSS-published (2025), huge community
+- **De-facto Python ABM standard**: Apache-2.0, actively maintained, JOSS-published (2025), huge community
   and example library. Choosing it is the low-risk, well-documented default.
-- **Clean, teachable abstractions** — `Agent` / `Model` / space / `AgentSet` *are* the ABM concepts.
-- **First-class spaces** — grid, network (`NetworkGrid`), cell-space; real maps via **Mesa-Geo** (GeoAgents
+- **Clean, teachable abstractions**: `Agent` / `Model` / space / `AgentSet` *are* the ABM concepts.
+- **First-class spaces**: grid, network (`NetworkGrid`), cell-space; real maps via **Mesa-Geo** (GeoAgents
   over Shapely/GeoPandas).
-- **Batteries for studies** — `DataCollector` (tidy DataFrames) and `batch_run` (seeded parameter sweeps).
+- **Batteries for studies**: `DataCollector` (tidy DataFrames) and `batch_run` (seeded parameter sweeps).
 
 **Limits / pitfalls**
 - **Not a web-serving engine.** SolaraViz is a stateful Python process per session; do **not** put it
   up as a public live server. Use it locally; serve replays. *(Primary architectural risk.)*
 - **Object-per-agent ceiling (~1e5 agents).** Mesa bogs down past ~100k agents. If a "heavy" scenario needs
-  more, route it to **FLAME GPU 2** (CUDA), **ABMax** (JAX) or **AMBER** (Polars) — do not fight Mesa.
+  more, route it to **FLAME GPU 2** (CUDA), **ABMax** (JAX) or **AMBER** (Polars), do not fight Mesa.
 - **CPU-only, no GPU.** Fine for the lab's small models; irrelevant for million-agent scale.
 - **Replay-vs-live nuance.** The ABM pages must be explicit that the page first paints from a committed
-  canonical trace and *then* re-runs real Mesa 3 live in Pyodide on a Run — so learners do not mistake the
+  canonical trace and *then* re-runs real Mesa 3 live in Pyodide on a Run, so learners do not mistake the
   instant first paint for "Mesa isn't really running." (NetLogo Web remains a separate zero-server in-browser
   on-ramp for the classic models.)
 
@@ -143,14 +143,14 @@ Grounded in the project's internal ABM-frameworks research note:
 | To **learn/teach** ABM in Python; build small–medium models (≤1e5 agents) | **Mesa 3** | the standard; abstractions = curriculum |
 | **Real maps / GIS** in an ABM | **Mesa-Geo** ([../mesa-geo/](../05_mesa-geo.md)) | GeoAgents over Shapely/GeoPandas, Leaflet |
 | An **instant, zero-server in-browser** animated classic (Schelling, SIR, Wolf-Sheep) | **NetLogo Web** ([../netlogo-web/](../07_netlogo-web.md)) | compiles to JS, runs fully client-side, zero server compute |
-| A **throwaway ≤10-line demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab instead uses **Mesa 3** for S02/S03/S05 (run live in Pyodide, with a committed canonical replay) — real abstractions, reproducible |
+| A **throwaway ≤10-line demo** where a framework is overkill | **hand-rolled NumPy** | fine for a one-off; the lab instead uses **Mesa 3** for S02/S03/S05 (run live in Pyodide, with a committed canonical replay), real abstractions, reproducible |
 | **Millions of agents** | **FLAME GPU 2** / ABMax / AMBER ([../gpu-abm-chapter/](../18_gpu-abm-chapter.md)) | GPU / vectorized / columnar scale beyond Mesa's ceiling |
 | **Crowd / pedestrian flow** | **JuPedSim** ([../jupedsim/](../06_jupedsim.md)) | validated social-force / collision-free-speed, pip-installable |
 
 **Do not use** (explicitly out of scope):
-- **AgentPy** — *deprecated*; its own authors now point users to Mesa. Cite only as historical context.
-- **desmod** — a *DES* helper (built on SimPy), also unmaintained; not used here. (Listed because it shows
-  up in ABM/DES searches — for DES this lab uses SimPy/Ciw, not desmod.)
+- **AgentPy**: *deprecated*; its own authors now point users to Mesa. Cite only as historical context.
+- **desmod**: a *DES* helper (built on SimPy), also unmaintained; not used here. (Listed because it shows
+  up in ABM/DES searches, for DES this lab uses SimPy/Ciw, not desmod.)
 
 ---
 

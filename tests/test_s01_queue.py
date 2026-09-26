@@ -1,8 +1,8 @@
-"""S01 M/M/c — reproducibility, theory validation, and the live gate.
+"""S01 M/M/c, reproducibility, theory validation, and the live gate.
 
 These tests double as the curriculum's honesty guarantees: a run is reproducible from (params, seed),
 and the simulator agrees with the closed-form M/M/c when averaged over replications (a single run is
-noisy — that is itself a lesson, see test_single_run_is_noisy_but_replications_converge).
+noisy, that is itself a lesson, see test_single_run_is_noisy_but_replications_converge).
 """
 from __future__ import annotations
 
@@ -36,7 +36,7 @@ def test_erlang_c_known_value():
 def test_unstable_system_is_flagged():
     ref = erlang_c_mmc(5.0, 1.0, 3)  # rho > 1
     assert ref["stable"] is False
-    assert ref["Wq"] is None  # null, not inf — keeps the committed trace valid JSON
+    assert ref["Wq"] is None  # null, not inf, keeps the committed trace valid JSON
 
 
 def test_single_run_is_noisy_but_replications_converge():

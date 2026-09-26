@@ -1,4 +1,4 @@
-"""Minimal M/M/c queue in SimPy — the DES "hello world" for CAOS_SIMLAB.
+"""Minimal M/M/c queue in SimPy, the DES "hello world" for CAOS_SIMLAB.
 
 This is the smallest honest demonstration of the process-interaction worldview that
 SimPy gives you: customers arrive as a Poisson process, compete for a pool of ``c``
@@ -9,7 +9,7 @@ server utilization.
 
 The point of the example is twofold:
 
-1. Show the SimPy shape — an ``env``, a ``Resource``, generator processes that
+1. Show the SimPy shape: an ``env``, a ``Resource``, generator processes that
    ``yield`` timeouts and resource requests, and ``env.run(until=...)``.
 2. Validate against queueing *theory*. An M/M/c queue has a closed-form mean wait
    (the Erlang-C result), so we print the simulated mean next to the analytic one.
@@ -17,7 +17,7 @@ The point of the example is twofold:
    not a result.
 
 Everything is deterministic: we seed a ``random.Random`` instance and pass it around,
-so the same script always prints the same numbers. No display, no files, no network —
+so the same script always prints the same numbers. No display, no files, no network, 
 pure-Python and Pyodide-friendly, exactly as the live lane requires.
 
 Run (from the repo root):
@@ -36,9 +36,9 @@ import simpy
 # Parameters of the M/M/c queue. (params, seed) fully determine the run.
 # ---------------------------------------------------------------------------
 SEED = 42
-N_SERVERS = 3          # c  — number of identical parallel servers
-ARRIVAL_RATE = 2.4     # lambda — mean arrivals per unit time (Poisson process)
-SERVICE_RATE = 1.0     # mu     — mean services per unit time per busy server
+N_SERVERS = 3          # c , number of identical parallel servers
+ARRIVAL_RATE = 2.4     # lambda, mean arrivals per unit time (Poisson process)
+SERVICE_RATE = 1.0     # mu    , mean services per unit time per busy server
 SIM_TIME = 20_000.0    # simulated-time horizon (long enough for a tight estimate)
 WARMUP = 1_000.0       # discard the initial transient before collecting stats
 
@@ -76,7 +76,7 @@ def arrivals(env: simpy.Environment, servers: simpy.Resource,
 
 
 def erlang_c_mean_wait(lam: float, mu: float, c: int) -> float:
-    """Closed-form mean queue wait (Wq) for an M/M/c queue — the analytic reference.
+    """Closed-form mean queue wait (Wq) for an M/M/c queue, the analytic reference.
 
     rho = lam / (c*mu) must be < 1 for a stable queue. Returns the theoretical mean
     time a customer spends waiting in the queue (not counting service).

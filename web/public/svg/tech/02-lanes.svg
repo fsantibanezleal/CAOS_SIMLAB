@@ -40,13 +40,13 @@
   <text class="ttl" x="26" y="86">Precompute pipeline</text>
   <text class="cd mono" x="26" y="101">python -m simlab.pipeline</text>
   <rect class="bx" x="26" y="110" width="252" height="56" rx="6"/>
-  <text class="it" x="36" y="128">Native solvers — no WASM build</text>
+  <text class="it" x="36" y="128">Native solvers, no WASM build</text>
   <text class="cd mono" x="36" y="143">OR-Tools CP-SAT / Routing / GLOP</text>
   <text class="mu" x="36" y="158">S06 · S08 · S11 (pure_python=False)</text>
   <rect class="bx" x="26" y="172" width="252" height="44" rx="6"/>
   <text class="it" x="36" y="190">S07 route plan (offline)</text>
   <text class="cd mono" x="36" y="205">_haul_plan.py · NetworkX + CP-SAT</text>
-  <text class="mu" x="26" y="234">GPU lane (CuPy / Numba / JAX) — out of scope</text>
+  <text class="mu" x="26" y="234">GPU lane (CuPy / Numba / JAX), out of scope</text>
   <text class="mu" x="26" y="252">→ writes seeded trace + manifest</text>
 
   <!-- BRIDGE / replay lane -->
@@ -76,9 +76,9 @@
 
   <!-- the gate -->
   <rect class="bx bx-hi" x="14" y="300" width="852" height="74" rx="10"/>
-  <text class="ttl" x="26" y="322">The 4-gate rule decides the lane — measured, not guessed</text>
+  <text class="ttl" x="26" y="322">The 4-gate rule decides the lane, measured, not guessed</text>
   <text class="cd mono" x="26" y="340">simlab/core/scenario.py · classify_lane</text>
-  <text class="it" x="26" y="360">live ⇔ pure-Python AND wheels ⊆ LIVE_WHEELS AND run_ms ≤ 3000 AND trace_bytes ≤ 1 MB — recomputed from a real run, recorded in each manifest.</text>
+  <text class="it" x="26" y="360">live ⇔ pure-Python AND wheels ⊆ LIVE_WHEELS AND run_ms ≤ 3000 AND trace_bytes ≤ 1 MB, recomputed from a real run, recorded in each manifest.</text>
 
   <!-- flows -->
   <path class="flow" d="M290,176 C304,176 306,176 316,176" marker-end="url(#ln-ar)"/>

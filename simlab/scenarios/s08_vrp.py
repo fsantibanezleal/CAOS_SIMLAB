@@ -1,4 +1,4 @@
-"""S08 — Vehicle Routing Problem (capacitated VRP) — two real solvers, side by side.
+"""S08, Vehicle Routing Problem (capacitated VRP), two real solvers, side by side.
 
 A depot and N customers (each with a demand) on a synthetic road grid; route K capacity-limited vehicles
 to serve every customer minimizing total travel distance. The classic optimize-then-route problem. Both
@@ -8,20 +8,20 @@ the plans, which the web replays as vehicles driving the network.
 This scenario runs the same capacitated instance through two state-of-the-art VRP solvers and exposes both
 plans so the lab can show the contrast:
 
-* **OR-Tools routing** (Google) — the *primary* plan, carried in the trace's ``routes``/``agents``/``kpis``
+* **OR-Tools routing** (Google): the *primary* plan, carried in the trace's ``routes``/``agents``/``kpis``
   exactly as the app already renders. Configured with ``PATH_CHEAPEST_ARC`` + ``GUIDED_LOCAL_SEARCH`` and,
-  critically, a *deterministic* stopping rule — a fixed ``solution_limit`` on a single search thread (the
+  critically, a *deterministic* stopping rule, a fixed ``solution_limit`` on a single search thread (the
   OR-Tools Routing layer exposes no generic random_seed; determinism comes from single-thread GLS + the
-  solution-count cap) — rather than a wall-clock ``time_limit``. A wall-clock limit makes the optimum machine-dependent (a fast
-  laptop explores more); a solution-count limit makes the committed trace byte-stable on any machine —
+  solution-count cap), rather than a wall-clock ``time_limit``. A wall-clock limit makes the optimum machine-dependent (a fast
+  laptop explores more); a solution-count limit makes the committed trace byte-stable on any machine, 
   the "replay = truth" contract the lab depends on. OR-Tools also carries a *global-span* cost so it
   balances route lengths (it minimises the longest route, keeping every vehicle busy).
 
-* **PyVRP** (Hybrid Genetic Search, the current open VRP state of the art) — solved on the *identical*
+* **PyVRP** (Hybrid Genetic Search, the current open VRP state of the art): solved on the *identical*
   scaled-integer distance matrix for a fair comparison, with ``MaxIterations`` (a deterministic stop, not
   wall time) and a fixed ``seed``. PyVRP minimises *pure total distance*, so its plan is typically shorter
   in total but less balanced than OR-Tools'. The full PyVRP plan (per-vehicle grid polylines, loads, and
-  KPIs) is exposed under the trace's ``analytic`` field — a free-form schema slot — so the frontend can
+  KPIs) is exposed under the trace's ``analytic`` field, a free-form schema slot, so the frontend can
   overlay or toggle the SOTA contrast without any change to the route-trace schema.
 
 Both solvers see one instance built from one seeded NumPy RNG; distances are shortest paths on the grid,
@@ -54,7 +54,7 @@ class Instance:
     net: GridNetwork
     depot: int                 # grid node id of the depot
     customers: list[int]       # grid node ids of the customers
-    special: list[int]         # [depot] + customers — the rows/cols of the distance matrix
+    special: list[int]         # [depot] + customers, the rows/cols of the distance matrix
     demands: list[int]         # demand per `special` index (depot = 0)
     dmat: list[list[int]]      # scaled-integer shortest-path distance matrix over `special`
     n_vehicles: int
@@ -138,7 +138,7 @@ def solve_ortools(inst: Instance) -> list[list[int]]:
     dem_cb = routing.RegisterUnaryTransitCallback(lambda i: demands[manager.IndexToNode(i)])
     routing.AddDimensionWithVehicleCapacity(dem_cb, 0, [cap] * nv, True, "Capacity")
     # A distance dimension with a global-span cost balances route lengths (minimize the longest route),
-    # so added vehicles are actually used — surfacing the total-distance vs longest-route trade-off, and
+    # so added vehicles are actually used: surfacing the total-distance vs longest-route trade-off, and
     # the contrast with PyVRP (which minimises pure total distance).
     routing.AddDimension(transit, 0, 1_000_000, True, "Distance")
     routing.GetDimensionOrDie("Distance").SetGlobalSpanCostCoefficient(100)

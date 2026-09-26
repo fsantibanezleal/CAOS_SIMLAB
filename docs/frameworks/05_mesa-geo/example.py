@@ -6,7 +6,7 @@ them in a GeoSpace, run one deterministic step, and report positions plus a
 couple of GeoSpace spatial queries (neighbours, distance).
 
 Scenario relevance (see 03_applying.md): this is the kernel of the geospatial
-variants of S07 (construction haul routing) and S09 (ambulance dispatch) — real
+variants of S07 (construction haul routing) and S09 (ambulance dispatch), real
 maps are loaded the same way, only the geometry source differs (OSMnx/GeoJSON
 instead of hand-built points).
 
@@ -98,7 +98,7 @@ def main() -> None:
     near = [n.unique_id for n in model.space.get_neighbors_within_distance(a0, 200.0)]
     print(f"Within 200 m of agent {a0.unique_id} (incl. self): {sorted(near)}")
 
-    # Export the live state as a GeoDataFrame — this is the artifact shape we
+    # Export the live state as a GeoDataFrame: this is the artifact shape we
     # would serialize (GeoJSON/Arrow) for the static replay viewer.
     gdf = model.space.get_agents_as_GeoDataFrame()
     print(f"\nGeoDataFrame rows={len(gdf)}, columns={list(gdf.columns)}, crs={gdf.crs}")

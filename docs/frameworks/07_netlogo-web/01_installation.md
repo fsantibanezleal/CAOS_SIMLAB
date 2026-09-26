@@ -1,14 +1,14 @@
-# NetLogo Web (Tortoise) — 01 · installation
+# NetLogo Web (Tortoise): 01 · installation
 
 **NetLogo Web** is NetLogo compiled to **JavaScript** by the **Tortoise** compiler/runtime. It is *not* a
-Python package and *not* a pip dependency — it is a **client-side JS engine**. You do not `pip install` it;
+Python package and *not* a pip dependency, it is a **client-side JS engine**. You do not `pip install` it;
 you **author a model** (in NetLogo desktop or on netlogoweb.org) and **export a standalone HTML file** that
 already contains the engine inlined. That HTML is then embedded in the lab's React/Vite SPA and runs
-**entirely in the visitor's browser** — zero server compute.
+**entirely in the visitor's browser**, zero server compute.
 
 This is the **native-JS live on-ramp lane** for ABM: the visitor lands on a page and a real, animated
 simulator is already running, with sliders, on GitHub Pages, which only serves static files (zero server
-compute) — with no Pyodide download at all. (The Mesa lane *also* runs live, but via Pyodide-Python, backed by a committed canonical
+compute), with no Pyodide download at all. (The Mesa lane *also* runs live, but via Pyodide-Python, backed by a committed canonical
 trace for instant first paint; see the [Mesa node](../04_mesa.md).)
 
 > **Reading order for this node:** start here (install/obtain the engine), then
@@ -26,9 +26,9 @@ trace for instant first paint; see the [Mesa node](../04_mesa.md).)
 | Requirements file it belongs to | **None.** It is *not* in `requirements.txt`, `requirements-precompute.txt`, or `requirements-gpu.txt` |
 | Engine license | Open source (Tortoise repo); runtime deps are MIT / EPL-1.0 |
 | Authoring-tool license | NetLogo desktop is **GPL-2.0+** (used to author only; never redistributed) |
-| Model-code license | **Mixed** — *Code Examples* are **CC0** (public domain); most Models Library models are **CC BY-NC-SA** (noncommercial, *not* an open-source license). See [`03_applying.md`](./03_applying.md) §4 |
+| Model-code license | **Mixed**, *Code Examples* are **CC0** (public domain); most Models Library models are **CC BY-NC-SA** (noncommercial, *not* an open-source license). See [`03_applying.md`](./03_applying.md) §4 |
 | Problem type | Agent-Based Modeling (ABM), live in browser |
-| Server compute | **Zero** — pure client-side JS |
+| Server compute | **Zero**, pure client-side JS |
 | Practical in-browser scale | ~1e3–1e4 agents (below Mesa's ~1e5 object-per-agent ceiling) |
 
 > Because NetLogo Web is JavaScript, there is **no `example.py`** for this framework, **no pip line**, and
@@ -39,16 +39,16 @@ trace for instant first paint; see the [Mesa node](../04_mesa.md).)
 
 | Lane | Engine | Where it runs | Cold start |
 |---|---|---|---|
-| **live / native JS** (this node) | NetLogo Web (Tortoise) | visitor's browser, native JS | smallest — no runtime download beyond the HTML |
-| **live / Python-in-browser** | SimPy, Ciw, **Mesa**, joblib/SciPy, NetworkX via **Pyodide** (`⊆ LIVE_WHEELS`) | visitor's browser, WASM | larger — must fetch/micropip the wheel closure first (~3 s for Mesa) |
-| **Offline → replay (native code only)** | OR-Tools / JuPedSim / GPU engines | precompute box, committed trace, static replay | n/a — the browser only replays a JSON/Arrow trace |
+| **live / native JS** (this node) | NetLogo Web (Tortoise) | visitor's browser, native JS | smallest, no runtime download beyond the HTML |
+| **live / Python-in-browser** | SimPy, Ciw, **Mesa**, joblib/SciPy, NetworkX via **Pyodide** (`⊆ LIVE_WHEELS`) | visitor's browser, WASM | larger, must fetch/micropip the wheel closure first (~3 s for Mesa) |
+| **Offline → replay (native code only)** | OR-Tools / JuPedSim / GPU engines | precompute box, committed trace, static replay | n/a, the browser only replays a JSON/Arrow trace |
 
 NetLogo Web is the only engine that **simulates live in the browser without Pyodide** (compiled JS), which is
 exactly why it owns the "enter → a running simulator, instantly" on-ramp. Mesa runs live too, but via Pyodide
 (it pays the WASM cold start). The offline-replay lane is reserved for **native code** that cannot run in
-WASM (OR-Tools, JuPedSim, GPU engines) — not for Mesa.
+WASM (OR-Tools, JuPedSim, GPU engines), not for Mesa.
 
-## 2. Step 1 — author or pick a model
+## 2. Step 1: author or pick a model
 
 Two authoring paths, both producing a standalone HTML you can serve from `web/public/`:
 
@@ -72,13 +72,13 @@ the compiled JS engine are all in it. No external network calls are required to 
 > committed HTML is reproducible on first load. This is the same determinism discipline the Python scenarios
 > enforce with `rng=`/`seed=`. See [`02_usage.md`](./02_usage.md) §2.
 
-## 3. Step 2 — (optional) obtain the engine artifacts directly
+## 3. Step 2: (optional) obtain the engine artifacts directly
 
 If you want to drive the runtime yourself (compile NetLogo source to JS at build time, or mount a model into
 a custom React widget instead of an `<iframe>`), the engine ships as two artifacts:
 
-- **`tortoise-compiler.js`** — turns NetLogo source/model into JavaScript (`compilerJS`, a Scala.js build).
-- **`tortoise-engine.js`** — the runtime that executes the compiled JS (Scala.js + CoffeeScript; pulls in
+- **`tortoise-compiler.js`**: turns NetLogo source/model into JavaScript (`compilerJS`, a Scala.js build).
+- **`tortoise-engine.js`**: the runtime that executes the compiled JS (Scala.js + CoffeeScript; pulls in
   Mori, Tone.js, crypto-js, vectorious).
 
 These are produced by / published from the **Tortoise** repo (<https://github.com/NetLogo/Tortoise>) and
@@ -87,13 +87,13 @@ netlogoweb.org. For this lab the **standalone-HTML path (Step 1) is the default*
 and needs no build wiring; the raw-artifact path is documented only for the advanced "custom widget" case in
 [`02_usage.md`](./02_usage.md) §3d.
 
-## 4. Step 3 — place the HTML in the SPA's static assets
+## 4. Step 3: place the HTML in the SPA's static assets
 
 Drop the exported file under the web app's public assets so Vite serves it verbatim:
 
 ```text
-web/public/netlogo/schelling.html      # S02 Schelling — the one card that ships today
-# (an S03 SIR card, e.g. sir.html, is a documented future addition — not yet shipped)
+web/public/netlogo/schelling.html      # S02 Schelling, the one card that ships today
+# (an S03 SIR card, e.g. sir.html, is a documented future addition: not yet shipped)
 ```
 
 Vite copies `web/public/**` to the build output untouched, so each model is reachable at
@@ -105,9 +105,9 @@ Vite copies `web/public/**` to the build output untouched, so each model is reac
   (Chromium / Firefox / Safari). There is nothing to compile on the deploy (GitHub Pages, no backend) and no
   GPU involvement.
 - **No Pyodide.** Unlike the lab's NumPy/SimPy live scenarios (which run Python *in* the browser via
-  Pyodide), NetLogo Web is native JS — it does **not** load the Pyodide runtime, so its cold-start is
+  Pyodide), NetLogo Web is native JS, it does **not** load the Pyodide runtime, so its cold-start is
   smaller and independent of the wheel closure.
-- **Practical in-browser scale** is ~1e3–1e4 agents — perfect for the canonical on-ramp models (Schelling,
+- **Practical in-browser scale** is ~1e3–1e4 agents: perfect for the canonical on-ramp models (Schelling,
   SIR) and intentionally below Mesa's ~1e5 object-per-agent ceiling. Heavy/large ABM stays in the offline
   Mesa / FLAME-GPU-2 / ABMax / AMBER lanes (see [`03_applying.md`](./03_applying.md) §5 and the
   [GPU-ABM reference chapter](../18_gpu-abm-chapter.md)).
@@ -122,14 +122,14 @@ There is no `python -c "import …"` check (it is not a Python module). Verify b
 and opening it:
 
 ```bash
-# from web/ — any static server works; example using the project's web dev server:
+# from web/: any static server works; example using the project's web dev server:
 npm run dev    # then open http://localhost:5173/netlogo/schelling.html
 ```
 
-A correct export shows the NetLogo **view** animating with **Setup/Go** buttons and sliders responding —
+A correct export shows the NetLogo **view** animating with **Setup/Go** buttons and sliders responding, 
 all without any server-side process. If you see only NetLogo source text, the file was saved as `.nlogo`
-(plain source), not exported as **NetLogo Web HTML** — re-do Step 1. Always screenshot-verify the embedded
-card before deploy (the lab's screenshot-verify rule applies — building blind is how broken UI ships).
+(plain source), not exported as **NetLogo Web HTML**, re-do Step 1. Always screenshot-verify the embedded
+card before deploy (the lab's screenshot-verify rule applies, building blind is how broken UI ships).
 
 ## 7. Grounding / references
 

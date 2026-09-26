@@ -1,4 +1,4 @@
-# 14 · Numba — 01 · Installation
+# 14 · Numba: 01 · Installation
 
 Numba is a JIT (just-in-time) compiler for a numeric subset of Python. It compiles
 decorated functions to native machine code via LLVM, and it ships a CUDA target that
@@ -51,7 +51,7 @@ numba==0.65.1
 | Package            | Version   | Role |
 |--------------------|-----------|------|
 | `numba`            | 0.65.1    | the JIT compiler + `numba.cuda` target |
-| `llvmlite`         | 0.47.0    | thin Python binding to LLVM; Numba's code-generation backend (the hard version pin — `numba` 0.65.x requires `llvmlite` 0.47.x) |
+| `llvmlite`         | 0.47.0    | thin Python binding to LLVM; Numba's code-generation backend (the hard version pin, `numba` 0.65.x requires `llvmlite` 0.47.x) |
 | `numpy`            | 2.4.6     | array layer Numba understands natively (`@njit` operates on NumPy arrays) |
 | `cupy-cuda12x`     | 14.1.1    | companion GPU-array library for the same lane (CUDA 12.x) |
 | `cuda-pathfinder`  | 1.5.5     | helper that locates the CUDA toolkit libraries at runtime |
@@ -60,7 +60,7 @@ Python here is **3.13.0** (64-bit). The `numba`/`llvmlite` pairing is the brittl
 any Numba install: each `numba` release supports a narrow `llvmlite` range and a bounded
 Python/NumPy range. Pin both together; do not bump one without the other. The failure mode
 when they drift is a hard import error (`numba` refuses to load against an unsupported
-`llvmlite` or an unsupported NumPy ABI), not a silent slowdown — so a green import is your
+`llvmlite` or an unsupported NumPy ABI), not a silent slowdown, so a green import is your
 first integration test.
 
 > Note on the CUDA RNG import path. In this `numba` version the CUDA target ships inside
@@ -74,14 +74,14 @@ first integration test.
 
 - **Wheels.** `numba` and `llvmlite` ship as binary wheels for Windows / Linux / macOS on
   CPython; no compiler toolchain is needed just to install them. The bundled LLVM is what
-  performs the JIT — you are not invoking a system compiler.
+  performs the JIT, you are not invoking a system compiler.
 - **CPU path needs no GPU.** Everything `@njit` (CPU JIT) works on any machine. The
   example's checks 1 and 2 run anywhere.
 - **First call is slow.** A JIT-compiled function pays a one-time compile cost on its
   first call (often hundreds of ms). `@njit(cache=True)` writes the compiled artifact to
   a `__pycache__`-adjacent cache so subsequent *process* starts skip recompilation. This
   is why a fair Numba benchmark always *warms up* the function once and times the second
-  call — the first call's number is the compiler, not the kernel.
+  call, the first call's number is the compiler, not the kernel.
 
 ## CUDA notes (the GPU path)
 
@@ -95,7 +95,7 @@ first integration test.
   this 8 GB class of card). The example uses `float32` draws on the GPU for this reason.
 - **Graceful fallback is mandatory.** Per the GPU research, the repo must run for GPU-less
   learners: every GPU path is guarded by `cuda.is_available()` and falls back to a CPU
-  computation. [`example.py`](./example.py) follows this exactly — on this machine
+  computation. [`example.py`](./example.py) follows this exactly, on this machine
   `cuda.is_available()` is `False`, so it runs the CPU fallback and still prints a result.
 
 ## Verify the install
@@ -106,7 +106,7 @@ A one-line smoke test that does not need a GPU (the CPU JIT and the import path)
 .venv/Scripts/python.exe -c "import numba, llvmlite; from numba import cuda, njit; print(numba.__version__, llvmlite.__version__, 'cuda?', cuda.is_available())"
 ```
 
-On this repo's environment that prints `0.65.1 0.47.0 cuda? False` — a green import and the
+On this repo's environment that prints `0.65.1 0.47.0 cuda? False`, a green import and the
 honest "no GPU here", which is exactly the state the CPU fallback is designed for. For the
 full end-to-end check, run [`example.py`](./example.py) (see [02 · Usage](./02_usage.md)).
 
@@ -114,7 +114,7 @@ full end-to-end check, run [`example.py`](./example.py) (see [02 · Usage](./02_
 
 Per [the Monte-Carlo problem-type page](../../problem-types/04_monte-carlo-replications.md) and
 the adversarial review, Numba/GPU is a **teaching exhibit, not a pillar**. A GPU accelerates
-*thousands of independent Monte-Carlo replications* and *large-N agent models* — it does
+*thousands of independent Monte-Carlo replications* and *large-N agent models*, it does
 **not** accelerate a small branch-heavy discrete-event loop, where it is measurably
 slower. Numba is installed only so S10 can demonstrate that asymmetry honestly. The
 deprecated frameworks **AgentPy** and **desmod** are not used anywhere in the lab; ignore

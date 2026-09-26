@@ -1,4 +1,4 @@
-# NetLogo Web (Tortoise) — 03 · applying it
+# NetLogo Web (Tortoise): 03 · applying it
 
 How to **formalize** the kind of problem NetLogo Web solves, how to **solve it** with this engine, how it
 fits **this lab's** scenarios, the honest trade-offs from the research, the **CC0 / CC BY-NC-SA license
@@ -10,18 +10,18 @@ nuance** that governs which models we may ship, and when to pick it over the alt
 
 NetLogo Web is the right tool when **all** of these hold:
 
-1. **The system is agent-based** — many simple autonomous entities, local rules, no central controller, and
+1. **The system is agent-based**: many simple autonomous entities, local rules, no central controller, and
    the interesting behavior is *emergent* (a global pattern no single agent encodes). Formally: a tuple
    `(A, S, N, f, U)` where `A` is the agent set, each agent `a∈A` has state `s_a∈S`, a neighborhood
    `N(a)⊆A` (here: NetLogo `patches`/`neighbors`), a local update rule `f(s_a, {s_b : b∈N(a)}) → s_a'`, and
    a tick scheduler `U` that applies `f` across `A` each step. Schelling, SIR, Wolf-Sheep, Flocking are all
    this shape.
-2. **The scale is modest** — ~1e3–1e4 agents, so it runs smoothly in a browser (see §3 limits).
-3. **The goal is "play first, understand later"** — the visitor should see it *move* and *react to a slider*
+2. **The scale is modest**: ~1e3–1e4 agents, so it runs smoothly in a browser (see §3 limits).
+3. **The goal is "play first, understand later"**: the visitor should see it *move* and *react to a slider*
    within a second of landing, with **zero server compute** on GitHub Pages (no backend).
 
-If any of those fails — millions of agents, a server-side data pipeline, a need to *trace and replay* an
-exact run for teaching the code — you are in a different lane (§5).
+If any of those fails, millions of agents, a server-side data pipeline, a need to *trace and replay* an
+exact run for teaching the code, you are in a different lane (§5).
 
 ## 2. Solve it with NetLogo Web: the workflow
 
@@ -31,9 +31,9 @@ Given a problem that fits §1, the end-to-end recipe is:
    the local rule = `to go`; initialization = `to setup`. Expose the tunable parameters of `f` as
    **slider** widgets (e.g. Schelling's `pct-similar-wanted`, SIR's infection probability). See the
    concrete `setup`/`go` source in [`02_usage.md`](./02_usage.md) §2.
-2. **Seed it.** `random-seed <fixed>` at the top of `setup` so the first-load run is reproducible — the
+2. **Seed it.** `random-seed <fixed>` at the top of `setup` so the first-load run is reproducible: the
    live-lane equivalent of the Python scenarios' `rng=`/`seed=`.
-3. **Export to standalone HTML** (desktop *Save As NetLogo Web…* or netlogoweb.org *Export → HTML*) — the
+3. **Export to standalone HTML** (desktop *Save As NetLogo Web…* or netlogoweb.org *Export → HTML*): the
    Tortoise engine is inlined; the file is self-contained. See [`01_installation.md`](./01_installation.md) §2.
 4. **Strip the IDE chrome** with the injected CSS so only the Interface shows
    ([`02_usage.md`](./02_usage.md) §3a).
@@ -46,21 +46,21 @@ the visitor's browser does the simulating.
 
 ## 3. Which lab scenarios use NetLogo Web
 
-NetLogo Web is the **live in-browser ABM** engine — the "enter → straight to a running simulator" on-ramp.
+NetLogo Web is the **live in-browser ABM** engine, the "enter → straight to a running simulator" on-ramp.
 **One** NetLogo Web live card ships today (S02 Schelling, `web/public/netlogo/schelling.html`); a second
 (S03 SIR) is **planned, not yet shipped**:
 
 | Scenario | Live card | Sliders the visitor drags | What emerges, instantly |
 |---|---|---|---|
-| **S02 Schelling** (`simlab/scenarios/s02_schelling.py`) | **shipped** — `web/public/netlogo/schelling.html`: segregation on a 2-D grid | `pct-similar-wanted` (tolerance), `density` | strong segregation from a *mild* local preference |
-| **S03 SIR** (`simlab/scenarios/s03_sir.py`) | **planned (not yet shipped)** — epidemic spreading card | infection probability, recovery rate, contacts | an epidemic **wave** + the S/I/R curves over time |
+| **S02 Schelling** (`simlab/scenarios/s02_schelling.py`) | **shipped**, `web/public/netlogo/schelling.html`: segregation on a 2-D grid | `pct-similar-wanted` (tolerance), `density` | strong segregation from a *mild* local preference |
+| **S03 SIR** (`simlab/scenarios/s03_sir.py`) | **planned (not yet shipped)**, epidemic spreading card | infection probability, recovery rate, contacts | an epidemic **wave** + the S/I/R curves over time |
 
 These are the **classic ABM canon** and both exist as CC0-friendly NetLogo models, which is exactly why they
 are the live-card picks (Schelling and "Virus"/SIR are textbook Models Library entries; we prefer the CC0
-Code-Example variants or author our own — see §4). Only the Schelling card is committed under
+Code-Example variants or author our own, see §4). Only the Schelling card is committed under
 `web/public/netlogo/` so far; the SIR card is the documented next addition.
 
-### The two-engine framing (read this — it is the source of learner confusion)
+### The two-engine framing (read this: it is the source of learner confusion)
 
 The lab teaches ABM with **three** representations of the *same* model, and the docs must name the split
 honestly or learners get lost:
@@ -77,12 +77,12 @@ honestly or learners get lost:
 > The honest one-liner the live Theory pages must carry: **"NetLogo for instant in-browser play (compiled
 > JS, no Pyodide); Python + Mesa for how to build & reproduce it yourself."** Pair each NetLogo card with its
 > Mesa equivalent so the lesson lands: *the concept is engine-independent; Mesa is the real production engine
-> — and it also runs live (in Pyodide), backed by a committed canonical trace.* See the
+>, and it also runs live (in Pyodide), backed by a committed canonical trace.* See the
 > [Mesa node](../04_mesa.md).
 
 ## 4. The pattern: client-side-live in native JS (no Pyodide)
 
-NetLogo Web is the **one engine in the lab that runs live without Pyodide** — it is compiled to JavaScript,
+NetLogo Web is the **one engine in the lab that runs live without Pyodide**, it is compiled to JavaScript,
 so it has the smallest cold start. The Pyodide live engines (SimPy, Ciw, **Mesa**, joblib/SciPy, NetworkX)
 also run live, but pay the WASM wheel-load tax first. Only the **native-code** engines (OR-Tools, JuPedSim,
 GPU) are precompute-then-replay (*simulate-offline → commit artifact → static replay*). NetLogo Web's
@@ -103,29 +103,29 @@ runtime before the first frame; a NetLogo Web card is native JS and starts faste
 browser. The cost is the trade-offs in §5.
 
 It is also still **deterministic** in spirit: a fixed `random-seed` in `setup` makes the first-load run
-reproducible — the same discipline as the seeded Python traces, just executed live instead of replayed.
+reproducible, the same discipline as the seeded Python traces, just executed live instead of replayed.
 
 ## 5. Honest trade-offs (from the research)
 
 Grounded in the project's internal ABM-frameworks research note.
 
 **Strengths**
-- **Zero server compute.** Pure client-side JS — GitHub Pages serves a static file and does nothing else.
+- **Zero server compute.** Pure client-side JS: GitHub Pages serves a static file and does nothing else.
   This is *the* architectural fit for the live lane.
 - **Instant, animated, interactive for free.** Sliders, buttons, plots and a real-time view come straight
-  out of the export — no UI code to write for the model itself.
+  out of the export, no UI code to write for the model itself.
 - **Highest didactic pedigree.** NetLogo is *the* classic ABM teaching tool, with the world's largest
   curated didactic Models Library (Schelling, SIR/Virus, Wolf-Sheep, Fire, Flocking).
 - **Same model, two engines.** The identical canonical model exists as a NetLogo card *and* a Python
-  notebook/Mesa example — reinforcing that the concept is engine-independent.
+  notebook/Mesa example, reinforcing that the concept is engine-independent.
 
 **Limits / pitfalls**
 - **In-browser scale ceiling (~1e3–1e4 agents).** Below Mesa's ~1e5 object ceiling and far below GPU lanes.
   Fine for the on-ramp models; anything large goes to Mesa / FLAME GPU 2 / ABMax / AMBER offline.
-- **License nuance is a real hazard** for a public product — see §6. Shipping a CC BY-NC-SA model in a
+- **License nuance is a real hazard** for a public product: see §6. Shipping a CC BY-NC-SA model in a
   public repo without care is a licensing mistake.
-- **Two-engine cognitive load.** Two live runtimes for the same model — NetLogo Web (compiled JS) and Mesa
-  (live in Pyodide, with a committed canonical replay for first paint) — can confuse learners; mitigate with
+- **Two-engine cognitive load.** Two live runtimes for the same model: NetLogo Web (compiled JS) and Mesa
+  (live in Pyodide, with a committed canonical replay for first paint), can confuse learners; mitigate with
   the explicit framing in §3 (the difference is the *runtime*, not live-vs-precompute).
 - **Engine-version / selector drift.** The chrome-strip CSS selectors and bundled-engine version can change
   across NetLogo Web releases; pin one engine version per committed model and re-verify selectors on export.
@@ -135,28 +135,28 @@ Grounded in the project's internal ABM-frameworks research note.
   pytest like the Python engines. Verification is "serve the HTML and look at it" (and screenshot-verify
   before deploy).
 
-## 6. License nuance — the mixed CC0 / CC BY-NC-SA model
+## 6. License nuance: the mixed CC0 / CC BY-NC-SA model
 
 This is the single most important compliance fact for shipping NetLogo content in a **public** product, and
 it is verified against NetLogo's own FAQ (not memory):
 
-- The **Tortoise engine** is open source; its runtime deps are MIT / EPL-1.0 — fine to bundle.
-- **NetLogo desktop** (the authoring tool) is **GPL-2.0+** — but we only *use* it to author; we don't
+- The **Tortoise engine** is open source; its runtime deps are MIT / EPL-1.0: fine to bundle.
+- **NetLogo desktop** (the authoring tool) is **GPL-2.0+**: but we only *use* it to author; we don't
   redistribute the desktop app.
 - **Model code license is mixed and per-model:**
-  - **Code Examples** in the Models Library are **CC0 / public domain** — safe to ship and adapt freely.
-  - **Most other Models Library models are CC BY-NC-SA** — Creative Commons Attribution-**NonCommercial**-
+  - **Code Examples** in the Models Library are **CC0 / public domain**: safe to ship and adapt freely.
+  - **Most other Models Library models are CC BY-NC-SA**: Creative Commons Attribution-**NonCommercial**-
     ShareAlike. This is **not an open-source license**; it permits free *noncommercial* use with attribution
     and share-alike, but its NonCommercial clause is a problem for a public product that may later monetize.
 
 **House rule for this lab (record + prefer CC0 + author our own):**
 
-1. **Prefer CC0** — start from a *Code Example* variant whenever one exists for the model we want.
+1. **Prefer CC0**: start from a *Code Example* variant whenever one exists for the model we want.
 2. **Author our own** NetLogo model when no CC0 variant covers the scenario, or when a desired model is
    CC BY-NC-SA. Schelling and SIR are simple enough to write from scratch, making our card unambiguously
    ours to license.
 3. **Record each embedded model's license** in `LICENSES.md` / `ATTRIBUTION.md` (component, license,
-   source URL) — the same discipline the repo already applies to datasets and the SimPy/NumPy/OR-Tools
+   source URL), the same discipline the repo already applies to datasets and the SimPy/NumPy/OR-Tools
    engines.
 4. **Never silently ship a CC BY-NC-SA model** as if it were ours. If we must reference one, attribute it
    and keep it clearly out of any commercial surface.
@@ -176,8 +176,8 @@ For S02 and S03 specifically: both are trivial to author cleanly, so the lab's l
 | **Crowd / pedestrian flow** | **JuPedSim** | validated social-force / collision-free-speed, pip-installable |
 
 **Do not use** (explicitly out of scope):
-- **AgentPy** — *deprecated*; its own authors point users to Mesa. Cite only as historical context.
-- **desmod** — an unmaintained *DES* helper on SimPy; not used here. (Shows up in ABM/DES searches; for DES
+- **AgentPy**: *deprecated*; its own authors point users to Mesa. Cite only as historical context.
+- **desmod**: an unmaintained *DES* helper on SimPy; not used here. (Shows up in ABM/DES searches; for DES
   this lab uses SimPy / Ciw.)
 
 ## 8. Cross-references

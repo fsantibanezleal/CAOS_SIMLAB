@@ -1,10 +1,10 @@
-# S05 Beer Game — results & how to read them
+# S05 Beer Game: results & how to read them
 
 ← Back to the use-case index: [../05_s05_beergame.md](../05_s05_beergame.md) ·
 Prev: [03_solvers-applied.md](./03_solvers-applied.md)
 
 The variants the scenario ships, what their KPIs show, and how to read the chart. All KPI values below are
-read from the committed [`manifests/s05_beergame.json`](../../../manifests/s05_beergame.json) (seed 42) — not
+read from the committed [`manifests/s05_beergame.json`](../../../manifests/s05_beergame.json) (seed 42), not
 estimated.
 
 ---
@@ -45,7 +45,7 @@ order. Committed values (seed 42):
 | spike | 5.28 | 26.12 | 117.56 | **555.24** | 195.4 |
 | noisy | 3.90 | 12.92 | 42.97 | **160.47** | 108.1 |
 
-**The hallmark holds everywhere:** `B₁ ≤ B₂ ≤ B₃ ≤ B₄` with every `Bᵢ > 1` — order variance grows
+**The hallmark holds everywhere:** `B₁ ≤ B₂ ≤ B₃ ≤ B₄` with every `Bᵢ > 1`, order variance grows
 monotonically retailer → factory. Reading down the columns:
 
 - **Lead time is the dominant lever.** L1→L4 drives the factory bullwhip from 19 to over 1200. The `(L+1)`
@@ -54,37 +54,37 @@ monotonically retailer → factory. Reading down the columns:
 - **Reactive forecasting worsens it.** theta20→theta70 takes the factory bullwhip from 11 to ~1555. A
   reactive forecast (`θ=0.7`) chases every demand move and over-orders; heavy smoothing (`θ=0.2`) calms the
   chain at the cost of a slow, laggy response.
-- **A bigger step does *not* raise the ratio — only the peak.** `bigstep` (Δ=8) shows `B₄ = 99.14`,
+- **A bigger step does *not* raise the ratio: only the peak.** `bigstep` (Δ=8) shows `B₄ = 99.14`,
   essentially equal to the baseline 101.92, because the bullwhip *ratio* is scale-invariant in Δ (numerator
   and denominator both scale with Δ²). What doubles is the **peak factory order** (101.7 → 195.4). The text
   is careful to say bigstep gives "a larger overshoot" (peak), not a larger ratio.
-- **A transient still propagates.** The one-week `spike` produces a large factory bullwhip (555) — a single
+- **A transient still propagates.** The one-week `spike` produces a large factory bullwhip (555): a single
   pulse, not a permanent shift, still ripples violently upstream.
 - **Variance amplifies without a single shock.** `noisy` (AR(1) demand) shows the bullwhip on continuously
-  random demand: `B₄ = 160` with no step at all — amplification is a property of the policy + lead time, not
+  random demand: `B₄ = 160` with no step at all, amplification is a property of the policy + lead time, not
   just of a one-off shock.
 
 ## 3. How to read the visualization
 
 The renderer is a **line chart** (`viz: chart`). Per week it plots:
 
-- **Customer demand** — dashed grey (`--color-fg-faint`), the exogenous driver.
-- **Retailer orders** — green (`--color-good`).
-- **Wholesaler orders** — accent (`--color-accent`).
-- **Distributor orders** — amber (`--color-warn`).
-- **Factory orders** — magenta (`--color-magenta`).
+- **Customer demand**: dashed grey (`--color-fg-faint`), the exogenous driver.
+- **Retailer orders**: green (`--color-good`).
+- **Wholesaler orders**: accent (`--color-accent`).
+- **Distributor orders**: amber (`--color-warn`).
+- **Factory orders**: magenta (`--color-magenta`).
 
 X-axis is the week (1…W); Y-axis is orders/demand in units.
 
-**What to look for:** each successive curve sits **higher and overshoots more** than the one before it —
+**What to look for:** each successive curve sits **higher and overshoots more** than the one before it, 
 retailer is closest to the demand line, the factory swings the widest. That growing separation between the
 curves *is* the bullwhip, made visual. The four bullwhip-ratio KPIs quantify exactly that separation (they
 should grow retailer → factory), and the peak-factory-order KPI is the worst single order the factory must
 place. Sweep the variants side by side to *quantify* how much longer lead times and more reactive forecasts
-worsen the amplification — the chart shows the shape, the KPIs put a number on it.
+worsen the amplification, the chart shows the shape, the KPIs put a number on it.
 
 Because the run is deterministic and seeded, the chart you see for given sliders is the exact committed
-trace — anyone who clones the repo and runs the same `(params, seed)` reproduces it byte-for-byte.
+trace, anyone who clones the repo and runs the same `(params, seed)` reproduces it byte-for-byte.
 
 ---
 

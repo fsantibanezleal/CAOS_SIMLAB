@@ -1,4 +1,4 @@
-# S06 — Formalization (sets, variables, model, objective, constraints, KPIs)
+# S06: Formalization (sets, variables, model, objective, constraints, KPIs)
 
 > Use-case node: [06_s06_jobshop](../06_s06_jobshop.md) · prev:
 > [01_assumptions.md](./01_assumptions.md) · next: [03_solvers-applied.md](./03_solvers-applied.md)
@@ -10,7 +10,7 @@ block (`web/src/pages/Experiments.tsx`, `S06Desc`). Nothing here is invented.
 ## Model class
 
 A **constraint-programming** model of the classic **disjunctive job-shop**, solved by **CP-SAT** (constraint
-programming over a SAT/CP engine). It is **deterministic combinatorial optimization** — not a stochastic
+programming over a SAT/CP engine). It is **deterministic combinatorial optimization**, not a stochastic
 simulation. The hallmark is the per-machine **disjunctive (no-overlap)** constraint plus **precedence**
 within each job, minimizing the **makespan**.
 
@@ -34,17 +34,17 @@ within each job, minimizing the **makespan**.
 
 | Symbol | Domain | Meaning |
 |---|---|---|
-| $s_{j,k}$ | $[0, H]$ integer | **start time** of operation $(j,k)$ — the genuine decision variable. |
+| $s_{j,k}$ | $[0, H]$ integer | **start time** of operation $(j,k)$, the genuine decision variable. |
 | $e_{j,k}$ | $[0, H]$ integer | **end time**, tied to the start by the interval: $e_{j,k} = s_{j,k} + d_{j,k}$. |
 | interval $(j,k)$ | $[s_{j,k},\, s_{j,k}+d_{j,k})$ | an **interval variable** binding start, duration, end into one object the solver reasons about. |
-| $C_{\max}$ | $[0, H]$ integer | the **makespan** variable — the objective. |
+| $C_{\max}$ | $[0, H]$ integer | the **makespan** variable, the objective. |
 
 In the code these are `model.new_int_var(0, horizon, …)` for `s`/`e`, `model.new_interval_var(s, d, e, …)`
 for the interval, and a `makespan` int var.
 
 ## Objective
 
-Minimize the makespan — the finish time of the latest-completing job:
+Minimize the makespan, the finish time of the latest-completing job:
 
 $$ C_{\max} = \max_{j}\, e_{j,\,m_j-1}, \qquad \min\; C_{\max}. $$
 
@@ -71,7 +71,7 @@ per machine. (The interval variable enforces $e = s + d$ implicitly.)
 
 ## Dynamics
 
-There are **no dynamics** in the stochastic sense — no events, no clock advancing under randomness. The
+There are **no dynamics** in the stochastic sense, no events, no clock advancing under randomness. The
 "state" is the static assignment of start times the solver returns; the Gantt animation merely *replays* a
 left-to-right time sweep over that fixed optimal schedule (it is a visualization device, not a simulation).
 
@@ -87,12 +87,12 @@ The trace's `kpis` block carries:
 
 | KPI | Definition |
 |---|---|
-| `makespan` | $C_{\max}$ — the solved makespan. |
+| `makespan` | $C_{\max}$, the solved makespan. |
 | `optimal` | boolean: did the solver prove optimality (`status == OPTIMAL`)? |
 | `n_jobs` | number of jobs. |
 | `n_machines` | number of machines ($1 + \max$ machine index seen). |
 | `n_operations` | total operations $= \sum_j m_j$. |
-| `utilization` | $\dfrac{\sum_{j,k} d_{j,k}}{C_{\max}\cdot m}$ — fraction of the Gantt area actually occupied (rounded to 3 dp; $0$ if $C_{\max}=0$). |
+| `utilization` | $\dfrac{\sum_{j,k} d_{j,k}}{C_{\max}\cdot m}$, fraction of the Gantt area actually occupied (rounded to 3 dp; $0$ if $C_{\max}=0$). |
 
 The trace also stores `machines` (`[{id, label "M{i+1}"}]`), `jobs`, the per-op list `ops`
 (`{job, machine, start, dur}`), and `makespan`. The viz binding is a **Gantt** renderer (`2d`).

@@ -1,15 +1,15 @@
-# 01 · JuPedSim — Installation
+# 01 · JuPedSim: Installation
 
 JuPedSim (Jülich Pedestrian Simulator) is an open-source **microscopic pedestrian
 dynamics** library: a compiled C++ core with a clean Python API. In CAOS_SIMLAB it powers
 the **crowd / evacuation flow** family of scenarios (Emergency-Department egress,
 room/corridor evacuation) where we care about *space, geometry and collision-free movement
-of individuals* — something a queueing or discrete-event model cannot represent.
+of individuals*, something a queueing or discrete-event model cannot represent.
 
 - **Project:** <https://github.com/PedestrianDynamics/jupedsim>
 - **Docs:** <https://www.jupedsim.org/>
 - **PyPI:** <https://pypi.org/project/jupedsim/>
-- **License:** LGPLv3 (weak copyleft — see "License note" below)
+- **License:** LGPLv3 (weak copyleft: see "License note" below)
 - **Documented & installed version here:** `jupedsim` **1.4.2** (Python 3.13)
 
 > Reading order: this page (install) → [02_usage.md](02_usage.md) (API + the runnable
@@ -22,7 +22,7 @@ JuPedSim belongs to the **precompute** lane (`requirements-precompute.txt`), **n
 core/live lane. Two reasons, both grounded in the architecture research:
 
 1. It ships **native code** (a compiled C++ engine plus VTK/PySide6 for its visual
-   tooling), so it **cannot** run in the browser / Pyodide live lane — only pure-Python
+   tooling), so it **cannot** run in the browser / Pyodide live lane, only pure-Python
    wheels work there.
 2. Pedestrian runs are heavier than the cheap live scenarios; we run them **offline** on
    the local machine, record trajectories, commit a compact artifact, and the SPA
@@ -43,7 +43,7 @@ The exact pinned line is:
 jupedsim==1.4.2       # pedestrian / ED crowd flow (social-force / collision-free-speed)
 ```
 
-To install just this package (documented for reproducibility — the env is already
+To install just this package (documented for reproducibility, the env is already
 provisioned):
 
 ```bash
@@ -58,7 +58,7 @@ pip install -r requirements-precompute.txt
 
 Installed version in this environment: **1.4.2** on **Python 3.13**.
 
-> Do **not** run `pip install` as part of running the examples — the environment is
+> Do **not** run `pip install` as part of running the examples, the environment is
 > already provisioned. The commands above are documented for reproducibility only.
 
 ## Key transitive dependencies
@@ -69,10 +69,10 @@ What each is for and the version pinned here:
 | Dependency | Installed here | Role |
 |---|---|---|
 | **numpy** | 2.x | array math; trajectory / position data |
-| **shapely** | 2.1.x | geometry primitives — you can pass `Polygon` / `MultiPolygon` directly as the walkable area and as exit / waypoint stages |
+| **shapely** | 2.1.x | geometry primitives, you can pass `Polygon` / `MultiPolygon` directly as the walkable area and as exit / waypoint stages |
 | **pyside6** | 6.11.x | Qt bindings used by JuPedSim's optional visual / replay tooling (**not** needed for headless precompute) |
 | **vtk** | 9.6.x | 3D visualization toolkit used by the optional viewers (**not** needed for headless precompute) |
-| **deprecated** | — | decorator helper for marking deprecated API surface |
+| **deprecated** | – | decorator helper for marking deprecated API surface |
 
 For our **headless precompute** use (the only way we use it) you only really touch
 `jupedsim`, `shapely` and `numpy`; `pyside6` / `vtk` are pulled in transitively but the
@@ -80,7 +80,7 @@ pipeline never imports them.
 
 ## Platform notes
 
-- **Pure pip wheel.** JuPedSim 1.4.2 installs from a binary wheel — no system C++
+- **Pure pip wheel.** JuPedSim 1.4.2 installs from a binary wheel: no system C++
   compiler, no CMake, no Conda channel required. This is the main reason the research
   picks it over **Vadere** (Java/GUI, heavier toolchain friction).
 - **Windows / Linux / macOS** all have wheels on PyPI for current CPython. This repo's
@@ -93,7 +93,7 @@ pipeline never imports them.
 
 ## CUDA / GPU notes
 
-**None — JuPedSim is CPU-only.** It does **not** use CUDA and is **not** in the GPU
+**None, JuPedSim is CPU-only.** It does **not** use CUDA and is **not** in the GPU
 requirements lane (`requirements-gpu.txt`, see [../../guides/03_gpu-lane.md](../../guides/03_gpu-lane.md)).
 The collision-free-speed and social-force models run on the CPU. If a scenario ever needs
 *million-agent* GPU scale, that is a different tool entirely (FLAME GPU 2, documented in
@@ -103,7 +103,7 @@ sufficient scale.
 
 ## License note (important for a public repo)
 
-JuPedSim is **LGPLv3** — weak copyleft. We use it only as an **offline precompute tool**
+JuPedSim is **LGPLv3**, weak copyleft. We use it only as an **offline precompute tool**
 that produces data artifacts (trajectories); we do **not** redistribute or statically link
 the library into the public web bundle. That keeps it cleanly isolated from the MIT/Apache
 code we ship to the browser. This is recorded in the repo's license inventory

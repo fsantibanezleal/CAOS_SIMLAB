@@ -1,7 +1,7 @@
-# 01 — What it is: replications as i.i.d. samples
+# 01: What it is: replications as i.i.d. samples
 
 > Part of [Monte-Carlo replications & the simulation-methodology curriculum](../04_monte-carlo-replications.md).
-> Next: [02 — When to use it](./02_when-to-use.md) · [03 — Methods & KPIs](./03_methods-and-kpis.md).
+> Next: [02, When to use it](./02_when-to-use.md) · [03, Methods & KPIs](./03_methods-and-kpis.md).
 
 A Monte-Carlo replication study treats a stochastic simulation as a **sampler** and reports an estimate
 *with* its uncertainty, instead of mistaking one run for "the answer". This page covers the three ideas the
@@ -12,8 +12,8 @@ replications must come from genuinely independent RNG streams.
 
 Every CAOS_SIMLAB simulation is a pure function of `(params, seed)`: the same parameters and the same seed
 always produce the same trace (this is the [determinism contract](../../architecture/02_determinism-and-trace.md)
-that makes replay = truth). Change the seed and you change the random draws — interarrival times, service
-times, routing coin-flips — and therefore you change the output KPI (mean wait, utilisation, makespan,
+that makes replay = truth). Change the seed and you change the random draws, interarrival times, service
+times, routing coin-flips, and therefore you change the output KPI (mean wait, utilisation, makespan,
 response-time tail). So a KPI from one run is a **single observation of a random variable**, not "the
 answer".
 
@@ -37,12 +37,12 @@ Two non-negotiable rules:
 - **Streams must be independent.** Reusing the same seed, or seeds whose streams overlap, secretly
   correlates your "independent" runs and collapses your real sample size. Use a well-specified RNG with
   guaranteed stream separation (see [RNG-stream discipline](#rng-streams-the-foundation-of-trustworthy-replications)
-  below, and the per-backend recipes in [04 — Tools](./04_tools.md)).
+  below, and the per-backend recipes in [04, Tools](./04_tools.md)).
 - **More replications shrink the interval, not the noise.** The standard error of the mean falls like
   `1/√n`. Going from 10 to 1000 replications narrows the confidence interval by ~10×; it does **not** make
   any single run less variable. This `√n` wall is exactly why batching thousands of cheap replications is
-  attractive, and exactly where parallel hardware (CPU cores, then GPU threads) earns its keep — see
-  [02 — When to use it](./02_when-to-use.md) for the CPU-vs-GPU decision.
+  attractive, and exactly where parallel hardware (CPU cores, then GPU threads) earns its keep, see
+  [02, When to use it](./02_when-to-use.md) for the CPU-vs-GPU decision.
 
 In CAOS_SIMLAB the replication driver for v1 is [**joblib**](../../frameworks/12_joblib.md) (CPU-parallel,
 the default), with an **optional GPU exhibit** ([CuPy](../../frameworks/15_cupy.md) /
@@ -51,7 +51,7 @@ the default), with an **optional GPU exhibit** ([CuPy](../../frameworks/15_cupy.
 ## RNG streams: the foundation of trustworthy replications
 
 Everything above assumes the `n` replications are *genuinely independent*. That is an RNG property, not an
-accident. The short version (per-backend recipes live in [04 — Tools](./04_tools.md)):
+accident. The short version (per-backend recipes live in [04, Tools](./04_tools.md)):
 
 - **CPU (joblib / SimPy / Ciw / Mesa):** give each replication a distinct seed and use NumPy's modern
   `SeedSequence` / `default_rng` spawning so the per-run streams are provably non-overlapping. Pass a seed
@@ -59,7 +59,7 @@ accident. The short version (per-backend recipes live in [04 — Tools](./04_too
 - **GPU (Numba CUDA):** each GPU thread owns its own counter-based stream via
   `numba.cuda.random.create_xoroshiro128p_states` + `xoroshiro128p_uniform_float32`. The `xoroshiro128p`
   generator has period `2^128 − 1` and passes the BigCrush battery, so tens of thousands of per-thread
-  streams stay independent — this is precisely what makes "one replication per GPU thread" valid.
+  streams stay independent, this is precisely what makes "one replication per GPU thread" valid.
 - **GPU (CuPy):** array RNG is cuRAND-backed; seed the generator and draw whole replication batches as array
   columns.
 
@@ -70,5 +70,5 @@ contract in [determinism & trace](../../architecture/02_determinism-and-trace.md
 
 ## Next
 
-- [02 — When to use it](./02_when-to-use.md) — regimes (terminating vs steady-state), and CPU vs GPU.
-- [03 — Methods & KPIs](./03_methods-and-kpis.md) — confidence intervals, warm-up bias, variance reduction.
+- [02: When to use it](./02_when-to-use.md), regimes (terminating vs steady-state), and CPU vs GPU.
+- [03: Methods & KPIs](./03_methods-and-kpis.md), confidence intervals, warm-up bias, variance reduction.

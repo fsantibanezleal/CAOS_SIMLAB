@@ -76,7 +76,7 @@ export function GridComparison({
               <td>{es ? v.label_es : v.label_en}</td>
               {cols.map((c) => {
                 const val = v.kpis[c.key];
-                return <td key={c.key} className="num">{typeof val === "number" && !Number.isInteger(val) ? val.toFixed(3) : val ?? "—"}</td>;
+                return <td key={c.key} className="num">{typeof val === "number" && !Number.isInteger(val) ? val.toFixed(3) : val ?? "–"}</td>;
               })}
             </tr>
           ))}

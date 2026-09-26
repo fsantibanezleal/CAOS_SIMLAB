@@ -1,8 +1,8 @@
-"""S06 — Job-shop scheduling (constraint optimization, OR-Tools CP-SAT).
+"""S06, Job-shop scheduling (constraint optimization, OR-Tools CP-SAT).
 
 Each job is an ordered sequence of operations, each needing a specific machine for a fixed time; a machine
 does one operation at a time. The optimizer assigns start times to minimize the makespan (the time the
-last job finishes). This is pure combinatorial OPTIMIZATION (not stochastic simulation) — what a solver
+last job finishes). This is pure combinatorial OPTIMIZATION (not stochastic simulation), what a solver
 does, contrasted with the simulators elsewhere. OR-Tools is native code, so this scenario is precomputed;
 the committed trace is the optimal schedule, rendered as a Gantt chart.
 
@@ -45,7 +45,7 @@ class JobShopScenario(Scenario):
     tier = 2
     viz = "gantt"
     engine = "ortools"
-    pure_python = False  # native solver — always precomputed
+    pure_python = False  # native solver, always precomputed
     wheels = []
     param_specs = [
         ParamSpec("instance", "Instance (1 = ft06 benchmark, 0 = generated)", 1, 0, 1, 1, kind="int"),
@@ -61,8 +61,8 @@ class JobShopScenario(Scenario):
         return [
             Variant("ft06", "Fisher–Thompson ft06 (6×6)", "Fisher–Thompson ft06 (6×6)",
                     {"instance": 1, "n_jobs": 6, "n_machines": 6, "inst_seed": 0},
-                    "The classic 1963 benchmark — proven optimal makespan 55.",
-                    "El benchmark clásico de 1963 — makespan óptimo probado de 55."),
+                    "The classic 1963 benchmark, proven optimal makespan 55.",
+                    "El benchmark clásico de 1963, makespan óptimo probado de 55."),
             g("j3m3", "3 jobs × 3 machines", "3 trabajos × 3 máquinas", 3, 3, 11, "A tiny instance, instantly optimal.", "Una instancia diminuta, óptima al instante."),
             g("j4m3", "4 jobs × 3 machines", "4 trabajos × 3 máquinas", 4, 3, 12, "More jobs than machines: contention rises.", "Más trabajos que máquinas: sube la contención."),
             g("j4m4", "4 jobs × 4 machines", "4 trabajos × 4 máquinas", 4, 4, 13, "Balanced small shop.", "Taller pequeño balanceado."),
@@ -71,7 +71,7 @@ class JobShopScenario(Scenario):
             g("j6m4", "6 jobs × 4 machines", "6 trabajos × 4 máquinas", 6, 4, 16, "Heavy contention on few machines.", "Fuerte contención en pocas máquinas."),
             g("j6m6", "6 jobs × 6 machines", "6 trabajos × 6 máquinas", 6, 6, 17, "A 6×6 generated instance.", "Una instancia 6×6 generada."),
             g("j8m4", "8 jobs × 4 machines", "8 trabajos × 4 máquinas", 8, 4, 18, "Many jobs queue for few machines.", "Muchos trabajos en cola por pocas máquinas."),
-            g("j4m6", "4 jobs × 6 machines", "4 trabajos × 6 máquinas", 4, 6, 19, "More machines than jobs, yet the makespan stays long — a single critical path dominates.", "Más máquinas que trabajos y aun así el makespan se mantiene largo — domina una única ruta crítica."),
+            g("j4m6", "4 jobs × 6 machines", "4 trabajos × 6 máquinas", 4, 6, 19, "More machines than jobs, yet the makespan stays long, a single critical path dominates.", "Más máquinas que trabajos y aun así el makespan se mantiene largo, domina una única ruta crítica."),
         ]
 
     def run(self, params: dict, seed: int) -> GanttTrace:

@@ -43,7 +43,7 @@ page.on("request", (req) => {
 });
 
 function fail(msg) {
-  console.log("RESULT: FAIL — " + msg);
+  console.log("RESULT: FAIL, " + msg);
   console.log("consoleErrors:", JSON.stringify(consoleErrors.slice(0, 10), null, 2));
   console.log("pageErrors:", JSON.stringify(pageErrors.slice(0, 10), null, 2));
   console.log("offOrigin:", JSON.stringify([...new Set(offOriginRequests)].slice(0, 20), null, 2));
@@ -146,7 +146,7 @@ try {
   console.log("offOriginRequests:", offOriginRequests.length, JSON.stringify([...new Set(offOriginRequests)].slice(0, 20)));
 
   const ok = stepped && offOriginRequests.length === 0 && pageErrors.length === 0;
-  if (ok) console.log("RESULT: PASS — model compiled, ran client-side, stepped, zero off-origin network calls.");
+  if (ok) console.log("RESULT: PASS, model compiled, ran client-side, stepped, zero off-origin network calls.");
   else fail(`stepped=${stepped} offOrigin=${offOriginRequests.length} pageErrors=${pageErrors.length}`);
 } catch (e) {
   await page.screenshot({ path: join(shotDir, "netlogo_error.png"), fullPage: true }).catch(() => {});

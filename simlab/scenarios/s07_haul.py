@@ -1,15 +1,15 @@
-"""S07 — Construction haul routing: optimize-then-simulate, with a NATIVE plan and a LIVE replay.
+"""S07, Construction haul routing: optimize-then-simulate, with a NATIVE plan and a LIVE replay.
 
 A fixed fleet recirculates between a LOAD point (bottom) and a DUMP (top), separated by a RIDGE of high
 ground with a low PASS. Elevation drives the loaded cost, so the optimal haul route is a genuine
 trade-off: going straight over the crest is short but climbs hard; detouring to the pass is longer but
-nearly flat. Because only climbing is penalized, the optimal route SWITCHES at a critical grade — below
+nearly flat. Because only climbing is penalized, the optimal route SWITCHES at a critical grade, below
 it the direct climb wins, above it the route flips to the pass (a barrier can reroute it independent of
 grade). The shared LOADER is the binding resource: trucks are a finite calling population (machine-repair
-/ M/M/1//N queue), so throughput saturates at the loader rate — match the fleet to the loader (the "match
+/ M/M/1//N queue), so throughput saturates at the loader rate, match the fleet to the loader (the "match
 factor").
 
-This scenario USES the tools it documents — no hand-rolled NumPy graph or event loop — and it is split
+This scenario USES the tools it documents, no hand-rolled NumPy graph or event loop, and it is split
 honestly into a NATIVE plan and a LIVE replay:
 
 * **The PLAN (offline, native).** **NetworkX** (``docs/frameworks/10_networkx``) builds a real directed road
@@ -21,18 +21,18 @@ honestly into a NATIVE plan and a LIVE replay:
 * **The REPLAY (live).** **SimPy** (``docs/frameworks/01_simpy``) replays the cycle as a real discrete-event
   simulation over the FIXED committed plan: each truck is a process that requests a shared ``simpy.Resource``
   (the loaders), loads, hauls up the planned route, dumps, hauls back, and re-enters the queue. This is the
-  interactive half — the fleet sliders (trucks, loaders, load/dump times, breakdown rate, shift length, seed)
+  interactive half, the fleet sliders (trucks, loaders, load/dump times, breakdown rate, shift length, seed)
   mutate the REPLAY over the fixed plan, never the plan itself. SimPy + NumPy are pure-Python wheels Pyodide
   loads, so this scenario runs **LIVE** (``pure_python = True``); OR-Tools is never imported in the worker.
 
-The plan-vs-fleet split is itself the lesson: an optimal route PLAN is necessary but not sufficient — a
+The plan-vs-fleet split is itself the lesson: an optimal route PLAN is necessary but not sufficient, a
 fixed fleet realizes a degraded version of it, and only the grade slider (which re-selects among committed
 plans) flips the route, while the fleet sliders only change throughput/wait over the same route.
 
 Determinism: the route is a unique shortest path on a fixed graph (NetworkX) confirmed by a seeded CP-SAT
 solve (OR-Tools), both done offline; the DES has no stochastic variates in the deterministic variants, and
 the optional breakdown stream is drawn from a single seeded NumPy RNG, so a run is a fully deterministic
-function of (params, seed) — the same input yields the same trace byte-for-byte. The emitted artifact is the
+function of (params, seed), the same input yields the same trace byte-for-byte. The emitted artifact is the
 existing routetrace format (routes/agents/barriers/legend/kpis/analytic); nothing in the schema changes.
 """
 from __future__ import annotations
@@ -99,7 +99,7 @@ class HaulScenario(Scenario):
                                          "horizon": 60.0}, ne, ns)
 
         return [
-            # (A) route trade-off — sweep the grade across the switch, move the pass, drop a wall
+            # (A) route trade-off: sweep the grade across the switch, move the pass, drop a wall
             v("r_low", "Low grade · direct", "Pendiente baja · directo", grade=1.0,
               ne="Low grade: the short route straight over the crest wins.", ns="Pendiente baja: gana la ruta corta recta por la cima."),
             v("r_mid", "Grade 3 · at the edge", "Pendiente 3 · en el límite", grade=3.0,
@@ -112,7 +112,7 @@ class HaulScenario(Scenario):
               ne="Pass moved right (col 9): the detour now goes the other way.", ns="Paso movido a la derecha (col 9): el desvío va al otro lado."),
             v("r_wall", "Wall on the direct line", "Muro en la línea directa", grade=1.0, bar=1,
               ne="A barrier across the direct climb reroutes the haul even at low grade.", ns="Una barrera en la subida directa redirige el acarreo aun a pendiente baja."),
-            # (B) loader-bottleneck fleet sizing — route fixed, vary trucks/loaders
+            # (B) loader-bottleneck fleet sizing: route fixed, vary trucks/loaders
             v("f_t2", "2 trucks · 1 loader", "2 camiones · 1 cargador", nt=2,
               ne="Under-trucked: the loader idles, throughput is fleet-limited.", ns="Pocos camiones: el cargador se desocupa, lo limita la flota."),
             v("f_t6", "6 trucks · 1 loader", "6 camiones · 1 cargador", nt=6,
@@ -134,11 +134,11 @@ class HaulScenario(Scenario):
         """Fetch the COMMITTED plan for this geometry (built offline by NetworkX+OR-Tools).
 
         Live mode tunes the fleet over a FIXED plan, so the geometry must match a committed one. The two free
-        geometry sliders — grade (route flips live) and the wall toggle — re-select among committed plans across
+        geometry sliders, grade (route flips live) and the wall toggle, re-select among committed plans across
         their whole range for the default corridor; the r_passR variant's off-default corridor (pass 9, lift 7)
         also ships its full grade sweep, so its grade slider stays backed too. The pass/lift columns are pinned
         by their param_specs (min==max), so only the committed corridors are reachable. An off-grid geometry has
-        no committed plan, which is a native-plan miss (it would need OR-Tools/NetworkX, absent in the worker) —
+        no committed plan, which is a native-plan miss (it would need OR-Tools/NetworkX, absent in the worker), 
         reported honestly.
         """
         key = _plan_key(grid, grade, pass_col, lift_col, barrier)
@@ -222,7 +222,7 @@ class HaulScenario(Scenario):
 
         Each truck is a SimPy process competing for a shared ``Resource`` of ``nl`` loaders. A truck joins
         the loader queue, holds a loader for ``load_time``, hauls up the planned (loaded) route, dumps,
-        hauls back the (empty) route, and re-enters the queue — until starting a load would run past the
+        hauls back the (empty) route, and re-enters the queue, until starting a load would run past the
         shift ``horizon``. The shared loader is the binding resource: with one loader, adding trucks only
         lengthens the queue, so throughput saturates at the loader rate (the machine-repair / M/M/1//N
         result). When ``breakdown`` > 0 each loaded haul suffers an independent delay with that probability

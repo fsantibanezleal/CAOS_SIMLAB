@@ -1,4 +1,4 @@
-# Mesa — usage
+# Mesa: usage
 
 How to actually build and run an agent-based model with **Mesa 3.5.1**. We cover the core concepts, walk
 through a minimal **Schelling segregation** model step by step, and paste the **real captured output** of
@@ -14,7 +14,7 @@ running it.
 
 ## 1. The core concepts
 
-Mesa organizes every model around four ideas — the same four that define ABM in general
+Mesa organizes every model around four ideas, the same four that define ABM in general
 (see [../../problem-types/02_agent-based-modeling.md](../../problem-types/02_agent-based-modeling.md)). In Mesa
 they are literally the classes you subclass:
 
@@ -23,13 +23,13 @@ they are literally the classes you subclass:
 | **Agent** | subclass `mesa.Agent` | per-agent **state** (attributes) + a `step()` method (the local rule) |
 | **Model** | subclass `mesa.Model` | the world: builds the space, creates agents, defines the per-tick `step()` |
 | **Space** | `mesa.space.SingleGrid` / `MultiGrid` / `NetworkGrid` / cell-space | *who is a neighbor*: grid (Moore/von-Neumann), graph, or real geometry (Mesa-Geo) |
-| **Activation** | `model.agents` (an **`AgentSet`**) | how/when agents act each tick — e.g. `agents.shuffle_do("step")` |
+| **Activation** | `model.agents` (an **`AgentSet`**) | how/when agents act each tick, e.g. `agents.shuffle_do("step")` |
 
 The mental model is **bottom-up**: you never write the global outcome (segregation, an epidemic wave, the
 bullwhip effect). You write one local rule per agent, wire up who counts as a neighbor, and run time
-forward. The macro pattern is whatever those local rules produce — that emergence *is* the result.
+forward. The macro pattern is whatever those local rules produce, that emergence *is* the result.
 
-### Mesa 3 changed activation — this matters
+### Mesa 3 changed activation: this matters
 
 In **Mesa 2** you instantiated explicit scheduler objects (`RandomActivation`, `SimultaneousActivation`,
 `StagedActivation`) and called `self.schedule.step()`. **Mesa 3 removed those.** Every model now owns an
@@ -43,12 +43,12 @@ In **Mesa 2** you instantiated explicit scheduler objects (`RandomActivation`, `
 | `StagedActivation` | `self.agents.do("stage_a"); self.agents.do("stage_b")` | multi-phase |
 
 The agent's *rule* (`step()`) is unchanged; only the **call site** moved into the `AgentSet` API. The
-example below uses `shuffle_do("step")` — random activation. (Because this is a hard break and a common
+example below uses `shuffle_do("step")`, random activation. (Because this is a hard break and a common
 upgrade trap, the `mesa>=3.0` pin in [01_installation.md](./01_installation.md) is deliberate.)
 
 > **Why activation order matters.** With `shuffle_do`, an agent that acts early in a tick sees the world
 > *before* later agents have moved; the shuffle removes any systematic index bias across ticks. Choosing
-> the regime is a modeling decision, not a cosmetic one — `SimultaneousActivation` (read-all-then-write)
+> the regime is a modeling decision, not a cosmetic one, `SimultaneousActivation` (read-all-then-write)
 > can change whether a pattern stabilizes at all.
 
 ### Seeding / determinism (Mesa 3.5)
@@ -59,7 +59,7 @@ upgrade trap, the `mesa>=3.0` pin in [01_installation.md](./01_installation.md) 
 > In 3.5.1 the older `seed=` keyword still works but emits a `FutureWarning` ("use `rng` instead"). The
 > example passes `rng=` to stay clean. This determinism is **the** load-bearing property for both lanes: the
 > live Mesa re-run in Pyodide reproduces the same trajectory (same `rng=` ⇒ same draws), and the seeded
-> headless run commits the canonical first-paint trace — compute once, replay forever
+> headless run commits the canonical first-paint trace, compute once, replay forever
 > (see [03_applying.md](./03_applying.md)).
 
 ---
@@ -68,7 +68,7 @@ upgrade trap, the `mesa>=3.0` pin in [01_installation.md](./01_installation.md) 
 
 The full script is [`example.py`](./example.py). It is a small Schelling segregation model: two groups of
 households live on a grid; a household is **happy** if at least `HOMOPHILY` of its 8 (Moore) neighbors
-share its type, otherwise it **relocates to a random empty cell**. Nobody programs "segregation" — it
+share its type, otherwise it **relocates to a random empty cell**. Nobody programs "segregation", it
 **emerges**.
 
 > **This is the *generic* Mesa idiom, not the shipped scenario.** The example below uses a `torus=True`
@@ -79,7 +79,7 @@ share its type, otherwise it **relocates to a random empty cell**. Nobody progra
 > one-by-one) instead of `Agent.step()`/`shuffle_do`. Both are real Mesa 3; the example teaches the canonical
 > idiom, the scenario records the lab's canonical trace.
 
-### 2.1 The agent — state + one local rule
+### 2.1 The agent: state + one local rule
 
 ```python
 class SchellingAgent(mesa.Agent):
@@ -97,13 +97,13 @@ class SchellingAgent(mesa.Agent):
 ```
 
 Key points:
-- `super().__init__(model)` is the Mesa-3 contract — you pass the model, and Mesa registers the agent into
+- `super().__init__(model)` is the Mesa-3 contract: you pass the model, and Mesa registers the agent into
   `model.agents` and assigns a `unique_id`. You do **not** pass an id yourself.
 - `self.pos` is filled in by the grid when the agent is placed.
 - `iter_neighbors(self.pos, moore=True)` gives the 8 surrounding occupied cells' agents.
 - `move_to_empty(self)` uses the **model's seeded RNG**, so relocation is reproducible.
 
-### 2.2 The model — build the world, then define a tick
+### 2.2 The model: build the world, then define a tick
 
 ```python
 class SchellingModel(mesa.Model):
@@ -128,9 +128,9 @@ class SchellingModel(mesa.Model):
 ```
 
 Key points:
-- `SingleGrid(width, height, torus=True)` — one agent per cell; `torus=True` wraps the edges so no agent is
+- `SingleGrid(width, height, torus=True)`: one agent per cell; `torus=True` wraps the edges so no agent is
   a special edge case.
-- All randomness flows through `self.random` (seeded) — that is what makes the trace reproducible.
+- All randomness flows through `self.random` (seeded): that is what makes the trace reproducible.
 - `self.agents` is the `AgentSet` Mesa maintains for you; `shuffle_do("step")` shuffles then calls each
   agent's `step()`.
 
@@ -143,7 +143,7 @@ for step in range(20):
     print(step + 1, model.happy_fraction())
 ```
 
-No SolaraViz, no server, no plotting — just a deterministic trajectory of the **happy fraction** over time.
+No SolaraViz, no server, no plotting, just a deterministic trajectory of the **happy fraction** over time.
 That trajectory is exactly the kind of artifact the lab would commit and replay in the SPA.
 
 ---
@@ -186,25 +186,25 @@ Final: 317/322 agents happy (98.4%) after 20 steps.
 **Reading the output (the didactic point).** The happy fraction starts at **0.76** (the random initial
 placement already leaves most households content), then climbs as unhappy ones relocate, and settles near
 **0.98**. The system reaches a near-stable, highly segregated arrangement from a mild local preference that
-no agent ever expressed as a goal — that is **emergence**, the whole reason ABM exists. Note the small dip
+no agent ever expressed as a goal, that is **emergence**, the whole reason ABM exists. Note the small dip
 at step 7 (0.9379 → 0.9348): relocation is not monotone, because moving one unhappy agent can briefly make
 a previously-happy neighbor unhappy. The trajectory is a *settling* process, not a straight climb.
 
 **Reproducibility.** Re-running prints the *identical* trajectory (same seed -> same RNG draws -> same
 relocations). This is the property both lanes depend on: the live Mesa re-run in Pyodide reproduces this
-exact trajectory, and the seeded headless run commits the canonical first-paint trace — compute once,
+exact trajectory, and the seeded headless run commits the canonical first-paint trace, compute once,
 replay forever.
 
 ---
 
 ## 4. Going further (still all CPU / headless)
 
-- **`mesa.DataCollector`** — declare model- and agent-level reporters once, then call `collect(self)` each
+- **`mesa.DataCollector`**: declare model- and agent-level reporters once, then call `collect(self)` each
   tick; `get_model_vars_dataframe()` returns a tidy pandas `DataFrame` ready to write to Arrow/JSON.
-- **`mesa.batch_run(...)`** — sweep parameter combinations with multiple seeds in parallel (uses `tqdm`),
+- **`mesa.batch_run(...)`**: sweep parameter combinations with multiple seeds in parallel (uses `tqdm`),
   for sensitivity studies (e.g. sweep `homophily` 1→5 and watch the final segregation level rise).
-- **Spaces** — swap `SingleGrid` for `NetworkGrid` (contact-network SIR), `MultiGrid` (several agents per
-  cell), or Mesa-Geo's GeoSpace (real maps — see [../mesa-geo/](../05_mesa-geo.md)).
+- **Spaces**: swap `SingleGrid` for `NetworkGrid` (contact-network SIR), `MultiGrid` (several agents per
+  cell), or Mesa-Geo's GeoSpace (real maps, see [../mesa-geo/](../05_mesa-geo.md)).
 
 ## Grounding / references
 

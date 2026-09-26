@@ -1,4 +1,4 @@
-# 04 · Results & reading — variants, KPIs, and the viz
+# 04 · Results & reading: variants, KPIs, and the viz
 
 > Variant definitions are read from `MineHaulScenario.variants()` in
 > [`../../../simlab/scenarios/s11_minehaul.py`](../../../simlab/scenarios/s11_minehaul.py); the narratives
@@ -8,19 +8,19 @@
 
 ## The central regime: fleet size drives the grade slip
 
-The whole scenario turns on one comparison — **the same blend plan, a growing fleet**. The far,
+The whole scenario turns on one comparison, **the same blend plan, a growing fleet**. The far,
 high-grade phase needs the longest loaded hauls, so it is the first to be starved when there are too few
 trucks. The headline KPI is **grade deviation from target** (`grade_dev`, lower is better) with the
 companion **plan adherence %**.
 
 | Variant | Trucks | Realized outcome (committed KPIs) |
 |---|---|---|
-| `undertrucked` | 3 | Far too few trucks: the rich phase is badly starved — only **33% adherence**, `ĝ ≈ 1.78` vs target 2.9 (**`grade_dev ≈ 1.12`**, well below band). |
-| `base` | 6 | The default fleet **closes much of the gap but still misses spec**: **63% adherence**, `ĝ ≈ 2.55` vs 2.9 (**`grade_dev ≈ 0.35`, `in_band = 0`** — about 2.3× the tolerance). It takes more trucks to land in band. |
-| `overtrucked` | 12 | Ample fleet: every planned flow completes — **100% adherence**, `ĝ ≈ 2.86`, **`in_band = 1`**: the blend lands on target. |
+| `undertrucked` | 3 | Far too few trucks: the rich phase is badly starved, only **33% adherence**, `ĝ ≈ 1.78` vs target 2.9 (**`grade_dev ≈ 1.12`**, well below band). |
+| `base` | 6 | The default fleet **closes much of the gap but still misses spec**: **63% adherence**, `ĝ ≈ 2.55` vs 2.9 (**`grade_dev ≈ 0.35`, `in_band = 0`**, about 2.3× the tolerance). It takes more trucks to land in band. |
+| `overtrucked` | 12 | Ample fleet: every planned flow completes, **100% adherence**, `ĝ ≈ 2.86`, **`in_band = 1`**: the blend lands on target. |
 
 Reading these three in order is the lesson: *an optimal plan is necessary but not sufficient.* The LP's
-`plan_grade` (in the analytic block) stays the same across all three — only the **realized** `ĝ` moves,
+`plan_grade` (in the analytic block) stays the same across all three, only the **realized** `ĝ` moves,
 climbing from far below the band (`undertrucked`) toward the target as the fleet grows, but it only reaches
 **inside the band at `overtrucked` (≈ 12 trucks)**; the 6-truck `base` is still out of band. Realization is
 fleet-limited.
@@ -29,24 +29,24 @@ fleet-limited.
 
 | Variant | Key change | What it shows |
 |---|---|---|
-| `base` | nt=6 | Default 6-truck fleet — closes much of the gap but still **out of band** (63% adherence, `grade_dev ≈ 0.35`). |
-| `undertrucked` | nt=3 | Rich phase badly starved — grade far below band (33% adherence). |
-| `overtrucked` | nt=12 | Plan fully met — **in band**, on target (100% adherence). |
-| `tight_grade` | tol=0.08 | A **narrow band** — small fleet-driven deviations now miss spec. |
-| `surge` | dem=120 | A **demand surge** at the same fleet — adherence drops, out of band. |
-| `surge12` | nt=16, dem=120, hz=200 | More trucks + a longer shift **absorb the surge** — back in band. |
-| `stock_source` | init=40, sg=3.2 | A pre-built rich stock **feeds** the plant — the stock **drains** as a source. |
-| `two_phase_rich` | nt=4, gt=3.2 | A **high target** needs the distant rich phase a small fleet can't deliver — and here the miss is *partly structural in the plan*, not only fleet shortage: the optimal LP `plan_grade` (3.13) itself **undershoots** `g* = 3.2`, because the richest phase (grade 3.4) is capped by availability so even a perfect blend cannot reach the target. |
-| `dump_heavy` | dem=25 | **Low plant demand** — most production routes to the **dump** (more dump loads than plant loads). |
-| `barrier` | bar=1 | An **L-shaped wall** on the rich phase's haul road lengthens its cycle — the slip **worsens** vs `base`. |
-| `low_target` | gt=1.75 | A **low target** leans on the near phases alone — easy to hit, **in band**. |
-| `stock_buffer` | nt=8, init=10 | A stock **fills** from a phase while the plant runs — watch the bar **rise**. |
+| `base` | nt=6 | Default 6-truck fleet, closes much of the gap but still **out of band** (63% adherence, `grade_dev ≈ 0.35`). |
+| `undertrucked` | nt=3 | Rich phase badly starved, grade far below band (33% adherence). |
+| `overtrucked` | nt=12 | Plan fully met, **in band**, on target (100% adherence). |
+| `tight_grade` | tol=0.08 | A **narrow band**, small fleet-driven deviations now miss spec. |
+| `surge` | dem=120 | A **demand surge** at the same fleet, adherence drops, out of band. |
+| `surge12` | nt=16, dem=120, hz=200 | More trucks + a longer shift **absorb the surge**, back in band. |
+| `stock_source` | init=40, sg=3.2 | A pre-built rich stock **feeds** the plant, the stock **drains** as a source. |
+| `two_phase_rich` | nt=4, gt=3.2 | A **high target** needs the distant rich phase a small fleet can't deliver, and here the miss is *partly structural in the plan*, not only fleet shortage: the optimal LP `plan_grade` (3.13) itself **undershoots** `g* = 3.2`, because the richest phase (grade 3.4) is capped by availability so even a perfect blend cannot reach the target. |
+| `dump_heavy` | dem=25 | **Low plant demand**, most production routes to the **dump** (more dump loads than plant loads). |
+| `barrier` | bar=1 | An **L-shaped wall** on the rich phase's haul road lengthens its cycle, the slip **worsens** vs `base`. |
+| `low_target` | gt=1.75 | A **low target** leans on the near phases alone, easy to hit, **in band**. |
+| `stock_buffer` | nt=8, init=10 | A stock **fills** from a phase while the plant runs, watch the bar **rise**. |
 
 Two designed contrasts are worth pairing:
 
-- **`surge` vs `surge12`** — the same 120-t demand, but `surge` (6 trucks, 145 shift) falls out of band
+- **`surge` vs `surge12`**: the same 120-t demand, but `surge` (6 trucks, 145 shift) falls out of band
   while `surge12` (16 trucks, 200 shift) recovers the blend. Capacity *and* time both matter.
-- **`stock_source` vs `stock_buffer`** — the same stockpile node used in its two roles: a pre-built rich
+- **`stock_source` vs `stock_buffer`**: the same stockpile node used in its two roles: a pre-built rich
   stock **draining** to feed the plant (`stock_source`, watch `stock_end` fall and `stock_peak ≈ init`),
   versus a stock **filling** from a phase as a buffer (`stock_buffer`, watch the bar rise).
 
@@ -58,7 +58,7 @@ The grid-KPI panel (`MINEHAUL_KPI`) ranks variants by **`grade_dev`** and shows 
 |---|---|
 | `grade_achieved` (ĝ) | the blend actually delivered to the plant |
 | `grade_target` (g*) | the spec |
-| `grade_dev` = \|ĝ − g*\| | the headline — **lower is better** |
+| `grade_dev` = \|ĝ − g*\| | the headline, **lower is better** |
 | `in_band` (0/1) | 1 when \|ĝ − g*\| ≤ τ |
 | `plan_adherence_pct` | fraction of the **plant-feed** plan delivered (capped 100%) |
 | `plant_tons` | tonnes landed at the plant |
@@ -69,7 +69,7 @@ Beyond the grid panel, the per-run KPIs also carry `plant_demand`, `loads_plant`
 `demand_eff`, `stock_peak`, `stock_end`. Comparing `plan_grade` (what the LP promised) against
 `grade_achieved` (what the fleet delivered) is the honest "plan vs realization" gap.
 
-The pattern to watch: as the fleet shrinks, **`plan_adherence_pct` falls and `grade_dev` rises** — the
+The pattern to watch: as the fleet shrinks, **`plan_adherence_pct` falls and `grade_dev` rises**, the
 plant-feed flows that go short are the long ones from the rich far phase, so the blend loses its
 high-grade contribution first and `ĝ` drops below the band.
 
@@ -79,19 +79,19 @@ The scenario renders on the **route** viewer (the same one the other haul scenar
 committed routetrace. Elements:
 
 - **Nodes** (legend colors): **phases** (accent) labelled `phase·low / phase·mid / phase·high`,
-  **plant** (green — the grade target), **dump** (amber), **stockpile** (magenta).
-- **Flows** — the coloured polylines are the *planned* source→destination flows: green to the plant, amber
+  **plant** (green, the grade target), **dump** (amber), **stockpile** (magenta).
+- **Flows**: the coloured polylines are the *planned* source→destination flows: green to the plant, amber
   to the dump, magenta to/from the stock. They follow the **graded** shortest path, so they visibly wind
   around the hills rather than going straight.
-- **Trucks** — animate the realized cycles: they **crawl uphill** on the loaded graded haul and **race
+- **Trucks**: animate the realized cycles: they **crawl uphill** on the loaded graded haul and **race
   back empty** on the plain-distance return; trucks aimed at the same phase **queue** for its shared
   loader.
-- **Stockpile fill bar** (a gauge at the stock node) — **rises** on tip-in and **falls** on draw-out,
+- **Stockpile fill bar** (a gauge at the stock node): **rises** on tip-in and **falls** on draw-out,
   tracking `ℓ(t)`; the frames come from `stock_frames`. In `stock_source` it drains; in `stock_buffer` it
   rises.
-- **Barrier** — in the `barrier` variant an L-shaped wall sits on the rich phase's road; the green flow
+- **Barrier**: in the `barrier` variant an L-shaped wall sits on the rich phase's road; the green flow
   reroutes up and over higher ground and its cycle lengthens.
-- **Plant HUD** — counts the trips and compares **grade achieved ĝ vs target g*** and **plan adherence**
+- **Plant HUD**: counts the trips and compares **grade achieved ĝ vs target g*** and **plan adherence**
   as you change the fleet. When the fleet is under-sized, the stock bar and the trips to the plant fall
   short and **ĝ drops below the band**.
 

@@ -1,4 +1,4 @@
-# 02 · Formalization — S09 Ambulance Dispatch
+# 02 · Formalization: S09 Ambulance Dispatch
 
 The math, pulled **verified** from this scenario's Context block in `web/src/pages/Experiments.tsx`
 (`S09Desc`) and from [`../../../simlab/scenarios/s09_ambulance.py`](../../../simlab/scenarios/s09_ambulance.py).
@@ -7,10 +7,10 @@ Symbols and equations below are kept consistent with the code; the canonical ins
 
 ## Model class
 
-A **spatial multi-server queue with state-dependent service** — an EMS system of type **M/G/c**, where the
+A **spatial multi-server queue with state-dependent service**, an EMS system of type **M/G/c**, where the
 "service" of one job is the *full* travel → treat → transport → return cycle, and the routing rule is
 **nearest-available**. The *per-call dispatch decision* itself **is** closed form (a one-line
-earliest-arrival argmin over the fleet — see [§ Dynamics](#dynamics--dispatch-and-the-service-cycle)); what
+earliest-arrival argmin over the fleet, see [§ Dynamics](#dynamics--dispatch-and-the-service-cycle)); what
 has **no closed form** is the *system-level* behaviour these decisions generate (the response-time
 distribution, p90, coverage and offered load under this nearest-available, spatial, state-dependent
 discipline), so the KPIs are obtained from a seeded **discrete-event simulation** rather than an analytic
@@ -51,17 +51,17 @@ In code: `t += rng.exponential(1.0 / rate_per_min)` with `rate_per_min = λ/60`,
 
 ## State & decision variables
 
-- **State** — for each ambulance `i`: its current `node_i` and its **free-time** `f_i` (the instant it
+- **State**: for each ambulance `i`: its current `node_i` and its **free-time** `f_i` (the instant it
   becomes available again). All units start free at `t = 0`, parked at their home station.
-- **Decision** — for each call `k`, the **assignment** `i⋆(k)` of that call to one unit.
+- **Decision**: for each call `k`, the **assignment** `i⋆(k)` of that call to one unit.
 
 ## Travel cost
 
 Node-to-node distance `d(u, w)` is the **shortest path length** on the distance-weighted road graph; travel
 time over that path is `d / v`. (In code this is `router.length(u, w) / speed`, where `router` is a NetworkX
-single-source-Dijkstra layer over the `_geo` grid — see [03 · Solvers applied](./03_solvers-applied.md).)
+single-source-Dijkstra layer over the `_geo` grid, see [03 · Solvers applied](./03_solvers-applied.md).)
 
-## Dynamics — dispatch and the service cycle
+## Dynamics: dispatch and the service cycle
 
 When call `k` arrives at instant `t_k`, each unit becomes **ready** at `r_i = max(t_k, f_i)` (it must finish
 whatever it is doing). The **earliest-arrival** unit is chosen:
@@ -100,7 +100,7 @@ R_k = t_{\mathrm{sc}} - t_k .
 ```
 
 Over the `n` served calls, the lab reports mean response, the **p90** response, and the
-**coverage** within the threshold — the fraction of calls reached within `τ`. The p90 is a
+**coverage** within the threshold, the fraction of calls reached within `τ`. The p90 is a
 **nearest-rank** estimate (`sorted_responses[min(n−1, ⌊0.9·n⌋)]`), **not** an interpolated percentile; for
 the small per-variant call counts here (e.g. the steady-load variants serve `n = 17` calls → index
 `min(16, ⌊0.9·17⌋) = min(16, 15) = 15`, the second-slowest of 17; the `quiet` variant serves `n = 6` →

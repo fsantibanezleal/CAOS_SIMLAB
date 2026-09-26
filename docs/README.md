@@ -1,11 +1,11 @@
-# CAOS_SIMLAB — documentation
+# CAOS_SIMLAB: documentation
 
 This lab is a **guide for implementing real simulation/optimization solutions**: for each problem type it
-shows the *dedicated, state-of-the-art* tool, how to install it, how to use it, and how to apply it — with a
+shows the *dedicated, state-of-the-art* tool, how to install it, how to use it, and how to apply it, with a
 runnable, verified example. Two planes: a lightweight **live** lane in the browser and a no-restriction
 **local precompute** lane that runs the heavy dedicated engines and commits a seeded trace the static site
 replays. The contract underneath everything: a run is a pure function of `(params, seed)`, the committed
-**trace** is the source of truth, and the front end only animates it — *replay = truth*.
+**trace** is the source of truth, and the front end only animates it, *replay = truth*.
 
 ## How to read this wiki
 
@@ -20,15 +20,15 @@ replays. The contract underneath everything: a run is a pure function of `(param
 
 ## The four sections + architecture
 
-- [**Problem types**](./problem-types.md) — the decision map per problem type: which kind of modelling a
+- [**Problem types**](./problem-types.md): the decision map per problem type: which kind of modelling a
   question needs and which dedicated tool answers it (DES · ABM · Optimization & Routing · Monte-Carlo).
-- [**Frameworks**](./frameworks.md) — the 18 framework nodes: install / usage / applying for the dedicated
+- [**Frameworks**](./frameworks.md): the 18 framework nodes: install / usage / applying for the dedicated
   state-of-the-art tool of each problem type, with a verified `example.py` where the framework is Python.
-- [**Use cases**](./use-cases.md) — the 11 worked scenarios (S01–S11), each solved end to end: assumptions →
+- [**Use cases**](./use-cases.md): the 11 worked scenarios (S01–S11), each solved end to end: assumptions →
   formalization → solvers applied → results and reading.
-- [**Guides**](./guides.md) — the runtime how-tos: the precompute pipeline, the live (Pyodide) lane, and the
+- [**Guides**](./guides.md): the runtime how-tos: the precompute pipeline, the live (Pyodide) lane, and the
   optional GPU lane.
-- [**Architecture**](./architecture.md) — the deterministic-replay, two-plane design and the measured
+- [**Architecture**](./architecture.md): the deterministic-replay, two-plane design and the measured
   live/precompute gate (deep wiki: overview, determinism/trace, the gate, live Pyodide lane, precompute
   pipeline, live-tool evaluation, deploy).
 

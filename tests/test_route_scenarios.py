@@ -88,7 +88,7 @@ def test_haul_every_variant_slider_stop_has_a_committed_plan():
 
 
 def test_haul_route_tie_stable():
-    """A route-shape variant must not flip under tiny (±1e-9) cost noise — no near-ties (critique)."""
+    """A route-shape variant must not flip under tiny (±1e-9) cost noise, no near-ties (critique)."""
     from simlab.scenarios._geo import GridNetwork
     g = 12
     net = GridNetwork(g, g, spacing=1.0, terrain="ridge", terrain_opts={"passes": [2], "ridge_row": 5.5})
@@ -114,7 +114,7 @@ def test_haul_pipeline_manifest(tmp_path):
 
 
 def test_haul_committed_plan_reproduces_natively():
-    """The committed plans (s07_plans.py) must equal a fresh native NetworkX+OR-Tools rebuild — not stale."""
+    """The committed plans (s07_plans.py) must equal a fresh native NetworkX+OR-Tools rebuild, not stale."""
     pytest.importorskip("ortools")
     pytest.importorskip("networkx")
     from simlab.scenarios import _haul_plan

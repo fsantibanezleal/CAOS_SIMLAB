@@ -1,4 +1,4 @@
-"""The scenario registry — the one place that lists every shippable scenario.
+"""The scenario registry, the one place that lists every shippable scenario.
 
 The pipeline, the tests and (eventually, via a generated index) the web app all read from here, so adding
 a scenario is a single edit.

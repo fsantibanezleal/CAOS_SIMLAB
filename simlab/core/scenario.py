@@ -2,7 +2,7 @@
 
 A Scenario declares its tunable parameters and knows how to `run(params, seed) -> Trace`. The gate
 (`classify_lane`) decides, FROM MEASUREMENT, whether a scenario may run live in the browser or must be
-precomputed. The rule is the 4-gate AND — (1) pure-Python · (2) `wheels ⊆ LIVE_WHEELS` (so it imports in the
+precomputed. The rule is the 4-gate AND, (1) pure-Python · (2) `wheels ⊆ LIVE_WHEELS` (so it imports in the
 browser worker) · (3) run < 3 s · (4) trace < 1 MB; failing any gate forces precompute. This is what
 prevents "live mislabeling" (e.g. tagging an OR-Tools scenario live when native code cannot run in WASM).
 """
@@ -14,16 +14,16 @@ from .trace import Trace
 
 # --- the gates (tunable, recorded in every manifest) ---
 GATE_MAX_RUN_MS = 3000.0          # < 3 s gate. The run_ms it tests is the OFFLINE CPython proxy (perf_counter
-                                  # in the .venv, measured in pipeline.py) — a conservative stand-in, not the
+                                  # in the .venv, measured in pipeline.py): a conservative stand-in, not the
                                   # in-Worker time; the real in-browser runtime is measured live in
                                   # web's pyodide.worker.ts.
 GATE_MAX_TRACE_BYTES = 1_000_000  # animatable trace must be < ~1 MB
 # Wheels the live Pyodide worker CAN load (pure-Python or with a Pyodide wheel). A scenario runs LIVE only if
-# its `wheels` are all in this set — otherwise its engine can't import in the browser, so it's precomputed +
+# its `wheels` are all in this set: otherwise its engine can't import in the browser, so it's precomputed +
 # replayed. This was MEASURED, not assumed: Mesa 3 runs in Pyodide (needs `sqlite3` via loadPackage; cold
-# start ~3 s for numpy+pandas+scipy+networkx+sqlite3+mesa, a 20-step 2500-agent run ~2.3 s — verified in a
+# start ~3 s for numpy+pandas+scipy+networkx+sqlite3+mesa, a 20-step 2500-agent run ~2.3 s: verified in a
 # real browser). So ABM runs LIVE on real Mesa, not a stand-in. Only NATIVE engines stay precompute-only:
-# OR-Tools (C++/no WASM) — those scenarios set pure_python=False. The worker loads each scenario's closure
+# OR-Tools (C++/no WASM): those scenarios set pure_python=False. The worker loads each scenario's closure
 # on demand. (ABM also offers a NetLogo Web card; see web/public/netlogo + docs/frameworks/07_netlogo-web.)
 LIVE_WHEELS = frozenset({
     "numpy", "simpy", "ciw", "mesa", "pandas", "scipy", "networkx", "sqlite3", "joblib",
@@ -47,7 +47,7 @@ class Variant:
     """A named, pre-simulated parameter set for a scenario.
 
     Each scenario ships a *family* of variants (≥10) so the app can offer a selector and the learner can
-    compare regimes side by side — e.g. a light queue vs a near-saturated one vs an unstable one. Labels
+    compare regimes side by side, e.g. a light queue vs a near-saturated one vs an unstable one. Labels
     are bilingual (the app picks by language); `note_*` is a one-line "what this variant shows".
     """
     id: str
@@ -70,7 +70,7 @@ class GateResult:
 def classify_lane(
     pure_python: bool, run_ms: float, trace_bytes: int, wheels: list[str] | tuple[str, ...] = ()
 ) -> GateResult:
-    """Apply the gate (AND rule). live iff pure-Python AND run_ms<=3000 AND trace_bytes<=1MB AND wheels ⊆ LIVE_WHEELS (boundary values pass — the checks below fail only on strict `>`)."""
+    """Apply the gate (AND rule). live iff pure-Python AND run_ms<=3000 AND trace_bytes<=1MB AND wheels ⊆ LIVE_WHEELS (boundary values pass, the checks below fail only on strict `>`)."""
     reasons: list[str] = []
     if not pure_python:
         reasons.append("not pure-Python (cannot run in Pyodide/WASM)")

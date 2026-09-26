@@ -1,4 +1,4 @@
-# 02 · Running the pipeline — the CLI
+# 02 · Running the pipeline: the CLI
 
 The pipeline CLI is [`simlab/pipeline.py`](../../../simlab/pipeline.py), run as a module. The wrapper scripts
 ([`scripts/precompute.ps1`](../../../scripts/precompute.ps1) ·
@@ -54,11 +54,11 @@ The known scenario ids come from the registry ([`simlab/registry.py`](../../../s
 ]
 ```
 
-- `variants` — how many preset regimes were run for the scenario.
-- `lane` — the **scenario-level** verdict: `"live"` only if *all* its variants cleared the gate, otherwise
+- `variants`: how many preset regimes were run for the scenario.
+- `lane`: the **scenario-level** verdict: `"live"` only if *all* its variants cleared the gate, otherwise
   `"precomputed"` (see [03_internals.md](./03_internals.md)).
-- `manifest` — the manifest path written for the scenario.
-- `variant_ids` — the variant ids that were produced.
+- `manifest`: the manifest path written for the scenario.
+- `variant_ids`: the variant ids that were produced.
 
 The summary is the index of what changed; the authoritative gate numbers and KPIs live inside each manifest
 ([04_outputs.md](./04_outputs.md)).
@@ -73,10 +73,10 @@ committed traces use unless a scenario doc states otherwise.
 
 ## When to re-run
 
-Re-run a scenario whenever you change its model code, its variants, or its params — then commit the updated
+Re-run a scenario whenever you change its model code, its variants, or its params, then commit the updated
 `data/artifacts/` and `manifests/` together. Because deploy is "git-as-data" (committing a trace and pushing
 re-publishes the static site, see [03_internals.md](./03_internals.md)), the commit *is* the release for that
 scenario. The pipeline is idempotent for a fixed `(code, params, seed)`: re-running must reproduce the
-committed bytes — if it does not, see the determinism rules in [05_gotchas.md](./05_gotchas.md).
+committed bytes, if it does not, see the determinism rules in [05_gotchas.md](./05_gotchas.md).
 
-Next: [03_internals.md](./03_internals.md) — what happens inside one `precompute(...)` call.
+Next: [03_internals.md](./03_internals.md), what happens inside one `precompute(...)` call.

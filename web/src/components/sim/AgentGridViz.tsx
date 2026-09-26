@@ -13,7 +13,7 @@ const HALO_MS = 300; // how long a just-changed cell stays haloed
 
 /** Renders one frame of an ABM grid on a canvas. Cells that just changed state (vs the previous frame) get
  *  a brief fading halo so a relocation (Schelling) or a spreading infection (SIR) reads as "happening now"
- *  — the cellular analogue of the queue viz's event flash. */
+ * : the cellular analogue of the queue viz's event flash. */
 export function AgentGridViz({ trace, frameIndex }: { trace: GridTrace; frameIndex: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const theme = useThemeStore((s) => s.theme);

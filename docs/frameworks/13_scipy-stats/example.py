@@ -1,10 +1,10 @@
-"""scipy.stats worked example for CAOS_SIMLAB — confidence intervals the honest way.
+"""scipy.stats worked example for CAOS_SIMLAB, confidence intervals the honest way.
 
 What this demonstrates (the statistics half of the S10 pattern):
 
   1. A small *sample* of per-replication KPIs. Here it is K seeded runs of the
      per-run mean wait of a tiny M/M/c queue, the same `mmc_mean_wait(...)` shape as
-     `simlab/scenarios/s10_montecarlo.py` — so the sample we summarise is exactly the
+     `simlab/scenarios/s10_montecarlo.py`, so the sample we summarise is exactly the
      kind of output a Monte-Carlo replication study produces.
 
   2. Two 95% confidence intervals for the population mean, computed with
@@ -43,7 +43,7 @@ from scipy import stats
 def mmc_mean_wait(lam: float, mu: float, c: int, n: int, rng: np.random.Generator) -> float:
     """One replication: mean time-in-queue of an M/M/c FCFS queue (earliest-free-server method).
 
-    Mirrors `simlab/scenarios/s10_montecarlo.py::mmc_mean_wait` exactly — it takes a
+    Mirrors `simlab/scenarios/s10_montecarlo.py::mmc_mean_wait` exactly, it takes a
     pre-built Generator so each replication owns an independent, seeded RNG stream.
     """
     inter = rng.exponential(1.0 / lam, size=n)

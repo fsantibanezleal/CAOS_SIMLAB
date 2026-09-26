@@ -1,16 +1,16 @@
-# 05 · The precompute pipeline — local `.venv` → seeded trace + manifest
+# 05 · The precompute pipeline: local `.venv` → seeded trace + manifest
 
 The precompute lane is where the **heavy / native / SOTA** engines run: native solvers (OR-Tools), large-
 state ABM (Mesa / Mesa-Geo), crowds (JuPedSim), road graphs (OSMnx), the GPU lane. They run **offline in the
-local `.venv`** (no restriction — the local plane runs every engine), and the compact **seeded** trace is
+local `.venv`** (no restriction, the local plane runs every engine), and the compact **seeded** trace is
 committed; the static site never simulates them at request time, it replays them. Even **live** scenarios get
-committed traces — the app replays a tiny one instantly on first paint while Pyodide warms up, and the learner
+committed traces, the app replays a tiny one instantly on first paint while Pyodide warms up, and the learner
 can compare ≥10 regimes with zero compute. The CLI is [`simlab/pipeline.py`](../../simlab/pipeline.py).
 
 ## The same code path serves both lanes
 
 The pipeline runs the **exact** `Scenario.run → Trace` path the browser's `simlab.live` runs. That is
-deliberate: it is what makes the live/committed byte-equality check (replay = truth) meaningful — there is
+deliberate: it is what makes the live/committed byte-equality check (replay = truth) meaningful, there is
 one engine, exercised two ways.
 
 ## Running it
@@ -28,9 +28,9 @@ precompute engines in `requirements-precompute.txt`; the GPU lane is separate an
 ## What `precompute(scenario_id, seed)` does, per scenario
 
 For each scenario the pipeline iterates **every variant** it declares (the ≥10 preset regimes a learner can
-compare side by side — light queue vs near-saturated vs unstable), and for each variant:
+compare side by side, light queue vs near-saturated vs unstable), and for each variant:
 
-1. **Coerce** params (`sc.coerce(var.params)`) — merge with defaults, cast `int` knobs.
+1. **Coerce** params (`sc.coerce(var.params)`): merge with defaults, cast `int` knobs.
 2. **Run + time** it:
    ```python
    t0 = time.perf_counter()
@@ -71,7 +71,7 @@ to know whether to run live or replay; CI reads it to enforce that nothing tagge
 [`web/copy-data.mjs`](../../web/copy-data.mjs) (the `predev` / `prebuild` hook) overlays `data/artifacts/` +
 `manifests/` into the Vite build, and also inlines the `simlab/**/*.py` source into
 `pyodide/simlab-sources.json` for the live lane. So `npm run build` ships the committed traces alongside
-`dist/`. Deploy is GitHub Pages — committing a new trace and pushing re-publishes the site ("git-as-data").
+`dist/`. Deploy is GitHub Pages, committing a new trace and pushing re-publishes the site ("git-as-data").
 No backend, no runtime DB. See [07_deploy.md](./07_deploy.md).
 
 ## Determinism & honesty rules the pipeline enforces
@@ -80,7 +80,7 @@ No backend, no runtime DB. See [07_deploy.md](./07_deploy.md).
   ([02_determinism-and-trace.md](./02_determinism-and-trace.md)); re-running the pipeline must reproduce the
   committed bytes.
 - **Never commit raw data.** Road/graph work commits only **rendered geometry** (plain JSON), never raw
-  `.graphml` / `.osm` / `.pbf` — CI blocks those extensions (ODbL; see `ATTRIBUTION.md`).
+  `.graphml` / `.osm` / `.pbf`, CI blocks those extensions (ODbL; see `ATTRIBUTION.md`).
 - **Label synthetic vs sourced.** Synthetic scenarios say so; the one real external dataset (OR-Library
   `ft06`, S06) is cited.
 
@@ -94,5 +94,5 @@ S11 OR-Tools GLOP + SimPy. Detail per problem type in [../problem-types/](../pro
 
 ## Read next
 
-- [03_the-gate.md](./03_the-gate.md) — the gate the pipeline applies and records.
-- [07_deploy.md](./07_deploy.md) — how committed traces reach GitHub Pages.
+- [03_the-gate.md](./03_the-gate.md): the gate the pipeline applies and records.
+- [07_deploy.md](./07_deploy.md): how committed traces reach GitHub Pages.

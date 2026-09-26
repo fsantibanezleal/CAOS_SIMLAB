@@ -9,8 +9,8 @@ import { FlowViz } from "./FlowViz";
 
 const KPI_MAP: Record<string, { en: string; es: string }> = {
   mean_LOS: { en: "Mean length-of-stay", es: "Estancia media" },
-  mean_LOS_urgent: { en: "LOS — urgent", es: "Estancia — urgente" },
-  mean_LOS_standard: { en: "LOS — standard", es: "Estancia — estándar" },
+  mean_LOS_urgent: { en: "LOS, urgent", es: "Estancia, urgente" },
+  mean_LOS_standard: { en: "LOS, standard", es: "Estancia, estándar" },
   mean_wait_treatment: { en: "Wait for treatment", es: "Espera a tratamiento" },
   n_patients: { en: "Patients", es: "Pacientes" },
   rho_treatment: { en: "Treatment ρ", es: "ρ tratamiento" },

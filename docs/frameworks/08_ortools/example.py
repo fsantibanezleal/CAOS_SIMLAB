@@ -1,4 +1,4 @@
-"""OR-Tools — two tiny, deterministic demos in one script.
+"""OR-Tools, two tiny, deterministic demos in one script.
 
 Demo 1 (CP-SAT): a small disjunctive job-shop. We solve the classic
 Fisher & Thompson ft06 6x6 benchmark (proven optimal makespan = 55) the same
@@ -47,7 +47,7 @@ FT06 = [
 
 def generate_jobshop(n_jobs: int, n_machines: int, seed: int) -> list[list[tuple[int, int]]]:
     """A seeded random job-shop where each job visits every machine once (a full
-    permutation route — the classic JSSP convention used by S06)."""
+    permutation route, the classic JSSP convention used by S06)."""
     rng = np.random.default_rng(seed)
     jobs: list[list[tuple[int, int]]] = []
     for _ in range(n_jobs):

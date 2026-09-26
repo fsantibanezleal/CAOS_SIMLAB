@@ -1,21 +1,21 @@
-"""S01 — Bank / Clinic Queue (M/M/c). The DES "hello world" and the app's landing scenario.
+"""S01, Bank / Clinic Queue (M/M/c). The DES "hello world" and the app's landing scenario.
 
-Teaches: arrivals, a server pool, the queue, utilisation rho, Little's Law — and crucially
+Teaches: arrivals, a server pool, the queue, utilisation rho, Little's Law, and crucially
 VALIDATION: the simulated mean wait is compared against the closed-form M/M/c (Erlang-C) result, so the
 learner sees "does my simulation match the theory?". Pure-Python (SimPy + Ciw + NumPy) => runs live in Pyodide.
 
 Two independent simulators back the validation lesson, so "the sim converges to theory" is *real*:
 
-* The live, animatable run uses **SimPy** — one process per customer over a ``simpy.Resource`` pool. Its
+* The live, animatable run uses **SimPy**: one process per customer over a ``simpy.Resource`` pool. Its
   per-customer event timeline is what the front end animates, and its mean waits are the headline KPIs.
 * The analytic field carries the closed-form **Erlang-C** reference *plus a real second-engine check from*
   **Ciw**: a short, seeded M/M/c replication study (``ciw_xcheck``) whose mean Wq is compared back to the
   Erlang-C Wq. So the trace literally records two simulators (SimPy KPIs, Ciw cross-check) both landing on
-  the same closed-form theory — the lab uses the queueing framework it documents rather than re-deriving it.
+  the same closed-form theory, the lab uses the queueing framework it documents rather than re-deriving it.
 
-All randomness is drawn from seeded generators — the SimPy variates from one ``make_rng(seed)`` drawn up
+All randomness is drawn from seeded generators, the SimPy variates from one ``make_rng(seed)`` drawn up
 front (so determinism is independent of the scheduler's interleaving), the Ciw replications from
-``ciw.seed(...)`` per replication — so a run is fully reproducible from (params, seed): the same input
+``ciw.seed(...)`` per replication, so a run is fully reproducible from (params, seed): the same input
 yields the same trace byte-for-byte.
 """
 from __future__ import annotations
@@ -43,7 +43,7 @@ CIW_SEED_STRIDE = 1000  # replication k of a run with seed s uses ciw.seed(s * s
 def erlang_c_mmc(lam: float, mu: float, c: int) -> dict:
     """Closed-form M/M/c reference: utilisation, P(wait), Wq (mean wait in queue), Lq.
 
-    Returns Wq = None (null) when unstable (rho >= 1) — a teachable failure mode.
+    Returns Wq = None (null) when unstable (rho >= 1), a teachable failure mode.
     """
     rho = lam / (c * mu)
     a = lam / mu  # offered load (Erlangs)
@@ -62,7 +62,7 @@ def erlang_c_mmc(lam: float, mu: float, c: int) -> dict:
 def _ciw_replication_wq(lam: float, mu: float, c: int, max_time: float, seed: int) -> float:
     """One seeded Ciw M/M/c run; return the mean post-warm-up waiting time in queue.
 
-    Built on the real **Ciw** DES framework — Poisson arrivals + exponential service over ``c`` servers
+    Built on the real **Ciw** DES framework, Poisson arrivals + exponential service over ``c`` servers
     (an M/M/c node), exactly as the queueing chapter defines it. ``ciw.seed(seed)`` makes the run
     reproducible. Returns 0.0 if no customer cleared the warm-up (degenerate short run).
     """
@@ -85,7 +85,7 @@ def ciw_validate_mmc(lam: float, mu: float, c: int, seed: int, theory_wq: float 
 
     Runs ``CIW_REPS`` independent seeded replications, each long enough to clear ~``CIW_TARGET_ARRIVALS``
     post-warm-up arrivals (run length capped at ``CIW_MAX_TIME``). Reports the across-replication mean Wq,
-    a normal 95% half-CI, and the relative error against the closed-form ``theory_wq`` — so the artifact
+    a normal 95% half-CI, and the relative error against the closed-form ``theory_wq``, so the artifact
     records, deterministically, that an *independent* simulator lands on the same theory the lab teaches.
 
     For an unstable system (``theory_wq is None``) there is no finite steady-state Wq to converge to, so
@@ -151,15 +151,15 @@ class QueueScenario(Scenario):
             v("busy", "Busy (ρ≈0.80)", "Ocupada (ρ≈0.80)", 2.4, 1.0, 3,
               "Waits become noticeable as load rises.", "Las esperas se notan al subir la carga."),
             v("heavy", "Heavy (ρ≈0.90)", "Alta (ρ≈0.90)", 2.7, 1.0, 3,
-              "Near the knee of the curve — waits climb fast.", "Cerca del codo de la curva — la espera sube rápido."),
+              "Near the knee of the curve, waits climb fast.", "Cerca del codo de la curva, la espera sube rápido."),
             v("saturated", "Near-saturation (ρ≈0.95)", "Casi saturada (ρ≈0.95)", 2.85, 1.0, 3,
               "Tiny load increases cause huge wait increases.", "Pequeños aumentos de carga disparan la espera."),
             v("unstable", "Unstable (ρ≈1.10)", "Inestable (ρ≈1.10)", 3.3, 1.0, 3,
               "Arrivals exceed capacity: the queue grows without bound (theory Wq = ∞).",
               "Las llegadas superan la capacidad: la cola crece sin límite (teoría Wq = ∞)."),
             v("mm1", "Single server M/M/1 (ρ≈0.80)", "Un servidor M/M/1 (ρ≈0.80)", 0.8, 1.0, 1,
-              "One server at ρ=0.8 — compare its wait with the multi-server pools below.",
-              "Un servidor a ρ=0.8 — compara su espera con los pools multi-servidor de abajo."),
+              "One server at ρ=0.8, compare its wait with the multi-server pools below.",
+              "Un servidor a ρ=0.8, compara su espera con los pools multi-servidor de abajo."),
             v("mm1_busy", "Single server busy (ρ≈0.90)", "Un servidor ocupado (ρ≈0.90)", 0.9, 1.0, 1,
               "A single busy server: long, volatile waits.", "Un solo servidor ocupado: esperas largas y volátiles."),
             v("c2", "Two servers (ρ≈0.80)", "Dos servidores (ρ≈0.80)", 1.6, 1.0, 2,
@@ -168,7 +168,7 @@ class QueueScenario(Scenario):
               "Same ρ, more servers: pooling shortens the wait (economies of scale).",
               "Mismo ρ, más servidores: el pooling acorta la espera (economías de escala)."),
             v("c10", "Ten servers (ρ≈0.80)", "Diez servidores (ρ≈0.80)", 8.0, 1.0, 10,
-              "A large pool at the same ρ — the wait nearly vanishes.", "Un pool grande al mismo ρ — la espera casi desaparece."),
+              "A large pool at the same ρ, the wait nearly vanishes.", "Un pool grande al mismo ρ, la espera casi desaparece."),
             v("fast", "Fast service, 2 servers (ρ≈0.50)", "Servicio rápido, 2 servidores (ρ≈0.50)", 2.0, 2.0, 2,
               "Doubling the service rate μ halves the load.", "Duplicar la tasa de servicio μ reduce la carga a la mitad."),
         ]

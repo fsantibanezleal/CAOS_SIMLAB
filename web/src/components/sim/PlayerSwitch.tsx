@@ -7,7 +7,7 @@ import { GanttVariantPlayer } from "./GanttVariantPlayer";
 import { RouteVariantPlayer } from "./RouteVariantPlayer";
 
 /** Map a manifest viz renderer to its animated player. Shared by the precomputed Simulator tab and the
- *  Pyodide live lane — both feed a VariantEntry (the live lane uses a synthetic in-memory trace path). */
+ *  Pyodide live lane: both feed a VariantEntry (the live lane uses a synthetic in-memory trace path). */
 export function PlayerSwitch({ renderer, variant }: { renderer: string; variant: VariantEntry }) {
   switch (renderer) {
     case "agent-grid":

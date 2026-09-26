@@ -1,39 +1,39 @@
-# 07 · NetLogo Web (Tortoise) — the live in-browser ABM engine
+# 07 · NetLogo Web (Tortoise): the live in-browser ABM engine
 
 **NetLogo Web** is the classic NetLogo agent-based-modeling language compiled to **JavaScript** by the
-**Tortoise** compiler/runtime. It is not a Python package — you author a model (in NetLogo desktop or on
+**Tortoise** compiler/runtime. It is not a Python package, you author a model (in NetLogo desktop or on
 netlogoweb.org), **export it to a self-contained HTML file** with the engine inlined, and that file runs the
 simulation **entirely in the visitor's browser**. In this lab it owns the **live on-ramp lane**: a visitor
-lands on a scenario page and a real, animated simulator is *already running* — sliders, plots, a 2-D view —
+lands on a scenario page and a real, animated simulator is *already running*, sliders, plots, a 2-D view, 
 served as a static file by GitHub Pages, which does **zero compute**. It is the only engine here that
 simulates live in the browser without Pyodide (native JS, smaller cold-start), which is precisely why it
 carries the "enter → a running simulator, instantly" promise.
 
-**When to use it:** modest-scale (~1e3–1e4 agents) ABM classics — Schelling segregation, SIR epidemics,
-Wolf-Sheep, Flocking — where the goal is *play first, understand later* with no server cost. **How the lab
-uses it today:** NetLogo Web is a **standalone, off-nav sandbox demo** — a single Schelling card at
+**When to use it:** modest-scale (~1e3–1e4 agents) ABM classics, Schelling segregation, SIR epidemics,
+Wolf-Sheep, Flocking, where the goal is *play first, understand later* with no server cost. **How the lab
+uses it today:** NetLogo Web is a **standalone, off-nav sandbox demo**, a single Schelling card at
 `/sandbox/netlogo` (`web/public/netlogo/schelling.html`, the only committed NetLogo model), **linked from the
 S02 page** as "the same problem in another tool." It is **not** a per-scenario embedded twin-card pairing:
 the lab's actual ABM scenarios (S02/S03/S05) run live on **Mesa 3 in Pyodide** (measured), each also backed by
 a committed trace for instant first paint. So the engine-independence lesson is made by *one* live NetLogo
-sandbox standing beside the Pyodide-Mesa scenarios — *the concept is engine-independent; NetLogo runs instantly
-as compiled JS with no Pyodide load, while Python + Mesa is the real engine for the scenarios — also live, plus
+sandbox standing beside the Pyodide-Mesa scenarios, *the concept is engine-independent; NetLogo runs instantly
+as compiled JS with no Pyodide load, while Python + Mesa is the real engine for the scenarios, also live, plus
 the exact committed trace.* The difference is the runtime (native JS vs Pyodide-Python), not
 live-vs-precompute: both run live. For anything large (millions of agents) the lab routes to the GPU-ABM
 chapter (see below). The one hard compliance fact: NetLogo model
-licenses are **mixed** (Code Examples are CC0; most Models Library models are CC BY-NC-SA — *not* open
-source), so the lab prefers CC0 or authors its own models — detailed in the applying page.
+licenses are **mixed** (Code Examples are CC0; most Models Library models are CC BY-NC-SA, *not* open
+source), so the lab prefers CC0 or authors its own models, detailed in the applying page.
 
 ## Read the node in order
 
-1. [`./07_netlogo-web/01_installation.md`](./07_netlogo-web/01_installation.md) — what "installing" means
+1. [`./07_netlogo-web/01_installation.md`](./07_netlogo-web/01_installation.md): what "installing" means
    for a JS engine (no pip, no `requirements*.txt`), how to author + export a model to standalone HTML, how
    to obtain the raw engine artifacts, and the platform/no-CUDA/no-Pyodide notes.
-2. [`./07_netlogo-web/02_usage.md`](./07_netlogo-web/02_usage.md) — the real concepts (the
+2. [`./07_netlogo-web/02_usage.md`](./07_netlogo-web/02_usage.md): the real concepts (the
    `setup`/`go`/seed contract), a concrete seeded NetLogo source, and the **runnable artifact**: the
    chrome-strip CSS + lazy sandboxed `<iframe>` / `NetLogoCard` React embed, plus what the rendered card
    should show (this node's stand-in for stdout, since there is no `example.py`).
-3. [`./07_netlogo-web/03_applying.md`](./07_netlogo-web/03_applying.md) — how to *formalize* an ABM problem
+3. [`./07_netlogo-web/03_applying.md`](./07_netlogo-web/03_applying.md): how to *formalize* an ABM problem
    `(A, S, N, f, U)` and *solve* it with this engine, which lab scenarios use it, the client-side-live
    pattern, the honest research trade-offs, the CC0 / CC BY-NC-SA license nuance, and when to pick it vs the
    alternatives.
@@ -41,7 +41,7 @@ source), so the lab prefers CC0 or authors its own models — detailed in the ap
 ## No `example.py` for this node
 
 NetLogo Web is **JavaScript, not Python**, so this node intentionally has **no `example.py`** and **no
-captured stdout block** — the established convention for the JS/reference frameworks (cf. the
+captured stdout block**, the established convention for the JS/reference frameworks (cf. the
 [GPU-ABM reference chapter](./18_gpu-abm-chapter.md)). The equivalent runnable artifact is the HTML/JS embed in
 [`./07_netlogo-web/02_usage.md`](./07_netlogo-web/02_usage.md) §3; you verify it by serving the exported
 HTML and looking at the animated card (see
@@ -49,10 +49,10 @@ HTML and looking at the animated card (see
 
 ## Scenarios that use this framework
 
-| Scenario | NetLogo Web card (JS, this engine) | Live ABM scenario (Mesa 3 — runs live in Pyodide + committed replay) |
+| Scenario | NetLogo Web card (JS, this engine) | Live ABM scenario (Mesa 3, runs live in Pyodide + committed replay) |
 |---|---|---|
-| **S02 — Schelling segregation** | **shipped** — `web/public/netlogo/schelling.html`, the only committed NetLogo model; segregation on a 2-D grid with sliders, at the off-nav `/sandbox/netlogo` and linked from the S02 page | `simlab/scenarios/s02_schelling.py` (`engine = "mesa"`) |
-| **S03 — SIR epidemic** | **none shipped** — there is no SIR `.nlogo`/HTML in the repo and the web wires only the Schelling card; NetLogo SIR is only *"same problem, other tool"* (see [`use-cases/03_s03_sir.md`](../use-cases/03_s03_sir.md)) | `simlab/scenarios/s03_sir.py` (`engine = "mesa"`) |
+| **S02, Schelling segregation** | **shipped**, `web/public/netlogo/schelling.html`, the only committed NetLogo model; segregation on a 2-D grid with sliders, at the off-nav `/sandbox/netlogo` and linked from the S02 page | `simlab/scenarios/s02_schelling.py` (`engine = "mesa"`) |
+| **S03, SIR epidemic** | **none shipped**, there is no SIR `.nlogo`/HTML in the repo and the web wires only the Schelling card; NetLogo SIR is only *"same problem, other tool"* (see [`use-cases/03_s03_sir.md`](../use-cases/03_s03_sir.md)) | `simlab/scenarios/s03_sir.py` (`engine = "mesa"`) |
 
 ## See also
 

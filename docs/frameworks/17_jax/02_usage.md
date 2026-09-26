@@ -1,4 +1,4 @@
-# 17 · JAX — usage
+# 17 · JAX: usage
 
 This is the hands-on guide: the handful of JAX concepts that matter for a
 vectorized Monte-Carlo / ABM-batch workload, the minimal runnable example walked
@@ -11,22 +11,22 @@ judgement layer (scenarios, trade-offs, pick-vs-alternatives) see
 > simulation *engine* in JAX (that is [SimPy](../01_simpy.md) / [Mesa](../04_mesa.md) /
 > [Ciw](../02_ciw.md)); we use JAX to run *many independent replications of a
 > cheap computation at once* as a single fused, compiled kernel. Everything below
-> runs on the **CPU backend** — no GPU needed.
+> runs on the **CPU backend**, no GPU needed.
 
 ---
 
 ## 1. The four concepts you actually need
 
-### `jax.numpy` — NumPy you can transform
+### `jax.numpy`: NumPy you can transform
 
 `import jax.numpy as jnp` gives you a near-drop-in NumPy API (`jnp.sum`,
 `jnp.mean`, `jnp.sqrt`, …) that returns **`jax.Array`** values living on a device.
 The crucial difference from NumPy: JAX arrays are **immutable** and JAX functions
 are expected to be **pure** (no in-place mutation, no hidden side effects). That
-purity is precisely what lets JAX *trace* and *compile* them — a function with a
+purity is precisely what lets JAX *trace* and *compile* them, a function with a
 hidden `print` or a global counter cannot be safely fused by XLA.
 
-### `jax.random` — explicit, splittable RNG (the replication backbone)
+### `jax.random`: explicit, splittable RNG (the replication backbone)
 
 JAX has **no global random state**. Randomness is an explicit input: a *key*
 created with `random.PRNGKey(seed)`. To get many independent streams you **split**
@@ -41,9 +41,9 @@ This is the property a replication study demands (see the
 [Monte-Carlo methodology §7](../../problem-types/04_monte-carlo-replications/01_what-it-is.md#rng-streams-the-foundation-of-trustworthy-replications)):
 each replication gets a *provably-independent* stream because JAX's PRNG is
 counter-based and splittable, not a single mutated generator. Reusing a key gives
-**identical** draws — great for reproducibility, fatal if you forget to split.
+**identical** draws, great for reproducibility, fatal if you forget to split.
 
-### `vmap` — write for one, run for many
+### `vmap`: write for one, run for many
 
 `jax.vmap` is automatic vectorization. You write your computation for a **single**
 element (one replication, one agent), and `vmap` rewrites it to run over a whole
@@ -60,15 +60,15 @@ are held fixed (`None`). This is the heart of the "vectorized ABM / MC" pattern:
 one clear scalar function + `vmap` = a batch, with **no** error-prone manual
 broadcasting.
 
-### `jit` — compile the whole thing once
+### `jit`: compile the whole thing once
 
 `jax.jit` traces a function, hands the graph to **XLA**, and compiles a fused
 native kernel. The first call pays the compile cost; later calls with the same
 input shapes/dtypes reuse the cached kernel. Composing `jit(vmap(f))` means the
-*entire batched* computation becomes one compiled kernel — the Python interpreter
+*entire batched* computation becomes one compiled kernel, the Python interpreter
 is out of the inner loop entirely.
 
-> **`static_argnums`** — arguments that change array *shapes* (here `n_per_rep`,
+> **`static_argnums`**, arguments that change array *shapes* (here `n_per_rep`,
 > which sets the draw count) must be marked static so JAX recompiles per distinct
 > value instead of trying to trace them as abstract arrays.
 
@@ -112,12 +112,12 @@ sem      = jnp.sqrt(estimate * (1 - estimate) / n_reps)
 **The check (honesty):** the analytic truth is the survival function of the
 `Gamma(5, 1)` (Erlang) distribution, i.e. the regularized upper incomplete gamma
 `Q(5, 8) = gammaincc(5, 8)` from `jax.scipy.special`. We assert the truth lands
-**inside** the 95% CI — turning "trust me" into a verifiable claim.
+**inside** the 95% CI, turning "trust me" into a verifiable claim.
 
 Two reproducibility guards make the output **identical on every run / machine** on
 the CPU backend:
 
-- `jax.config.update("jax_enable_x64", True)` — 64-bit math for a tight, stable
+- `jax.config.update("jax_enable_x64", True)`: 64-bit math for a tight, stable
   comparison against the analytic value.
 - A single fixed `root_seed` from which all `n_reps` streams are split.
 
@@ -156,7 +156,7 @@ truth in 95% CI  : True
 **Reading the result:** 200,000 independent JAX replications estimate
 `P(Gamma(5,1) > 8) ≈ 0.1004`, the analytic truth is `0.0996`, the absolute error
 is `~8e-4`, and the truth falls **inside** the 95% confidence interval. The whole
-batch is one `jit`-compiled, `vmap`-vectorized kernel on the CPU backend — no
+batch is one `jit`-compiled, `vmap`-vectorized kernel on the CPU backend, no
 Python replication loop, and the same code would run unchanged on a GPU/TPU
 backend. This is the canonical "thousands of independent replications → mean +
 honest CI" workload the lab teaches, expressed as vectorized compute.
@@ -166,7 +166,7 @@ honest CI" workload the lab teaches, expressed as vectorized compute.
 ## 4. Pitfalls (the ones that bite first)
 
 - **Forgetting to split keys.** Reusing one key across replications gives the
-  *same* draws every time — your "independent" runs collapse to one. Always
+  *same* draws every time, your "independent" runs collapse to one. Always
   `random.split` (or `random.fold_in`) per replication.
 - **In-place mutation.** `arr[i] = x` does not exist; use `arr.at[i].set(x)`
   (returns a new array). JAX arrays are immutable by design.
@@ -182,6 +182,6 @@ honest CI" workload the lab teaches, expressed as vectorized compute.
 
 ## Related
 
-- [`01_installation.md`](./01_installation.md) — version, wheel, deps, why CPU-only.
-- [`03_applying.md`](./03_applying.md) — scenarios, the optimize / vectorize pattern, trade-offs.
-- [`../../problem-types/04_monte-carlo-replications.md`](../../problem-types/04_monte-carlo-replications.md) — the replications / CI / warm-up curriculum this serves.
+- [`01_installation.md`](./01_installation.md): version, wheel, deps, why CPU-only.
+- [`03_applying.md`](./03_applying.md): scenarios, the optimize / vectorize pattern, trade-offs.
+- [`../../problem-types/04_monte-carlo-replications.md`](../../problem-types/04_monte-carlo-replications.md): the replications / CI / warm-up curriculum this serves.

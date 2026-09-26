@@ -1,24 +1,24 @@
-# 01 · Assumptions — the canonical instance, scope & assumptions
+# 01 · Assumptions: the canonical instance, scope & assumptions
 
 > Source of truth: [`../../../simlab/scenarios/s11_minehaul.py`](../../../simlab/scenarios/s11_minehaul.py)
 > (`simlab/scenarios/s11_minehaul.py`) and the scenario's Context block in the web Experiments page.
-> Nothing here is invented — every number is read from the code.
+> Nothing here is invented, every number is read from the code.
 
 ## The story
 
 A mine runs one **shift**. Ore is loaded at several **phases** (load points), each with a fixed ore
 **grade**, and hauled by a **fixed fleet** of trucks to three kinds of **destination**:
 
-- a **plant** — the final sink, which must be fed at a **target grade** within a tolerance band and up to
+- a **plant**: the final sink, which must be fed at a **target grade** within a tolerance band and up to
   a **demand** in tonnes;
-- a **dump** — the waste sink for low-grade / excess production;
-- one or more **stockpiles** — an intermediate node that is a *sink* (trucks tip into it) and, once it
+- a **dump**: the waste sink for low-grade / excess production;
+- one or more **stockpiles**: an intermediate node that is a *sink* (trucks tip into it) and, once it
   holds enough material, a *source* (trucks draw from it on later trips), tracked by a level `ℓ(t)`.
 
 Two optimization problems are **coupled**. First a linear program (the *plan*) chooses how many tonnes to
 draw from each phase so the **blended** plant feed lands on the grade target. Then the fixed fleet must
 **execute** that plan over real haul roads inside the shift. The teaching point: a plan that is optimal on
-paper degrades when an under-sized fleet cannot deliver it — and the **grade slips first**.
+paper degrades when an under-sized fleet cannot deliver it, and the **grade slips first**.
 
 ## The canonical instance (defaults from the code)
 
@@ -29,8 +29,8 @@ RNG). Stations sit spread across the map so haul routes are long and wind throug
 |---|---|---|
 | Grid | 14 × 14 junctions | `ParamSpec("grid", …, 14)` |
 | Plant | top-right corner | `plant_node = at(0.88, 0.84)` |
-| Phase · low (grade 1.6) | top-left — **near** the plant | `phase_nodes[0] = at(0.14, 0.86)` |
-| Phase · mid (grade 2.5) | bottom-right — near | `phase_nodes[1] = at(0.86, 0.16)` |
+| Phase · low (grade 1.6) | top-left, **near** the plant | `phase_nodes[0] = at(0.14, 0.86)` |
+| Phase · mid (grade 2.5) | bottom-right, near | `phase_nodes[1] = at(0.86, 0.16)` |
 | Phase · high (grade 3.4) | **far** bottom-left corner | `phase_nodes[2] = at(0.10, 0.12)` |
 | Dump | bottom edge | `dump_node = at(0.50, 0.08)` |
 | Stockpile | interior, off the central wall | `stock_node = at(0.30, 0.40)` |
@@ -40,10 +40,10 @@ Key fixed constants (module-level, not exposed as sliders):
 
 - **Truck capacity** `q = 2.0` t per trip (`TRUCK_CAP`).
 - **Load time** `1.5`, **tip time** `0.5`, **speed** `1.0` (`LOAD_TIME`, `TIP_TIME`, `SPEED`).
-- **Uphill penalty** `ρ = 6.0` on loaded climbs (`ROAD_GRADE`) — strong, so loaded routes visibly wind
+- **Uphill penalty** `ρ = 6.0` on loaded climbs (`ROAD_GRADE`): strong, so loaded routes visibly wind
   around hills.
 - **Stockpile capacity** `60.0` t (`stock_cap`).
-- **Nominal production** `80.0` t — a fixed reference used to size the dump flow (`nominal_production`).
+- **Nominal production** `80.0` t: a fixed reference used to size the dump flow (`nominal_production`).
 
 Tunable parameters (`param_specs`), default · [min, max, step]:
 
@@ -85,11 +85,11 @@ Tunable parameters (`param_specs`), default · [min, max, step]:
 
 These would each be a *different* tool or scene, deliberately left out:
 
-- **Period scheduling / block sequencing** — the LP plans a single shift, not a multi-period mine plan.
-- **Cut-off grade economics** (Lane's algorithm) — which material is ore vs waste is *given*, not derived.
-- **Real-time re-optimizing dispatch** — the LP is **static**: it is solved once up front and never
+- **Period scheduling / block sequencing**: the LP plans a single shift, not a multi-period mine plan.
+- **Cut-off grade economics** (Lane's algorithm): which material is ore vs waste is *given*, not derived.
+- **Real-time re-optimizing dispatch**: the LP is **static**: it is solved once up front and never
   re-optimized live as the shift unfolds.
-- **Stochastic variability** — there are **no random variates**. Truck capacity and service times are
+- **Stochastic variability**: there are **no random variates**. Truck capacity and service times are
   fixed; the fleet's staggered release and the dispatch policy are fixed functions of the inputs. The
   scenario seed is **inert** (carried for the trace schema, but nothing samples from it).
 
@@ -105,4 +105,4 @@ plus the SimPy fleet realizing a (possibly degraded) version of it. See
 ## Next
 
 - The exact math: [02 · Formalization](./02_formalization.md).
-- Back to the node index: [11 · S11 — Mine multi-destination haul](../11_s11_minehaul.md).
+- Back to the node index: [11 · S11: Mine multi-destination haul](../11_s11_minehaul.md).

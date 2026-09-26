@@ -1,4 +1,4 @@
-"""The per-scenario manifest — the keystone that makes the live/precompute call auditable.
+"""The per-scenario manifest, the keystone that makes the live/precompute call auditable.
 
 A scenario emits one manifest listing its family of pre-simulated **variants**. Each variant declares its
 lane, params, the MEASURED gate numbers, its KPIs and analytic reference, and its committed trace path.

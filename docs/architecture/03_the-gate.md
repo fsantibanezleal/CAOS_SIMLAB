@@ -1,7 +1,7 @@
-# 03 · The gate — the measured live/precompute decision (`classify_lane`)
+# 03 · The gate: the measured live/precompute decision (`classify_lane`)
 
 A scenario may run **live in the browser** only if a 4-gate holds; failing **any** part forces it to
-the **precompute + replay** lane. The gate is not a label a human types — it is computed **from
+the **precompute + replay** lane. The gate is not a label a human types, it is computed **from
 measurement** by the pipeline and recorded in every manifest, and CI re-checks it. This is what prevents
 "live mislabeling" (e.g. tagging an OR-Tools scenario "live" when native code cannot run in WASM).
 
@@ -12,8 +12,8 @@ The gate lives in [`simlab/core/scenario.py`](../../simlab/core/scenario.py) as 
 ```
 live  iff  pure_python
       AND  wheels ⊆ LIVE_WHEELS
-      AND  run_ms <= 3000          (GATE_MAX_RUN_MS — the code fails only when run_ms > 3000)
-      AND  trace_bytes <= 1_000_000 (GATE_MAX_TRACE_BYTES, ~1 MB — fails only when > 1 MB)
+      AND  run_ms <= 3000          (GATE_MAX_RUN_MS, the code fails only when run_ms > 3000)
+      AND  trace_bytes <= 1_000_000 (GATE_MAX_TRACE_BYTES, ~1 MB, fails only when > 1 MB)
 ```
 
 The relation is non-strict: `classify_lane` records a *failure* reason only when `run_ms > 3000` or
@@ -43,21 +43,21 @@ def classify_lane(pure_python, run_ms, trace_bytes, wheels=()) -> GateResult:
     return GateResult(pure_python, round(float(run_ms), 1), int(trace_bytes), lane, reasons)
 ```
 
-### 1. `pure_python` — can the engine even import in WASM?
+### 1. `pure_python`: can the engine even import in WASM?
 
 A `Scenario` declares `pure_python: bool`. Native-code engines set it `False`: OR-Tools is C++ with no WASM
-build, so the scenarios whose **live closure** would import OR-Tools — S06 (CP-SAT), S08 (Routing + PyVRP)
-and S11 (GLOP) — all carry `pure_python = False` and can never be live regardless of how fast they are. The
+build, so the scenarios whose **live closure** would import OR-Tools, S06 (CP-SAT), S08 (Routing + PyVRP)
+and S11 (GLOP), all carry `pure_python = False` and can never be live regardless of how fast they are. The
 same holds for the GPU lane (CUDA). This is the *cheapest* fail-fast check. Note this fails **only** the
-scenarios that must import a native solver *in the run*: S07 (`pure_python = True`) runs **live** — its
+scenarios that must import a native solver *in the run*: S07 (`pure_python = True`) runs **live**, its
 native NetworkX+OR-Tools route plan is precomputed offline and committed as data, then a pure-Python SimPy
 replay runs over it in the browser; and S09 (`pure_python = True`) runs **live** too (SimPy + NetworkX, no
-solver). So `pure_python = False` is **not** "anything that touches OR-Tools anywhere" — it is "the live run
+solver). So `pure_python = False` is **not** "anything that touches OR-Tools anywhere", it is "the live run
 itself needs a native solver."
 
-### 2. `wheels ⊆ LIVE_WHEELS` — is the dependency closure loadable in the browser?
+### 2. `wheels ⊆ LIVE_WHEELS`: is the dependency closure loadable in the browser?
 
-Each scenario declares `wheels: list[str]` — the minimal closure its engine needs. A scenario is live only if
+Each scenario declares `wheels: list[str]`, the minimal closure its engine needs. A scenario is live only if
 **every** wheel is in `LIVE_WHEELS`, the set the browser worker actually loads. `LIVE_WHEELS` is **measured,
 not assumed**: it contains `mesa` and `sqlite3` precisely because Mesa 3 was verified to run in Pyodide once
 `sqlite3` is loaded via `loadPackage` (cold start ~3 s for numpy+pandas+scipy+networkx+sqlite3+mesa; a
@@ -74,13 +74,13 @@ registry:
 | S06 job-shop | `[]` (OR-Tools) | ✗ | n/a → precompute (fails part 1) |
 | S11 mine-haul | `[]` (OR-Tools GLOP) | ✗ | n/a → precompute (fails part 1) |
 
-### 3. `run_ms <= 3000` (fails only when `> 3000`) — does a single run finish fast enough?
+### 3. `run_ms <= 3000` (fails only when `> 3000`): does a single run finish fast enough?
 
 The pipeline times the actual `scenario.run(params, seed)` wall-clock per variant. If any variant exceeds the
 3 s in-Worker budget, the scenario is precomputed. The 3 s number is the threshold for "edit a slider →
 animation, with no perceptible stall" on a mid laptop.
 
-### 4. `trace_bytes <= ~1 MB` (fails only when `> ~1 MB`) — is the animatable artifact small enough?
+### 4. `trace_bytes <= ~1 MB` (fails only when `> ~1 MB`): is the animatable artifact small enough?
 
 `Trace.write` returns the on-disk byte count; if a variant's compact trace exceeds ~1 MB it would be both
 slow to ship and slow to animate, so the scenario is precomputed. This is why the trace schema is so
@@ -95,18 +95,18 @@ manifest (`manifests/<id>.json`), under each variant's `gate` block, alongside t
 (`lanes == {"live"}`); otherwise the whole scenario is `"precomputed"` (see
 [`simlab/core/manifest.py`](../../simlab/core/manifest.py) `build_scenario_manifest`).
 
-So the manifest is auditable: it does not merely *assert* a scenario is live — it shows the numbers that made
+So the manifest is auditable: it does not merely *assert* a scenario is live, it shows the numbers that made
 it live, and if it's precomputed it shows exactly which gate it tripped.
 
 ## Defence in depth at the browser boundary
 
 The gate is enforced a second time at runtime. `simlab/live.py`'s `_is_live(sc)` recomputes
 `sc.pure_python and set(sc.wheels) <= LIVE_WHEELS`, and `run_trace_json` **raises** if a precompute-only
-scenario is ever asked to run live — so even a UI bug cannot reach the lazy `ortools` import inside the WASM
+scenario is ever asked to run live, so even a UI bug cannot reach the lazy `ortools` import inside the WASM
 runtime. The UI gates first; this is the hard guard behind it.
 
 ## Read next
 
-- [04_live-lane-pyodide.md](./04_live-lane-pyodide.md) — the worker that loads `LIVE_WHEELS` and runs live.
-- [05_precompute-pipeline.md](./05_precompute-pipeline.md) — where the gate numbers are produced + recorded.
-- [06_live-tool-evaluation.md](./06_live-tool-evaluation.md) — the in-browser tests behind `LIVE_WHEELS`.
+- [04_live-lane-pyodide.md](./04_live-lane-pyodide.md): the worker that loads `LIVE_WHEELS` and runs live.
+- [05_precompute-pipeline.md](./05_precompute-pipeline.md): where the gate numbers are produced + recorded.
+- [06_live-tool-evaluation.md](./06_live-tool-evaluation.md): the in-browser tests behind `LIVE_WHEELS`.

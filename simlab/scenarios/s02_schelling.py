@@ -1,16 +1,16 @@
-"""S02 — Schelling segregation (Agent-Based Model on a grid), running on **Mesa 3**.
+"""S02, Schelling segregation (Agent-Based Model on a grid), running on **Mesa 3**.
 
 Two groups occupy a grid with some empty cells. An agent is *happy* if at least a fraction `tolerance`
 of its occupied Moore-neighbours are its own type; unhappy agents relocate to a random empty cell. The
 canonical ABM lesson: a mild local preference produces strong global segregation no agent intended
 (Schelling 1971).
 
-This scenario is built on the real **Mesa 3** ABM framework — ``mesa.Model`` for the world, ``mesa.Agent``
+This scenario is built on the real **Mesa 3** ABM framework, ``mesa.Model`` for the world, ``mesa.Agent``
 for the households, ``mesa.space.SingleGrid`` for the lattice, and the model's ``AgentSet`` (``self.agents``)
-for activation — rather than a hand-rolled NumPy sweep. It is the *template* the other ABM scenarios
+for activation, rather than a hand-rolled NumPy sweep. It is the *template* the other ABM scenarios
 (s03 SIR, s05 Beer Game) follow. All randomness flows through Mesa's seeded RNG (``Model(rng=seed)`` seeds
 ``self.random``), so a run is fully reproducible from (params, seed): the same input yields the same trace
-byte-for-byte — the "replay = truth" contract the lab depends on.
+byte-for-byte, the "replay = truth" contract the lab depends on.
 
 The emitted artifact is the existing grid-trace format (frames of a flat row-major cell array + per-step
 series + KPIs); nothing in the trace schema or the frontend contract changes.
@@ -23,8 +23,8 @@ from ..core.scenario import ParamSpec, Scenario, Variant
 EMPTY, A, B = 0, 1, 2
 
 # The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy dep the worker loads at runtime via
-# micropip — it IS in LIVE_WHEELS and runs live — not at module import).
-# Importing this module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps;
+# micropip: it IS in LIVE_WHEELS and runs live, not at module import).
+# Importing this module: the Scenario subclass + variants()/param_specs, therefore needs ZERO heavy deps;
 # Mesa is imported only when ``run()`` calls ``_models()`` to build the classes (cached after the first
 # build, so behaviour is identical to top-level class definitions).
 _MODELS: tuple[type, type] | None = None
@@ -68,13 +68,13 @@ def _models() -> tuple[type, type]:
 
         Built with Mesa 3. Activation uses the model's ``AgentSet`` (``self.agents``). Relocation of unhappy
         agents is a *batch update* per step: all unhappy agents are decided against the start-of-step config
-        first, then relocated one-by-one into the growing empty pool — the classic batch Schelling update;
+        first, then relocated one-by-one into the growing empty pool, the classic batch Schelling update;
         every move uses ``self.random`` so the run is deterministic.
         """
 
         def __init__(self, size: int, empty_frac: float, tolerance: float, seed: int) -> None:
             # Mesa 3: ``rng=`` seeds both self.random (Python random.Random) and self.rng (NumPy Generator).
-            # Seeding here is what makes the whole run reproducible — the foundation of the committed trace.
+            # Seeding here is what makes the whole run reproducible: the foundation of the committed trace.
             super().__init__(rng=int(seed))
             self.size = int(size)
             self.tolerance = float(tolerance)
@@ -99,7 +99,7 @@ def _models() -> tuple[type, type]:
         def segregation_and_unhappy(self) -> tuple[float, list["SchellingHousehold"]]:
             """Mean same-type fraction over non-isolated agents + the list of unhappy agents.
 
-            Isolated agents (no occupied neighbours) are content — there is no same-type ratio to fail.
+            Isolated agents (no occupied neighbours) are content, there is no same-type ratio to fail.
             """
             fracs: list[float] = []
             unhappy: list[SchellingHousehold] = []
