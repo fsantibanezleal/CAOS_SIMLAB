@@ -1,9 +1,9 @@
-# Salabim — 02 · Usage
+# Salabim: 02 · Usage
 
 This page teaches the core Salabim API through a minimal, runnable M/M/1 queue, walks
 through it step by step, and shows the **real captured output** of
 [`example.py`](./example.py). It also explains the `.mp4`/`.gif` export path
-*conceptually* — without opening a GUI window.
+*conceptually*, without opening a GUI window.
 
 Read order: [`01_installation.md`](./01_installation.md) (install + the greenlet caveat) →
 **you are here (02)** → [`03_applying.md`](./03_applying.md) (which scenarios use it and when
@@ -16,7 +16,7 @@ to choose it over SimPy / Ciw). Landing page: [`../03_salabim.md`](../03_salabim
 Salabim is a **process-interaction** DES, like SimPy: you describe the *life-story* of one
 entity as a procedure that alternates *doing things* and *waiting*. The engine runs many
 such processes "concurrently" on a single simulated clock driven by a future-event list
-(FEL). The difference from SimPy is the API shape — Salabim is more object-oriented and
+(FEL). The difference from SimPy is the API shape, Salabim is more object-oriented and
 ships a batteries-included animation/statistics layer.
 
 ### 1.1 Key concepts / API surface
@@ -35,22 +35,22 @@ ships a batteries-included animation/statistics layer.
 
 ### 1.2 Built-in statistics (the didactic payoff)
 
-Salabim attaches **monitors** to resources and queues automatically — no manual
+Salabim attaches **monitors** to resources and queues automatically, no manual
 bookkeeping. The ones used here:
 
-- `queue.length.mean()` — time-average number waiting (`Lq`).
-- `queue.length_of_stay.mean()` — average time an entity spends in the queue (`Wq`).
-- `queue.length.maximum()` — worst-case queue length.
-- `queue.number_of_arrivals` — how many entities entered the queue.
-- `resource.occupancy.mean()` — time-average utilization (`rho`).
-- `resource.claimers().length_of_stay.number_of_entries()` — number served.
+- `queue.length.mean()`: time-average number waiting (`Lq`).
+- `queue.length_of_stay.mean()`: average time an entity spends in the queue (`Wq`).
+- `queue.length.maximum()`: worst-case queue length.
+- `queue.number_of_arrivals`: how many entities entered the queue.
+- `resource.occupancy.mean()`: time-average utilization (`rho`).
+- `resource.claimers().length_of_stay.number_of_entries()`: number served.
 
 These map one-to-one onto the queueing KPIs taught in the
 [DES problem-type guide](../../problem-types/01_discrete-event-simulation.md), which is why
 Salabim is a clean teaching counterpoint: the statistics come for free, with no manual
 accumulator code to get wrong.
 
-> **Two process styles.** Salabim 26.x defaults to *yieldless* (greenlet) — but this lab
+> **Two process styles.** Salabim 26.x defaults to *yieldless* (greenlet), but this lab
 > has no greenlet, so we pass `yieldless=False` and use the classic generator style with
 > `yield`. See
 > [`01_installation.md` §3.1](./01_installation.md#31-important-platform-note--greenlet-is-not-installed-here).
@@ -59,7 +59,7 @@ accumulator code to get wrong.
 
 ## 2. The minimal example, walked through
 
-Below is the heart of [`example.py`](./example.py) — a single-server M/M/1 queue. Offered
+Below is the heart of [`example.py`](./example.py), a single-server M/M/1 queue. Offered
 load is `rho = lambda / mu = 1.0 / 1.25 = 0.8`, so the system is stable and should converge
 to the closed-form M/M/1 results.
 
@@ -97,22 +97,22 @@ print("rho:", env.server.occupancy.mean())
 
 Step by step:
 
-1. **`self.enter(env.waiting_line)`** — the customer joins an explicit FIFO queue we can
+1. **`self.enter(env.waiting_line)`**: the customer joins an explicit FIFO queue we can
    measure. (Salabim also tracks the resource's own requesters, but an explicit `Queue`
    makes the waiting-line statistics first-class.)
-2. **`yield self.request(env.server)`** — the customer asks for the single server. If it is
+2. **`yield self.request(env.server)`**: the customer asks for the single server. If it is
    busy, the process *parks here* and the engine moves on to other events; when the server
    frees up, this customer is resumed. This `yield` is a wait point.
-3. **`self.leave(env.waiting_line)`** — the moment service starts, the customer is no longer
+3. **`self.leave(env.waiting_line)`**: the moment service starts, the customer is no longer
    waiting, so it leaves the line.
-4. **`yield self.hold(...)`** — the customer holds the server for an exponentially-distributed
+4. **`yield self.hold(...)`**: the customer holds the server for an exponentially-distributed
    service time. The clock advances by that amount for this entity.
-5. **`self.release(env.server)`** — service done; the server is freed and the next waiter (if
+5. **`self.release(env.server)`**: service done; the server is freed and the next waiter (if
    any) is admitted.
 
 The `CustomerGenerator` is the arrival stream: spawn a `Customer`, wait an exponential gap,
-repeat — i.e. a Poisson process. `random_seed=42` makes both the inter-arrival and service
-draws reproducible, so the **same `(seed, params)` reproduces the exact same trace** — the
+repeat, i.e. a Poisson process. `random_seed=42` makes both the inter-arrival and service
+draws reproducible, so the **same `(seed, params)` reproduces the exact same trace**, the
 lab's determinism contract.
 
 ### 2.1 Validation against theory
@@ -126,7 +126,7 @@ Lq  = rho^2 / (1 - rho)      # mean number waiting
 Wq  = rho / (mu - lambda)    # mean waiting time
 ```
 
-At a long horizon the simulated KPIs converge to these — that convergence *is* the
+At a long horizon the simulated KPIs converge to these, that convergence *is* the
 validation, and it is the strongest "does my sim match theory?" move in DES teaching.
 
 ---
@@ -164,7 +164,7 @@ Sim converges to closed-form M/M/1 -> the model is validated.
 
 Reading it: the measured utilization (0.7970) and queue statistics (`Lq` 3.2184, `Wq`
 3.2231) sit within ~0.02 of the exact M/M/1 theory (0.8000 / 3.2000 / 3.2000). The model is
-validated, and **no GUI window was opened** — `blind_animation=True` kept it headless. Re-run
+validated, and **no GUI window was opened**, `blind_animation=True` kept it headless. Re-run
 it and the numbers are identical: the run is deterministic from `(seed=42, params)`.
 
 > One run is still just one (long) sample. The lab's honesty curriculum requires N seeded
@@ -175,7 +175,7 @@ it and the numbers are identical: the run is deterministic from `(seed=42, param
 
 ---
 
-## 4. The `.mp4` / `.gif` export path (conceptual — no GUI here)
+## 4. The `.mp4` / `.gif` export path (conceptual: no GUI here)
 
 This is Salabim's headline feature and its only real reason to exist in this lab: it can
 turn a DES run into a **ready-made replay video, offline**. The example above deliberately
@@ -219,9 +219,9 @@ env.run(till=HORIZON)
 env.video_close()
 ```
 
-> This is render-only — it produces a file, not an interactive view. It is exactly the
+> This is render-only, it produces a file, not an interactive view. It is exactly the
 > offline-render shape the lab wants: compute on the local machine, commit the compact
 > video artifact, replay it in the SPA. The interactive, parameter-editable view in the web
-> app is **not** Salabim — it is the React viewer over a SimPy event trace. Salabim's
+> app is **not** Salabim, it is the React viewer over a SimPy event trace. Salabim's
 > animation cannot be embedded in a browser at all (it is tkinter). See
 > [`03_applying.md`](./03_applying.md) for why, and where each lane draws the line.

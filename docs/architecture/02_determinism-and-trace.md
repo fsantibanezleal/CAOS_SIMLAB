@@ -1,8 +1,8 @@
-# 02 · Determinism & the trace — `run = f(params, seed)`, replay = truth
+# 02 · Determinism & the trace: `run = f(params, seed)`, replay = truth
 
 The reproducibility contract is the foundation everything else rests on:
 
-> **A run is a pure function of `(params, seed)`.** The same inputs always produce the same **trace** — a
+> **A run is a pure function of `(params, seed)`.** The same inputs always produce the same **trace**, a
 > compact JSON timeline of events + KPIs. The trace is the source of truth; the front end only animates it.
 
 Because a run is pure, the result computed *live* in the browser must equal the result *committed* to the
@@ -35,7 +35,7 @@ live Pyodide run of the same `(scenario, params, seed)` is byte-comparable to th
 ## The trace schema (`simlab/core/trace.py`)
 
 A `Trace` is a dataclass that serialises to one compact JSON object. It is the **single artifact both lanes
-produce and the web player consumes** — produced identically whether the run happened live in Pyodide or
+produce and the web player consumes**, produced identically whether the run happened live in Pyodide or
 offline in the pipeline, so one render path serves both lanes.
 
 ```python
@@ -70,22 +70,22 @@ class Trace:
 
 ### The pieces, and why each exists
 
-- **`scenario` / `title` / `method` / `seed` / `params`** — the run's identity. `(scenario, params, seed)` is
+- **`scenario` / `title` / `method` / `seed` / `params`**: the run's identity. `(scenario, params, seed)` is
   the full input; everything else in the trace is a deterministic function of it. This is what lets the app
   *re-run* a trace live and check the result.
-- **`kpis`** — the summary metrics (mean wait, throughput, makespan, …) the UI shows without scrubbing the
+- **`kpis`**: the summary metrics (mean wait, throughput, makespan, …) the UI shows without scrubbing the
   whole timeline.
-- **`analytic`** — for validation scenarios, a reference the run is checked against: a closed-form result
+- **`analytic`**: for validation scenarios, a reference the run is checked against: a closed-form result
   (S01's Erlang-C) and/or a **real second-engine** cross-check (S01 also runs a seeded **Ciw** M/M/c
   replication study). Carrying the reference *inside the trace* means the honesty claim travels with the
   artifact, not in prose someone has to trust.
-- **`timeline` = `{t_end, events}`** — the animatable record. Each event is `{"t": <time>, "kind": <str>,
+- **`timeline` = `{t_end, events}`**: the animatable record. Each event is `{"t": <time>, "kind": <str>,
   ...payload}`; `kind` is scenario-defined (`arrival` / `start` / `depart` / a grid frame / a route step).
   `add_event` rounds `t` to 4 decimals and tracks `t_end`, so the player knows the timeline length up front.
 
 ### Compactness is a gate input, not a nicety
 
-`to_json` uses compact separators (`","`, `":"`) and event times are rounded — because **committed trace
+`to_json` uses compact separators (`","`, `":"`) and event times are rounded, because **committed trace
 bytes are one of the gate thresholds** (< ~1 MB; see [03_the-gate.md](./03_the-gate.md)). `Trace.write`
 returns the on-disk size in bytes, which the pipeline feeds straight into `classify_lane`:
 
@@ -102,10 +102,10 @@ def write(self, path) -> int:
 `GanttTrace`, `FlowTrace`, `ChartTrace`) add typed helpers for their renderer (grid dims + legend, route
 geometry + bounds, Gantt rows, flow edges, chart series) while serialising to the **same** versioned schema.
 That is what lets one front-end render path animate a queue network, an agent grid, a road map and a Gantt
-chart from a single trace contract — the renderer keys off `viz` in the manifest, not off a different file
+chart from a single trace contract, the renderer keys off `viz` in the manifest, not off a different file
 format.
 
 ## Read next
 
-- [03_the-gate.md](./03_the-gate.md) — how the measured run decides live vs precompute.
-- [04_live-lane-pyodide.md](./04_live-lane-pyodide.md) — how the browser re-runs and verifies a trace.
+- [03_the-gate.md](./03_the-gate.md): how the measured run decides live vs precompute.
+- [04_live-lane-pyodide.md](./04_live-lane-pyodide.md): how the browser re-runs and verifies a trace.

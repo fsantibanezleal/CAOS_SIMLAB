@@ -22,7 +22,7 @@
   </defs>
 
   <!-- band A: pages -->
-  <text class="lane-ttl" x="14" y="26">THE SPA — React 19 + Vite · 4 pages</text>
+  <text class="lane-ttl" x="14" y="26">THE SPA, React 19 + Vite · 4 pages</text>
   <rect class="bx bx-hi" x="14" y="38" width="206" height="68" rx="9"/>
   <text class="ttl" x="26" y="60">Experiments</text>
   <text class="it" x="26" y="78">the 11 scenarios</text>
@@ -41,7 +41,7 @@
   <text class="mu" x="674" y="96">reproduce it yourself</text>
 
   <!-- band B: live data path -->
-  <text class="lane-ttl" x="14" y="142">LIVE DATA PATH — inside a scenario</text>
+  <text class="lane-ttl" x="14" y="142">LIVE DATA PATH, inside a scenario</text>
   <rect class="bx bx-hi" x="14" y="154" width="198" height="96" rx="9"/>
   <text class="ttl" x="24" y="176">ScenarioExperiment</text>
   <text class="cd mono" x="24" y="193">sim/ScenarioExperiment</text>

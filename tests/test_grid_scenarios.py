@@ -1,4 +1,4 @@
-"""S02 Schelling + S03 SIR — reproducibility, variant family, and the grid-trace pipeline."""
+"""S02 Schelling + S03 SIR, reproducibility, variant family, and the grid-trace pipeline."""
 from __future__ import annotations
 
 import json

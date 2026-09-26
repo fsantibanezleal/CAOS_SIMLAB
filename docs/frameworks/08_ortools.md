@@ -1,10 +1,10 @@
-# OR-Tools — wiki node
+# OR-Tools: wiki node
 
 **Google OR-Tools** is the lab's **optimization** engine: a single pip package (Apache-2.0, pure-pip,
-CPU-only) that bundles three solvers used across the scenarios — **CP-SAT** (constraint programming /
+CPU-only) that bundles three solvers used across the scenarios, **CP-SAT** (constraint programming /
 discrete scheduling), **Routing** (vehicle routing on top of CP), and **GLOP** (a linear-programming
 simplex). Where the simulators (SimPy, Mesa, Ciw) answer *"given a policy and random events, what happens?"*,
-OR-Tools answers the complementary question *"what is the best decision?"* — it computes an **optimum** (a
+OR-Tools answers the complementary question *"what is the best decision?"*, it computes an **optimum** (a
 schedule, a route, a blend), not a sample path. Reach for it when you can write a problem as decision
 variables + constraints + an objective and you want the *best* plan rather than an observed one.
 
@@ -17,33 +17,33 @@ so the learner sees the fleet saturate the shared loader. **What runs where diff
 the OR-Tools *step* is always offline, but the paired SimPy leg can still run live. **Four** scenarios use
 OR-Tools:
 
-- **S06** (CP-SAT job-shop) — pure optimization, replayed Gantt; **precompute**.
+- **S06** (CP-SAT job-shop): pure optimization, replayed Gantt; **precompute**.
 - **S07** (CP-SAT route-cost certificate over a NetworkX road graph, paired with a deterministic SimPy haul
-  DES) — **live by replay**: the native route plan is precomputed offline and **committed as data**
+  DES), **live by replay**: the native route plan is precomputed offline and **committed as data**
   (`s07_plans.py`), then the pure-Python SimPy replay over that fixed plan runs **live** in the browser
   (OR-Tools is never imported in the worker).
-- **S08** (Routing — the CVRP teaching default — contrasted with PyVRP; no SimPy) — a committed two-solver
+- **S08** (Routing: the CVRP teaching default, contrasted with PyVRP; no SimPy), a committed two-solver
   trace, **precompute**.
-- **S11** (GLOP blend LP, paired with a deterministic SimPy fleet DES) — committed, replayed trace;
+- **S11** (GLOP blend LP, paired with a deterministic SimPy fleet DES): committed, replayed trace;
   **precompute**.
 
-Note **S09 does *not* use OR-Tools** — it is SimPy + NetworkX (nearest-available dispatch on shortest
+Note **S09 does *not* use OR-Tools**, it is SimPy + NetworkX (nearest-available dispatch on shortest
 paths). For reproducible committed traces the lab deliberately forces determinism: one CP-SAT search worker
 and a fixed `random_seed=42` (a bounded time cap is only a termination guard).
 
 ## Read in order
 
-1. [01_installation.md](./08_ortools/01_installation.md) — exact pip line + version (9.15.6755), the
+1. [01_installation.md](./08_ortools/01_installation.md): exact pip line + version (9.15.6755), the
    precompute requirements lane, deps, platform notes, why it is CPU-only / no CUDA.
-2. [02_usage.md](./08_ortools/02_usage.md) — the real API for all three solvers (CP-SAT, GLOP, Routing), the
+2. [02_usage.md](./08_ortools/02_usage.md): the real API for all three solvers (CP-SAT, GLOP, Routing), the
    runnable example walked through step by step, the determinism knobs, and its **verified captured output**.
-3. [03_applying.md](./08_ortools/03_applying.md) — how to *formalize* an optimization problem and *solve* it
+3. [03_applying.md](./08_ortools/03_applying.md): how to *formalize* an optimization problem and *solve* it
    with this tool, the optimize-then-simulate pattern, the scenarios that use it, honest trade-offs, and when
    to pick OR-Tools vs alternatives.
 
 ## Runnable example
 
-- [example.py](./08_ortools/example.py) — two tiny deterministic demos: a CP-SAT job-shop (the proven-optimal
+- [example.py](./08_ortools/example.py): two tiny deterministic demos: a CP-SAT job-shop (the proven-optimal
   Fisher & Thompson **ft06**, makespan 55) and a GLOP linear program (textbook optimum 36 at (2, 6)). Run it
   from the repo root:
 
@@ -55,23 +55,23 @@ and a fixed `random_seed=42` (a bounded time cap is only a termination guard).
 
 The scenario code lives in `simlab/scenarios/`:
 
-- **S06 — Job-Shop Scheduling** (`simlab/scenarios/s06_jobshop.py`) — CP-SAT; the pure-optimization anchor.
-- **S07 — Construction Haul Routing** — **CP-SAT** (min-cost single-unit-flow ILP certifying the route cost)
+- **S06: Job-Shop Scheduling** (`simlab/scenarios/s06_jobshop.py`), CP-SAT; the pure-optimization anchor.
+- **S07: Construction Haul Routing**, **CP-SAT** (min-cost single-unit-flow ILP certifying the route cost)
   + NetworkX (Dijkstra route), both in the **offline** plan builder `simlab/scenarios/_haul_plan.py`; the
   live module `simlab/scenarios/s07_haul.py` loads the committed plans and runs a **deterministic** SimPy
   haul DES only (no OR-Tools import). No OSMnx.
-- **S08 — Vehicle Routing (VRP)** (`simlab/scenarios/s08_vrp.py`) — **Routing** (`pywrapcp`, teaching default)
+- **S08: Vehicle Routing (VRP)** (`simlab/scenarios/s08_vrp.py`), **Routing** (`pywrapcp`, teaching default)
   + PyVRP (SOTA contrast). Deterministic; **no SimPy**.
-- **S11 — Mine Multi-Destination Haul** (`simlab/scenarios/s11_minehaul.py`) — GLOP blend LP + a
+- **S11: Mine Multi-Destination Haul** (`simlab/scenarios/s11_minehaul.py`), GLOP blend LP + a
   **deterministic** SimPy fleet DES.
 
-S09 (Ambulance Dispatch) is **not** an OR-Tools scenario — it is SimPy + NetworkX; see
+S09 (Ambulance Dispatch) is **not** an OR-Tools scenario, it is SimPy + NetworkX; see
 [NetworkX](./10_networkx.md) and [SimPy](./01_simpy.md).
 
 ## Related
 
-- Problem-type guide: [Optimization & Routing](../problem-types/03_optimization-routing.md) — the decision map
+- Problem-type guide: [Optimization & Routing](../problem-types/03_optimization-routing.md): the decision map
   for the whole optimization half of the lab.
 - Alternatives & companions: [PyVRP](./09_pyvrp.md) (SOTA VRP) · [NetworkX](./10_networkx.md) ·
   [OSMnx](./11_osmnx.md) (road graph + matrices) · [SimPy](./01_simpy.md) (the simulator that stress-tests the plan).
-- Pipeline: [Precompute pipeline](../guides/01_precompute-pipeline.md) — local `.venv` → seeded trace → replay.
+- Pipeline: [Precompute pipeline](../guides/01_precompute-pipeline.md): local `.venv` → seeded trace → replay.

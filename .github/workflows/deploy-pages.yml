@@ -1,7 +1,7 @@
 name: Deploy web to GitHub Pages
 
 # Builds the static SPA in web/ (Vite) and publishes it to GitHub Pages on the custom domain
-# simlab.fasl-work.com. Pure static viewer — no backend. The `prebuild` step (copy-data.mjs) overlays the
+# simlab.fasl-work.com. Pure static viewer, no backend. The `prebuild` step (copy-data.mjs) overlays the
 # committed simulation traces + manifests into the build, so committing a new trace re-publishes the site.
 
 on:

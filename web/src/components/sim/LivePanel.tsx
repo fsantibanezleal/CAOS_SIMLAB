@@ -26,9 +26,9 @@ function paramsMatch(a: Record<string, number>, b: Record<string, number>, specs
 /** The Live (Pyodide) sub-tab: tune params, run the real scenario in-browser, replay the fresh trace with
  *  the same player, and optionally verify it against the committed trace. Mesa (ABM), joblib/scipy
  *  (Monte-Carlo) and networkx (graphs) are all IN LIVE_WHEELS and run live; only scenarios the browser
- *  worker can't run — native engines (OR-Tools, pure_python=false) — show a read-only explainer (no Run)
+ *  worker can't run: native engines (OR-Tools, pure_python=false), show a read-only explainer (no Run)
  *  so the runtime is never downloaded for them. The gate verdict (`gate.reasons` empty ⇔ live) is the
- *  single source of truth, matching simlab.core.scenario.classify_lane and simlab.live.live_lanes — never
+ *  single source of truth, matching simlab.core.scenario.classify_lane and simlab.live.live_lanes: never
  *  decide live from pure_python alone (the wheel closure must also fit LIVE_WHEELS). */
 export function LivePanel({ manifest, variant }: { manifest: ScenarioManifest; variant: VariantEntry }) {
   const { t } = useTranslation();
@@ -146,7 +146,7 @@ export function LivePanel({ manifest, variant }: { manifest: ScenarioManifest; v
   }
   function reset(): void {
     // Reset returns to THIS variant's committed regime (not the scenario's spec defaults), so a variant whose
-    // params sit off the slider grid — e.g. s07 r_passR's pinned pass/lift columns — stays recoverable and the
+    // params sit off the slider grid, e.g. s07 r_passR's pinned pass/lift columns, stays recoverable and the
     // "matches the committed variant" verify path is reachable again after a reset.
     setParams({ ...variant.params });
     setSeed(manifest.seed);
@@ -213,7 +213,7 @@ export function LivePanel({ manifest, variant }: { manifest: ScenarioManifest; v
                   ? t("live.verifyMatch")
                   : verify.match === "numeric"
                     ? t("live.verifyMatch") + " (~1e-9)"
-                    : t("live.verifyMismatch") + (verify.firstDiffPath ? ` — ${verify.firstDiffPath}` : "")}
+                    : t("live.verifyMismatch") + (verify.firstDiffPath ? `, ${verify.firstDiffPath}` : "")}
               </span>
             )}
           </div>

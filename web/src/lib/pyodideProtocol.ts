@@ -1,5 +1,5 @@
 // Worker <-> main-thread message protocol for the Pyodide live lane. The boundary is JSON-only (plain
-// objects via structured clone) — no PyProxy ever crosses threads.
+// objects via structured clone), no PyProxy ever crosses threads.
 
 export type PyPhase =
   | "loading-runtime" // fetching + instantiating pyodide

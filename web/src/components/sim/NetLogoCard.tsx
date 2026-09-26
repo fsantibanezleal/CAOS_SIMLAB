@@ -3,14 +3,14 @@ import { useEffect, useRef, useState } from "react";
 const BASE = import.meta.env.BASE_URL;
 
 /**
- * NetLogoCard — embeds a self-contained NetLogo Web (Tortoise engine) model that runs
+ * NetLogoCard: embeds a self-contained NetLogo Web (Tortoise engine) model that runs
  * entirely client-side in the browser. The model HTML under `public/netlogo/` inlines the
  * Tortoise compiler + engine + Galapagos UI plus our own .nlogo source; it makes zero
- * network calls (fonts + analytics stripped at build time — see tools/netlogo/).
+ * network calls (fonts + analytics stripped at build time: see tools/netlogo/).
  *
  * This is the LIVE-ABM lane: real Run / Setup / Go and editable sliders, with no Python
  * worker and no server compute. It is intentionally isolated from the Pyodide LivePanel
- * and the precomputed replay players — nothing here touches the existing scenario code.
+ * and the precomputed replay players: nothing here touches the existing scenario code.
  *
  * `?disableAnalytics` is appended defensively (the upstream template gates its gtag behind
  * that flag; our build also neutralizes it, so this is belt-and-suspenders).

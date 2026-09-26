@@ -1,4 +1,4 @@
-"""S03 — SIR epidemic (Agent-Based Model on a grid), running on **Mesa 3**.
+"""S03, SIR epidemic (Agent-Based Model on a grid), running on **Mesa 3**.
 
 Each cell holds one agent in health state Susceptible, Infected or Recovered. A susceptible agent becomes
 infected with probability 1−(1−β)^k where k is its number of infected Moore-neighbours; an infected agent
@@ -6,14 +6,14 @@ recovers with probability γ per step. The agent analogue of the Kermack–McKen
 the epidemic takes off only above a transmissibility threshold, peaks, and burns out, leaving an attack-rate
 of recovered.
 
-This scenario is built on the real **Mesa 3** ABM framework — ``mesa.Model`` for the world, ``mesa.Agent``
+This scenario is built on the real **Mesa 3** ABM framework, ``mesa.Model`` for the world, ``mesa.Agent``
 for the cells, ``mesa.space.SingleGrid`` for the fully-occupied lattice, and the model's ``AgentSet``
-(``self.agents``) for activation — rather than a hand-rolled NumPy sweep. It reuses the s02 Schelling
+(``self.agents``) for activation, rather than a hand-rolled NumPy sweep. It reuses the s02 Schelling
 STRUCTURAL template (Mesa Agent/Model/SingleGrid/AgentSet, lazy ``_models()``, GridTrace emission); the
-per-step update differs by design — S03 is a TRUE SYNCHRONOUS sweep (all S→I and I→R decided against the
+per-step update differs by design, S03 is a TRUE SYNCHRONOUS sweep (all S→I and I→R decided against the
 start-of-step board, applied together), whereas S02 relocates unhappy agents one-by-one into a growing empty
 pool. All randomness flows through Mesa's seeded RNG (``Model(rng=seed)`` seeds ``self.random``),
-so a run is fully reproducible from (params, seed): the same input yields the same trace byte-for-byte — the
+so a run is fully reproducible from (params, seed): the same input yields the same trace byte-for-byte, the
 "replay = truth" contract the lab depends on.
 
 The update is a *simultaneous* batch (the classic cellular SIR sweep): all infections and recoveries for a
@@ -26,11 +26,11 @@ from __future__ import annotations
 from ..core.gridtrace import GridTrace
 from ..core.scenario import ParamSpec, Scenario, Variant
 
-S, I, R = 0, 1, 2  # noqa: E741 — standard SIR compartment names
+S, I, R = 0, 1, 2  # noqa: E741, standard SIR compartment names
 
 # The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy dep the worker loads at runtime via
-# micropip — it IS in LIVE_WHEELS and runs live — not at module import).
-# Importing this module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps;
+# micropip: it IS in LIVE_WHEELS and runs live, not at module import).
+# Importing this module: the Scenario subclass + variants()/param_specs, therefore needs ZERO heavy deps;
 # Mesa is imported only when ``run()`` calls ``_models()`` to build the classes (cached after the first
 # build, so behaviour is identical to top-level class definitions).
 _MODELS: tuple[type, type] | None = None
@@ -75,7 +75,7 @@ def _models() -> tuple[type, type]:
 
         def __init__(self, size: int, beta: float, gamma: float, init_infected: float, seed: int) -> None:
             # Mesa 3: ``rng=`` seeds both self.random (Python random.Random) and self.rng (NumPy Generator).
-            # Seeding here is what makes the whole run reproducible — the foundation of the committed trace.
+            # Seeding here is what makes the whole run reproducible: the foundation of the committed trace.
             super().__init__(rng=int(seed))
             self.size = int(size)
             self.beta = float(beta)
@@ -165,7 +165,7 @@ class SIRScenario(Scenario):
 
         return [
             v("fizzle", "Below threshold (fizzles)", "Bajo umbral (se apaga)", 0.022, 0.25, 0.02, "Transmissibility too low: the outbreak dies out.", "Transmisibilidad muy baja: el brote se apaga."),
-            v("threshold", "Near threshold", "Cerca del umbral", 0.04, 0.25, 0.02, "Right at the tipping point — small, slow spread.", "Justo en el punto de quiebre — propagación pequeña y lenta."),
+            v("threshold", "Near threshold", "Cerca del umbral", 0.04, 0.25, 0.02, "Right at the tipping point, small, slow spread.", "Justo en el punto de quiebre, propagación pequeña y lenta."),
             v("mild", "Mild wave", "Ola leve", 0.14, 0.20, 0.02, "A modest epidemic with a low peak.", "Una epidemia modesta con pico bajo."),
             v("moderate", "Moderate wave", "Ola moderada", 0.20, 0.20, 0.02, "The classic SIR wave: rise, peak, burnout.", "La ola SIR clásica: sube, pico, extinción."),
             v("severe", "Severe wave", "Ola severa", 0.30, 0.20, 0.02, "High transmissibility: tall, fast peak.", "Alta transmisibilidad: pico alto y rápido."),

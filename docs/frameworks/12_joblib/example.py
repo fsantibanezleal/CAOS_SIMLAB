@@ -1,10 +1,10 @@
-"""joblib worked example for CAOS_SIMLAB — CPU-parallel Monte-Carlo replications.
+"""joblib worked example for CAOS_SIMLAB, CPU-parallel Monte-Carlo replications.
 
 What this demonstrates (the S10 pattern, in miniature):
 
   1. A *cheap stochastic function* `replication(seed)` that returns one noisy KPI.
      Here it is the per-run mean wait of a tiny M/M/c queue, sampled with one
-     seeded RNG — exactly the shape of `mmc_mean_wait(...)` in
+     seeded RNG, exactly the shape of `mmc_mean_wait(...)` in
      `simlab/scenarios/s10_montecarlo.py`, just smaller.
 
   2. Fanning K independent, *seeded* replications across CPU cores with
@@ -40,7 +40,7 @@ def mmc_mean_wait(lam: float, mu: float, c: int, n: int, seed: int) -> float:
     """One replication: mean time-in-queue of an M/M/c FCFS queue (earliest-free-server method).
 
     Mirrors `simlab/scenarios/s10_montecarlo.py::mmc_mean_wait`, but takes a *seed*
-    (not a pre-built Generator) so the function is self-contained and picklable —
+    (not a pre-built Generator) so the function is self-contained and picklable, 
     joblib must be able to ship it to worker processes.
     """
     rng = np.random.default_rng(int(seed))  # the single source of randomness for this run

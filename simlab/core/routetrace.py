@@ -5,7 +5,7 @@ A self-contained synthetic network: `nodes` (with x,y coordinates + a `kind` + o
 over [t0,t1]); the web `RouteViz` interpolates each agent's position at time t. Dynamic `markers` (e.g.
 emergency incidents) appear/resolve over time. Optional static `routes` draw planned-route polylines.
 Optional `barriers` mark impassable cells (only serialized when present). When nodes carry `elev`, the
-viz paints a normalized elevation field behind the roads. No external map / tiles / OSM — fully
+viz paints a normalized elevation field behind the roads. No external map / tiles / OSM, fully
 reproducible from (params, seed).
 """
 from __future__ import annotations

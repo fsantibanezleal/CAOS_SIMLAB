@@ -1,5 +1,5 @@
 // Single source of truth for the product routes. Both the router and the header nav read this list.
-// Order matters: the SIMULATOR is the landing ("/") — you enter and go straight to it. The supporting
+// Order matters: the SIMULATOR is the landing ("/"), you enter and go straight to it. The supporting
 // pages (introduction, theory, how-to-build) sit alongside it.
 export interface RouteDef {
   path: string;

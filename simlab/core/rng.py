@@ -1,7 +1,7 @@
 """Single source of randomness for a run.
 
 Every scenario draws all its randomness from one seeded generator so a run is reproducible from
-(params, seed) alone — the foundation of "replay = truth". Draw your random variates up front
+(params, seed) alone, the foundation of "replay = truth". Draw your random variates up front
 (vectorised) where possible so determinism does not depend on the event-scheduler's interleaving.
 """
 from __future__ import annotations

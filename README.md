@@ -7,38 +7,38 @@
 
 **A public, didactic lab for Discrete-Event Simulation (DES), Agent-Based Modeling (ABM), and
 Optimization / Operations Research.**
-Learn how to model a system from zero — *define a case → write the rules → run it → read the dynamics* —
+Learn how to model a system from zero, *define a case → write the rules → run it → read the dynamics*, 
 across worked scenarios to tune and watch run, with a companion web app and a from-scratch
 curriculum.
 
-**▶ Live app: [simlab.fasl-work.com](https://simlab.fasl-work.com)**  ·  📖 [Docs / wiki](docs/README.md)  ·  📝 [Changelog](CHANGELOG.md)
+**▶ Live app: [simlab.fasl-work.com](https://simlab.fasl-work.com)**  ·   [Docs / wiki](docs/README.md)  ·   [Changelog](CHANGELOG.md)
 
-[![CAOS_SIMLAB — the Experiments page running the Schelling segregation model live in the browser](docs/assets/hero.png)](https://simlab.fasl-work.com)
+[![CAOS_SIMLAB, the Experiments page running the Schelling segregation model live in the browser](docs/assets/hero.png)](https://simlab.fasl-work.com)
 
 > **Status:** live. All **11 scenarios** ship and run in the [web app](https://simlab.fasl-work.com)
 > (S01–S11), eight of them **live in the browser** (Pyodide). The shared engine, the deterministic-replay
 > viewer, and the Theory/Methodology pages (Queueing · DES · ABM · Optimization) are all in. Built in the
-> open — see the [changelog](CHANGELOG.md) for the current version.
+> open, see the [changelog](CHANGELOG.md) for the current version.
 
 ## Why this exists
 
 Most simulation tutorials stop at a toy script; most simulation *tools* hide the model behind a GUI.
 CAOS_SIMLAB does both halves honestly: a **readable curriculum** that teaches the real **dedicated,
-state-of-the-art tools** — SimPy · Ciw · Salabim (DES) · Mesa · Mesa-Geo · NetLogo Web · JuPedSim (ABM) ·
-OR-Tools · PyVRP · NetworkX/OSMnx (optimization & routing) · joblib · SciPy · CuPy/Numba (Monte-Carlo) —
+state-of-the-art tools**, SimPy · Ciw · Salabim (DES) · Mesa · Mesa-Geo · NetLogo Web · JuPedSim (ABM) ·
+OR-Tools · PyVRP · NetworkX/OSMnx (optimization & routing) · joblib · SciPy · CuPy/Numba (Monte-Carlo), 
 their utility, their pitfalls, and *when each method actually applies* (full per-tool install/usage/apply
-guides + runnable examples in [`docs/`](docs/README.md)) —
+guides + runnable examples in [`docs/`](docs/README.md)), 
 and a **modern web app** that opens straight into a running simulation: move the sliders and watch
 the dynamics change. The same engine drives both, so the app runs what the package computes.
 
 ## The two-lane design (read this first)
 
-Simulation cost varies enormously, so scenarios run in one of two lanes — and the choice is **measured,
+Simulation cost varies enormously, so scenarios run in one of two lanes, and the choice is **measured,
 not guessed**:
 
-- **Live** — light, pure-Python scenarios run **in the browser** (via [Pyodide](https://pyodide.org)).
+- **Live**: light, pure-Python scenarios run **in the browser** (via [Pyodide](https://pyodide.org)).
   Edit parameters, re-run, watch it animate in real time. No server, nothing to install.
-- **Precomputed** — heavy scenarios (native solvers like OR-Tools, large state) are run **offline** by a
+- **Precomputed**: heavy scenarios (native solvers like OR-Tools, large state) are run **offline** by a
   local pipeline into a compact, **seeded trace**, which the app **replays** with a timeline scrubber under
   a clear *"precomputed due to cost"* banner. The full recipe lives in this repo.
 
@@ -46,7 +46,7 @@ A scenario qualifies for the live lane only if it is **pure-Python AND its wheel
 browser (⊆ `LIVE_WHEELS`) AND runs in < 3 s AND its trace is < ~1 MB** (the
 [4-gate rule](simlab/core/scenario.py)). The verdict, with the measured numbers, is
 recorded in each scenario's manifest. Because a run is fully determined by `(params, seed)`, **the trace
-is the source of truth and replay is exact** — live and precomputed render through one code path.
+is the source of truth and replay is exact**, live and precomputed render through one code path.
 
 ## Quickstart (local)
 
@@ -82,8 +82,8 @@ A progression from a 30-line live queue to map-scale optimize-then-simulate. All
 | S03 | SIR Epidemic | ABM | live | contagion, R₀, epidemic peak, herd immunity |
 | S04 | Emergency Department Patient Flow | DES | live | FCFS triage + non-preemptive priority treatment, a fixed daytime surge window, multi-stage flow |
 | S05 | Beer Game (Supply-Chain Bullwhip) | ABM | live | feedback + lead time amplify oscillations |
-| S06 | Job-Shop Scheduling (CP-SAT) | optimization | precomputed | combinatorial scheduling — what an optimizer does |
-| S07 | Construction Haul Routing | hybrid | live | optimize-then-simulate: the OR-Tools/NetworkX plan is precomputed + committed, the SimPy replay (deterministic in the shipped variants — fixed load/dump times, breakdown pinned to 0) runs **live** over it (sliders mutate the replay) |
+| S06 | Job-Shop Scheduling (CP-SAT) | optimization | precomputed | combinatorial scheduling, what an optimizer does |
+| S07 | Construction Haul Routing | hybrid | live | optimize-then-simulate: the OR-Tools/NetworkX plan is precomputed + committed, the SimPy replay (deterministic in the shipped variants, fixed load/dump times, breakdown pinned to 0) runs **live** over it (sliders mutate the replay) |
 | S08 | Vehicle Routing (VRP) | optimization | precomputed | routing & fleet sizing with OR-Tools |
 | S09 | Ambulance Dispatch | DES | live | stochastic demand over a city graph; coverage |
 | S10 | Monte-Carlo Replication / CI Study | hybrid | live | replications, confidence intervals, finite-run bias |
@@ -92,15 +92,15 @@ A progression from a 30-line live queue to map-scale optimize-then-simulate. All
 ## How it's organized
 
 ```
-simlab/            the shared engine (imported by tests, the pipeline, and — via Pyodide — the app)
+simlab/            the shared engine (imported by tests, the pipeline, and, via Pyodide, the app)
   core/            RNG seeding · trace schema · Scenario interface + the live/precompute gate · manifest
   scenarios/       one module per scenario (s01–s11) + _geo (the graded-terrain grid network)
   pipeline.py      run a scenario → write a trace + manifest (the CLI)
-notebooks/         the from-zero curriculum (DES, ABM, optimization, common mistakes) — roadmap; the web
+notebooks/         the from-zero curriculum (DES, ABM, optimization, common mistakes), roadmap; the web
                    app is the live teaching surface today
 data/              data policy + committed compact artifacts (traces). No raw data in git.
 manifests/         per-scenario manifests (lane, seed, params, measured gate numbers, viz binding)
-web/               the React 19 + Vite single-page viewer (Pyodide live + trace replay) — deployed
+web/               the React 19 + Vite single-page viewer (Pyodide live + trace replay), deployed
 tests/             reproducibility, theory-validation, and gate checks
 ```
 
@@ -115,7 +115,7 @@ planning.
 
 ## License & attribution
 
-Code: [MIT](LICENSE). Dependencies and any datasets keep their own licenses — see
+Code: [MIT](LICENSE). Dependencies and any datasets keep their own licenses, see
 [LICENSES.md](LICENSES.md) and [ATTRIBUTION.md](ATTRIBUTION.md). We commit only compact, redistributable
 artifacts (never raw datasets or raw OpenStreetMap extracts); the pipelines show how to fetch + preprocess
 the originals yourself.

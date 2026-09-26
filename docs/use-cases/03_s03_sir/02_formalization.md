@@ -1,4 +1,4 @@
-# 02 · Formalization — S03 SIR Epidemic
+# 02 · Formalization: S03 SIR Epidemic
 
 ← Back to the use-case index: [../03_s03_sir.md](../03_s03_sir.md) ·
 Assumptions: [01_assumptions.md](./01_assumptions.md)
@@ -10,15 +10,15 @@ The math of the model, pulled from the **verified** in-app Context block and the
 
 ## Model class
 
-A **stochastic agent-based SIR on a 2-D grid** — a probabilistic cellular automaton, the discrete spatial
+A **stochastic agent-based SIR on a 2-D grid**, a probabilistic cellular automaton, the discrete spatial
 analogue of the continuous (mass-action) Kermack–McKendrick compartmental SIR. It is a **discrete-time
 Markov process** over the joint cell-state configuration, with a **synchronous** update.
 
 ## Sets & indices
 
-- `(i, j)` — a cell of the lattice, `i, j ∈ {0, …, n−1}`. Equivalently a flat row-major index
+- `(i, j)`: a cell of the lattice, `i, j ∈ {0, …, n−1}`. Equivalently a flat row-major index
   `flat = j·n + i` (the order the grid is populated and the frame is serialized).
-- `N(i, j)` — the **Moore neighbourhood**: the (up to) 8 cells touching `(i, j)`; the grid is **non-toroidal**
+- `N(i, j)`: the **Moore neighbourhood**: the (up to) 8 cells touching `(i, j)`; the grid is **non-toroidal**
   so edge/corner cells have fewer neighbours.
 - Compartments `{S, I, R}`.
 
@@ -31,12 +31,12 @@ Markov process** over the joint cell-state configuration, with a **synchronous**
 | `γ` | `gamma` | recovery probability **per step** | 0.02–0.6 (default 0.20) |
 | `i₀` | `init_infected` | initial infected fraction | 0.002–0.2 (default 0.02) |
 | `T` | `steps` | maximum number of steps | int, 20–160 (default 80) |
-| — | `seed` | RNG seed (reproducibility) | int |
+| – | `seed` | RNG seed (reproducibility) | int |
 
 ## State variables
 
-- `x_{ij}(t) ∈ {S, I, R}` — the health state of cell `(i, j)` at step `t` (the agent's `self.state`).
-- `k_{ij}(t) = |{ (a,b) ∈ N(i,j) : x_{ab}(t) = I }|` — the number of **infected Moore-neighbours** of cell
+- `x_{ij}(t) ∈ {S, I, R}`: the health state of cell `(i, j)` at step `t` (the agent's `self.state`).
+- `k_{ij}(t) = |{ (a,b) ∈ N(i,j) : x_{ab}(t) = I }|`: the number of **infected Moore-neighbours** of cell
   `(i, j)` (the code's `infected_neighbors()`), `0 ≤ k ≤ 8`.
 
 There are no *decision* variables: ABM is **build-then-observe**, not optimize. The "answer" is the emergent
@@ -51,10 +51,10 @@ x_{ij}(0) = I  with prob. i₀ ,   x_{ij}(0) = S  otherwise
 ```
 
 If the seeded draw lights **no** cell, a fixed seed cell is forced Infected (so a stochastic all-S start
-cannot make the run inert). The code forces `states[n² // 2] = I` — a single fixed **flat array index**, not
+cannot make the run inert). The code forces `states[n² // 2] = I`, a single fixed **flat array index**, not
 the geometric grid centre: under the row-major map `flat = j·n + i`, for even `n` the index `n²/2` decodes to
 `(i = 0, j = n/2)`, i.e. the **left-edge, middle-row** cell (the true centre would be `(n//2)·n + n//2`). The
-guarantee that matters — at least one seed case — holds regardless of which cell it is. All draws use the
+guarantee that matters, at least one seed case, holds regardless of which cell it is. All draws use the
 seeded `self.random`, so the initial board is reproducible.
 
 ## Dynamics (the one synchronous sweep)
@@ -113,7 +113,7 @@ not the model's law.
 
 ## Objective / constraints
 
-There is **no objective and no constraints** — this is a descriptive simulation, not an optimization. The
+There is **no objective and no constraints**, this is a descriptive simulation, not an optimization. The
 "output" is the observed trajectory and its summary KPIs.
 
 ## KPIs (outputs)
@@ -122,12 +122,12 @@ Per step the run records the population fractions and, at the end, the summary K
 `run()` → `tr.kpis`):
 
 - **Series** (fractions of the `n²` population): `S(t)`, `I(t)`, `R(t)` over `x = 0, 1, … , T_run`.
-- `peak_infected_frac` — `max_t I(t)` (the height of the infected peak).
-- `peak_step` — the step at which the peak occurs.
-- `attack_rate` — `R(T_run)`, the final recovered fraction (the attack rate).
-- `duration_steps` — steps actually run (the loop **breaks early** the moment `I = 0`, i.e. burnout, or at
+- `peak_infected_frac`: `max_t I(t)` (the height of the infected peak).
+- `peak_step`: the step at which the peak occurs.
+- `attack_rate`: `R(T_run)`, the final recovered fraction (the attack rate).
+- `duration_steps`: steps actually run (the loop **breaks early** the moment `I = 0`, i.e. burnout, or at
   the step cap `T`).
-- `beta`, `gamma` — echoed for the HUD.
+- `beta`, `gamma`: echoed for the HUD.
 
 The artifact is a **`GridTrace`** (`schema = simlab.gridtrace/v1`): per-step frames of the flat row-major
 cell array, the `S/I/R` time series, the KPIs, and a legend mapping `{S, I, R}` to bilingual labels +
@@ -135,5 +135,5 @@ theme colours. `analytic` is empty (an ABM has no closed form).
 
 ---
 
-Next: [03 · Solvers applied](./03_solvers-applied.md) — how Mesa expresses all of this and the lane it runs
+Next: [03 · Solvers applied](./03_solvers-applied.md), how Mesa expresses all of this and the lane it runs
 in.

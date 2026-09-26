@@ -1,4 +1,4 @@
-"""S05 Beer Game + S10 Monte-Carlo — reproducibility, the headline effect, and the chart pipeline."""
+"""S05 Beer Game + S10 Monte-Carlo, reproducibility, the headline effect, and the chart pipeline."""
 from __future__ import annotations
 
 import json

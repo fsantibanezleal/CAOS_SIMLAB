@@ -1,8 +1,8 @@
-# 02 · Formalization — S08 Vehicle Routing Problem (CVRP)
+# 02 · Formalization: S08 Vehicle Routing Problem (CVRP)
 
-> Part of the [S08 — Vehicle Routing Problem](../08_s08_vrp.md) use-case node. The math here is pulled
+> Part of the [S08, Vehicle Routing Problem](../08_s08_vrp.md) use-case node. The math here is pulled
 > **verified** from the scenario's Experiments Context block (`web/src/pages/Experiments.tsx`, `S08Desc`)
-> and from the scenario code (`simlab/scenarios/s08_vrp.py`). It is kept consistent with the code — the
+> and from the scenario code (`simlab/scenarios/s08_vrp.py`). It is kept consistent with the code, the
 > equations describe what the two solvers are actually configured to optimize, nothing more.
 
 ## Model class
@@ -11,7 +11,7 @@ S08 is the **Capacitated Vehicle Routing Problem (CVRP)**, the canonical *optimi
 an **NP-hard** combinatorial optimization. It is modeled *conceptually* as an **arc-flow MILP** (the
 formulation below), but neither shipped engine builds an explicit MILP: OR-Tools realizes it through its
 routing model (a circuit constraint plus a `Capacity` dimension) and PyVRP solves it with a hybrid genetic
-search (HGS). There is **no time dimension and no randomness** in the model itself — one instance is solved
+search (HGS). There is **no time dimension and no randomness** in the model itself, one instance is solved
 once. Two solvers attack the **same** instance with **two different objectives** (§Objective).
 
 ## Sets
@@ -45,7 +45,7 @@ from shortest paths on an undirected grid.
 | $x_{ij} \in \{0,1\}$ | **arc selection**: 1 if some vehicle traverses arc $i \to j$, else 0 |
 | $u_i$ | **cumulative load** carried when leaving node $i$ (an MTZ-style load/position variable; OR-Tools' *Capacity* dimension) |
 
-The load variable $u_i$ is a **purely internal** OR-Tools `Capacity` quantity — it is consumed inside the
+The load variable $u_i$ is a **purely internal** OR-Tools `Capacity` quantity, it is consumed inside the
 solve to enforce feasibility and eliminate subtours, but it is **not** carried in the committed trace (the
 trace records only the per-vehicle routes plus per-route `loads`, the total demand on each route). In the
 rendered plan the solver output is a set of per-vehicle **`special`-index sequences** (each
@@ -57,7 +57,7 @@ rendered plan the solver output is a set of per-vehicle **`special`-index sequen
 
 $$\min \; \sum_{i\in V}\sum_{j\in V} c_{ij}\, x_{ij}$$
 
-This is the total distance over all traversed arcs — the classic CVRP objective, and exactly what **PyVRP**
+This is the total distance over all traversed arcs, the classic CVRP objective, and exactly what **PyVRP**
 minimizes (pure total distance).
 
 ### OR-Tools' effective objective (distance + balanced routes)
@@ -70,12 +70,12 @@ $$\min \; \sum_{i,j} c_{ij}\, x_{ij} \;+\; \gamma \cdot \max_{k}\, \text{dist}_k
 
 This is the **key divergence between the two engines**: OR-Tools *balances* the fleet (it minimizes the
 longest route, so extra vehicles actually get used when an instance is tight enough to need them), while
-PyVRP chases the **shortest total** with no balancing term. The contrast — total distance vs. longest
-route — is the whole pedagogical point of running both.
+PyVRP chases the **shortest total** with no balancing term. The contrast, total distance vs. longest
+route, is the whole pedagogical point of running both.
 
 ## Constraints
 
-**Degree constraints** — each customer is visited exactly once, and **at most** $K$ vehicles leave the depot:
+**Degree constraints**, each customer is visited exactly once, and **at most** $K$ vehicles leave the depot:
 
 $$\sum_{j\in V} x_{ij} = 1 \;\; \forall i\neq 0, \qquad \sum_{i\in V} x_{ij} = 1 \;\; \forall j\neq 0, \qquad \sum_{j} x_{0j} \le K$$
 
@@ -94,7 +94,7 @@ handles the depot return and route closure.
 
 ## Dynamics
 
-There are **none** in the optimization — S08 is a static, deterministic combinatorial problem. The only
+There are **none** in the optimization, S08 is a static, deterministic combinatorial problem. The only
 "dynamics" are at **render time**: each used route's grid-node polyline is expanded into **timed legs**
 $\{a, b, t_0, t_1\}$ at uniform speed $= 1$ (`timed_legs` in `_geo.py`), so the web app can animate a vehicle
 driving its sequence. This timing is presentation, not part of the model.
@@ -105,9 +105,9 @@ The primary plan's KPIs (from **OR-Tools**, carried in the trace exactly as the 
 
 | KPI | Meaning |
 |---|---|
-| `total_distance` | the **base objective** — total distance over all used arcs |
+| `total_distance` | the **base objective**, total distance over all used arcs |
 | `vehicles_used` | how many of the $K$ available vehicles carry a non-trivial route (depot→depot routes are dropped) |
-| `max_route_time` | the **longest route's cumulative distance** (`max_route_dist`, the term the global span actually penalizes — the span coefficient is set on the **`Distance`** dimension) — surfaced in render-time units (uniform speed $=1$, so the value equals the longest route's distance) |
+| `max_route_time` | the **longest route's cumulative distance** (`max_route_dist`, the term the global span actually penalizes, the span coefficient is set on the **`Distance`** dimension), surfaced in render-time units (uniform speed $=1$, so the value equals the longest route's distance) |
 | `customers` | $n$, the number of customers served |
 | `capacity` | $Q$ |
 
@@ -116,7 +116,7 @@ The primary plan's KPIs (from **OR-Tools**, carried in the trace exactly as the 
 PyVRP's plan is carried alongside in the trace's free-form **`analytic`** field (no route-schema change), so
 the SOTA contrast travels with every committed trace and is available to any future overlay/toggle UI. (The
 shipped web viewer renders only the primary OR-Tools plan today; it does not yet read this `analytic` slot
-for S08 — the contrast lives in the committed data and in [04 · Results & reading](./04_results-and-reading.md),
+for S08, the contrast lives in the committed data and in [04 · Results & reading](./04_results-and-reading.md),
 not in an in-app toggle.) The committed comparison block records, for the same instance:
 
 - per engine: `total_distance`, `vehicles_used`, `max_route_dist`, per-vehicle `loads`;
@@ -125,5 +125,5 @@ not in an in-app toggle.) The committed comparison block records, for the same i
 
 The reading: the **gap** quantifies "what good looks like" (a competition-grade HGS solver vs. a
 general-purpose one with a balancing term), while comparing the two `max_route_dist` values shows the cost of
-that shorter total — PyVRP's longest route is typically *longer* (less balanced) than OR-Tools'. The actual
+that shorter total, PyVRP's longest route is typically *longer* (less balanced) than OR-Tools'. The actual
 per-variant numbers are in [04 · Results & reading](./04_results-and-reading.md).

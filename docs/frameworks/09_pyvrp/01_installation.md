@@ -1,9 +1,9 @@
-# PyVRP — 01 · Installation
+# PyVRP: 01 · Installation
 
 PyVRP is a state-of-the-art open-source solver for the Vehicle Routing Problem
 (VRP) and its common variants (CVRP, VRPTW, prize-collecting, multi-depot,
-multi-trip, heterogeneous fleet). It implements **Hybrid Genetic Search (HGS)** —
-a population-based metaheuristic with an efficient local search — in a C++ core
+multi-trip, heterogeneous fleet). It implements **Hybrid Genetic Search (HGS)**, 
+a population-based metaheuristic with an efficient local search, in a C++ core
 exposed through a clean Python API. In this lab it is the **state-of-the-art
 contrast** to Google OR-Tools for scenario **S08 (Vehicle Routing Problem)**.
 
@@ -37,7 +37,7 @@ pins the exact version so the offline lane is reproducible from a clean checkout
 
 ## Exact install line and installed version
 
-> Do not run this — everything is already installed in the project `.venv`.
+> Do not run this, everything is already installed in the project `.venv`.
 > Recorded here for reproducibility.
 
 ```
@@ -55,7 +55,7 @@ pyvrp/_pyvrp.cp313-win_amd64.pyd
 pyvrp/search/_search.cp313-win_amd64.pyd
 ```
 
-(`cp313` = CPython 3.13, `win_amd64` = 64-bit Windows on AMD64 — match the wheel
+(`cp313` = CPython 3.13, `win_amd64` = 64-bit Windows on AMD64, match the wheel
 to your interpreter version and platform.)
 
 ## Key transitive dependencies
@@ -71,7 +71,7 @@ already compiled into the wheel):
 | `tqdm`       | 4.68.3    | progress display during `solve(... display=True)` |
 
 The whole stack is permissively licensed: **PyVRP is MIT**, and the
-dependencies above are BSD/PSF/MIT-compatible — safe for this public repo.
+dependencies above are BSD/PSF/MIT-compatible, safe for this public repo.
 
 ## Verify the install
 
@@ -106,14 +106,14 @@ matplotlib: 3.11.0
 
 ## CUDA / GPU notes
 
-**None — PyVRP is CPU-only and needs no GPU.** HGS is a CPU metaheuristic; the
+**None, PyVRP is CPU-only and needs no GPU.** HGS is a CPU metaheuristic; the
 GPU on the precompute machine is irrelevant to it. There is no CUDA build, no GPU
 requirement-file involvement, and nothing in `requirements-gpu.txt` pertains to
 PyVRP. Solve time is controlled purely by the CPU runtime/iteration budget you
 pass to `Model.solve(...)`. (The lab's GPU lane is reserved for ABM/physics
-scenarios — see the [GPU lane guide](../../guides/03_gpu-lane.md).)
+scenarios, see the [GPU lane guide](../../guides/03_gpu-lane.md).)
 
 ---
 
-Next: [`02_usage.md`](./02_usage.md) — the `Model` API and the runnable example,
+Next: [`02_usage.md`](./02_usage.md), the `Model` API and the runnable example,
 walked through with its captured output.

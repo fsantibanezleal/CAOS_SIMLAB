@@ -136,8 +136,8 @@ export default function Experiments() {
         <h1>{t("nav.experiments")}</h1>
         <p className="lede">
           {L(
-            "Eleven worked case studies across DES, ABM and optimization — queues, segregation, epidemics, emergency flow, supply chains, scheduling, Monte-Carlo, and four geospatial routing problems on a synthetic road network (haul, VRP, ambulance dispatch, and a multi-destination mine haul with a blending LP). Each explains the problem, its components and variables, a detailed formalization, its scope and assumptions; offers ≥10 pre-simulated regimes, an animated player, and a comparison of results.",
-            "Once casos de estudio sobre DES, ABM y optimización — colas, segregación, epidemias, flujo de urgencias, cadenas de suministro, programación, Monte-Carlo y cuatro problemas de ruteo geoespacial sobre una red vial sintética (acarreo, VRP, despacho de ambulancias y un acarreo minero multidestino con LP de blending). Cada uno explica el problema, sus componentes y variables, una formalización detallada, sus alcances y supuestos; ofrece ≥10 regímenes pre-simulados, un reproductor animado y una comparación de resultados.",
+            "Eleven worked case studies across DES, ABM and optimization, queues, segregation, epidemics, emergency flow, supply chains, scheduling, Monte-Carlo, and four geospatial routing problems on a synthetic road network (haul, VRP, ambulance dispatch, and a multi-destination mine haul with a blending LP). Each explains the problem, its components and variables, a detailed formalization, its scope and assumptions; offers ≥10 pre-simulated regimes, an animated player, and a comparison of results.",
+            "Once casos de estudio sobre DES, ABM y optimización, colas, segregación, epidemias, flujo de urgencias, cadenas de suministro, programación, Monte-Carlo y cuatro problemas de ruteo geoespacial sobre una red vial sintética (acarreo, VRP, despacho de ambulancias y un acarreo minero multidestino con LP de blending). Cada uno explica el problema, sus componentes y variables, una formalización detallada, sus alcances y supuestos; ofrece ≥10 regímenes pre-simulados, un reproductor animado y una comparación de resultados.",
           )}
         </p>
       </div>
@@ -183,7 +183,7 @@ function S01Desc({ lang }: { lang: string }) {
 
       <h3>Alcances y supuestos</h3>
       <p>
-        Se modela: un pool de <em>c</em> servidores conservativos en trabajo, una cola FCFS de capacidad infinita y una población llamante infinita. Supuestos clave: llegadas <strong>markovianas</strong> (tiempos entre llegadas i.i.d. exponenciales) y servicio exponencial e independiente; régimen <strong>estacionario</strong> (las fórmulas valen solo si <InlineMath tex={String.raw`\rho<1`} />); corrida <strong>semillada</strong> y reproducible — todas las variantes exponenciales se sortean por adelantado desde un único generador, de modo que el resultado depende de <InlineMath tex={String.raw`(\text{params}, \text{seed})`} /> y no del entrelazado del planificador de eventos.
+        Se modela: un pool de <em>c</em> servidores conservativos en trabajo, una cola FCFS de capacidad infinita y una población llamante infinita. Supuestos clave: llegadas <strong>markovianas</strong> (tiempos entre llegadas i.i.d. exponenciales) y servicio exponencial e independiente; régimen <strong>estacionario</strong> (las fórmulas valen solo si <InlineMath tex={String.raw`\rho<1`} />); corrida <strong>semillada</strong> y reproducible, todas las variantes exponenciales se sortean por adelantado desde un único generador, de modo que el resultado depende de <InlineMath tex={String.raw`(\text{params}, \text{seed})`} /> y no del entrelazado del planificador de eventos.
       </p>
       <p>
         Queda <strong>fuera de alcance</strong>: balking/reneging (impaciencia), llegadas en lotes, buffers finitos, prioridades, <InlineMath tex={String.raw`\lambda`} /> no estacionaria y servicio no exponencial (esos casos se capturan en el escenario de urgencias S04 o con aproximaciones G/G/c).
@@ -231,7 +231,7 @@ function S01Desc({ lang }: { lang: string }) {
 
       <h3>Scope &amp; assumptions</h3>
       <p>
-        Modeled: a pool of <em>c</em> work-conserving servers, an FCFS queue of infinite capacity and an infinite calling population. Key assumptions: <strong>Markovian</strong> arrivals (i.i.d. exponential inter-arrival times) and independent exponential service; <strong>stationary</strong> regime (the formulae hold only if <InlineMath tex={String.raw`\rho<1`} />); a <strong>seeded</strong>, reproducible run — all exponential variates are drawn up front from one generator, so the result depends on <InlineMath tex={String.raw`(\text{params}, \text{seed})`} /> and not on the event scheduler's interleaving.
+        Modeled: a pool of <em>c</em> work-conserving servers, an FCFS queue of infinite capacity and an infinite calling population. Key assumptions: <strong>Markovian</strong> arrivals (i.i.d. exponential inter-arrival times) and independent exponential service; <strong>stationary</strong> regime (the formulae hold only if <InlineMath tex={String.raw`\rho<1`} />); a <strong>seeded</strong>, reproducible run, all exponential variates are drawn up front from one generator, so the result depends on <InlineMath tex={String.raw`(\text{params}, \text{seed})`} /> and not on the event scheduler's interleaving.
       </p>
       <p>
         Out of scope: balking/reneging (impatience), batch arrivals, finite buffers, priorities, non-stationary <InlineMath tex={String.raw`\lambda`} /> and non-exponential service (those are captured in the emergency-department scenario S04 or via G/G/c approximations).
@@ -254,7 +254,7 @@ function S02Desc({ lang }: { lang: string }) {
       <h2>Segregación residencial a partir de preferencias locales leves: el modelo de Schelling (1971) sobre una grilla 30×30</h2>
       <p>
         <strong>El problema.</strong> Dos grupos sociales conviven en una ciudad reticulada con algunas viviendas vacías. Cada
-        hogar tiene una preferencia <em>muy</em> moderada — no quedar en minoría estricta entre sus vecinos inmediatos — y se
+        hogar tiene una preferencia <em>muy</em> moderada, no quedar en minoría estricta entre sus vecinos inmediatos, y se
         muda cuando esa condición no se cumple. La pregunta de Thomas Schelling: ¿pueden preferencias individuales tan tibias
         producir una ciudad fuertemente segregada que <em>nadie</em> buscó? La instancia canónica es una grilla de{" "}
         <InlineMath tex={String.raw`30\times 30`} /> celdas con un 10% vacías y tolerancia <InlineMath tex={String.raw`\tau=0.5`} />.
@@ -333,11 +333,11 @@ function S02Desc({ lang }: { lang: string }) {
         <strong>Qué muestra cada variante.</strong> El barrido de tolerancia <em>Tolerancia 30% → 70%</em> recorre la transición: ya con{" "}
         <em>30%</em> la segregación está muy por encima de la mezcla aleatoria (<InlineMath tex={String.raw`S\approx0.74`} />, ~2.5× la{" "}
         <InlineMath tex={String.raw`\tau`} /> exigida); <em>37.5%</em> y <em>45%</em> trepan hacia el punto de quiebre; <em>50% (clásico)</em> es
-        el caso célebre — fuerte segregación desde una regla &ldquo;justa&rdquo; (en esta semilla <em>45%</em> y <em>50%</em> alcanzan un
+        el caso célebre, fuerte segregación desde una regla &ldquo;justa&rdquo; (en esta semilla <em>45%</em> y <em>50%</em> alcanzan un
         estado convergido idéntico; ver el ensemble); <em>55%</em> y <em>62.5%</em> la agudizan con más movimiento; y{" "}
         <em>70%</em> es tan exigente que el sistema sigue agitándose y agota el tope de pasos (<InlineMath tex={String.raw`S\approx0.94`} /> a
         50 pasos). El barrido de densidad fija <InlineMath tex={String.raw`\tau=0.5`} /> y
-        varía el vacío: <em>Densa (5%)</em> apenas tiene vacantes — segrega lento; <em>Holgada (25%)</em> da espacio para una segregación rápida y
+        varía el vacío: <em>Densa (5%)</em> apenas tiene vacantes, segrega lento; <em>Holgada (25%)</em> da espacio para una segregación rápida y
         nítida; <em>Amplia (35%)</em> es un tablero muy disperso. Juntas separan el efecto de la <em>preferencia</em> del efecto del{" "}
         <em>espacio disponible</em>.
       </p>
@@ -360,7 +360,7 @@ function S02Desc({ lang }: { lang: string }) {
       <h2>Residential segregation from mild local preferences: Schelling&rsquo;s (1971) model on a 30×30 grid</h2>
       <p>
         <strong>The problem.</strong> Two social groups share a lattice city with some vacant homes. Each household holds a{" "}
-        <em>very</em> mild preference — not to end up a strict local minority among its immediate neighbours — and relocates when
+        <em>very</em> mild preference, not to end up a strict local minority among its immediate neighbours, and relocates when
         that fails. Thomas Schelling&rsquo;s question: can preferences this tepid produce a strongly segregated city that{" "}
         <em>no one</em> intended? The canonical instance is a <InlineMath tex={String.raw`30\times 30`} /> grid, 10% empty, with
         tolerance <InlineMath tex={String.raw`\tau=0.5`} />.
@@ -439,11 +439,11 @@ function S02Desc({ lang }: { lang: string }) {
         <strong>What each variant shows.</strong> The tolerance sweep <em>Tolerance 30% → 70%</em> walks the transition: even at <em>30%</em>{" "}
         segregation is already well above the random-mix baseline (<InlineMath tex={String.raw`S\approx0.74`} />, ~2.5× the demanded{" "}
         <InlineMath tex={String.raw`\tau`} />); <em>37.5%</em> and <em>45%</em> climb toward the tipping point; <em>50% (classic)</em> is the
-        famous case — strong segregation from a &ldquo;fair&rdquo; rule (on this seed <em>45%</em> and <em>50%</em> reach an identical
+        famous case, strong segregation from a &ldquo;fair&rdquo; rule (on this seed <em>45%</em> and <em>50%</em> reach an identical
         converged state; see the ensemble); <em>55%</em> and <em>62.5%</em> sharpen it with more churn; and <em>70%</em> is so demanding
         that the system keeps churning, hitting the step cap (<InlineMath tex={String.raw`S\approx0.94`} /> at 50 steps). The density sweep
         fixes <InlineMath tex={String.raw`\tau=0.5`} /> and varies vacancy: <em>Dense (5%)</em> has
-        few vacancies — slow to segregate; <em>Roomy (25%)</em> gives room for fast, clean segregation; <em>Spacious (35%)</em> is a very sparse
+        few vacancies, slow to segregate; <em>Roomy (25%)</em> gives room for fast, clean segregation; <em>Spacious (35%)</em> is a very sparse
         board. Together they separate the effect of <em>preference</em> from the effect of <em>available space</em>.
       </p>
       <p>
@@ -466,11 +466,11 @@ function S03Desc({ lang }: { lang: string }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: cómo despega, llega a su pico y se extingue un brote — SIR por agentes sobre una grilla</h2>
+      <h2>El problema: cómo despega, llega a su pico y se extingue un brote, SIR por agentes sobre una grilla</h2>
       <p>
         <strong>El problema.</strong> Una enfermedad se propaga por contacto local en una población. Queremos saber{" "}
         <em>si</em> el brote despega o se apaga, cuán alto y cuándo es el <em>pico</em> de infectados, y qué fracción de
-        la población termina contagiada — la <em>tasa de ataque</em>. La instancia canónica es el modelo de{" "}
+        la población termina contagiada, la <em>tasa de ataque</em>. La instancia canónica es el modelo de{" "}
         <strong>Kermack–McKendrick</strong> (1927), aquí en su versión <strong>por agentes (ABM)</strong>: cada celda de
         una grilla es un individuo Susceptible, Infectado o Recuperado, y el contagio ocurre solo entre vecinos.
       </p>
@@ -483,7 +483,7 @@ function S03Desc({ lang }: { lang: string }) {
         </li>
         <li>
           <strong>Estados (compartimentos):</strong>{" "}
-          <InlineMath tex={String.raw`x_{ij} \in \{S, I, R\}`} /> — Susceptible, Infectado, Recuperado. Cada paso una
+          <InlineMath tex={String.raw`x_{ij} \in \{S, I, R\}`} />, Susceptible, Infectado, Recuperado. Cada paso una
           celda está en exactamente uno.
         </li>
         <li>
@@ -558,10 +558,10 @@ function S03Desc({ lang }: { lang: string }) {
         <li>
           <strong>Tiempo discreto y actualización síncrona;</strong> sembrado al inicio con una fracción aleatoria{" "}
           <InlineMath tex={String.raw`i_0`} /> (o una única celda fija de índice plano{" "}
-          <InlineMath tex={String.raw`n^2/2`} />, la celda del borde izquierdo en la fila central —no el centro geométrico— si el sorteo no enciende ninguna celda).
+          <InlineMath tex={String.raw`n^2/2`} />, la celda del borde izquierdo en la fila central, no el centro geométrico, si el sorteo no enciende ninguna celda).
         </li>
         <li>
-          <strong>Inmunidad permanente:</strong> R es absorbente — no hay reinfección, ni nacimientos/muertes, ni
+          <strong>Inmunidad permanente:</strong> R es absorbente, no hay reinfección, ni nacimientos/muertes, ni
           incubación (no es SEIR), ni movilidad de agentes, ni heterogeneidad de contactos más allá de la grilla.
         </li>
       </ul>
@@ -591,11 +591,11 @@ function S03Desc({ lang }: { lang: string }) {
     </>
   ) : (
     <>
-      <h2>The problem: how an outbreak takes off, peaks and burns out — agent-based SIR on a grid</h2>
+      <h2>The problem: how an outbreak takes off, peaks and burns out, agent-based SIR on a grid</h2>
       <p>
         <strong>The problem.</strong> A disease spreads by local contact through a population. We want to know{" "}
         <em>whether</em> the outbreak takes off or fizzles, how tall and when the infected <em>peak</em> is, and what
-        fraction of the population ends up infected — the <em>attack rate</em>. The canonical instance is the{" "}
+        fraction of the population ends up infected, the <em>attack rate</em>. The canonical instance is the{" "}
         <strong>Kermack–McKendrick</strong> model (1927), here in its <strong>agent-based (ABM)</strong> form: each cell
         of a grid is a Susceptible, Infected or Recovered individual, and infection happens only between neighbours.
       </p>
@@ -608,7 +608,7 @@ function S03Desc({ lang }: { lang: string }) {
         </li>
         <li>
           <strong>States (compartments):</strong>{" "}
-          <InlineMath tex={String.raw`x_{ij} \in \{S, I, R\}`} /> — Susceptible, Infected, Recovered. Each step a cell
+          <InlineMath tex={String.raw`x_{ij} \in \{S, I, R\}`} />, Susceptible, Infected, Recovered. Each step a cell
           is in exactly one.
         </li>
         <li>
@@ -680,10 +680,10 @@ function S03Desc({ lang }: { lang: string }) {
         <li>
           <strong>Discrete time and synchronous update;</strong> seeded at the start with a random fraction{" "}
           <InlineMath tex={String.raw`i_0`} /> (or a single fixed cell at flat index{" "}
-          <InlineMath tex={String.raw`n^2/2`} />, the left-edge middle-row cell — not the geometric centre — if the draw lights no cell).
+          <InlineMath tex={String.raw`n^2/2`} />, the left-edge middle-row cell, not the geometric centre, if the draw lights no cell).
         </li>
         <li>
-          <strong>Permanent immunity:</strong> R is absorbing — no reinfection, no births/deaths, no incubation (not
+          <strong>Permanent immunity:</strong> R is absorbing, no reinfection, no births/deaths, no incubation (not
           SEIR), no agent mobility, and no contact heterogeneity beyond the grid.
         </li>
       </ul>
@@ -717,7 +717,7 @@ function S04Desc({ lang }: { lang: string }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: flujo de pacientes en urgencias — red de colas en tándem con prioridad (instancia canónica: una sala de urgencias de un turno)</h2>
+      <h2>El problema: flujo de pacientes en urgencias, red de colas en tándem con prioridad (instancia canónica: una sala de urgencias de un turno)</h2>
       <p>
         <strong>El problema.</strong> Los pacientes llegan a un servicio de urgencias de forma{" "}
         <em>no estacionaria</em> (con un posible <em>surge</em> diurno), pasan primero por{" "}
@@ -821,7 +821,7 @@ function S04Desc({ lang }: { lang: string }) {
           extraen por adelantado con semilla fija; la misma semilla reproduce exactamente la misma traza.
         </li>
         <li>
-          <strong>Estacionario:</strong> no — la intensidad <InlineMath tex={String.raw`\lambda(t)`} /> es
+          <strong>Estacionario:</strong> no, la intensidad <InlineMath tex={String.raw`\lambda(t)`} /> es
           deliberadamente variable en el tiempo (transitorio de surge).
         </li>
         <li>
@@ -857,7 +857,7 @@ function S04Desc({ lang }: { lang: string }) {
     </>
   ) : (
     <>
-      <h2>The problem: emergency-department patient flow — a tandem priority queueing network (canonical instance: one ED shift)</h2>
+      <h2>The problem: emergency-department patient flow, a tandem priority queueing network (canonical instance: one ED shift)</h2>
       <p>
         <strong>The problem.</strong> Patients arrive at an emergency department{" "}
         <em>non-stationarily</em> (with an optional daytime <em>surge</em>), first pass through{" "}
@@ -958,7 +958,7 @@ function S04Desc({ lang }: { lang: string }) {
           front under a fixed seed; the same seed reproduces exactly the same trace.
         </li>
         <li>
-          <strong>Stationary:</strong> no — the intensity <InlineMath tex={String.raw`\lambda(t)`} /> is
+          <strong>Stationary:</strong> no, the intensity <InlineMath tex={String.raw`\lambda(t)`} /> is
           deliberately time-varying (surge transient).
         </li>
         <li>
@@ -998,7 +998,7 @@ function S06Desc({ lang }: { lang: string }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: programar un taller (job-shop) minimizando el makespan — instancia canónica Fisher–Thompson ft06 (6×6, óptimo probado 55)</h2>
+      <h2>El problema: programar un taller (job-shop) minimizando el makespan, instancia canónica Fisher–Thompson ft06 (6×6, óptimo probado 55)</h2>
       <p>
         <strong>El problema.</strong> Un <em>taller de trabajos</em> (job-shop) procesa varios trabajos, cada uno definido como una <strong>secuencia ordenada de operaciones</strong>; cada operación necesita una <strong>máquina específica</strong> durante un <strong>tiempo fijo</strong>. Cada máquina hace una sola operación a la vez y, dentro de un trabajo, las operaciones se ejecutan en orden. El objetivo es asignar tiempos de inicio a todas las operaciones de modo que el <strong>último trabajo termine lo antes posible</strong> (minimizar el makespan <InlineMath tex={String.raw`C_{\max}`} />). A diferencia del resto de SIMLAB, esto no es simulación estocástica sino <strong>optimización combinatoria pura</strong>: lo que resuelve un solucionador (OR-Tools CP-SAT), no lo que muestrea un simulador.
       </p>
@@ -1017,7 +1017,7 @@ function S06Desc({ lang }: { lang: string }) {
       </p>
       <Equation tex={String.raw`s_{j,k} \;\ge\; e_{j,k-1} \;=\; s_{j,k-1} + d_{j,k-1}, \qquad k \ge 1.`} />
       <p>
-        La restricción <strong>disyuntiva (no-solapamiento)</strong> de cada máquina exige que sus intervalos asignados nunca se solapen — esto es <InlineMath tex={String.raw`\texttt{AddNoOverlap}`} /> sobre el conjunto de intervalos de la máquina <InlineMath tex={String.raw`m`} />, equivalente a la disyunción por cada par de operaciones <InlineMath tex={String.raw`(j,k),(j',k')`} /> que comparten esa máquina:
+        La restricción <strong>disyuntiva (no-solapamiento)</strong> de cada máquina exige que sus intervalos asignados nunca se solapen, esto es <InlineMath tex={String.raw`\texttt{AddNoOverlap}`} /> sobre el conjunto de intervalos de la máquina <InlineMath tex={String.raw`m`} />, equivalente a la disyunción por cada par de operaciones <InlineMath tex={String.raw`(j,k),(j',k')`} /> que comparten esa máquina:
       </p>
       <Equation tex={String.raw`\bigl(e_{j,k} \le s_{j',k'}\bigr) \;\lor\; \bigl(e_{j',k'} \le s_{j,k}\bigr).`} />
       <p>El makespan iguala el mayor de los finales de la última operación de cada trabajo, y se minimiza:</p>
@@ -1032,7 +1032,7 @@ function S06Desc({ lang }: { lang: string }) {
       </ul>
 
       <p>
-        <strong>Qué muestra cada variante.</strong> <em>ft06</em> es el benchmark clásico de Fisher–Thompson (1963), 6×6, con óptimo probado de 55 — el caso de referencia. Las variantes generadas exploran la <strong>contención</strong>: <em>j3m3</em> es diminuta y óptima al instante; <em>j4m3</em>, <em>j5m4</em>, <em>j6m4</em> y <em>j8m4</em> tienen más trabajos que máquinas; <em>j4m4</em>, <em>j5m5</em> y <em>j6m6</em> son talleres cuadrados (balanceados); <em>j4m6</em> tiene más máquinas que trabajos. <strong>Nota:</strong> cada trabajo generado recorre <em>todas</em> las máquinas, así que el trabajo total difiere de instancia a instancia y los makespans <em>no</em> son directamente comparables entre variantes — la lección se lee <em>dentro</em> de una instancia (cómo la contención de máquinas estira el Gantt), no rankeando makespans entre ellas. (De hecho las cadenas de 6 operaciones de <em>j4m6</em> le dan uno de los makespans más <em>largos</em>, no uno corto.)
+        <strong>Qué muestra cada variante.</strong> <em>ft06</em> es el benchmark clásico de Fisher–Thompson (1963), 6×6, con óptimo probado de 55, el caso de referencia. Las variantes generadas exploran la <strong>contención</strong>: <em>j3m3</em> es diminuta y óptima al instante; <em>j4m3</em>, <em>j5m4</em>, <em>j6m4</em> y <em>j8m4</em> tienen más trabajos que máquinas; <em>j4m4</em>, <em>j5m5</em> y <em>j6m6</em> son talleres cuadrados (balanceados); <em>j4m6</em> tiene más máquinas que trabajos. <strong>Nota:</strong> cada trabajo generado recorre <em>todas</em> las máquinas, así que el trabajo total difiere de instancia a instancia y los makespans <em>no</em> son directamente comparables entre variantes, la lección se lee <em>dentro</em> de una instancia (cómo la contención de máquinas estira el Gantt), no rankeando makespans entre ellas. (De hecho las cadenas de 6 operaciones de <em>j4m6</em> le dan uno de los makespans más <em>largos</em>, no uno corto.)
       </p>
       <p>
         <strong>Cómo leer la visualización.</strong> Es un <strong>diagrama de Gantt</strong>: cada fila es una máquina <InlineMath tex={String.raw`M_i`} /> y cada bloque es una operación, coloreada por <strong>trabajo</strong> (el mismo color recorre todas las operaciones de un trabajo). El ancho del bloque es su duración <InlineMath tex={String.raw`d_{j,k}`} />; los huecos en una fila son tiempo ocioso de esa máquina. La animación barre una línea de tiempo de izquierda a derecha como si el horario se ejecutara, y la línea final marca <InlineMath tex={String.raw`C_{\max}`} />. El HUD/KPIs muestran el makespan, si es óptimo, el número de trabajos/máquinas/operaciones y la <strong>utilización</strong> <InlineMath tex={String.raw`= \frac{\sum_{j,k} d_{j,k}}{C_{\max}\cdot m}`} /> (fracción del área del Gantt realmente ocupada).
@@ -1040,7 +1040,7 @@ function S06Desc({ lang }: { lang: string }) {
     </>
   ) : (
     <>
-      <h2>The problem: scheduling a job-shop to minimize the makespan — canonical Fisher–Thompson ft06 instance (6×6, proven optimum 55)</h2>
+      <h2>The problem: scheduling a job-shop to minimize the makespan, canonical Fisher–Thompson ft06 instance (6×6, proven optimum 55)</h2>
       <p>
         <strong>The problem.</strong> A <em>job-shop</em> processes several jobs, each defined as an <strong>ordered sequence of operations</strong>; every operation needs a <strong>specific machine</strong> for a <strong>fixed time</strong>. Each machine does one operation at a time, and within a job operations run in order. The goal is to assign start times to all operations so the <strong>last job finishes as early as possible</strong> (minimize the makespan <InlineMath tex={String.raw`C_{\max}`} />). Unlike the rest of SIMLAB, this is not stochastic simulation but <strong>pure combinatorial optimization</strong>: what a solver computes (OR-Tools CP-SAT), not what a simulator samples.
       </p>
@@ -1059,7 +1059,7 @@ function S06Desc({ lang }: { lang: string }) {
       </p>
       <Equation tex={String.raw`s_{j,k} \;\ge\; e_{j,k-1} \;=\; s_{j,k-1} + d_{j,k-1}, \qquad k \ge 1.`} />
       <p>
-        Each machine's <strong>disjunctive (no-overlap)</strong> constraint requires its assigned intervals never to overlap — this is <InlineMath tex={String.raw`\texttt{AddNoOverlap}`} /> over the set of intervals of machine <InlineMath tex={String.raw`m`} />, equivalent to the disjunction for every pair of operations <InlineMath tex={String.raw`(j,k),(j',k')`} /> sharing that machine:
+        Each machine's <strong>disjunctive (no-overlap)</strong> constraint requires its assigned intervals never to overlap, this is <InlineMath tex={String.raw`\texttt{AddNoOverlap}`} /> over the set of intervals of machine <InlineMath tex={String.raw`m`} />, equivalent to the disjunction for every pair of operations <InlineMath tex={String.raw`(j,k),(j',k')`} /> sharing that machine:
       </p>
       <Equation tex={String.raw`\bigl(e_{j,k} \le s_{j',k'}\bigr) \;\lor\; \bigl(e_{j',k'} \le s_{j,k}\bigr).`} />
       <p>The makespan equals the largest finish time of each job's last operation, and is minimized:</p>
@@ -1074,7 +1074,7 @@ function S06Desc({ lang }: { lang: string }) {
       </ul>
 
       <p>
-        <strong>What each variant shows.</strong> <em>ft06</em> is the classic Fisher–Thompson (1963) benchmark, 6×6, with proven optimum 55 — the reference case. The generated variants probe <strong>contention</strong>: <em>j3m3</em> is tiny and instantly optimal; <em>j4m3</em>, <em>j5m4</em>, <em>j6m4</em> and <em>j8m4</em> have more jobs than machines; <em>j4m4</em>, <em>j5m5</em> and <em>j6m6</em> are square (balanced) shops; <em>j4m6</em> has more machines than jobs. <strong>Note:</strong> each generated job routes through <em>every</em> machine, so the total work differs from instance to instance and makespans are <em>not</em> directly comparable across variants — read the lesson <em>within</em> an instance (how machine contention stretches the Gantt), not by ranking makespans across them. (In fact <em>j4m6</em>&rsquo;s long 6-operation chains give it one of the longer makespans, not a short one.)
+        <strong>What each variant shows.</strong> <em>ft06</em> is the classic Fisher–Thompson (1963) benchmark, 6×6, with proven optimum 55, the reference case. The generated variants probe <strong>contention</strong>: <em>j3m3</em> is tiny and instantly optimal; <em>j4m3</em>, <em>j5m4</em>, <em>j6m4</em> and <em>j8m4</em> have more jobs than machines; <em>j4m4</em>, <em>j5m5</em> and <em>j6m6</em> are square (balanced) shops; <em>j4m6</em> has more machines than jobs. <strong>Note:</strong> each generated job routes through <em>every</em> machine, so the total work differs from instance to instance and makespans are <em>not</em> directly comparable across variants, read the lesson <em>within</em> an instance (how machine contention stretches the Gantt), not by ranking makespans across them. (In fact <em>j4m6</em>&rsquo;s long 6-operation chains give it one of the longer makespans, not a short one.)
       </p>
       <p>
         <strong>How to read the viz.</strong> It is a <strong>Gantt chart</strong>: each row is a machine <InlineMath tex={String.raw`M_i`} /> and each block is an operation, colored by <strong>job</strong> (one color runs through all of a job's operations). A block's width is its duration <InlineMath tex={String.raw`d_{j,k}`} />; gaps in a row are that machine's idle time. The animation sweeps a timeline left to right as if the schedule were executing, and the final line marks <InlineMath tex={String.raw`C_{\max}`} />. The HUD/KPIs show the makespan, whether it is optimal, the number of jobs/machines/operations, and the <strong>utilization</strong> <InlineMath tex={String.raw`= \frac{\sum_{j,k} d_{j,k}}{C_{\max}\cdot m}`} /> (the fraction of the Gantt area actually occupied).
@@ -1112,7 +1112,7 @@ function S05Desc({ lang }: { lang: string }) {
 
       <h3>Alcances y supuestos</h3>
       <ul>
-        <li><strong>Determinista y seeded:</strong> los patrones escalón y pico son exactos; el patrón ruidoso usa un proceso AR(1), <InlineMath tex={String.raw`e_t = 0.6\, e_{t-1} + \varepsilon_t`} /> con <InlineMath tex={String.raw`\varepsilon_t \sim \mathcal{N}(0, (\Delta/2)^2)`} />, sembrado por la semilla — reproducible.</li>
+        <li><strong>Determinista y seeded:</strong> los patrones escalón y pico son exactos; el patrón ruidoso usa un proceso AR(1), <InlineMath tex={String.raw`e_t = 0.6\, e_{t-1} + \varepsilon_t`} /> con <InlineMath tex={String.raw`\varepsilon_t \sim \mathcal{N}(0, (\Delta/2)^2)`} />, sembrado por la semilla, reproducible.</li>
         <li><strong>Estados iniciales:</strong> <InlineMath tex={String.raw`F^{(i)}_0 = d_0 = 8`} /> y <InlineMath tex={String.raw`S^{(i)}_0 = (L+1)\,d_0`} /> en todos los eslabones (estado estacionario antes del shock).</li>
         <li><strong>Modelado:</strong> la dinámica de las órdenes y su amplificación; mismo <InlineMath tex={String.raw`L`} /> y <InlineMath tex={String.raw`\theta`} /> para los cuatro eslabones.</li>
         <li><strong>Fuera de alcance:</strong> inventario físico, backorders, costos de mantención/quiebre, retrasos de información distintos del lead time, y políticas heterogéneas por eslabón. No se optimiza ningún costo; el objetivo es <em>exhibir</em> la amplificación, no minimizarla.</li>
@@ -1120,9 +1120,9 @@ function S05Desc({ lang }: { lang: string }) {
 
       <p><strong>Qué muestra cada variante:</strong> <em>L1–L4</em> barren el lead time <InlineMath tex={String.raw`L \in \{1,2,3,4\}`} /> a <InlineMath tex={String.raw`\theta=0.4`} />: a mayor <InlineMath tex={String.raw`L`} />, el factor <InlineMath tex={String.raw`(L+1)`} /> del nivel objetivo amplifica más y <em>L4</em> produce oscilaciones upstream violentas. <em>theta20/theta40/theta70</em> fijan <InlineMath tex={String.raw`L=2`} /> y varían el suavizado: un pronóstico reactivo (<InlineMath tex={String.raw`\theta=0.7`} />) persigue cada movimiento y <strong>empeora</strong> el bullwhip, mientras que <InlineMath tex={String.raw`\theta=0.2`} /> lo calma a costa de reaccionar lento. <em>bigstep</em> escala el escalón (<InlineMath tex={String.raw`\Delta=8`} />) y muestra mayor sobre-pico; <em>spike</em> es un pico de una sola semana que igual repercute hacia arriba; <em>noisy</em> usa demanda AR(1) para ver la varianza amplificarse eslabón a eslabón sin un shock único.</p>
 
-      <p><strong>Cómo leer la visualización:</strong> el gráfico de líneas traza, por semana, la demanda del cliente (gris punteada) y las órdenes de cada eslabón: minorista (verde), mayorista (acento), distribuidor (ámbar) y fábrica (magenta). Verás cada curva más arriba y con más sobre-pico que la anterior — esa separación creciente <em>es</em> el bullwhip. Los KPIs reportan la razón de bullwhip <InlineMath tex={String.raw`B_i`} /> de los cuatro eslabones (debe crecer minorista → fábrica) y el pico de órdenes de la fábrica; compáralos entre variantes para cuantificar cuánto empeoran <InlineMath tex={String.raw`L`} /> y <InlineMath tex={String.raw`\theta`} /> la amplificación.</p>
+      <p><strong>Cómo leer la visualización:</strong> el gráfico de líneas traza, por semana, la demanda del cliente (gris punteada) y las órdenes de cada eslabón: minorista (verde), mayorista (acento), distribuidor (ámbar) y fábrica (magenta). Verás cada curva más arriba y con más sobre-pico que la anterior, esa separación creciente <em>es</em> el bullwhip. Los KPIs reportan la razón de bullwhip <InlineMath tex={String.raw`B_i`} /> de los cuatro eslabones (debe crecer minorista → fábrica) y el pico de órdenes de la fábrica; compáralos entre variantes para cuantificar cuánto empeoran <InlineMath tex={String.raw`L`} /> y <InlineMath tex={String.raw`\theta`} /> la amplificación.</p>
 
-      <p><strong>Motor:</strong> Mesa 3 (ABM real, <code>mesa.Agent</code>/<code>mesa.Model</code>); lane en vivo — Python puro y sembrado, vuelve a ejecutarse en el navegador vía Pyodide.</p>
+      <p><strong>Motor:</strong> Mesa 3 (ABM real, <code>mesa.Agent</code>/<code>mesa.Model</code>); lane en vivo, Python puro y sembrado, vuelve a ejecutarse en el navegador vía Pyodide.</p>
     </>
   ) : (
     <>
@@ -1151,7 +1151,7 @@ function S05Desc({ lang }: { lang: string }) {
 
       <h3>Scope &amp; assumptions</h3>
       <ul>
-        <li><strong>Deterministic and seeded:</strong> the step and spike patterns are exact; the noisy pattern uses an AR(1) process, <InlineMath tex={String.raw`e_t = 0.6\, e_{t-1} + \varepsilon_t`} /> with <InlineMath tex={String.raw`\varepsilon_t \sim \mathcal{N}(0, (\Delta/2)^2)`} />, driven by the seed — reproducible.</li>
+        <li><strong>Deterministic and seeded:</strong> the step and spike patterns are exact; the noisy pattern uses an AR(1) process, <InlineMath tex={String.raw`e_t = 0.6\, e_{t-1} + \varepsilon_t`} /> with <InlineMath tex={String.raw`\varepsilon_t \sim \mathcal{N}(0, (\Delta/2)^2)`} />, driven by the seed, reproducible.</li>
         <li><strong>Initial states:</strong> <InlineMath tex={String.raw`F^{(i)}_0 = d_0 = 8`} /> and <InlineMath tex={String.raw`S^{(i)}_0 = (L+1)\,d_0`} /> at every echelon (steady state before the shock).</li>
         <li><strong>Modeled:</strong> the order dynamics and their amplification; the same <InlineMath tex={String.raw`L`} /> and <InlineMath tex={String.raw`\theta`} /> across all four echelons.</li>
         <li><strong>Out of scope:</strong> physical inventory, backorders, holding/stockout costs, information delays other than the lead time, and per-echelon heterogeneous policies. No cost is optimized; the goal is to <em>exhibit</em> the amplification, not minimize it.</li>
@@ -1159,9 +1159,9 @@ function S05Desc({ lang }: { lang: string }) {
 
       <p><strong>What each variant shows:</strong> <em>L1–L4</em> sweep lead time <InlineMath tex={String.raw`L \in \{1,2,3,4\}`} /> at <InlineMath tex={String.raw`\theta=0.4`} />: larger <InlineMath tex={String.raw`L`} /> means the target's <InlineMath tex={String.raw`(L+1)`} /> factor amplifies more, and <em>L4</em> produces violent upstream swings. <em>theta20/theta40/theta70</em> fix <InlineMath tex={String.raw`L=2`} /> and vary smoothing: a reactive forecast (<InlineMath tex={String.raw`\theta=0.7`} />) chases every move and <strong>worsens</strong> the bullwhip, while <InlineMath tex={String.raw`\theta=0.2`} /> calms it at the cost of slow response. <em>bigstep</em> scales the step (<InlineMath tex={String.raw`\Delta=8`} />) for a larger overshoot; <em>spike</em> is a single-week spike that still ripples upstream; <em>noisy</em> uses AR(1) demand to watch variance amplify stage by stage without a single shock.</p>
 
-      <p><strong>How to read the viz:</strong> the line chart plots, by week, customer demand (dashed grey) and each echelon's orders: retailer (green), wholesaler (accent), distributor (amber), and factory (magenta). Each curve sits higher and overshoots more than the one before — that growing separation <em>is</em> the bullwhip. The KPIs report the bullwhip ratio <InlineMath tex={String.raw`B_i`} /> for all four echelons (it should grow retailer → factory) and the factory's peak order; compare them across variants to quantify how much <InlineMath tex={String.raw`L`} /> and <InlineMath tex={String.raw`\theta`} /> worsen the amplification.</p>
+      <p><strong>How to read the viz:</strong> the line chart plots, by week, customer demand (dashed grey) and each echelon's orders: retailer (green), wholesaler (accent), distributor (amber), and factory (magenta). Each curve sits higher and overshoots more than the one before, that growing separation <em>is</em> the bullwhip. The KPIs report the bullwhip ratio <InlineMath tex={String.raw`B_i`} /> for all four echelons (it should grow retailer → factory) and the factory's peak order; compare them across variants to quantify how much <InlineMath tex={String.raw`L`} /> and <InlineMath tex={String.raw`\theta`} /> worsen the amplification.</p>
 
-      <p><strong>Engine:</strong> Mesa 3 (real ABM, <code>mesa.Agent</code>/<code>mesa.Model</code>); lane live — pure-Python and seeded, it re-runs in the browser via Pyodide.</p>
+      <p><strong>Engine:</strong> Mesa 3 (real ABM, <code>mesa.Agent</code>/<code>mesa.Model</code>); lane live, pure-Python and seeded, it re-runs in the browser via Pyodide.</p>
     </>
   );
 }
@@ -1171,7 +1171,7 @@ function S10Desc({ lang }: { lang: string }) {
   return es ? (
     <>
       <h2>
-        El problema: ¿cuánto puedo confiar en una sola corrida de simulación? — el estudio de
+        El problema: ¿cuánto puedo confiar en una sola corrida de simulación?, el estudio de
         Monte-Carlo / IC sobre el M/M/c (μ=1, c=3, λ barrido)
       </h2>
       <p>
@@ -1258,7 +1258,7 @@ function S10Desc({ lang }: { lang: string }) {
         La <strong>varianza por réplica crece con la carga</strong>: al subir{" "}
         <InlineMath tex={String.raw`\rho`} /> los <InlineMath tex={String.raw`W_q^{(r)}`} /> se dispersan
         más, así que <InlineMath tex={String.raw`s_k`} /> y por tanto <InlineMath tex={String.raw`h_k`} />{" "}
-        crecen — se necesitan más réplicas para la misma precisión. En el <strong>caso inestable</strong>{" "}
+        crecen, se necesitan más réplicas para la misma precisión. En el <strong>caso inestable</strong>{" "}
         <InlineMath tex={String.raw`\rho \ge 1`} /> (es decir <InlineMath tex={String.raw`\lambda \ge c\mu`} />)
         no hay estado estacionario: Erlang-C no devuelve <InlineMath tex={String.raw`W_q`} /> finito (la
         referencia es nula, sin línea de teoría) y la media muestral simplemente crece con{" "}
@@ -1267,14 +1267,14 @@ function S10Desc({ lang }: { lang: string }) {
 
       <h3>Alcances y supuestos</h3>
       <p>
-        <strong>Modela:</strong> el estudio de análisis-de-salida puro — la convergencia del estimador
+        <strong>Modela:</strong> el estudio de análisis-de-salida puro, la convergencia del estimador
         y la contracción del IC para la <InlineMath tex={String.raw`W_q`} /> del M/M/c. <strong>Supuestos:</strong>{" "}
         markoviano (llegadas Poisson, servicio exponencial); réplicas <em>independientes y sembradas</em>{" "}
         (la réplica <InlineMath tex={String.raw`r`} /> usa <InlineMath tex={String.raw`\text{seed}+r`} />,
         de modo que toda la figura es reproducible bit a bit); el IC asume normalidad asintótica de la
         media (válida por el TLC para <InlineMath tex={String.raw`N`} /> moderado), no normalidad de los{" "}
         <InlineMath tex={String.raw`W_q^{(r)}`} /> individuales. <strong>Fuera de alcance:</strong> el
-        sesgo del transitorio de arranque (no hay descarte de calentamiento — cada{" "}
+        sesgo del transitorio de arranque (no hay descarte de calentamiento, cada{" "}
         <InlineMath tex={String.raw`W_q^{(r)}`} /> es el promedio de la corrida completa), los IC
         bootstrap/t-Student, y la asignación de presupuesto entre largo de corrida{" "}
         <InlineMath tex={String.raw`n`} /> y número de réplicas <InlineMath tex={String.raw`N`} />. Es{" "}
@@ -1293,7 +1293,7 @@ function S10Desc({ lang }: { lang: string }) {
         converge a Erlang-C (la teoría queda holgada dentro de la banda) y <strong>rep500_busy</strong> lo confirma. Pero en{" "}
         <InlineMath tex={String.raw`\rho=0.9`} /> con solo ~600 clientes por corrida aparece un <strong>sesgo de transitorio de
         arranque</strong>: la media por corrida sale ~16% baja, así que más réplicas (<strong>rep500_heavy</strong>) <em>cierran</em> el
-        IC pero alrededor de ese valor sesgado, y la línea de Erlang-C queda <em>fuera</em> de la banda — la lección es el{" "}
+        IC pero alrededor de ese valor sesgado, y la línea de Erlang-C queda <em>fuera</em> de la banda, la lección es el{" "}
         <strong>sesgo de corridas finitas</strong>, no &ldquo;el IC se vuelve usable a <InlineMath tex={String.raw`\rho=0.9`} />&rdquo;.{" "}
         <strong>rep50_heavy</strong> es el caso peligroso (pocas réplicas + carga alta: la teoría cae dentro solo porque el IC es
         muy ancho, pero la media sigue ~9% sesgada), y <strong>rep500_light</strong> el mejor caso (IC finísimo, centrado en la teoría).
@@ -1303,7 +1303,7 @@ function S10Desc({ lang }: { lang: string }) {
         <InlineMath tex={String.raw`n`} />; el eje y la espera media <InlineMath tex={String.raw`W_q`} />.
         La línea <strong>magenta</strong> es la media corriente <InlineMath tex={String.raw`\bar{W}_k`} />;
         la <strong>banda</strong> sombreada a su alrededor es el IC del 95%{" "}
-        <InlineMath tex={String.raw`[\bar{W}_k-h_k,\ \bar{W}_k+h_k]`} /> — obsérvala estrecharse a medida
+        <InlineMath tex={String.raw`[\bar{W}_k-h_k,\ \bar{W}_k+h_k]`} />, obsérvala estrecharse a medida
         que entran réplicas. La línea de referencia <strong>verde</strong> es la teoría Erlang-C (ausente
         cuando <InlineMath tex={String.raw`\rho\ge1`} />). Las <strong>barras</strong> tenues son el
         histograma de los <InlineMath tex={String.raw`W_q^{(r)}`} /> por corrida (su anchura{" "}
@@ -1317,12 +1317,12 @@ function S10Desc({ lang }: { lang: string }) {
   ) : (
     <>
       <h2>
-        The problem: how much can I trust a single simulation run? — the Monte-Carlo / CI study of the
+        The problem: how much can I trust a single simulation run?, the Monte-Carlo / CI study of the
         M/M/c (μ=1, c=3, λ swept)
       </h2>
       <p>
         <strong>The problem.</strong> A stochastic simulation is a <em>random experiment</em>: a single
-        run of the M/M/c model (the same model class as S01, via a fast NumPy estimator — not S01's SimPy engine) returns a noisy number for the mean wait in queue{" "}
+        run of the M/M/c model (the same model class as S01, via a fast NumPy estimator, not S01's SimPy engine) returns a noisy number for the mean wait in queue{" "}
         <InlineMath tex={String.raw`W_q`} />, and two seeds give two different answers. The{" "}
         <em>output-analysis</em> question is: how many independent replications do I need, and at what
         precision, for my estimator to match the closed-form Erlang-C answer? This case runs{" "}
@@ -1404,7 +1404,7 @@ function S10Desc({ lang }: { lang: string }) {
         The <strong>per-replication variance grows with load</strong>: as{" "}
         <InlineMath tex={String.raw`\rho`} /> rises the <InlineMath tex={String.raw`W_q^{(r)}`} /> spread
         widens, so <InlineMath tex={String.raw`s_k`} /> and hence <InlineMath tex={String.raw`h_k`} />{" "}
-        grow — more replications are needed for the same precision. In the <strong>unstable case</strong>{" "}
+        grow, more replications are needed for the same precision. In the <strong>unstable case</strong>{" "}
         <InlineMath tex={String.raw`\rho \ge 1`} /> (i.e. <InlineMath tex={String.raw`\lambda \ge c\mu`} />)
         there is no steady state: Erlang-C returns no finite <InlineMath tex={String.raw`W_q`} /> (the
         reference is null, no theory line) and the sample mean simply grows with{" "}
@@ -1413,14 +1413,14 @@ function S10Desc({ lang }: { lang: string }) {
 
       <h3>Scope &amp; assumptions</h3>
       <p>
-        <strong>Models:</strong> the pure output-analysis study — estimator convergence and CI
+        <strong>Models:</strong> the pure output-analysis study, estimator convergence and CI
         contraction for the M/M/c <InlineMath tex={String.raw`W_q`} />. <strong>Assumptions:</strong>{" "}
         Markovian (Poisson arrivals, exponential service); <em>independent and seeded</em> replications
         (replication <InlineMath tex={String.raw`r`} /> uses <InlineMath tex={String.raw`\text{seed}+r`} />,
         so the whole figure is bit-for-bit reproducible); the CI assumes asymptotic normality of the mean
         (valid by the CLT for moderate <InlineMath tex={String.raw`N`} />), not normality of the
         individual <InlineMath tex={String.raw`W_q^{(r)}`} />. <strong>Out of scope:</strong> start-up
-        transient bias (no warm-up discard — each <InlineMath tex={String.raw`W_q^{(r)}`} /> is the full-run
+        transient bias (no warm-up discard, each <InlineMath tex={String.raw`W_q^{(r)}`} /> is the full-run
         average), bootstrap/Student-t CIs, and budget allocation between run length{" "}
         <InlineMath tex={String.raw`n`} /> and replication count <InlineMath tex={String.raw`N`} />. It is{" "}
         <strong>live-capable</strong>: pure-Python and fully seeded, it runs in the browser via Pyodide (lane &ldquo;live&rdquo;);
@@ -1438,7 +1438,7 @@ function S10Desc({ lang }: { lang: string }) {
         converges to Erlang-C (theory sits comfortably in-band) and <strong>rep500_busy</strong> confirms it. But at{" "}
         <InlineMath tex={String.raw`\rho=0.9`} /> with only ~600 customers per run a <strong>start-up transient bias</strong> sets
         in: the per-run mean comes out ~16% low, so more replications (<strong>rep500_heavy</strong>) <em>tighten</em> the CI but
-        around that biased value, and the Erlang-C line falls <em>outside</em> the band — the lesson is <strong>finite-run
+        around that biased value, and the Erlang-C line falls <em>outside</em> the band, the lesson is <strong>finite-run
         bias</strong>, not &ldquo;the CI becomes usable at <InlineMath tex={String.raw`\rho=0.9`} />&rdquo;.{" "}
         <strong>rep50_heavy</strong> is the danger case (few reps + high load: theory falls in-band only because the CI is very
         wide, while the mean is still ~9% biased low), and <strong>rep500_light</strong> the best case (a razor-tight CI centered
@@ -1449,7 +1449,7 @@ function S10Desc({ lang }: { lang: string }) {
         <InlineMath tex={String.raw`n`} />; the y-axis the mean wait <InlineMath tex={String.raw`W_q`} />.
         The <strong>magenta</strong> line is the running mean <InlineMath tex={String.raw`\bar{W}_k`} />;
         the shaded <strong>band</strong> around it is the 95% CI{" "}
-        <InlineMath tex={String.raw`[\bar{W}_k-h_k,\ \bar{W}_k+h_k]`} /> — watch it narrow as replications
+        <InlineMath tex={String.raw`[\bar{W}_k-h_k,\ \bar{W}_k+h_k]`} />, watch it narrow as replications
         arrive. The <strong>green</strong> reference line is the Erlang-C theory (absent when{" "}
         <InlineMath tex={String.raw`\rho\ge1`} />). The faint <strong>bars</strong> are the histogram of
         the per-run <InlineMath tex={String.raw`W_q^{(r)}`} /> (its width <em>is</em> the variance that
@@ -1466,18 +1466,18 @@ function S11Desc({ lang }: { lang: string }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: acarreo minero multidestino — un plan óptimo de flujo vs una flota fija (planificar-luego-simular)</h2>
+      <h2>El problema: acarreo minero multidestino, un plan óptimo de flujo vs una flota fija (planificar-luego-simular)</h2>
       <p>
-        <strong>El problema.</strong> Una mina envía mineral desde varias <strong>fases</strong> (puntos de carguío, cada una con su <em>ley</em> de mineral <InlineMath tex={String.raw`g_i`} /> y una <em>disponibilidad</em> <InlineMath tex={String.raw`a_i`} />) hacia tres <strong>tipos de destino</strong>: una <strong>planta</strong> con ley objetivo <InlineMath tex={String.raw`g^{*}`} />, demanda <InlineMath tex={String.raw`D`} /> y banda <InlineMath tex={String.raw`\pm\tau`} />; un <strong>botadero</strong> (estéril); y <strong>acopios</strong> intermedios — un nodo que es sumidero y, una vez que tiene material, <em>origen</em> para viajes posteriores, con un nivel <InlineMath tex={String.raw`\ell(t)`} />. Hay dos problemas de optimización <em>acoplados</em>: el <strong>blending</strong> de la alimentación de planta (un LP) y la <strong>ejecución</strong> del plan por una flota <strong>fija</strong> de <InlineMath tex={String.raw`K`} /> camiones (un DES). La lección: un plan óptimo es necesario pero no suficiente, y bajo una flota fija <strong>la ley es lo primero que se desajusta</strong>.
+        <strong>El problema.</strong> Una mina envía mineral desde varias <strong>fases</strong> (puntos de carguío, cada una con su <em>ley</em> de mineral <InlineMath tex={String.raw`g_i`} /> y una <em>disponibilidad</em> <InlineMath tex={String.raw`a_i`} />) hacia tres <strong>tipos de destino</strong>: una <strong>planta</strong> con ley objetivo <InlineMath tex={String.raw`g^{*}`} />, demanda <InlineMath tex={String.raw`D`} /> y banda <InlineMath tex={String.raw`\pm\tau`} />; un <strong>botadero</strong> (estéril); y <strong>acopios</strong> intermedios, un nodo que es sumidero y, una vez que tiene material, <em>origen</em> para viajes posteriores, con un nivel <InlineMath tex={String.raw`\ell(t)`} />. Hay dos problemas de optimización <em>acoplados</em>: el <strong>blending</strong> de la alimentación de planta (un LP) y la <strong>ejecución</strong> del plan por una flota <strong>fija</strong> de <InlineMath tex={String.raw`K`} /> camiones (un DES). La lección: un plan óptimo es necesario pero no suficiente, y bajo una flota fija <strong>la ley es lo primero que se desajusta</strong>.
       </p>
 
       <h3>Componentes y variables</h3>
       <ul>
-        <li><strong>Conjuntos:</strong> fases/orígenes <InlineMath tex={String.raw`i \in S`} />, cada una con ley <InlineMath tex={String.raw`g_i`} /> y disponibilidad <InlineMath tex={String.raw`a_i`} /> (un <em>tope</em> de toneladas por fase que el plan puede usar en el turno — un parámetro del modelo, no geología exógena); las leyes de las fases <em>rodean</em> al objetivo (en el código <InlineMath tex={String.raw`g = (1.6,\,2.5,\,3.4)`} />: baja/media cerca de la planta, la rica lejos).</li>
-        <li><strong>Destinos:</strong> el conjunto {"{"} planta, botadero, acopios {"}"} — la planta es un sumidero con meta de ley, el botadero un sumidero de estéril, y cada acopio un nodo sumidero-y-origen con nivel <InlineMath tex={String.raw`\ell(t)`} /> y capacidad.</li>
+        <li><strong>Conjuntos:</strong> fases/orígenes <InlineMath tex={String.raw`i \in S`} />, cada una con ley <InlineMath tex={String.raw`g_i`} /> y disponibilidad <InlineMath tex={String.raw`a_i`} /> (un <em>tope</em> de toneladas por fase que el plan puede usar en el turno, un parámetro del modelo, no geología exógena); las leyes de las fases <em>rodean</em> al objetivo (en el código <InlineMath tex={String.raw`g = (1.6,\,2.5,\,3.4)`} />: baja/media cerca de la planta, la rica lejos).</li>
+        <li><strong>Destinos:</strong> el conjunto {"{"} planta, botadero, acopios {"}"}, la planta es un sumidero con meta de ley, el botadero un sumidero de estéril, y cada acopio un nodo sumidero-y-origen con nivel <InlineMath tex={String.raw`\ell(t)`} /> y capacidad.</li>
         <li><strong>Flota:</strong> <InlineMath tex={String.raw`K`} /> camiones (<code>n_trucks</code>) de <strong>capacidad</strong> fija <InlineMath tex={String.raw`q`} /> toneladas por viaje (<InlineMath tex={String.raw`q = 2`} /> en el código), con tiempos fijos de carga y descarga y un cargador compartido por origen.</li>
         <li><strong>Parámetros:</strong> demanda de planta <InlineMath tex={String.raw`D`} />, ley objetivo <InlineMath tex={String.raw`g^{*}`} /> y banda <InlineMath tex={String.raw`\pm\tau`} />; el costo de arista <em>graduado</em> por pendiente del terreno (penalización <InlineMath tex={String.raw`\rho`} /> al subir); y la capacidad y nivel inicial de cada acopio.</li>
-        <li><strong>Variables de decisión:</strong> el <strong>plan de mezcla</strong> <InlineMath tex={String.raw`x_i \ge 0`} /> (toneladas de cada origen a la planta), que resuelve el LP; y, en la simulación, qué <strong>flujo</strong> sirve cada camión en cada ciclo — la regla de <em>despacho</em> sirve el flujo <strong>más atrasado</strong> (menor razón <InlineMath tex={String.raw`\text{done}/\text{target}`} />), rompiendo empates por alcanzabilidad; solo el nivel de la <em>planta</em> usa la regla de <em>alcanzable más pronto</em>.</li>
+        <li><strong>Variables de decisión:</strong> el <strong>plan de mezcla</strong> <InlineMath tex={String.raw`x_i \ge 0`} /> (toneladas de cada origen a la planta), que resuelve el LP; y, en la simulación, qué <strong>flujo</strong> sirve cada camión en cada ciclo, la regla de <em>despacho</em> sirve el flujo <strong>más atrasado</strong> (menor razón <InlineMath tex={String.raw`\text{done}/\text{target}`} />), rompiendo empates por alcanzabilidad; solo el nivel de la <em>planta</em> usa la regla de <em>alcanzable más pronto</em>.</li>
       </ul>
 
       <h3>Formalización</h3>
@@ -1499,11 +1499,11 @@ function S11Desc({ lang }: { lang: string }) {
 
       <h3>Alcances y supuestos</h3>
       <p>
-        <strong>Modela:</strong> un <em>turno</em> con fases, leyes, demanda y disponibilidad <strong>dadas</strong>; el plan óptimo de flujo + blending; y su realización por una flota fija bajo rutas graduadas, contención de cargador y disponibilidad de áreas. La corrida es <strong>determinística y con semilla</strong> — todo depende de <InlineMath tex={String.raw`(\text{params}, \text{seed})`} /> y no del entrelazado del planificador de eventos. <strong>Supuestos:</strong> capacidad de camión <InlineMath tex={String.raw`q`} /> y tiempos de servicio fijos; el LP es <strong>estático</strong> (no re-optimiza en vivo). <strong>Queda fuera de alcance</strong> (sería otra herramienta): la planificación por períodos / secuenciamiento de bloques, la <em>ley de corte</em> (Lane), y el despacho re-optimizando en tiempo real. Como el solver es nativo, este es un caso <strong>precomputado</strong> (sin modo en vivo): la traza registrada reproduce el plan + la flota realizando una versión degradada de él.
+        <strong>Modela:</strong> un <em>turno</em> con fases, leyes, demanda y disponibilidad <strong>dadas</strong>; el plan óptimo de flujo + blending; y su realización por una flota fija bajo rutas graduadas, contención de cargador y disponibilidad de áreas. La corrida es <strong>determinística y con semilla</strong>, todo depende de <InlineMath tex={String.raw`(\text{params}, \text{seed})`} /> y no del entrelazado del planificador de eventos. <strong>Supuestos:</strong> capacidad de camión <InlineMath tex={String.raw`q`} /> y tiempos de servicio fijos; el LP es <strong>estático</strong> (no re-optimiza en vivo). <strong>Queda fuera de alcance</strong> (sería otra herramienta): la planificación por períodos / secuenciamiento de bloques, la <em>ley de corte</em> (Lane), y el despacho re-optimizando en tiempo real. Como el solver es nativo, este es un caso <strong>precomputado</strong> (sin modo en vivo): la traza registrada reproduce el plan + la flota realizando una versión degradada de él.
       </p>
 
       <p>
-        <strong>Qué muestra cada variante.</strong> <em>undertrucked → base → overtrucked</em>: la misma demanda con flota creciente — la ley sube de muy baja a dentro de la banda al realizarse el plan. <em>two_phase_rich</em>: una meta alta exige la fase rica lejana, que una flota chica no alcanza; además el plan óptimo (ley 3,13) ya queda bajo la meta 3,2 porque la fase más rica está limitada por disponibilidad, así que parte de la falta es estructural del plan, no solo de la flota. <em>tight_grade</em>: una banda angosta hace que pequeñas desviaciones por flota ya salgan de especificación. <em>surge / surge12</em>: un alza de demanda desajusta la ley con la misma flota (<em>surge</em> queda fuera de banda), pero <em>surge12</em> —más camiones y turno más largo— recupera la mezcla y vuelve <strong>dentro de banda</strong>. <em>stock_source</em>: un acopio rico pre-armado alimenta la planta — mira la barra <em>vaciarse</em>. <em>stock_buffer</em>: un acopio se <em>llena</em> desde una fase mientras opera la planta. <em>low_target</em>: meta baja apoyada solo en las fases cercanas — queda <strong>dentro de banda</strong> (fácil en ley). <em>dump_heavy</em>: poca a la planta, la mayoría de la producción al botadero (más cargas al botadero que a la planta). <em>barrier</em>: un muro en L sobre el camino de la fase rica alarga su acarreo, así llegan menos cargas de alta ley y el desvío <em>empeora</em> frente a <em>base</em>.
+        <strong>Qué muestra cada variante.</strong> <em>undertrucked → base → overtrucked</em>: la misma demanda con flota creciente, la ley sube de muy baja a dentro de la banda al realizarse el plan. <em>two_phase_rich</em>: una meta alta exige la fase rica lejana, que una flota chica no alcanza; además el plan óptimo (ley 3,13) ya queda bajo la meta 3,2 porque la fase más rica está limitada por disponibilidad, así que parte de la falta es estructural del plan, no solo de la flota. <em>tight_grade</em>: una banda angosta hace que pequeñas desviaciones por flota ya salgan de especificación. <em>surge / surge12</em>: un alza de demanda desajusta la ley con la misma flota (<em>surge</em> queda fuera de banda), pero <em>surge12</em>, más camiones y turno más largo, recupera la mezcla y vuelve <strong>dentro de banda</strong>. <em>stock_source</em>: un acopio rico pre-armado alimenta la planta, mira la barra <em>vaciarse</em>. <em>stock_buffer</em>: un acopio se <em>llena</em> desde una fase mientras opera la planta. <em>low_target</em>: meta baja apoyada solo en las fases cercanas, queda <strong>dentro de banda</strong> (fácil en ley). <em>dump_heavy</em>: poca a la planta, la mayoría de la producción al botadero (más cargas al botadero que a la planta). <em>barrier</em>: un muro en L sobre el camino de la fase rica alarga su acarreo, así llegan menos cargas de alta ley y el desvío <em>empeora</em> frente a <em>base</em>.
       </p>
       <p>
         <strong>Cómo leer la viz.</strong> Nodos: <strong>fases</strong> (acento), <strong>planta</strong> (verde, meta de ley), <strong>botadero</strong> (ámbar) y <strong>acopio</strong> (magenta) con una <strong>barra de nivel</strong> que sube/baja siguiendo <InlineMath tex={String.raw`\ell(t)`} />; las polilíneas de color son los flujos planificados; los camiones suben lento por la ruta graduada y vuelven rápido vacíos. El HUD de planta cuenta los viajes y compara <strong>ley lograda <InlineMath tex={String.raw`\hat{g}`} /> vs objetivo <InlineMath tex={String.raw`g^{*}`} /></strong> y la <strong>adherencia al plan</strong> al cambiar la flota: cuando la flota es insuficiente, la barra del acopio y los viajes a planta se quedan cortos y <InlineMath tex={String.raw`\hat{g}`} /> se cae bajo la banda.
@@ -1511,18 +1511,18 @@ function S11Desc({ lang }: { lang: string }) {
     </>
   ) : (
     <>
-      <h2>The problem: multi-destination mine haul — an optimal flow plan vs a fixed fleet (plan-then-simulate)</h2>
+      <h2>The problem: multi-destination mine haul, an optimal flow plan vs a fixed fleet (plan-then-simulate)</h2>
       <p>
-        <strong>The problem.</strong> A mine sends ore from several <strong>phases</strong> (load points, each with an ore <em>grade</em> <InlineMath tex={String.raw`g_i`} /> and an <em>availability</em> <InlineMath tex={String.raw`a_i`} />) to three <strong>destination kinds</strong>: a <strong>plant</strong> with grade target <InlineMath tex={String.raw`g^{*}`} />, demand <InlineMath tex={String.raw`D`} /> and band <InlineMath tex={String.raw`\pm\tau`} />; a <strong>dump</strong> (waste); and intermediate <strong>stockpiles</strong> — a node that is a sink and, once it holds material, a <em>source</em> for later trips, with a level <InlineMath tex={String.raw`\ell(t)`} />. Two <em>coupled</em> optimization problems: the plant-feed <strong>blend</strong> (an LP) and a <strong>fixed</strong> fleet of <InlineMath tex={String.raw`K`} /> trucks <strong>executing</strong> the plan (a DES). The lesson: an optimal plan is necessary but not sufficient, and under a fixed fleet <strong>the grade slips first</strong>.
+        <strong>The problem.</strong> A mine sends ore from several <strong>phases</strong> (load points, each with an ore <em>grade</em> <InlineMath tex={String.raw`g_i`} /> and an <em>availability</em> <InlineMath tex={String.raw`a_i`} />) to three <strong>destination kinds</strong>: a <strong>plant</strong> with grade target <InlineMath tex={String.raw`g^{*}`} />, demand <InlineMath tex={String.raw`D`} /> and band <InlineMath tex={String.raw`\pm\tau`} />; a <strong>dump</strong> (waste); and intermediate <strong>stockpiles</strong>, a node that is a sink and, once it holds material, a <em>source</em> for later trips, with a level <InlineMath tex={String.raw`\ell(t)`} />. Two <em>coupled</em> optimization problems: the plant-feed <strong>blend</strong> (an LP) and a <strong>fixed</strong> fleet of <InlineMath tex={String.raw`K`} /> trucks <strong>executing</strong> the plan (a DES). The lesson: an optimal plan is necessary but not sufficient, and under a fixed fleet <strong>the grade slips first</strong>.
       </p>
 
       <h3>Components &amp; variables</h3>
       <ul>
-        <li><strong>Sets:</strong> phases/sources <InlineMath tex={String.raw`i \in S`} />, each with grade <InlineMath tex={String.raw`g_i`} /> and availability <InlineMath tex={String.raw`a_i`} /> (a per-phase <em>cap</em> of tonnes the plan may draw this shift — a model parameter, not exogenous geology); the phase grades <em>straddle</em> the target (in the code <InlineMath tex={String.raw`g = (1.6,\,2.5,\,3.4)`} />: low/mid near the plant, the rich one far).</li>
-        <li><strong>Destinations:</strong> the set {"{"} plant, dump, stocks {"}"} — the plant is a sink with a grade target, the dump a waste sink, and each stock a sink-and-source node with level <InlineMath tex={String.raw`\ell(t)`} /> and capacity.</li>
+        <li><strong>Sets:</strong> phases/sources <InlineMath tex={String.raw`i \in S`} />, each with grade <InlineMath tex={String.raw`g_i`} /> and availability <InlineMath tex={String.raw`a_i`} /> (a per-phase <em>cap</em> of tonnes the plan may draw this shift, a model parameter, not exogenous geology); the phase grades <em>straddle</em> the target (in the code <InlineMath tex={String.raw`g = (1.6,\,2.5,\,3.4)`} />: low/mid near the plant, the rich one far).</li>
+        <li><strong>Destinations:</strong> the set {"{"} plant, dump, stocks {"}"}, the plant is a sink with a grade target, the dump a waste sink, and each stock a sink-and-source node with level <InlineMath tex={String.raw`\ell(t)`} /> and capacity.</li>
         <li><strong>Fleet:</strong> <InlineMath tex={String.raw`K`} /> trucks (<code>n_trucks</code>) of fixed <strong>capacity</strong> <InlineMath tex={String.raw`q`} /> tonnes per trip (<InlineMath tex={String.raw`q = 2`} /> in the code), with fixed load/tip times and a shared loader per source.</li>
         <li><strong>Parameters:</strong> plant demand <InlineMath tex={String.raw`D`} />, grade target <InlineMath tex={String.raw`g^{*}`} /> with band <InlineMath tex={String.raw`\pm\tau`} />; the slope-<em>graded</em> edge cost (uphill penalty <InlineMath tex={String.raw`\rho`} />); and each stock's capacity and initial level.</li>
-        <li><strong>Decision variables:</strong> the <strong>blend plan</strong> <InlineMath tex={String.raw`x_i \ge 0`} /> (tonnes from each source to the plant), solved by the LP; and, in the simulation, which <strong>flow</strong> each truck serves per cycle — the <em>dispatch</em> rule serves the flow <strong>furthest behind</strong> (lowest <InlineMath tex={String.raw`\text{done}/\text{target}`} /> ratio), ties broken by reachability; only the <em>plant</em> tier uses the <em>reachable-soonest</em> rule.</li>
+        <li><strong>Decision variables:</strong> the <strong>blend plan</strong> <InlineMath tex={String.raw`x_i \ge 0`} /> (tonnes from each source to the plant), solved by the LP; and, in the simulation, which <strong>flow</strong> each truck serves per cycle, the <em>dispatch</em> rule serves the flow <strong>furthest behind</strong> (lowest <InlineMath tex={String.raw`\text{done}/\text{target}`} /> ratio), ties broken by reachability; only the <em>plant</em> tier uses the <em>reachable-soonest</em> rule.</li>
       </ul>
 
       <h3>Formalization</h3>
@@ -1544,11 +1544,11 @@ function S11Desc({ lang }: { lang: string }) {
 
       <h3>Scope &amp; assumptions</h3>
       <p>
-        <strong>Models:</strong> one <em>shift</em> with phases, grades, demand and availability <strong>given</strong>; the optimal flow + blend plan; and its realization by a fixed fleet under graded routes, loader contention and area availability. The run is <strong>deterministic and seeded</strong> — everything depends on <InlineMath tex={String.raw`(\text{params}, \text{seed})`} /> and not on the event scheduler's interleaving. <strong>Assumptions:</strong> fixed truck capacity <InlineMath tex={String.raw`q`} /> and service times; the LP is <strong>static</strong> (no live re-optimization). <strong>Out of scope</strong> (a separate tool): period scheduling / block sequencing, the <em>cut-off grade</em> (Lane's algorithm), and real-time re-optimizing dispatch. Because the solver is native, this is a <strong>precomputed</strong> case (no live lane): the committed trace replays the plan + the fleet realizing a degraded version of it.
+        <strong>Models:</strong> one <em>shift</em> with phases, grades, demand and availability <strong>given</strong>; the optimal flow + blend plan; and its realization by a fixed fleet under graded routes, loader contention and area availability. The run is <strong>deterministic and seeded</strong>, everything depends on <InlineMath tex={String.raw`(\text{params}, \text{seed})`} /> and not on the event scheduler's interleaving. <strong>Assumptions:</strong> fixed truck capacity <InlineMath tex={String.raw`q`} /> and service times; the LP is <strong>static</strong> (no live re-optimization). <strong>Out of scope</strong> (a separate tool): period scheduling / block sequencing, the <em>cut-off grade</em> (Lane's algorithm), and real-time re-optimizing dispatch. Because the solver is native, this is a <strong>precomputed</strong> case (no live lane): the committed trace replays the plan + the fleet realizing a degraded version of it.
       </p>
 
       <p>
-        <strong>What each variant shows.</strong> <em>undertrucked → base → overtrucked</em>: the same demand with a growing fleet — the grade climbs from far-off to inside the band as the plan is realized. <em>two_phase_rich</em>: a high target needs the distant rich phase a small fleet can't deliver; moreover the optimal LP plan_grade (3.13) already undershoots g*=3.2 because the richest phase is availability-capped, so part of the miss is structural in the plan, not only fleet shortage. <em>tight_grade</em>: a narrow band makes small fleet-driven deviations miss spec. <em>surge / surge12</em>: a demand surge throws the grade off at the same fleet (<em>surge</em> stays out of band), but <em>surge12</em> — more trucks and a longer shift — recovers the blend and lands back <strong>in band</strong>. <em>stock_source</em>: a pre-built rich stock feeds the plant — watch the bar <em>drain</em>. <em>stock_buffer</em>: a stock <em>fills</em> from a phase while the plant runs. <em>low_target</em>: a low target leans on the near phases alone and lands <strong>in band</strong> (easy on grade). <em>dump_heavy</em>: little to the plant, most production routed to the dump (more loads to the dump than to the plant). <em>barrier</em>: an L-shaped wall on the rich phase's road lengthens its haul, so fewer high-grade loads arrive and the deviation <em>worsens</em> versus <em>base</em>.
+        <strong>What each variant shows.</strong> <em>undertrucked → base → overtrucked</em>: the same demand with a growing fleet, the grade climbs from far-off to inside the band as the plan is realized. <em>two_phase_rich</em>: a high target needs the distant rich phase a small fleet can't deliver; moreover the optimal LP plan_grade (3.13) already undershoots g*=3.2 because the richest phase is availability-capped, so part of the miss is structural in the plan, not only fleet shortage. <em>tight_grade</em>: a narrow band makes small fleet-driven deviations miss spec. <em>surge / surge12</em>: a demand surge throws the grade off at the same fleet (<em>surge</em> stays out of band), but <em>surge12</em>, more trucks and a longer shift, recovers the blend and lands back <strong>in band</strong>. <em>stock_source</em>: a pre-built rich stock feeds the plant, watch the bar <em>drain</em>. <em>stock_buffer</em>: a stock <em>fills</em> from a phase while the plant runs. <em>low_target</em>: a low target leans on the near phases alone and lands <strong>in band</strong> (easy on grade). <em>dump_heavy</em>: little to the plant, most production routed to the dump (more loads to the dump than to the plant). <em>barrier</em>: an L-shaped wall on the rich phase's road lengthens its haul, so fewer high-grade loads arrive and the deviation <em>worsens</em> versus <em>base</em>.
       </p>
       <p>
         <strong>How to read the viz.</strong> Nodes: <strong>phases</strong> (accent), <strong>plant</strong> (green, grade target), <strong>dump</strong> (amber) and <strong>stock</strong> (magenta) with a <strong>fill bar</strong> that rises/falls tracking <InlineMath tex={String.raw`\ell(t)`} />; the coloured polylines are the planned flows; trucks crawl uphill on the graded route and race back empty. The plant HUD counts trips and compares <strong>grade achieved <InlineMath tex={String.raw`\hat{g}`} /> vs target <InlineMath tex={String.raw`g^{*}`} /></strong> and <strong>plan adherence</strong> as you change the fleet: when the fleet is under-sized, the stock bar and trips to the plant fall short and <InlineMath tex={String.raw`\hat{g}`} /> drops below the band.
@@ -1561,16 +1561,16 @@ function S07Desc({ lang }: { lang: string }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: ruteo de acarreo en faena — una cola cerrada de fuente finita (optimizar-luego-simular)</h2>
+      <h2>El problema: ruteo de acarreo en faena, una cola cerrada de fuente finita (optimizar-luego-simular)</h2>
       <p>
-        <strong>El problema.</strong> Una flota fija de camiones recircula sin fin entre un punto de <strong>carguío</strong> (terreno bajo) y un <strong>botadero</strong> (terreno alto), sobre una red vial sintética donde <strong>un cordón de terreno alto separa ambos</strong> y la <strong>elevación maneja el costo</strong>. Cada camión repite un ciclo de cuatro fases: <strong>carga</strong> en el cargador compartido, <strong>acarreo cargado</strong> cruzando el cordón, <strong>descarga</strong>, y <strong>retorno vacío</strong> rápido. El caso se divide honestamente en un <strong>plan nativo precomputado offline</strong> y una <strong>réplica en vivo</strong>: el <em>plan</em> de ruta (la ruta cargada que minimiza un costo de arista <em>graduado</em> que penaliza solo lo cuesta arriba) se construye fuera de línea con <strong>NetworkX</strong> (grafo vial dirigido + <code>nx.dijkstra_path</code>) y se <strong>certifica</strong> con <strong>OR-Tools CP-SAT</strong> (re-resuelve la misma ruta como un ILP de flujo de costo mínimo); ambos son código nativo (sin compilación WASM), así que el plan se <em>registra</em> como datos (<code>s07_plans.py</code>). Sobre ese plan fijo, <strong>SimPy</strong> (con NumPy, ambos wheels puros que Pyodide carga) ejecuta <strong>en vivo en el navegador</strong> la <em>réplica</em> de eventos discretos del ciclo. El slider de pendiente <em>y</em> el toggle de barrera <strong>reseleccionan entre planes registrados</strong> (una grilla pendiente×barrera); los sliders de flota mutan la réplica en vivo, nunca el plan. El cargador compartido es el recurso que ata: los camiones son una población finita que llama, así que es una <strong>cola de reparación de máquinas (fuente finita) M/M/1//N</strong> y el rendimiento se satura en la tasa del cargador — hay que <strong>emparejar la flota al cargador</strong> (el "factor de emparejamiento").
+        <strong>El problema.</strong> Una flota fija de camiones recircula sin fin entre un punto de <strong>carguío</strong> (terreno bajo) y un <strong>botadero</strong> (terreno alto), sobre una red vial sintética donde <strong>un cordón de terreno alto separa ambos</strong> y la <strong>elevación maneja el costo</strong>. Cada camión repite un ciclo de cuatro fases: <strong>carga</strong> en el cargador compartido, <strong>acarreo cargado</strong> cruzando el cordón, <strong>descarga</strong>, y <strong>retorno vacío</strong> rápido. El caso se divide honestamente en un <strong>plan nativo precomputado offline</strong> y una <strong>réplica en vivo</strong>: el <em>plan</em> de ruta (la ruta cargada que minimiza un costo de arista <em>graduado</em> que penaliza solo lo cuesta arriba) se construye fuera de línea con <strong>NetworkX</strong> (grafo vial dirigido + <code>nx.dijkstra_path</code>) y se <strong>certifica</strong> con <strong>OR-Tools CP-SAT</strong> (re-resuelve la misma ruta como un ILP de flujo de costo mínimo); ambos son código nativo (sin compilación WASM), así que el plan se <em>registra</em> como datos (<code>s07_plans.py</code>). Sobre ese plan fijo, <strong>SimPy</strong> (con NumPy, ambos wheels puros que Pyodide carga) ejecuta <strong>en vivo en el navegador</strong> la <em>réplica</em> de eventos discretos del ciclo. El slider de pendiente <em>y</em> el toggle de barrera <strong>reseleccionan entre planes registrados</strong> (una grilla pendiente×barrera); los sliders de flota mutan la réplica en vivo, nunca el plan. El cargador compartido es el recurso que ata: los camiones son una población finita que llama, así que es una <strong>cola de reparación de máquinas (fuente finita) M/M/1//N</strong> y el rendimiento se satura en la tasa del cargador, hay que <strong>emparejar la flota al cargador</strong> (el "factor de emparejamiento").
       </p>
 
       <h3>Componentes y variables</h3>
       <ul>
         <li><strong>Conjuntos:</strong> nodos de junción de la grilla <InlineMath tex={String.raw`g\times g`} /> (<InlineMath tex={String.raw`g=12`} />) con un campo de elevación <InlineMath tex={String.raw`\text{elev}(n)`} />; un <strong>carguío</strong> en el borde inferior y un <strong>botadero</strong> en el superior, ambos en la columna <code>lift_col</code>.</li>
         <li><strong>Parámetros:</strong> penalización de pendiente <InlineMath tex={String.raw`\gamma`} /> (<code>grade</code>, 0–8), columna del paso <code>pass_col</code>, columna de carga/descarga <code>lift_col</code>, barrera <InlineMath tex={String.raw`\{0,1\}`} /> sobre la línea directa, número de camiones <InlineMath tex={String.raw`N`} /> (<code>n_trucks</code>, 1–14), número de cargadores <InlineMath tex={String.raw`c`} /> (<code>n_loaders</code>, 1–4), tiempo de carga <InlineMath tex={String.raw`t_L=4`} /> y de descarga <InlineMath tex={String.raw`1`} /> min, y la duración del turno <InlineMath tex={String.raw`H`} /> (<code>horizon</code>).</li>
-        <li><strong>Variable de decisión (optimizar):</strong> la ruta cargada — la secuencia de nodos que minimiza el costo graduado, vía <strong>NetworkX</strong> (<code>nx.dijkstra_path</code>) y certificada por <strong>OR-Tools CP-SAT</strong>; el retorno vacío usa distancia simple.</li>
+        <li><strong>Variable de decisión (optimizar):</strong> la ruta cargada, la secuencia de nodos que minimiza el costo graduado, vía <strong>NetworkX</strong> (<code>nx.dijkstra_path</code>) y certificada por <strong>OR-Tools CP-SAT</strong>; el retorno vacío usa distancia simple.</li>
         <li><strong>Variables de estado (simular):</strong> el instante en que cada cargador queda libre y el número de camiones esperando en el cargador en el instante <InlineMath tex={String.raw`t`} />.</li>
         <li><strong>Métricas medidas:</strong> cargas entregadas, rendimiento por hora, tiempo medio de ciclo, espera del cargador por carga, y la pendiente de salto estimada <InlineMath tex={String.raw`g^{*}`} />.</li>
       </ul>
@@ -1588,7 +1588,7 @@ function S07Desc({ lang }: { lang: string }) {
         Bajo <InlineMath tex={String.raw`g^{*}`} /> gana la subida directa; sobre <InlineMath tex={String.raw`g^{*}`} /> la ruta salta al paso. Una <strong>barrera</strong> sobre la línea directa la redirige al paso independiente de la pendiente.
       </p>
       <p>
-        <strong>El modelo de cola — por qué no es la M/M/c de S01.</strong> Los camiones son una <strong>población finita que llama</strong>: un camión no puede volver a pedir el cargador hasta terminar su ida y vuelta, así que la tasa de llegada depende del estado. Con <InlineMath tex={String.raw`N`} /> camiones (las "máquinas"), <InlineMath tex={String.raw`c`} /> cargadores (el servidor de reparación), tasa de carga <InlineMath tex={String.raw`\mu=1/t_L`} /> y tasa de retorno por camino <InlineMath tex={String.raw`\lambda`} />, es la clásica <strong>cola de reparación de máquinas M/M/1//N</strong> (o M/M/c//N con varios cargadores) — las llegadas son <InlineMath tex={String.raw`(N-n)\,\lambda`} /> con <InlineMath tex={String.raw`n`} /> camiones ya en el cargador:
+        <strong>El modelo de cola, por qué no es la M/M/c de S01.</strong> Los camiones son una <strong>población finita que llama</strong>: un camión no puede volver a pedir el cargador hasta terminar su ida y vuelta, así que la tasa de llegada depende del estado. Con <InlineMath tex={String.raw`N`} /> camiones (las "máquinas"), <InlineMath tex={String.raw`c`} /> cargadores (el servidor de reparación), tasa de carga <InlineMath tex={String.raw`\mu=1/t_L`} /> y tasa de retorno por camino <InlineMath tex={String.raw`\lambda`} />, es la clásica <strong>cola de reparación de máquinas M/M/1//N</strong> (o M/M/c//N con varios cargadores), las llegadas son <InlineMath tex={String.raw`(N-n)\,\lambda`} /> con <InlineMath tex={String.raw`n`} /> camiones ya en el cargador:
       </p>
       <Equation tex={String.raw`\lambda_n=(N-n)\,\lambda,\qquad \mu_n=\min(n,c)\,\mu,\qquad 0\le n\le N.`} />
       <p>
@@ -1601,7 +1601,7 @@ function S07Desc({ lang }: { lang: string }) {
 
       <h3>Alcances y supuestos</h3>
       <p>
-        Se modela: una ruta cargada <strong>óptima exacta</strong> (Dijkstra sobre el costo graduado) con retorno vacío por distancia simple; un cargador compartido como el <strong>recurso que ata</strong>; y una población <strong>finita</strong> de <InlineMath tex={String.raw`N`} /> camiones. La cola de reparación de máquinas <strong>M/M/1//N</strong> (o M/M/c//N con varios cargadores) es el <strong>análogo analítico</strong> que explica la saturación — no el proceso simulado: la corrida en sí es un DES con tiempos de servicio <em>fijos</em>, <strong>totalmente determinista</strong> y depende solo de los parámetros (con <code>breakdown</code>=0, como en todas las variantes publicadas, la semilla es inerte y no hay muestreo aleatorio). Supuestos clave: el campo de elevación es <strong>determinista</strong> (un cordón gaussiano con notches de paso, sin RNG); el costo penaliza <strong>solo lo cuesta arriba</strong> (<InlineMath tex={String.raw`\max(0,\cdot)`} />); el turno es <strong>finito</strong> <InlineMath tex={String.raw`H`} /> (no estado estacionario: una carga que no cabe antes de <InlineMath tex={String.raw`H`} /> se descarta).
+        Se modela: una ruta cargada <strong>óptima exacta</strong> (Dijkstra sobre el costo graduado) con retorno vacío por distancia simple; un cargador compartido como el <strong>recurso que ata</strong>; y una población <strong>finita</strong> de <InlineMath tex={String.raw`N`} /> camiones. La cola de reparación de máquinas <strong>M/M/1//N</strong> (o M/M/c//N con varios cargadores) es el <strong>análogo analítico</strong> que explica la saturación, no el proceso simulado: la corrida en sí es un DES con tiempos de servicio <em>fijos</em>, <strong>totalmente determinista</strong> y depende solo de los parámetros (con <code>breakdown</code>=0, como en todas las variantes publicadas, la semilla es inerte y no hay muestreo aleatorio). Supuestos clave: el campo de elevación es <strong>determinista</strong> (un cordón gaussiano con notches de paso, sin RNG); el costo penaliza <strong>solo lo cuesta arriba</strong> (<InlineMath tex={String.raw`\max(0,\cdot)`} />); el turno es <strong>finito</strong> <InlineMath tex={String.raw`H`} /> (no estado estacionario: una carga que no cabe antes de <InlineMath tex={String.raw`H`} /> se descarta).
       </p>
       <p>
         Las <strong>fallas de camión</strong> sí están modeladas como un <strong>parámetro opcional sembrado</strong> (<code>breakdown</code>, una tasa que alimenta un stream de NumPy con semilla), pero está <strong>fijado en 0</strong> en todas las variantes que se publican, así que las corridas mostradas son deterministas. Queda <strong>fuera de alcance</strong>: velocidad variable, descenso cargado (solo se penaliza subir), congestión multi-camión en la vía, costo de combustible explícito, y reasignación dinámica de ruta dentro del turno. El CVRP de múltiples vehículos con capacidad se trata en S08; el despacho estocástico, en otra escena.
@@ -1616,16 +1616,16 @@ function S07Desc({ lang }: { lang: string }) {
     </>
   ) : (
     <>
-      <h2>The problem: construction haul routing — a closed finite-source queue (optimize-then-simulate)</h2>
+      <h2>The problem: construction haul routing, a closed finite-source queue (optimize-then-simulate)</h2>
       <p>
-        <strong>The problem.</strong> A fixed fleet of trucks endlessly recirculates between a <strong>load</strong> point (low ground) and a <strong>dump</strong> (high ground), over a synthetic road network where <strong>a ridge of high ground walls the two apart</strong> and <strong>elevation drives cost</strong>. Each truck repeats a four-phase cycle: <strong>load</strong> at the shared loader, <strong>loaded haul</strong> crossing the ridge, <strong>dump</strong>, and a fast <strong>empty return</strong>. The case splits honestly into a <strong>native plan precomputed offline</strong> and a <strong>live replay</strong>: the route <em>plan</em> (the loaded route minimizing a grade-<em>graded</em> edge cost that penalizes only uphill segments) is built offline with <strong>NetworkX</strong> (a directed road graph + <code>nx.dijkstra_path</code>) and <strong>certified</strong> by <strong>OR-Tools CP-SAT</strong> (which re-solves the same route as a min-cost-flow ILP); both are native code (no WASM build), so the plan is committed as data (<code>s07_plans.py</code>). Over that fixed plan, <strong>SimPy</strong> (with NumPy, both pure-Python wheels Pyodide loads) runs the discrete-event <em>replay</em> of the cycle <strong>live in the browser</strong>. The grade slider <em>and</em> the wall toggle <strong>re-select among committed plans</strong> (a grade×wall grid); the fleet sliders mutate the live replay, never the plan. The shared loader is the binding resource: trucks are a finite calling population, so this is a <strong>machine-repair (finite-source) M/M/1//N queue</strong> and throughput saturates at the loader rate — the fleet must <strong>match the loader</strong> (the "match factor").
+        <strong>The problem.</strong> A fixed fleet of trucks endlessly recirculates between a <strong>load</strong> point (low ground) and a <strong>dump</strong> (high ground), over a synthetic road network where <strong>a ridge of high ground walls the two apart</strong> and <strong>elevation drives cost</strong>. Each truck repeats a four-phase cycle: <strong>load</strong> at the shared loader, <strong>loaded haul</strong> crossing the ridge, <strong>dump</strong>, and a fast <strong>empty return</strong>. The case splits honestly into a <strong>native plan precomputed offline</strong> and a <strong>live replay</strong>: the route <em>plan</em> (the loaded route minimizing a grade-<em>graded</em> edge cost that penalizes only uphill segments) is built offline with <strong>NetworkX</strong> (a directed road graph + <code>nx.dijkstra_path</code>) and <strong>certified</strong> by <strong>OR-Tools CP-SAT</strong> (which re-solves the same route as a min-cost-flow ILP); both are native code (no WASM build), so the plan is committed as data (<code>s07_plans.py</code>). Over that fixed plan, <strong>SimPy</strong> (with NumPy, both pure-Python wheels Pyodide loads) runs the discrete-event <em>replay</em> of the cycle <strong>live in the browser</strong>. The grade slider <em>and</em> the wall toggle <strong>re-select among committed plans</strong> (a grade×wall grid); the fleet sliders mutate the live replay, never the plan. The shared loader is the binding resource: trucks are a finite calling population, so this is a <strong>machine-repair (finite-source) M/M/1//N queue</strong> and throughput saturates at the loader rate, the fleet must <strong>match the loader</strong> (the "match factor").
       </p>
 
       <h3>Components &amp; variables</h3>
       <ul>
         <li><strong>Sets:</strong> junction nodes of the <InlineMath tex={String.raw`g\times g`} /> grid (<InlineMath tex={String.raw`g=12`} />) carrying an elevation field <InlineMath tex={String.raw`\text{elev}(n)`} />; a <strong>load</strong> point on the bottom edge and a <strong>dump</strong> on the top edge, both in column <code>lift_col</code>.</li>
         <li><strong>Parameters:</strong> grade penalty <InlineMath tex={String.raw`\gamma`} /> (<code>grade</code>, 0–8), pass column <code>pass_col</code>, load/dump column <code>lift_col</code>, barrier <InlineMath tex={String.raw`\{0,1\}`} /> across the direct line, number of trucks <InlineMath tex={String.raw`N`} /> (<code>n_trucks</code>, 1–14), number of loaders <InlineMath tex={String.raw`c`} /> (<code>n_loaders</code>, 1–4), load time <InlineMath tex={String.raw`t_L=4`} /> and dump time <InlineMath tex={String.raw`1`} /> min, and shift length <InlineMath tex={String.raw`H`} /> (<code>horizon</code>).</li>
-        <li><strong>Decision variable (optimize):</strong> the loaded route — the node sequence minimizing the graded cost, via <strong>NetworkX</strong> (<code>nx.dijkstra_path</code>) and certified by <strong>OR-Tools CP-SAT</strong>; the empty return uses plain distance.</li>
+        <li><strong>Decision variable (optimize):</strong> the loaded route, the node sequence minimizing the graded cost, via <strong>NetworkX</strong> (<code>nx.dijkstra_path</code>) and certified by <strong>OR-Tools CP-SAT</strong>; the empty return uses plain distance.</li>
         <li><strong>State variables (simulate):</strong> the time each loader becomes free, and the number of trucks waiting at the loader at time <InlineMath tex={String.raw`t`} />.</li>
         <li><strong>Measured metrics:</strong> loads delivered, throughput per hour, mean cycle time, loader wait per load, and the estimated switch grade <InlineMath tex={String.raw`g^{*}`} />.</li>
       </ul>
@@ -1643,7 +1643,7 @@ function S07Desc({ lang }: { lang: string }) {
         Below <InlineMath tex={String.raw`g^{*}`} /> the direct climb wins; above <InlineMath tex={String.raw`g^{*}`} /> the route flips to the pass. A <strong>barrier</strong> across the direct line reroutes it to the pass independent of grade.
       </p>
       <p>
-        <strong>The queueing model — why this is not the M/M/c of S01.</strong> Trucks are a <strong>finite calling population</strong>: a truck cannot demand the loader again until it finishes its haul-and-return, so the arrival rate is state-dependent. With <InlineMath tex={String.raw`N`} /> trucks (the "machines"), <InlineMath tex={String.raw`c`} /> loaders (the repair server), load rate <InlineMath tex={String.raw`\mu=1/t_L`} /> and per-truck return rate <InlineMath tex={String.raw`\lambda`} />, this is the classic <strong>machine-repair M/M/1//N queue</strong> (M/M/c//N with several loaders) — arrivals are <InlineMath tex={String.raw`(N-n)\,\lambda`} /> with <InlineMath tex={String.raw`n`} /> trucks already at the loader:
+        <strong>The queueing model, why this is not the M/M/c of S01.</strong> Trucks are a <strong>finite calling population</strong>: a truck cannot demand the loader again until it finishes its haul-and-return, so the arrival rate is state-dependent. With <InlineMath tex={String.raw`N`} /> trucks (the "machines"), <InlineMath tex={String.raw`c`} /> loaders (the repair server), load rate <InlineMath tex={String.raw`\mu=1/t_L`} /> and per-truck return rate <InlineMath tex={String.raw`\lambda`} />, this is the classic <strong>machine-repair M/M/1//N queue</strong> (M/M/c//N with several loaders), arrivals are <InlineMath tex={String.raw`(N-n)\,\lambda`} /> with <InlineMath tex={String.raw`n`} /> trucks already at the loader:
       </p>
       <Equation tex={String.raw`\lambda_n=(N-n)\,\lambda,\qquad \mu_n=\min(n,c)\,\mu,\qquad 0\le n\le N.`} />
       <p>
@@ -1656,7 +1656,7 @@ function S07Desc({ lang }: { lang: string }) {
 
       <h3>Scope &amp; assumptions</h3>
       <p>
-        Modeled: an <strong>exactly optimal</strong> loaded route (Dijkstra over the graded cost) with an empty return on plain distance; a shared loader as the <strong>binding resource</strong>; and a <strong>finite</strong> population of <InlineMath tex={String.raw`N`} /> trucks. The machine-repair <strong>M/M/1//N</strong> queue (or M/M/c//N with several loaders) is the <strong>analytic analogue</strong> that explains the saturation — not the simulated process: the run itself is a DES with <em>fixed</em> service times, <strong>fully deterministic</strong> and a function of the parameters alone (with <code>breakdown</code>=0, as in every shipped variant, the seed is inert and there is no random sampling). Key assumptions: the elevation field is <strong>deterministic</strong> (a Gaussian ridge with pass notches, no RNG); the cost penalizes <strong>uphill only</strong> (<InlineMath tex={String.raw`\max(0,\cdot)`} />); the shift is <strong>finite</strong> <InlineMath tex={String.raw`H`} /> (not steady state: a load that cannot finish before <InlineMath tex={String.raw`H`} /> is dropped).
+        Modeled: an <strong>exactly optimal</strong> loaded route (Dijkstra over the graded cost) with an empty return on plain distance; a shared loader as the <strong>binding resource</strong>; and a <strong>finite</strong> population of <InlineMath tex={String.raw`N`} /> trucks. The machine-repair <strong>M/M/1//N</strong> queue (or M/M/c//N with several loaders) is the <strong>analytic analogue</strong> that explains the saturation, not the simulated process: the run itself is a DES with <em>fixed</em> service times, <strong>fully deterministic</strong> and a function of the parameters alone (with <code>breakdown</code>=0, as in every shipped variant, the seed is inert and there is no random sampling). Key assumptions: the elevation field is <strong>deterministic</strong> (a Gaussian ridge with pass notches, no RNG); the cost penalizes <strong>uphill only</strong> (<InlineMath tex={String.raw`\max(0,\cdot)`} />); the shift is <strong>finite</strong> <InlineMath tex={String.raw`H`} /> (not steady state: a load that cannot finish before <InlineMath tex={String.raw`H`} /> is dropped).
       </p>
       <p>
         Truck <strong>breakdowns</strong> are in fact modeled as an <strong>optional seeded parameter</strong> (<code>breakdown</code>, a rate feeding a seeded NumPy stream), but it is <strong>pinned to 0</strong> in every shipped variant, so the shown runs are deterministic. Out of scope: variable truck speed, loaded descent (only climbing is penalized), multi-truck congestion on the road, explicit fuel cost, and dynamic in-shift rerouting. Multi-vehicle capacitated routing (CVRP) is covered in S08; stochastic dispatch in another scene.
@@ -1676,9 +1676,9 @@ function S08Desc({ lang }: { lang: string }) {
   const es = lang === "es";
   return es ? (
     <>
-      <h2>El problema: ruteo de vehículos capacitado (CVRP) resuelto con OR-Tools y PyVRP — un depósito, N clientes con demanda y K vehículos sobre una grilla vial sintética</h2>
+      <h2>El problema: ruteo de vehículos capacitado (CVRP) resuelto con OR-Tools y PyVRP, un depósito, N clientes con demanda y K vehículos sobre una grilla vial sintética</h2>
       <p>
-        <strong>El problema.</strong> Una flota de reparto sale de un único <strong>depósito</strong>, debe servir a un conjunto de <strong>clientes</strong> —cada uno con una <strong>demanda</strong> entera— y volver al depósito, sin que ningún vehículo exceda su <strong>capacidad</strong> <InlineMath tex={String.raw`Q`} />. El objetivo clásico es minimizar la <strong>distancia total</strong> recorrida por la flota. Es <strong>optimización combinatoria</strong> pura (NP-difícil): no hay dinámica estocástica, sino una única instancia que se resuelve de una vez. La instancia es una grilla <InlineMath tex={String.raw`g \times g`} /> con el depósito en el centro y los clientes sembrados al azar; las distancias entre nodos especiales son <strong>caminos más cortos sobre la grilla</strong>. Aquí la <strong>misma</strong> instancia CVRP se resuelve con <strong>dos</strong> solvers nativos: <strong>OR-Tools</strong> (el plan primario — rutas/agentes/KPIs — que minimiza distancia total <em>más</em> un costo de span global que balancea la ruta más larga) y <strong>PyVRP</strong> (Hybrid Genetic Search, estado del arte abierto en VRP, como contraste analítico que minimiza la <em>distancia total pura</em>). La brecha de distancia entre ambos planes sobre la <em>idéntica</em> instancia es justamente el punto. Ambos son código nativo, así que el caso se precomputa: la traza registrada guarda las rutas de OR-Tools (y el plan de PyVRP en el campo <code>analytic</code>) y la web las reproduce como vehículos recorriendo la red.
+        <strong>El problema.</strong> Una flota de reparto sale de un único <strong>depósito</strong>, debe servir a un conjunto de <strong>clientes</strong>, cada uno con una <strong>demanda</strong> entera, y volver al depósito, sin que ningún vehículo exceda su <strong>capacidad</strong> <InlineMath tex={String.raw`Q`} />. El objetivo clásico es minimizar la <strong>distancia total</strong> recorrida por la flota. Es <strong>optimización combinatoria</strong> pura (NP-difícil): no hay dinámica estocástica, sino una única instancia que se resuelve de una vez. La instancia es una grilla <InlineMath tex={String.raw`g \times g`} /> con el depósito en el centro y los clientes sembrados al azar; las distancias entre nodos especiales son <strong>caminos más cortos sobre la grilla</strong>. Aquí la <strong>misma</strong> instancia CVRP se resuelve con <strong>dos</strong> solvers nativos: <strong>OR-Tools</strong> (el plan primario, rutas/agentes/KPIs, que minimiza distancia total <em>más</em> un costo de span global que balancea la ruta más larga) y <strong>PyVRP</strong> (Hybrid Genetic Search, estado del arte abierto en VRP, como contraste analítico que minimiza la <em>distancia total pura</em>). La brecha de distancia entre ambos planes sobre la <em>idéntica</em> instancia es justamente el punto. Ambos son código nativo, así que el caso se precomputa: la traza registrada guarda las rutas de OR-Tools (y el plan de PyVRP en el campo <code>analytic</code>) y la web las reproduce como vehículos recorriendo la red.
       </p>
 
       <h3>Componentes y variables</h3>
@@ -1720,30 +1720,30 @@ function S08Desc({ lang }: { lang: string }) {
         caption="Objetivo efectivo: distancia total + penalización de la ruta más larga (la distancia acumulada parte de 0)."
       />
       <p>
-        Esto fuerza a <strong>balancear</strong> las rutas (minimizar la más larga), de modo que los vehículos extra se usen de verdad. OR-Tools resuelve esto con <code>PATH_CHEAPEST_ARC</code> como solución inicial y <strong>búsqueda local guiada</strong> (<code>GUIDED_LOCAL_SEARCH</code>), un solo hilo, con una <strong>regla de parada determinista</strong>: un límite de <strong>conteo de soluciones</strong> <code>solution_limit = 200</code> (un tope a la <em>cantidad</em> de soluciones halladas, <strong>no</strong> un límite de reloj) — elegido para que la traza registrada sea independiente de la máquina (un límite de reloj haría que un equipo más rápido explorara más; la capa Routing de OR-Tools no expone semilla aleatoria, el determinismo viene del hilo único + el tope de soluciones). PyVRP resuelve la misma instancia con su propio tope determinista (<code>MaxIterations</code>) y semilla fija.
+        Esto fuerza a <strong>balancear</strong> las rutas (minimizar la más larga), de modo que los vehículos extra se usen de verdad. OR-Tools resuelve esto con <code>PATH_CHEAPEST_ARC</code> como solución inicial y <strong>búsqueda local guiada</strong> (<code>GUIDED_LOCAL_SEARCH</code>), un solo hilo, con una <strong>regla de parada determinista</strong>: un límite de <strong>conteo de soluciones</strong> <code>solution_limit = 200</code> (un tope a la <em>cantidad</em> de soluciones halladas, <strong>no</strong> un límite de reloj), elegido para que la traza registrada sea independiente de la máquina (un límite de reloj haría que un equipo más rápido explorara más; la capa Routing de OR-Tools no expone semilla aleatoria, el determinismo viene del hilo único + el tope de soluciones). PyVRP resuelve la misma instancia con su propio tope determinista (<code>MaxIterations</code>) y semilla fija.
       </p>
 
       <h3>Alcances y supuestos</h3>
       <ul>
         <li><strong>Determinista y sembrado</strong>: la instancia (clientes y demandas) depende solo de <code>inst_seed</code>; no hay aleatoriedad en el viaje. El mismo seed da siempre la misma solución, que se precomputa y se reproduce.</li>
-        <li><strong>Sin estocástica de operación</strong>: no se modelan ventanas de tiempo, tráfico, tiempos de servicio variables ni fallas — a diferencia del despacho EMS estocástico de otra escena.</li>
+        <li><strong>Sin estocástica de operación</strong>: no se modelan ventanas de tiempo, tráfico, tiempos de servicio variables ni fallas, a diferencia del despacho EMS estocástico de otra escena.</li>
         <li><strong>Distancias métricas en grilla</strong>: <InlineMath tex={String.raw`c_{ij}`} /> es el camino más corto en la red, simétrico y entero (escala <InlineMath tex={String.raw`{\times}100`} />). Velocidad uniforme <InlineMath tex={String.raw`= 1`} /> para convertir distancia en tiempo de animación.</li>
         <li><strong>Óptimo práctico, no probado</strong>: con la parada por <code>solution_limit = 200</code>, OR-Tools entrega una solución de alta calidad (cuasi-óptima en instancias chicas), no un certificado de optimalidad MILP. Un vehículo cuya ruta es solo depósito→depósito se descarta como <em>no usado</em>.</li>
         <li><strong>Fuera de alcance</strong>: múltiples depósitos, recogidas y entregas, flota heterogénea y demanda dinámica.</li>
       </ul>
 
       <p>
-        <strong>Qué muestra cada variante.</strong> <em>small</em> (8 clientes · 2 vehículos) da dos rutas limpias como caso de lectura mínima. <em>base</em> (12 · 3) es el caso balanceado de referencia. <em>tightcap</em> baja <InlineMath tex={String.raw`Q`} /> a 8 — pero en esta instancia la demanda es lo bastante baja como para que la capacidad <em>no</em> sea activa: la solución es idéntica a <em>base</em> (3 rutas, misma distancia total). <em>fewveh</em> (2 vehículos) alarga las rutas individuales. <em>manyveh</em> ofrece un 4° vehículo, pero el óptimo de span global sigue usando solo 3 rutas — el vehículo extra se descarta como no usado (misma distancia total y ruta más larga que <em>base</em>), así que en esta instancia agregar un vehículo no ayuda. <em>c15</em>, <em>c15v4</em> y <em>c18</em> escalan clientes y flota — de nuevo el 4° vehículo de <em>c15v4</em> queda sin usar (coincide con la solución de 3 rutas de <em>c15</em>). <em>dense</em> aprieta clientes en grilla chica y <em>spread</em> los dispersa en grilla grande (tramos largos). El <strong>compromiso distancia-total ↔ ruta-más-larga</strong> es el lente para leerlas — pero los vehículos extra solo se usan cuando una instancia es lo bastante ajustada como para necesitarlos.
+        <strong>Qué muestra cada variante.</strong> <em>small</em> (8 clientes · 2 vehículos) da dos rutas limpias como caso de lectura mínima. <em>base</em> (12 · 3) es el caso balanceado de referencia. <em>tightcap</em> baja <InlineMath tex={String.raw`Q`} /> a 8, pero en esta instancia la demanda es lo bastante baja como para que la capacidad <em>no</em> sea activa: la solución es idéntica a <em>base</em> (3 rutas, misma distancia total). <em>fewveh</em> (2 vehículos) alarga las rutas individuales. <em>manyveh</em> ofrece un 4° vehículo, pero el óptimo de span global sigue usando solo 3 rutas, el vehículo extra se descarta como no usado (misma distancia total y ruta más larga que <em>base</em>), así que en esta instancia agregar un vehículo no ayuda. <em>c15</em>, <em>c15v4</em> y <em>c18</em> escalan clientes y flota, de nuevo el 4° vehículo de <em>c15v4</em> queda sin usar (coincide con la solución de 3 rutas de <em>c15</em>). <em>dense</em> aprieta clientes en grilla chica y <em>spread</em> los dispersa en grilla grande (tramos largos). El <strong>compromiso distancia-total ↔ ruta-más-larga</strong> es el lente para leerlas, pero los vehículos extra solo se usan cuando una instancia es lo bastante ajustada como para necesitarlos.
       </p>
       <p>
-        <strong>Cómo leer la viz.</strong> El <strong>depósito</strong> se marca en verde y los <strong>clientes</strong> en magenta sobre la grilla vial. Cada vehículo usado tiene <strong>un color de ruta</strong> y se anima saliendo del depósito, visitando su secuencia de clientes y volviendo. Los KPIs del HUD reportan <code>total_distance</code> (objetivo base), <code>vehicles_used</code> (de los <InlineMath tex={String.raw`K`} /> disponibles), <code>max_route_time</code> (la ruta más larga — el término que el span global penaliza), <code>customers</code> y <code>capacity</code> <InlineMath tex={String.raw`Q`} />. Compara <code>vehicles_used</code> contra <code>total_distance</code> y <code>max_route_time</code> entre variantes para ver el trade-off en acción.
+        <strong>Cómo leer la viz.</strong> El <strong>depósito</strong> se marca en verde y los <strong>clientes</strong> en magenta sobre la grilla vial. Cada vehículo usado tiene <strong>un color de ruta</strong> y se anima saliendo del depósito, visitando su secuencia de clientes y volviendo. Los KPIs del HUD reportan <code>total_distance</code> (objetivo base), <code>vehicles_used</code> (de los <InlineMath tex={String.raw`K`} /> disponibles), <code>max_route_time</code> (la ruta más larga, el término que el span global penaliza), <code>customers</code> y <code>capacity</code> <InlineMath tex={String.raw`Q`} />. Compara <code>vehicles_used</code> contra <code>total_distance</code> y <code>max_route_time</code> entre variantes para ver el trade-off en acción.
       </p>
     </>
   ) : (
     <>
-      <h2>The problem: capacitated vehicle routing (CVRP) solved with OR-Tools and PyVRP — one depot, N customers with demand, and K vehicles on a synthetic road grid</h2>
+      <h2>The problem: capacitated vehicle routing (CVRP) solved with OR-Tools and PyVRP, one depot, N customers with demand, and K vehicles on a synthetic road grid</h2>
       <p>
-        <strong>The problem.</strong> A delivery fleet leaves a single <strong>depot</strong>, must serve a set of <strong>customers</strong> —each with an integer <strong>demand</strong>— and return to the depot, with no vehicle exceeding its <strong>capacity</strong> <InlineMath tex={String.raw`Q`} />. The classic objective is to minimize the fleet's <strong>total travel distance</strong>. This is pure <strong>combinatorial optimization</strong> (NP-hard): no stochastic dynamics, just one instance solved once. The instance is a <InlineMath tex={String.raw`g \times g`} /> grid with the depot at the center and customers seeded at random; distances between special nodes are <strong>grid shortest paths</strong>. Here the <strong>same</strong> CVRP instance is solved by <strong>two</strong> native solvers: <strong>OR-Tools</strong> (the primary plan — routes/agents/KPIs — minimizing total distance <em>plus</em> a global-span cost that balances the longest route) and <strong>PyVRP</strong> (Hybrid Genetic Search, the open VRP state of the art, as an analytic contrast that minimizes <em>pure total distance</em>). The distance gap between the two plans on the <em>identical</em> instance is exactly the point. Both are native code, so the case is precomputed: the committed trace holds OR-Tools' routes (and PyVRP's plan in the <code>analytic</code> field) and the web replays them as vehicles driving the network.
+        <strong>The problem.</strong> A delivery fleet leaves a single <strong>depot</strong>, must serve a set of <strong>customers</strong>, each with an integer <strong>demand</strong>, and return to the depot, with no vehicle exceeding its <strong>capacity</strong> <InlineMath tex={String.raw`Q`} />. The classic objective is to minimize the fleet's <strong>total travel distance</strong>. This is pure <strong>combinatorial optimization</strong> (NP-hard): no stochastic dynamics, just one instance solved once. The instance is a <InlineMath tex={String.raw`g \times g`} /> grid with the depot at the center and customers seeded at random; distances between special nodes are <strong>grid shortest paths</strong>. Here the <strong>same</strong> CVRP instance is solved by <strong>two</strong> native solvers: <strong>OR-Tools</strong> (the primary plan, routes/agents/KPIs, minimizing total distance <em>plus</em> a global-span cost that balances the longest route) and <strong>PyVRP</strong> (Hybrid Genetic Search, the open VRP state of the art, as an analytic contrast that minimizes <em>pure total distance</em>). The distance gap between the two plans on the <em>identical</em> instance is exactly the point. Both are native code, so the case is precomputed: the committed trace holds OR-Tools' routes (and PyVRP's plan in the <code>analytic</code> field) and the web replays them as vehicles driving the network.
       </p>
 
       <h3>Components &amp; variables</h3>
@@ -1785,23 +1785,23 @@ function S08Desc({ lang }: { lang: string }) {
         caption="Effective objective: total distance + penalty on the longest route (cumulative distance starts at 0)."
       />
       <p>
-        This forces routes to <strong>balance</strong> (minimize the longest one), so extra vehicles actually get used. OR-Tools solves it with <code>PATH_CHEAPEST_ARC</code> as the first solution and <strong>guided local search</strong> (<code>GUIDED_LOCAL_SEARCH</code>), single-thread, with a <strong>deterministic stopping rule</strong>: a <strong>solution-count</strong> limit <code>solution_limit = 200</code> (a cap on the <em>number</em> of solutions found, <strong>not</strong> a wall-clock limit) — chosen so the committed trace is machine-independent (a wall-clock limit would let a faster machine explore more; the OR-Tools Routing layer exposes no random seed — determinism comes from the single search thread + the solution-count cap). PyVRP solves the same instance with its own deterministic stop (<code>MaxIterations</code>) and a fixed seed.
+        This forces routes to <strong>balance</strong> (minimize the longest one), so extra vehicles actually get used. OR-Tools solves it with <code>PATH_CHEAPEST_ARC</code> as the first solution and <strong>guided local search</strong> (<code>GUIDED_LOCAL_SEARCH</code>), single-thread, with a <strong>deterministic stopping rule</strong>: a <strong>solution-count</strong> limit <code>solution_limit = 200</code> (a cap on the <em>number</em> of solutions found, <strong>not</strong> a wall-clock limit), chosen so the committed trace is machine-independent (a wall-clock limit would let a faster machine explore more; the OR-Tools Routing layer exposes no random seed, determinism comes from the single search thread + the solution-count cap). PyVRP solves the same instance with its own deterministic stop (<code>MaxIterations</code>) and a fixed seed.
       </p>
 
       <h3>Scope &amp; assumptions</h3>
       <ul>
         <li><strong>Deterministic and seeded</strong>: the instance (customers and demands) depends only on <code>inst_seed</code>; there is no travel randomness. The same seed always yields the same solution, which is precomputed and replayed.</li>
-        <li><strong>No operational stochastics</strong>: no time windows, traffic, variable service times, or failures — unlike the stochastic EMS dispatch in another scene.</li>
+        <li><strong>No operational stochastics</strong>: no time windows, traffic, variable service times, or failures, unlike the stochastic EMS dispatch in another scene.</li>
         <li><strong>Metric grid distances</strong>: <InlineMath tex={String.raw`c_{ij}`} /> is the shortest path on the network, symmetric and integer (scale <InlineMath tex={String.raw`{\times}100`} />). Uniform speed <InlineMath tex={String.raw`= 1`} /> converts distance into animation time.</li>
         <li><strong>Practical optimum, not proven</strong>: with the <code>solution_limit = 200</code> stop, OR-Tools returns a high-quality (near-optimal on small instances) solution, not a MILP optimality certificate. A vehicle whose route is just depot→depot is dropped as <em>unused</em>.</li>
         <li><strong>Out of scope</strong>: multiple depots, pickup-and-delivery, heterogeneous fleet, and dynamic demand.</li>
       </ul>
 
       <p>
-        <strong>What each variant shows.</strong> <em>small</em> (8 customers · 2 vehicles) gives two clean routes as the minimal reading. <em>base</em> (12 · 3) is the balanced reference case. <em>tightcap</em> drops <InlineMath tex={String.raw`Q`} /> to 8 — but on this instance the demand is small enough that the cap does <em>not</em> bind: the solution is identical to <em>base</em> (3 routes, same total distance). <em>fewveh</em> (2 vehicles) lengthens individual routes. <em>manyveh</em> offers a 4th vehicle, yet the global-span optimum still uses only 3 routes — the extra vehicle is dropped as unused (same total distance and longest route as <em>base</em>), so on this instance adding a vehicle does not help. <em>c15</em>, <em>c15v4</em>, and <em>c18</em> scale customers and fleet — again <em>c15v4</em>&rsquo;s 4th vehicle goes unused (it matches <em>c15</em>&rsquo;s 3-route solution). <em>dense</em> packs customers on a small grid and <em>spread</em> disperses them on a large grid (long legs). The <strong>total-distance ↔ longest-route trade-off</strong> is the lens for reading these — but extra vehicles only get used when an instance is tight enough to need them.
+        <strong>What each variant shows.</strong> <em>small</em> (8 customers · 2 vehicles) gives two clean routes as the minimal reading. <em>base</em> (12 · 3) is the balanced reference case. <em>tightcap</em> drops <InlineMath tex={String.raw`Q`} /> to 8, but on this instance the demand is small enough that the cap does <em>not</em> bind: the solution is identical to <em>base</em> (3 routes, same total distance). <em>fewveh</em> (2 vehicles) lengthens individual routes. <em>manyveh</em> offers a 4th vehicle, yet the global-span optimum still uses only 3 routes, the extra vehicle is dropped as unused (same total distance and longest route as <em>base</em>), so on this instance adding a vehicle does not help. <em>c15</em>, <em>c15v4</em>, and <em>c18</em> scale customers and fleet, again <em>c15v4</em>&rsquo;s 4th vehicle goes unused (it matches <em>c15</em>&rsquo;s 3-route solution). <em>dense</em> packs customers on a small grid and <em>spread</em> disperses them on a large grid (long legs). The <strong>total-distance ↔ longest-route trade-off</strong> is the lens for reading these, but extra vehicles only get used when an instance is tight enough to need them.
       </p>
       <p>
-        <strong>How to read the viz.</strong> The <strong>depot</strong> is marked green and <strong>customers</strong> magenta on the road grid. Each used vehicle has <strong>one route color</strong> and animates leaving the depot, visiting its customer sequence, and returning. The HUD KPIs report <code>total_distance</code> (base objective), <code>vehicles_used</code> (of the <InlineMath tex={String.raw`K`} /> available), <code>max_route_time</code> (the longest route — the term the global span penalizes), <code>customers</code>, and <code>capacity</code> <InlineMath tex={String.raw`Q`} />. Compare <code>vehicles_used</code> against <code>total_distance</code> and <code>max_route_time</code> across variants to see the trade-off in action.
+        <strong>How to read the viz.</strong> The <strong>depot</strong> is marked green and <strong>customers</strong> magenta on the road grid. Each used vehicle has <strong>one route color</strong> and animates leaving the depot, visiting its customer sequence, and returning. The HUD KPIs report <code>total_distance</code> (base objective), <code>vehicles_used</code> (of the <InlineMath tex={String.raw`K`} /> available), <code>max_route_time</code> (the longest route, the term the global span penalizes), <code>customers</code>, and <code>capacity</code> <InlineMath tex={String.raw`Q`} />. Compare <code>vehicles_used</code> against <code>total_distance</code> and <code>max_route_time</code> across variants to see the trade-off in action.
       </p>
     </>
   );
@@ -1858,7 +1858,7 @@ function S09Desc({ lang }: { lang: string }) {
 
       <h3>Formalización</h3>
       <p>
-        El modelo es una <strong>cola espacial multi-servidor con servicio dependiente del estado</strong> — un
+        El modelo es una <strong>cola espacial multi-servidor con servicio dependiente del estado</strong>, un
         sistema EMS tipo <InlineMath tex={String.raw`M/G/c`} /> donde el "servicio" es el ciclo completo
         viaje-atención-traslado-retorno y el ruteo es <em>nearest-available</em>. Las llegadas forman un proceso de
         Poisson: los tiempos entre llamados son exponenciales,
@@ -1912,7 +1912,7 @@ function S09Desc({ lang }: { lang: string }) {
       <p>
         <strong>Qué muestra cada variante.</strong> <em>a2 / a3</em> (2-3 unidades, 1 base): subdimensionado,
         esperas largas y baja cobertura. <em>a4 vs. a4s1</em>: misma flota de 4, pero 2 bases recortan el viaje
-        frente a 1 base — el efecto puro de <strong>ubicación</strong>. <em>a4s4</em>: 4 unidades en 4 bases, gran
+        frente a 1 base, el efecto puro de <strong>ubicación</strong>. <em>a4s4</em>: 4 unidades en 4 bases, gran
         cobertura geográfica pero menos capacidad de pico. <em>a6</em>: flota holgada para esta demanda.{" "}
         <em>surge vs. surge6</em>: un alza a <InlineMath tex={String.raw`\lambda = 22`} /> satura a 4 unidades (
         <InlineMath tex={String.raw`\rho`} /> &gt; 1) mientras 6 la absorben. <em>quiet</em>: baja demanda, incluso
@@ -1923,7 +1923,7 @@ function S09Desc({ lang }: { lang: string }) {
         <strong>hospital</strong> (verde) están marcados. Cada <strong>llamado</strong> aparece como marcador rojo
         en su instante <InlineMath tex={String.raw`t_k`} /> y se apaga al ser alcanzado en{" "}
         <InlineMath tex={String.raw`t_{\text{esc}}`} />. Las <strong>ambulancias</strong> (magenta) se animan por sus
-        tramos: base → escena → hospital → base. El HUD reporta los KPI — respuesta media y p90, cobertura{" "}
+        tramos: base → escena → hospital → base. El HUD reporta los KPI, respuesta media y p90, cobertura{" "}
         <InlineMath tex={String.raw`\text{cov}`} /> dentro del umbral, y carga{" "}
         <InlineMath tex={String.raw`\rho`} />: cuando el rojo se acumula sin ser alcanzado y la carga pasa el 100%,
         la flota va por detrás de la demanda.
@@ -1977,7 +1977,7 @@ function S09Desc({ lang }: { lang: string }) {
 
       <h3>Formalization</h3>
       <p>
-        The model is a <strong>spatial multi-server queue with state-dependent service</strong> — an EMS system of
+        The model is a <strong>spatial multi-server queue with state-dependent service</strong>, an EMS system of
         type <InlineMath tex={String.raw`M/G/c`} /> where "service" is the full
         travel-treat-transport-return cycle and routing is <em>nearest-available</em>. Arrivals form a Poisson
         process: inter-call times are exponential,
@@ -2031,7 +2031,7 @@ function S09Desc({ lang }: { lang: string }) {
 
       <p>
         <strong>What each variant shows.</strong> <em>a2 / a3</em> (2-3 units, 1 station): under-resourced, long
-        waits and low coverage. <em>a4 vs. a4s1</em>: same fleet of 4, but 2 stations cut travel versus 1 station —
+        waits and low coverage. <em>a4 vs. a4s1</em>: same fleet of 4, but 2 stations cut travel versus 1 station, 
         the pure effect of <strong>siting</strong>. <em>a4s4</em>: 4 units across 4 stations, great geographic
         coverage but less surge capacity. <em>a6</em>: a comfortable fleet for this demand.{" "}
         <em>surge vs. surge6</em>: a spike to <InlineMath tex={String.raw`\lambda = 22`} /> overwhelms 4 units (
@@ -2043,7 +2043,7 @@ function S09Desc({ lang }: { lang: string }) {
         and the <strong>hospital</strong> (green) are marked. Each <strong>call</strong> appears as a red marker at
         its instant <InlineMath tex={String.raw`t_k`} /> and clears when reached at{" "}
         <InlineMath tex={String.raw`t_{\text{sc}}`} />. The <strong>ambulances</strong> (magenta) animate along
-        their legs: base → scene → hospital → base. The HUD reports the KPIs — mean and p90 response, coverage{" "}
+        their legs: base → scene → hospital → base. The HUD reports the KPIs, mean and p90 response, coverage{" "}
         <InlineMath tex={String.raw`\text{cov}`} /> within the threshold, and load{" "}
         <InlineMath tex={String.raw`\rho`} />: when red markers pile up unreached and load passes 100%, the fleet is
         falling behind demand.

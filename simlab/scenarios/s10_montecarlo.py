@@ -1,27 +1,27 @@
-"""S10 — Monte-Carlo replication / confidence-interval study, on **joblib + SciPy**.
+"""S10, Monte-Carlo replication / confidence-interval study, on **joblib + SciPy**.
 
-Runs N independent replications of the same M/M/c model class as S01 — via a fast NumPy heap estimator, not
-S01's SimPy engine — and shows two output-analysis lessons
+Runs N independent replications of the same M/M/c model class as S01, via a fast NumPy heap estimator, not
+S01's SimPy engine, and shows two output-analysis lessons
 made interactive. (1) The replication/CI lesson: a single run is noisy, but the running mean of many seeded
 replications stabilises and the 95% confidence interval narrows like 1/√n. (2) The finite-run-bias lesson:
 each replication starts empty and serves only a finite number of customers, so its per-run mean carries a
 transient (initialisation) bias. At light-to-moderate load that bias is tiny and the running mean lands on
 the closed-form Erlang-C value; at high load (ρ≈0.9, ~600 customers/run) the bias is large (~16% low), so
-the CI converges tightly around a BIASED estimate and the Erlang-C line sits outside it — the CI measures
+the CI converges tightly around a BIASED estimate and the Erlang-C line sits outside it, the CI measures
 the precision of a biased estimator, not its accuracy.
 
 This scenario is built on the real tools it documents rather than a hand-rolled NumPy loop:
 
 * **joblib** (``Parallel`` / ``delayed``) fans the N replications across CPU cores. Each replication builds
-  its own seeded NumPy Generator inline from ``seed + r`` (``np.random.default_rng(seed + r)`` — the function
+  its own seeded NumPy Generator inline from ``seed + r`` (``np.random.default_rng(seed + r)``, the function
   is self-contained so joblib can pickle it to a worker; this is exactly what ``make_rng(seed + r)`` returns),
-  so the parallel result equals the serial result byte-for-byte — the worker count and finish order never
+  so the parallel result equals the serial result byte-for-byte, the worker count and finish order never
   change the answer. This is the CPU v1 default;
   the GPU exhibit is intentionally out of scope here (a many-replication study is embarrassingly parallel
   and maps cleanly onto cores).
 * **scipy.stats** computes the confidence intervals from the sample rather than a hand-typed critical
   value: the running 95% band uses the exact normal critical value ``scipy.stats.norm.ppf(0.975)`` (not the
-  rounded 1.96), and the headline CI is built with ``scipy.stats.sem`` + ``scipy.stats.norm.interval`` — so
+  rounded 1.96), and the headline CI is built with ``scipy.stats.sem`` + ``scipy.stats.norm.interval``, so
   the lab uses the statistics framework it teaches.
 
 Determinism: the seed plan ``seed + r`` is unchanged, so the same (params, seed) yields the same sample on
@@ -46,14 +46,14 @@ from .s01_queue import erlang_c_mmc
 # are imported lazily inside
 # ``run()`` (the only place that needs them). The exact 95% two-sided normal critical value (SciPy's
 # ``norm.ppf(0.975)``, not the hand-typed 1.96) is likewise computed inside ``run()``. Importing this
-# module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps (numpy is
+# module: the Scenario subclass + variants()/param_specs, therefore needs ZERO heavy deps (numpy is
 # allowed: it exists in the live worker).
 
 
 def mmc_mean_wait(lam: float, mu: float, c: int, n: int, seed: int) -> float:
     """One replication: mean time-in-queue of an M/M/c FCFS queue (earliest-free-server method, O(n log c)).
 
-    Takes a *seed* (not a pre-built Generator) so the function is self-contained and picklable — joblib must
+    Takes a *seed* (not a pre-built Generator) so the function is self-contained and picklable, joblib must
     be able to ship it to worker processes. Internally it builds the single seeded RNG for this run by calling
     ``np.random.default_rng(int(seed))`` inline (exactly what ``make_rng(seed)`` returns; inlined here only to
     stay self-contained), so the per-replication variate stream is identical to the old serial loop.
@@ -104,10 +104,10 @@ class MonteCarloScenario(Scenario):
             v("rep500_mod", "500 reps · ρ≈0.67", "500 réplicas · ρ≈0.67", 2.0, 3, 500, "Many replications: a tight, well-centred CI.", "Muchas réplicas: IC angosto y bien centrado."),
             v("rep200_light", "200 reps · ρ≈0.50", "200 réplicas · ρ≈0.50", 1.5, 3, 200, "Light load: low variance, easy to estimate.", "Carga ligera: baja varianza, fácil de estimar."),
             v("rep200_busy", "200 reps · ρ≈0.80", "200 réplicas · ρ≈0.80", 2.4, 3, 200, "Busier: more run-to-run variability.", "Más ocupada: más variabilidad entre corridas."),
-            v("rep200_heavy", "200 reps · ρ≈0.90", "200 réplicas · ρ≈0.90", 2.7, 3, 200, "Heavy load: ~600 customers/run is too short — a ~16% transient bias pulls the CI below Erlang-C.", "Carga alta: ~600 clientes/corrida es muy corto — un sesgo transitorio ~16% deja el IC bajo Erlang-C."),
+            v("rep200_heavy", "200 reps · ρ≈0.90", "200 réplicas · ρ≈0.90", 2.7, 3, 200, "Heavy load: ~600 customers/run is too short, a ~16% transient bias pulls the CI below Erlang-C.", "Carga alta: ~600 clientes/corrida es muy corto, un sesgo transitorio ~16% deja el IC bajo Erlang-C."),
             v("rep500_busy", "500 reps · ρ≈0.80", "500 réplicas · ρ≈0.80", 2.4, 3, 500, "More reps tame the busy-system variance.", "Más réplicas domestican la varianza del sistema ocupado."),
             v("rep500_heavy", "500 reps · ρ≈0.90", "500 réplicas · ρ≈0.90", 2.7, 3, 500, "More reps tighten the CI but can't fix bias: it converges precisely onto a ~16%-low value, outside Erlang-C.", "Más réplicas cierran el IC pero no corrigen el sesgo: converge con precisión a un valor ~16% bajo, fuera de Erlang-C."),
-            v("rep50_heavy", "50 reps · ρ≈0.90", "50 réplicas · ρ≈0.90", 2.7, 3, 50, "The danger case: few reps at high load — don't trust it.", "El caso peligroso: pocas réplicas a carga alta — no confíes."),
+            v("rep50_heavy", "50 reps · ρ≈0.90", "50 réplicas · ρ≈0.90", 2.7, 3, 50, "The danger case: few reps at high load, don't trust it.", "El caso peligroso: pocas réplicas a carga alta, no confíes."),
             v("rep500_light", "500 reps · ρ≈0.50", "500 réplicas · ρ≈0.50", 1.5, 3, 500, "Best case: light load, many reps, razor-tight CI.", "Mejor caso: carga ligera, muchas réplicas, IC finísimo."),
         ]
 

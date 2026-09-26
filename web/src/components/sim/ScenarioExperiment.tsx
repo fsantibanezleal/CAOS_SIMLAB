@@ -16,7 +16,7 @@ export interface GridKpiConfig {
   cols: { key: string; en: string; es: string }[];
 }
 
-/** One case study: a ≥10-regime selector, then 3 sub-tabs — Simulator · Summary charts · Context.
+/** One case study: a ≥10-regime selector, then 3 sub-tabs, Simulator · Summary charts · Context.
  *  Branches the player + comparison on the manifest's viz renderer (queue-network vs agent-grid). */
 export function ScenarioExperiment({
   manifestId,

@@ -1,4 +1,4 @@
-# CuPy — usage
+# CuPy: usage
 
 > One-line mental model: **CuPy is NumPy whose arrays live on the GPU.** You write the same array code; it
 > executes on thousands of CUDA cores in parallel. The art is in *what* you batch.
@@ -25,7 +25,7 @@ c = (a * b).sum()           # elementwise + reduction, all on the device
 
 The function and method names mirror NumPy (`cp.arange`, `cp.sum`, `cp.exp`, `cp.histogram`, slicing,
 broadcasting, ufuncs). This is the whole appeal: code written for `xp = numpy` runs unchanged for
-`xp = cupy`. CAOS_SIMLAB exploits this with an **`xp` indirection** — the same Monte-Carlo function takes the
+`xp = cupy`. CAOS_SIMLAB exploits this with an **`xp` indirection**, the same Monte-Carlo function takes the
 array module as an argument and runs on whichever backend is available.
 
 ### The four concepts that actually matter
@@ -40,16 +40,16 @@ array module as an argument and runs on whichever backend is available.
    - **The rule:** keep data on the device for the whole computation; only the final small result returns.
 3. **cuRAND-backed RNG.** `cp.random.default_rng(seed)` mirrors NumPy's `Generator` API but draws on the GPU
    via cuRAND. Seeding makes a given backend reproducible. (Bit-exact equality *across* NumPy and CuPy is
-   **not** guaranteed — different RNG implementations — but each backend is reproducible with itself.)
+   **not** guaranteed, different RNG implementations, but each backend is reproducible with itself.)
 4. **JIT kernel compilation.** The first time an elementwise expression like `x*x + y*y` runs, CuPy compiles a
-   fused CUDA kernel (via NVRTC) and caches it. This needs the CUDA toolkit *headers* present — the source of
+   fused CUDA kernel (via NVRTC) and caches it. This needs the CUDA toolkit *headers* present, the source of
    the "Failed to find CUDA headers" error documented in [`01_installation.md`](./01_installation.md). It also
    means the *first* kernel call carries a one-time compile cost; the win shows up on large/repeated work.
 
 ### The CUDA-detect-with-fallback pattern (house standard)
 
 Because the GPU lane must never block a GPU-less learner, the standard is to **probe the GPU up front and fall
-back to NumPy** if anything fails — and to probe with the *same kind of operation* the real work uses (an
+back to NumPy** if anything fails, and to probe with the *same kind of operation* the real work uses (an
 elementwise op that triggers kernel compilation), so a half-installed CUDA can't crash mid-run:
 
 ```python
@@ -66,23 +66,23 @@ def select_backend():
         return np, "NumPy (CPU fallback)"
 ```
 
-This same probe ships in [`numba`](../14_numba.md) and the rest of the GPU lane — see the
+This same probe ships in [`numba`](../14_numba.md) and the rest of the GPU lane, see the
 [GPU-lane guide](../../guides/03_gpu-lane.md) for the shared contract.
 
 ---
 
 ## 2. Minimal runnable example, step by step
 
-The full script is [`example.py`](./example.py). It estimates **π** by the classic Monte-Carlo dart throw —
+The full script is [`example.py`](./example.py). It estimates **π** by the classic Monte-Carlo dart throw, 
 the simplest honest stand-in for the S10 "thousands of independent replications → mean + 95% CI" pattern,
 expressed entirely as **vectorized array ops** (no Python loop over draws), which is exactly the shape a GPU
 accelerates.
 
-**Step 1 — choose a backend (GPU if usable, else CPU).** `select_backend()` imports CuPy, then forces a real
+**Step 1, choose a backend (GPU if usable, else CPU).** `select_backend()` imports CuPy, then forces a real
 device touch including an elementwise op; any failure falls back to NumPy. It also reports *which* backend ran
 and notes the `CUDA path could not be detected` warning when it fires.
 
-**Step 2 — draw the batch on the device.** With `xp` bound to the chosen module:
+**Step 2, draw the batch on the device.** With `xp` bound to the chosen module:
 
 ```python
 rng = xp.random.default_rng(seed)        # same call on NumPy and CuPy
@@ -90,7 +90,7 @@ x = rng.random(n, dtype=xp.float64)      # n uniform draws in [0,1) -- on-device
 y = rng.random(n, dtype=xp.float64)
 ```
 
-**Step 3 — reduce on the device, transfer once.** Throw `n` darts into the unit square; the fraction inside
+**Step 3, reduce on the device, transfer once.** Throw `n` darts into the unit square; the fraction inside
 the quarter unit circle estimates `π/4`:
 
 ```python
@@ -100,11 +100,11 @@ p_hat = hits / n
 pi_hat = 4.0 * p_hat
 ```
 
-**Step 4 — attach an honest confidence interval.** Each dart is an i.i.d. Bernoulli(p) trial with `p = π/4`,
+**Step 4, attach an honest confidence interval.** Each dart is an i.i.d. Bernoulli(p) trial with `p = π/4`,
 so the 95% CI half-width on `pi_hat` is `4 · z · sqrt(p_hat·(1−p_hat)/n)` with `z ≈ 1.95996`. The CI narrows
-like `1/√n` — the central lesson of the Monte-Carlo curriculum.
+like `1/√n`, the central lesson of the Monte-Carlo curriculum.
 
-**Step 5 — report.** Print the backend, the estimate, the CI, the absolute error, and whether true π falls
+**Step 5, report.** Print the backend, the estimate, the CI, the absolute error, and whether true π falls
 inside the interval.
 
 Run it from the repo root:
@@ -119,7 +119,7 @@ Run it from the repo root:
 
 The script was actually run in this repo's `.venv` (Python 3.13, `cupy-cuda12x==14.1.1`). On the verification
 machine CuPy imported and a CUDA device was detected, **but the CUDA toolkit headers were absent**, so kernel
-JIT-compilation failed during the probe and the script fell back to NumPy on the CPU — exercising the fallback
+JIT-compilation failed during the probe and the script fell back to NumPy on the CPU, exercising the fallback
 path end-to-end. This is the honest, expected outcome on a box without a full CUDA toolkit; on a machine with
 the toolkit installed the `backend` line would instead read `CuPy (GPU: <device name>)` with the same
 (backend-reproducible) statistics. The captured stdout/stderr:
@@ -147,13 +147,13 @@ big batched Monte-Carlo, not a small event-loop DES. See docs/frameworks/15_cupy
 **Reading the result:**
 
 - The estimate **3.141370** lands within **0.000223** of true π (3.141593), and true π is **inside** the 95%
-  CI `[3.140650, 3.142090]` — the interval did its job. (A 95% CI is expected to *miss* roughly 1 run in 20;
+  CI `[3.140650, 3.142090]`, the interval did its job. (A 95% CI is expected to *miss* roughly 1 run in 20;
   that it covers here is the common, not the guaranteed, case.)
 - The run is **deterministic**: re-running prints the identical estimate (seed-fixed), so the artifact is
-  reproducible — the architecture's "replay = truth" contract.
+  reproducible, the architecture's "replay = truth" contract.
 - The two `note:` lines show the fallback firing for the documented reason. The `CUDA path could not be
   detected` `UserWarning` referenced there is emitted by CuPy on import (via `cuda-pathfinder`) when no CUDA
-  install is found — see [`01_installation.md`](./01_installation.md).
+  install is found, see [`01_installation.md`](./01_installation.md).
 
 That the GPU path was *skipped here* is itself the lesson the lab teaches: the **code** is GPU-ready, but a
 GPU is an optional accelerator, never a correctness requirement. The numbers above were produced by the exact
@@ -161,5 +161,5 @@ same array code that would run on the device.
 
 ---
 
-**Next:** [`03_applying.md`](./03_applying.md) — how to formalize the problem CuPy solves, which scenario uses
+**Next:** [`03_applying.md`](./03_applying.md), how to formalize the problem CuPy solves, which scenario uses
 it, and when to pick it over the alternatives.

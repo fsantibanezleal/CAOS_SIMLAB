@@ -1,10 +1,10 @@
-"""Taichi minimal example for CAOS_SIMLAB — one heat-diffusion step on a 2D grid.
+"""Taichi minimal example for CAOS_SIMLAB, one heat-diffusion step on a 2D grid.
 
 This is the smallest honest demonstration of why Taichi exists: write an
 ordinary-looking Python function over a 2D field, decorate it as a Taichi
 @ti.kernel, and Taichi JIT-compiles it to parallel native code. The same kernel
 runs on CPU (ti.cpu, used here for portability) or GPU (ti.cuda / ti.vulkan /
-ti.metal) by changing one argument to ti.init — nothing else in the code moves.
+ti.metal) by changing one argument to ti.init, nothing else in the code moves.
 
 The model is the classic 5-point explicit finite-difference update of the 2D
 heat equation (a stand-in for the fire/diffusion grid/CA niche in this lab):
@@ -15,7 +15,7 @@ heat equation (a stand-in for the fire/diffusion grid/CA niche in this lab):
 with a fixed-temperature hot source held at the centre and a zero (cold)
 Dirichlet boundary on the grid edge. Each cell's update depends only on its four
 neighbours from the *previous* step, so every interior cell can be computed
-independently and in parallel — exactly the data-parallel, regular-grid shape
+independently and in parallel, exactly the data-parallel, regular-grid shape
 where a GPU would help (and where a small grid like this one runs fine on CPU).
 
 Determinism: the initial field is built from a fixed numeric pattern (no RNG),

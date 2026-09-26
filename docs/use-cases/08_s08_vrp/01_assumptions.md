@@ -1,14 +1,14 @@
-# 01 · Assumptions — S08 Vehicle Routing Problem (CVRP)
+# 01 · Assumptions: S08 Vehicle Routing Problem (CVRP)
 
-> Part of the [S08 — Vehicle Routing Problem](../08_s08_vrp.md) use-case node. This page fixes the
+> Part of the [S08, Vehicle Routing Problem](../08_s08_vrp.md) use-case node. This page fixes the
 > **canonical instance** the scenario solves and states the **scope**: what is and what isn't modeled. The
-> facts here come from the scenario code (`simlab/scenarios/s08_vrp.py`) and its Experiments Context block —
+> facts here come from the scenario code (`simlab/scenarios/s08_vrp.py`) and its Experiments Context block, 
 > nothing is invented.
 
 ## The canonical instance
 
 S08 is a **capacitated vehicle routing problem (CVRP)** built from a single seeded RNG, then solved
-**twice** — once with OR-Tools and once with PyVRP — on the *identical* instance for a fair, reproducible
+**twice**, once with OR-Tools and once with PyVRP, on the *identical* instance for a fair, reproducible
 contrast. One instance is fully described by five integer parameters:
 
 | Parameter | Code name | Meaning | Default | Range |
@@ -21,10 +21,10 @@ contrast. One instance is fully described by five integer parameters:
 
 How the instance is constructed (`build_instance`):
 
-- **The road network** is a `g × g` `GridNetwork` of junctions on unit spacing — a self-contained synthetic
+- **The road network** is a `g × g` `GridNetwork` of junctions on unit spacing: a self-contained synthetic
   grid (no OpenStreetMap, no tiles), with 4-neighbour streets between adjacent junctions. It is the same
   shared graph used by S07 and S09 (`simlab/scenarios/_geo.py`).
-- **The depot** is the **centre node** `(g//2)·g + (g//2)` — deterministic, not random.
+- **The depot** is the **centre node** `(g//2)·g + (g//2)`: deterministic, not random.
 - **The customers** are `n_customers` nodes drawn by shuffling all non-depot nodes with the seeded RNG and
   taking the first `n`. The depot plus customers form the **special nodes** `special = [depot] + customers`,
   the rows/columns of the cost matrix.
@@ -32,7 +32,7 @@ How the instance is constructed (`build_instance`):
   drawn from the same seeded RNG.
 - **The cost matrix** `c_{ij}` is the **grid shortest path** (Dijkstra over Euclidean edge lengths) between
   each pair of special nodes, **scaled by 100 and rounded to an integer** (`SCALE = 100`). Integer scaling
-  keeps both engines — which are integer solvers internally — exact and byte-stable.
+  keeps both engines, which are integer solvers internally, exact and byte-stable.
 
 The instance is **fully deterministic from `(params, inst_seed)`**: re-running yields the same matrix and the
 same two plans.
@@ -55,34 +55,34 @@ same two plans.
 
 ## What is not modeled (out of scope)
 
-This is **pure combinatorial optimization** — one instance, solved once. There is **no stochastic dynamics**:
+This is **pure combinatorial optimization**, one instance, solved once. There is **no stochastic dynamics**:
 
 - **No time windows**: customers have no `[earliest, latest]` service interval (that would be VRPTW; the
   *optimize-then-simulate* fragility-under-uncertainty lesson is carried by the EMS-dispatch scenario S09,
   not here).
-- **No traffic, no variable service times, no breakdowns** — travel is deterministic.
-- **No multiple depots, no pickup-and-delivery, no heterogeneous fleet, no dynamic/online demand** — the
+- **No traffic, no variable service times, no breakdowns**: travel is deterministic.
+- **No multiple depots, no pickup-and-delivery, no heterogeneous fleet, no dynamic/online demand**: the
   PyVRP `Model` supports these variants, but this scenario uses only the single-depot homogeneous CVRP form.
 - **No proven MILP optimality certificate.** Both engines stop on a **deterministic count** (OR-Tools:
   `solution_limit = 200`; PyVRP: `MaxIterations(200)`), not a wall-clock limit and not an optimality gap of
   zero. On these small instances the result is high-quality / near-optimal, but it is the *committed*
-  solution, not a certified optimum. The Experiments Context states the same machine-independent stop —
-  `solution_limit = 200`, **not a wall-clock limit** — so code, web and docs agree: the committed trace is
+  solution, not a certified optimum. The Experiments Context states the same machine-independent stop, 
+  `solution_limit = 200`, **not a wall-clock limit**, so code, web and docs agree: the committed trace is
   byte-stable on any machine because the search ends on a fixed solution count, never on elapsed time.
-- An **unused vehicle** — one whose route is just depot→depot — is **dropped** and does not appear in the
+- An **unused vehicle**: one whose route is just depot→depot, is **dropped** and does not appear in the
   rendered plan or the `vehicles_used` KPI.
 
 ## Why these choices
 
 - **Synthetic grid, not real OSM**: keeps the scenario self-contained and the cost matrix small, integer and
-  reproducible — no map tiles, no ODbL data, no all-pairs matrix bottleneck. The shortest-path machinery is
+  reproducible, no map tiles, no ODbL data, no all-pairs matrix bottleneck. The shortest-path machinery is
   the readable `GridNetwork.shortest_path` (Dijkstra), shared across the routing scenarios.
 - **Integer-scaled distances (`×100`)**: both OR-Tools Routing and PyVRP operate on integer costs; scaling
   preserves enough precision while keeping every committed number exact across machines.
-- **Deterministic stopping rule** for both engines: this is the lab's *"replay = truth"* contract — a
+- **Deterministic stopping rule** for both engines: this is the lab's *"replay = truth"* contract: a
   solution-count / iteration-count stop is machine-independent, unlike a wall-clock `time_limit` where a
   faster CPU would explore more and produce a different "optimum". PyVRP additionally takes a **fixed solver
-  seed (42)** for its randomized Hybrid Genetic Search; OR-Tools Routing is **not** seeded — its determinism
+  seed (42)** for its randomized Hybrid Genetic Search; OR-Tools Routing is **not** seeded, its determinism
   comes from the single-threaded `GUIDED_LOCAL_SEARCH` plus the fixed `solution_limit`, which fully pin the
   search on the small instances here.
 

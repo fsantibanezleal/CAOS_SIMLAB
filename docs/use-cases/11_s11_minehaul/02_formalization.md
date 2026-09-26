@@ -1,4 +1,4 @@
-# 02 · Formalization — sets, parameters, variables, model, KPIs
+# 02 · Formalization: sets, parameters, variables, model, KPIs
 
 > Verified against the scenario's Context block (the `S11Desc` formalization in the web Experiments page)
 > and the code in [`../../../simlab/scenarios/s11_minehaul.py`](../../../simlab/scenarios/s11_minehaul.py)
@@ -9,20 +9,20 @@
 
 A **two-stage hybrid (plan-then-simulate)** with two coupled optimization problems:
 
-1. a **linear program** (LP) for the plant **blend** — solved by **OR-Tools GLOP** (a simplex);
-2. a **deterministic discrete-event simulation** (DES) for the **execution** — solved by **SimPy**.
+1. a **linear program** (LP) for the plant **blend**: solved by **OR-Tools GLOP** (a simplex);
+2. a **deterministic discrete-event simulation** (DES) for the **execution**: solved by **SimPy**.
 
 A graph **shortest-path** problem (Dijkstra over a graded edge cost) links the two: it turns each
 planned source→destination flow into a real haul time over the terrain.
 
 ## Sets
 
-- **Phases / sources** `i ∈ S` — the load points, each a node `phase_nodes[i]` with grade `g_i` and an
+- **Phases / sources** `i ∈ S`: the load points, each a node `phase_nodes[i]` with grade `g_i` and an
   availability `a_i`. The default set is the three phases; when a stockpile is pre-built it joins `S` as a
   fourth source (`is_stock = True`).
-- **Destinations** — the set `{ plant, dump, stocks }`. The plant is a sink with a grade target; the dump
+- **Destinations**: the set `{ plant, dump, stocks }`. The plant is a sink with a grade target; the dump
   a waste sink; each stockpile a **sink-and-source** node.
-- **Fleet** — `K` trucks (`n_trucks`), each a SimPy process.
+- **Fleet**: `K` trucks (`n_trucks`), each a SimPy process.
 
 ## Parameters
 
@@ -38,17 +38,17 @@ planned source→destination flow into a real haul time over the terrain.
 | `H` | shift length | `horizon` |
 | `cap_stock` | stockpile capacity | `stock_cap = 60.0` |
 | `ℓ(0)` | initial stockpile level | `init_stock` |
-| — | load / tip time, speed | `LOAD_TIME=1.5`, `TIP_TIME=0.5`, `SPEED=1.0` |
+| – | load / tip time, speed | `LOAD_TIME=1.5`, `TIP_TIME=0.5`, `SPEED=1.0` |
 
 The effective demand is clamped to available supply: `demand_eff = min(D, Σ_i a_i)` (`demand_eff`).
 
 ## Decision variables
 
-- **Blend plan** `x_i ≥ 0` — tonnes drawn from each source `i` to the plant; the LP's decision
+- **Blend plan** `x_i ≥ 0`: tonnes drawn from each source `i` to the plant; the LP's decision
   (`xs = [solver.NumVar(0, a_i, …)]`, read out as `plan_x`).
-- **Linearization slacks** `d⁺, d⁻ ≥ 0` — the positive/negative grade deviation, used to turn the
+- **Linearization slacks** `d⁺, d⁻ ≥ 0`: the positive/negative grade deviation, used to turn the
   absolute-value objective into an LP (`dpos`, `dneg`).
-- **Dispatch (in the DES)** — which **flow** each free truck serves on each cycle. Not a closed-form
+- **Dispatch (in the DES)**: which **flow** each free truck serves on each cycle. Not a closed-form
   variable but a **policy**: a free truck picks the feasible flow it can reach soonest / the flow furthest
   behind, with the plant tier first for plant-duty trucks (`pick_flow`).
 
@@ -80,7 +80,7 @@ solver.Minimize(dpos + dneg)
 ```
 
 Because the phase grades **straddle** the target `g*` and each availability `a_i` is capped, **no single
-phase can satisfy the plant** — the optimal plan is a *genuine blend*. The realized plan grade is
+phase can satisfy the plant**, the optimal plan is a *genuine blend*. The realized plan grade is
 `plan_grade = Σ_i g_i x_i / demand_eff` (`plan_grade`).
 
 ## (2) Graded route cost (Dijkstra)
@@ -95,7 +95,7 @@ cost(a → b) = dist(a, b) · ( 1 + ρ · max(0, elev_b − elev_a) )
 Code: `loaded_cost(a, b)` and `net.shortest_path(a, b, cost=loaded_cost)` over the `GridNetwork`
 "hills" terrain (a deterministic sum of Gaussian bumps, in `simlab/scenarios/_geo.py`). Paths are cached
 per `(a, b, loaded)` key. The strong penalty `ρ = 6.0` makes the far high-grade phase's loaded haul
-genuinely long — which is what an under-sized fleet cannot keep up with.
+genuinely long, which is what an under-sized fleet cannot keep up with.
 
 ## (3) Execution dynamics (DES)
 
@@ -103,7 +103,7 @@ The `K` trucks cycle **drive empty → queue & hold loader → load → graded h
 re-decide. Each step is real SimPy:
 
 - drive to the source on plain distance (`timed_legs(... )`), then `with loader_for(src).request(): yield req`
-  — a **shared `simpy.Resource`** with capacity 1, so two trucks aimed at the same phase queue FIFO;
+ , a **shared `simpy.Resource`** with capacity 1, so two trucks aimed at the same phase queue FIFO;
 - hold the loader for `LOAD_TIME`, then haul the load on the **graded** cost to the destination;
 - on a **plant** tip: accumulate `plant_tons += q` and `plant_grade += q · g_src`;
 - on a **stock** tip: `ℓ += q`; on a **stock-source** load: `ℓ −= q` (only feasible when `ℓ ≥ q`);
@@ -113,7 +113,7 @@ re-decide. Each step is real SimPy:
 Dispatch tiers (`pick_flow`): **plant-duty** trucks serve `("plant",)` first then the housekeeping
 `("dump","stock")`; **aux** trucks own `("dump","stock")` first then backstop the plant. Within the
 housekeeping tier the truck takes the flow **furthest behind** (lowest `done/target`), breaking ties by
-reachability — so the dump is always serviced and a buffer still fills.
+reachability, so the dump is always serviced and a buffer still fills.
 
 ## Objective vs KPIs
 
@@ -141,17 +141,17 @@ The LP's **objective** is the blend deviation `d⁺ + d⁻` (minimized on paper)
 - **Analytic block** (the *plan* vs realization, for honesty): `plan_grade`, `plan_x` (the LP allocation),
   `demand_eff`, `stock_peak`, `stock_end`.
 
-The headline reading: **an optimal plan is necessary but not sufficient** — fleet size, not the LP, decides
+The headline reading: **an optimal plan is necessary but not sufficient**, fleet size, not the LP, decides
 whether the band is hit, and the **base 6-truck fleet does not land in band**. With `g* = 2.9`, `τ = 0.15`
 the band is `[2.75, 3.05]`; the 6-truck `base` reaches only `ĝ = 2.547` (`grade_dev = 0.353`, ≈ 2.35× the
-`τ = 0.15` tolerance — well outside the band), with `plan_adherence = 63.3%` and **`in_band = 0`**. The
+`τ = 0.15` tolerance, well outside the band), with `plan_adherence = 63.3%` and **`in_band = 0`**. The
 realized blend (`ĝ = 2.547`) falls short of the plan's blend (`plan_grade = 2.9`) by **2.547 vs 2.9**: the
 LP plan is optimal, yet the fleet cannot haul enough of the far high-grade phase before the shift ends, so
 the executed mix is poorer than the plan. Only a **larger (over-trucked) fleet** lands `ĝ` inside `g* ± τ`:
 the ~12-truck `overtrucked` variant reaches `ĝ = 2.86` (`grade_dev = 0.04`, `adherence = 100%`,
 `in_band = 1`), and `surge12` (16 trucks) is likewise in-band; a `low_target` variant (looser target) also
 fits with the 6-truck fleet. The genuinely **under-sized** 3-truck `undertrucked` case starves the far
-high-grade phase hardest — `ĝ = 1.78`, `adherence = 33.3%`, far below the band — even though its LP plan was
+high-grade phase hardest, `ĝ = 1.78`, `adherence = 33.3%`, far below the band, even though its LP plan was
 optimal.
 
 ## Next

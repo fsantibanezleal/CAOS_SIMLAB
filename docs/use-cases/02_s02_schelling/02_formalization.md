@@ -1,4 +1,4 @@
-# S02 Schelling — formalization
+# S02 Schelling: formalization
 
 ← Back to the node index: [../02_s02_schelling.md](../02_s02_schelling.md) ·
 Prev: [01_assumptions.md](./01_assumptions.md) · Next: [03_solvers-applied.md](./03_solvers-applied.md)
@@ -14,7 +14,7 @@ node is readable as Markdown; the live Theory page renders the same equations wi
 
 A **lattice agent-based model (ABM)** with **batch-update, relocation-driven activation** (all unhappy agents
 are decided against the start-of-step configuration, then relocated one-by-one). There is no
-closed-form solver and no objective to optimize: in ABM the **run *is* the answer** — you build the local
+closed-form solver and no objective to optimize: in ABM the **run *is* the answer**, you build the local
 rule and observe the global pattern it produces. (`analytic = {}` in the trace, by design.)
 
 ## 2. Sets
@@ -34,7 +34,7 @@ rule and observe the global pattern it produces. (`analytic = {}` in the trace, 
 | Empty fraction | e | share of cells left vacant at init (a cell is occupied iff its seeded draw ≥ e) |
 | Tolerance | τ | minimum own-type fraction an agent demands (the single behavioural threshold) |
 | Max steps | T | hard cap on relocation rounds |
-| Seed | — | seeds the RNG; with it, the run is reproducible |
+| Seed | – | seeds the RNG; with it, the run is reproducible |
 
 ## 4. State & decision variables
 
@@ -54,19 +54,19 @@ stores this as a row-major flat array of state codes (`grid_snapshot()` → `cel
   An isolated agent (|N_i| = 0) is taken to be content by convention and never moves.
 
 The "decision variable" of the ABM is thus this binary relocate/stay choice each agent makes from its own
-local view — there is no global decision vector being optimized.
+local view, there is no global decision vector being optimized.
 
 ## 5. Dynamics (the step)
 
 Each step is a **batch update** (verified in `relocate()` and the `run()` loop): all unhappy agents are
 *decided* against the **start-of-step configuration** in one pass, then *relocated* one-by-one into the
 growing pool of empty cells. (This batch-decision-then-sequential-move scheme is neither a strictly
-simultaneous swap nor a fully asynchronous re-evaluation between moves — it is the single, well-defined
+simultaneous swap nor a fully asynchronous re-evaluation between moves, it is the single, well-defined
 update the code implements.)
 
 1. **Evaluate.** For every agent compute s_i; collect the unhappy set U = { i : |N_i| > 0 and s_i < τ }.
    (`segregation_and_unhappy()` returns both the segregation index and U in one pass.)
-2. **Stop test.** If U is empty (everyone content) **or** the step index has reached T, stop — the system
+2. **Stop test.** If U is empty (everyone content) **or** the step index has reached T, stop: the system
    has converged or hit the cap.
 3. **Relocate.** Otherwise move every unhappy agent (all decided against the start-of-step board) to a
    random empty cell: take the grid's empties as a *sorted* list (stable order), seeded-shuffle them,
@@ -79,7 +79,7 @@ The loop records a frame **before** each evaluation, so frame t is the configura
 
 ## 6. Macro-observables / KPIs
 
-The model's headline macro-observable is the **segregation index** — the mean same-type fraction over the
+The model's headline macro-observable is the **segregation index**, the mean same-type fraction over the
 non-isolated agents:
 
 `S = (1/|𝒜|) · Σ_{i ∈ 𝒜} s_i`,   𝒜 = { i : c_i ≠ 0, |N_i| > 0 }.
@@ -90,7 +90,7 @@ floored at 1 to avoid division by zero). Both are emitted as time series (`serie
 
 **Emergence** is the empirical claim `S ≫ τ` at (near-)stationarity for moderate τ: the collective
 self-organizes far above what any single agent demands. As a function of τ the converged S is
-**phase-transition-shaped** with a *tipping point* τ_c — a small rise in tolerance produces a qualitative
+**phase-transition-shaped** with a *tipping point* τ_c, a small rise in tolerance produces a qualitative
 jump in global segregation.
 
 The committed KPI block (from `run()`), surfaced in the app HUD, is:

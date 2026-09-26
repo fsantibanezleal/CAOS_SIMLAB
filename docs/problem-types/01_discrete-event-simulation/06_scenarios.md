@@ -1,4 +1,4 @@
-# 06 · Scenarios — the optimize-then-simulate bridge & the scenario map
+# 06 · Scenarios: the optimize-then-simulate bridge & the scenario map
 
 > Part of the [Discrete-Event Simulation guide](../01_discrete-event-simulation.md). This page connects
 > the engines from [05 · The DES toolbox](./05_tools.md) to the lab's actual scenarios: the
@@ -13,19 +13,19 @@ disposes.
 
 This is where DES forms the "simulate" leg of the hybrid scenarios:
 
-- [**S07 (construction haul routing)**](../../use-cases/07_s07_haul.md) — a native route PLAN (NetworkX +
+- [**S07 (construction haul routing)**](../../use-cases/07_s07_haul.md): a native route PLAN (NetworkX +
   OR-Tools CP-SAT, no WASM) is precomputed offline and committed as data; only the pure-Python **SimPy**
   replay runs live, mutating fleet sliders and re-selecting among the committed grade×wall plans. The
   shipped variants are deterministic (fixed load/dump times; the optional breakdown stream is pinned to
   0), so the cycle-time spread comes from loader contention across fleet sizes, not random delays. The
   *DES leg* is pure SimPy.
-- [**S11 (mine multi-destination haul)**](../../use-cases/11_s11_minehaul.md) — a GLOP LP allocation is
+- [**S11 (mine multi-destination haul)**](../../use-cases/11_s11_minehaul.md): a GLOP LP allocation is
   simulated under uncertainty so the realised outcomes (not just the LP's paper optimum) are what gets
   reported.
 
-S09 is *not* part of this optimize-then-simulate group — it carries **no** optimizer at all:
+S09 is *not* part of this optimize-then-simulate group, it carries **no** optimizer at all:
 
-- [**S09 (ambulance dispatch)**](../../use-cases/09_s09_ambulance.md) — a fully **live** SimPy + NetworkX
+- [**S09 (ambulance dispatch)**](../../use-cases/09_s09_ambulance.md): a fully **live** SimPy + NetworkX
   DES with **no** OR-Tools and **no** OSMnx/OSRM. One seeded Poisson call stream is replayed; dispatch is a
   closed-form **nearest-available argmin** (the unit with the earliest feasible scene arrival, honouring
   each unit's busy clock) and routing is `nx.single_source_dijkstra` over an in-repo `GridNetwork` road
@@ -35,7 +35,7 @@ The full optimization side, the `GUIDED_LOCAL_SEARCH` + deterministic stopping r
 limit such as S08's `solution_limit = 200`, or a CP-SAT/GLOP cap with `num_search_workers = 1`) + seed
 template, and the simheuristic story live in the
 [Optimization & Routing guide](../03_optimization-routing.md). Determinism is
-the contract on both legs: seed the solver *and* the SimPy RNG so every committed run reproduces exactly —
+the contract on both legs: seed the solver *and* the SimPy RNG so every committed run reproduces exactly, 
 the [determinism discipline](../../architecture/02_determinism-and-trace.md) from the
 [honesty curriculum](./04_honesty-curriculum.md#4-determinism-is-the-contract).
 
@@ -50,11 +50,11 @@ can still run live, as in S07):
 
 - **Live (in-browser):** [S01](../../use-cases/01_s01_queue.md) (bank/clinic queue),
   [S04](../../use-cases/04_s04_ed.md) (ED patient flow), [S09](../../use-cases/09_s09_ambulance.md)
-  (ambulance dispatch — SimPy + NetworkX, pure-Python, no solver), the SimPy *replay* of
+  (ambulance dispatch, SimPy + NetworkX, pure-Python, no solver), the SimPy *replay* of
   [S07](../../use-cases/07_s07_haul.md), and the joblib-driven [S10](../../use-cases/10_s10_montecarlo.md)
   Monte-Carlo study (joblib runs live in Pyodide). Move a slider, SimPy re-runs in the Worker, the
   network animates. See the [live Pyodide lane](../../architecture/04_live-lane-pyodide.md).
-- **Precomputed (committed plan/trace, replayed):** only the **native OR-Tools** legs — S07's route PLAN
+- **Precomputed (committed plan/trace, replayed):** only the **native OR-Tools** legs: S07's route PLAN
   (NetworkX + CP-SAT, committed as data so the live SimPy replay can re-select among the grade×wall grid),
   S08's CVRP plans (OR-Tools + PyVRP), and S11's GLOP LP allocation. These set `pure_python = False`, have
   no WASM build, and ship as committed artifacts replayed under the *"precomputed due to cost; full
@@ -71,22 +71,22 @@ the [use-cases section](../../use-cases/01_s01_queue.md).
 
 | Scenario | DES engine | Validation / theory | Lane | What it teaches |
 |---|---|---|---|---|
-| [**S01 — Bank / Clinic Queue (M/M/c)**](../../use-cases/01_s01_queue.md) | **SimPy** (process-interaction) | **Ciw** closed-form M/M/c overlay (Erlang-C) | live | The DES "hello world": arrivals, a server pool, a queue, utilization ρ, Little's Law, and **sim-converges-to-theory** validation. Folds in the ρ→1 utilization blow-up. |
-| [**S04 — Emergency Department Patient Flow**](../../use-cases/04_s04_ed.md) | **SimPy** (multi-stage; FCFS triage + non-preemptive priority treatment) | no closed form → face validity + sensitivity | live | Synthetic non-stationary (thinned, Lewis–Shedler) Poisson arrivals with one optional surge window over the middle 30%–60% of the shift, FCFS triage + a non-preemptive priority treatment station, resource-limited multi-stage flow (triage → treatment → discharge). One seeded run (the replications/CI honesty lesson is **S10**). |
-| [**S07 — Construction Haul Routing**](../../use-cases/07_s07_haul.md) *(DES replay)* | **SimPy** replay (deterministic shipped variants: fixed load/dump times; the optional breakdown stream is pinned to 0) | — | live replay (native plan precomputed) | The *simulate* leg of optimize-then-simulate: the route plan is committed, the SimPy replay runs live; how a fixed plan plays out under loader contention (and would degrade once breakdowns are switched on). |
-| [**S08 — Vehicle Routing (CVRP)**](../../use-cases/08_s08_vrp.md) | **OR-Tools + PyVRP** (no SimPy, no DES leg) | — | precomputed | Two SOTA solvers on the identical CVRP instance; the head-to-head total-distance gap (no stochastic replay). |
-| [**S09 — Ambulance Dispatch**](../../use-cases/09_s09_ambulance.md) | **SimPy + NetworkX**, closed-form nearest-available argmin dispatch (no solver) | — | live | One seeded Poisson call stream over an in-repo `GridNetwork`; response-time distributions and coverage, run live in the browser. |
-| [**S10 — Monte-Carlo Replication / CI Study**](../../use-cases/10_s10_montecarlo.md) | **heap-based M/M/c estimator** (numpy), replicated by **joblib** (`Parallel`, threading) | SciPy CI vs Erlang-C | live (joblib runs in Pyodide) | The non-negotiable curriculum: **replications, confidence intervals, finite-run (initial-transient) bias**, and the wrong-vs-corrected pitfall (single run, one seed). |
-| [**S11 — Mine Multi-Destination Haul**](../../use-cases/11_s11_minehaul.md) *(DES leg)* | **SimPy** replay of the GLOP LP allocation | — | precomputed | Realised haul outcomes under uncertainty vs the LP's paper optimum. |
+| [**S01, Bank / Clinic Queue (M/M/c)**](../../use-cases/01_s01_queue.md) | **SimPy** (process-interaction) | **Ciw** closed-form M/M/c overlay (Erlang-C) | live | The DES "hello world": arrivals, a server pool, a queue, utilization ρ, Little's Law, and **sim-converges-to-theory** validation. Folds in the ρ→1 utilization blow-up. |
+| [**S04, Emergency Department Patient Flow**](../../use-cases/04_s04_ed.md) | **SimPy** (multi-stage; FCFS triage + non-preemptive priority treatment) | no closed form → face validity + sensitivity | live | Synthetic non-stationary (thinned, Lewis–Shedler) Poisson arrivals with one optional surge window over the middle 30%–60% of the shift, FCFS triage + a non-preemptive priority treatment station, resource-limited multi-stage flow (triage → treatment → discharge). One seeded run (the replications/CI honesty lesson is **S10**). |
+| [**S07, Construction Haul Routing**](../../use-cases/07_s07_haul.md) *(DES replay)* | **SimPy** replay (deterministic shipped variants: fixed load/dump times; the optional breakdown stream is pinned to 0) | – | live replay (native plan precomputed) | The *simulate* leg of optimize-then-simulate: the route plan is committed, the SimPy replay runs live; how a fixed plan plays out under loader contention (and would degrade once breakdowns are switched on). |
+| [**S08, Vehicle Routing (CVRP)**](../../use-cases/08_s08_vrp.md) | **OR-Tools + PyVRP** (no SimPy, no DES leg) | – | precomputed | Two SOTA solvers on the identical CVRP instance; the head-to-head total-distance gap (no stochastic replay). |
+| [**S09, Ambulance Dispatch**](../../use-cases/09_s09_ambulance.md) | **SimPy + NetworkX**, closed-form nearest-available argmin dispatch (no solver) | – | live | One seeded Poisson call stream over an in-repo `GridNetwork`; response-time distributions and coverage, run live in the browser. |
+| [**S10, Monte-Carlo Replication / CI Study**](../../use-cases/10_s10_montecarlo.md) | **heap-based M/M/c estimator** (numpy), replicated by **joblib** (`Parallel`, threading) | SciPy CI vs Erlang-C | live (joblib runs in Pyodide) | The non-negotiable curriculum: **replications, confidence intervals, finite-run (initial-transient) bias**, and the wrong-vs-corrected pitfall (single run, one seed). |
+| [**S11, Mine Multi-Destination Haul**](../../use-cases/11_s11_minehaul.md) *(DES leg)* | **SimPy** replay of the GLOP LP allocation | – | precomputed | Realised haul outcomes under uncertainty vs the LP's paper optimum. |
 
 Each scenario commits its **seed, parameters, warm-up cut, and measured gate numbers** into the manifest
-so the replayed run is reproducible — and carries a **STRESS-DES model card** (see the
+so the replayed run is reproducible, and carries a **STRESS-DES model card** (see the
 [honesty curriculum](./04_honesty-curriculum.md#5-an-animation-is-a-hypothesis-generator-not-evidence)).
 
 ## Next
 
-- [Monte-Carlo & Replications guide](../04_monte-carlo-replications.md) — the replication/CI machinery S10
+- [Monte-Carlo & Replications guide](../04_monte-carlo-replications.md): the replication/CI machinery S10
   wraps around the DES base model.
-- [Optimization & Routing guide](../03_optimization-routing.md) — the "optimize" half of the hybrid
+- [Optimization & Routing guide](../03_optimization-routing.md): the "optimize" half of the hybrid
   scenarios above.
 - Back to the [DES section index](../01_discrete-event-simulation.md).

@@ -1,29 +1,29 @@
-"""S11 — Mine multi-destination haul: an optimal flow plan vs a fixed fleet (plan-then-simulate).
+"""S11, Mine multi-destination haul: an optimal flow plan vs a fixed fleet (plan-then-simulate).
 
 A mine sends ore from several PHASES (load points, each with an ore grade) to three destination KINDS:
 a PLANT (final sink with a target grade), a DUMP (waste sink) and intermediate STOCKS (a node that is a
 sink and, once it holds material, a source for later trips). Two coupled OR problems, each on its real
 framework:
 
-  1. PLANT BLEND (LP, **OR-Tools GLOP**, precompute) — choose how many tonnes to draw from each source so
+  1. PLANT BLEND (LP, **OR-Tools GLOP**, precompute): choose how many tonnes to draw from each source so
      the blended feed hits the plant grade target within demand. The sources' grades straddle the target,
      so a single phase can't satisfy it: the plan is a genuine blend. Solved with ``pywraplp``'s GLOP
      simplex (``docs/frameworks/08_ortools``), the same LP engine the OR-Tools docs example uses.
-  2. EXECUTION (**SimPy** discrete-event sim) — a FIXED fleet runs haul cycles (drive → load → graded climb
+  2. EXECUTION (**SimPy** discrete-event sim): a FIXED fleet runs haul cycles (drive → load → graded climb
      → tip → return) with a TIERED dispatch: plant-duty trucks take the plant flow they can reach soonest,
      while auxiliary trucks take whichever housekeeping flow (dump or stock) is furthest behind. Each truck
      is a real ``simpy`` process and each load point is a shared ``simpy.Resource`` loader, so two trucks
-     aimed at the same phase queue for it (``docs/frameworks/01_simpy``) — no hand-rolled event heap. The far,
+     aimed at the same phase queue for it (``docs/frameworks/01_simpy``), no hand-rolled event heap. The far,
      high-grade phase needs longer hauls, so an under-sized fleet can't deliver its planned tonnage in the
-     shift — and the achieved plant blend SLIPS off target. An optimal plan is necessary but not sufficient.
+     shift, and the achieved plant blend SLIPS off target. An optimal plan is necessary but not sufficient.
 
 Stocks rise as trucks tip into them and fall as trucks draw from them (fill bars in the viz). OR-Tools is
-native, so this is a precompute-lane scenario (no live lane) — the committed trace replays the GLOP plan +
+native, so this is a precompute-lane scenario (no live lane), the committed trace replays the GLOP plan +
 the SimPy fleet realizing a degraded version of it.
 
 Determinism: the LP is solved by GLOP's deterministic simplex; the DES has no stochastic variates (the
 fleet's stagger and the dispatch policy are fixed functions of the inputs), so the whole run is a pure
-function of (params, seed) — the same input yields the same trace byte-for-byte. The emitted artifact is
+function of (params, seed), the same input yields the same trace byte-for-byte. The emitted artifact is
 the existing routetrace format (nodes/edges/agents/routes/barriers/gauges/legend/kpis/analytic); nothing
 in the trace schema or the frontend contract changes.
 """
@@ -71,7 +71,7 @@ class MineHaulScenario(Scenario):
 
         return [
             v("base", "6 trucks · still off spec", "6 camiones · aún fuera de especificación", nt=6,
-              ne="A 6-truck fleet closes much of the gap but still misses spec: only ~63% plan adherence, blend 2.55 vs target 2.9 (dev ~2.3x the band) — out of band.", nse="Una flota de 6 camiones cierra buena parte de la brecha pero aún no cumple: solo ~63% de adherencia, mezcla 2.55 vs meta 2.9 (desvío ~2.3x la banda) — fuera de banda."),
+              ne="A 6-truck fleet closes much of the gap but still misses spec: only ~63% plan adherence, blend 2.55 vs target 2.9 (dev ~2.3x the band), out of band.", nse="Una flota de 6 camiones cierra buena parte de la brecha pero aún no cumple: solo ~63% de adherencia, mezcla 2.55 vs meta 2.9 (desvío ~2.3x la banda), fuera de banda."),
             v("undertrucked", "Under-trucked · grade slips", "Sub-equipado · la ley se desajusta", nt=3,
               ne="Too few trucks: the far high-grade phase lags, the blend slips below target.", nse="Pocos camiones: la fase rica lejana se atrasa, la mezcla cae bajo la meta."),
             v("overtrucked", "Over-trucked · plan met", "Sobre-equipado · plan cumplido", nt=12,
@@ -83,7 +83,7 @@ class MineHaulScenario(Scenario):
             v("surge12", "Surge · bigger fleet", "Alza · flota mayor", nt=16, dem=120.0, hz=200.0,
               ne="More trucks absorb the surge and restore the blend.", nse="Más camiones absorben el alza y recuperan la mezcla."),
             v("stock_source", "Stock as a source", "Stock como origen", nt=6, init=40.0, sg=3.2,
-              ne="A pre-built high-grade stock feeds the plant — the stock DRAINS as a source.", nse="Un stock rico pre-armado alimenta la planta — el stock se VACÍA como origen."),
+              ne="A pre-built high-grade stock feeds the plant, the stock DRAINS as a source.", nse="Un stock rico pre-armado alimenta la planta, el stock se VACÍA como origen."),
             v("two_phase_rich", "High target · rich far phase", "Meta alta · fase rica lejana", nt=4, gt=3.2,
               ne="A high target needs lots of the distant rich phase; a small fleet can't deliver it.", nse="Una meta alta exige mucha fase rica lejana; una flota chica no la entrega."),
             v("dump_heavy", "Low plant demand", "Baja demanda de planta", nt=6, dem=25.0,
@@ -91,9 +91,9 @@ class MineHaulScenario(Scenario):
             v("barrier", "Wall on a haul road", "Muro en una ruta", nt=6, bar=1,
               ne="A barrier lengthens the rich phase's haul road, worsening the slip.", nse="Una barrera alarga la ruta de la fase rica, agravando el desvío."),
             v("low_target", "Low grade target", "Meta de ley baja", nt=6, gt=1.75,
-              ne="A low target leans on the near phases — easy to hit on grade.", nse="Meta baja se apoya en las fases cercanas — fácil de lograr en ley."),
+              ne="A low target leans on the near phases, easy to hit on grade.", nse="Meta baja se apoya en las fases cercanas, fácil de lograr en ley."),
             v("stock_buffer", "Stock buffer building", "Stock acumulando", nt=8, init=10.0,
-              ne="The stock fills from a phase while the plant runs — watch the bar rise.", nse="El stock se llena desde una fase mientras corre la planta — mira subir la barra."),
+              ne="The stock fills from a phase while the plant runs, watch the bar rise.", nse="El stock se llena desde una fase mientras corre la planta, mira subir la barra."),
         ]
 
     def run(self, params: dict, seed: int) -> RouteTrace:
@@ -113,7 +113,7 @@ class MineHaulScenario(Scenario):
 
         # Places sit in the INTERIOR, spread out (fractions of the grid) so haul routes wind through the
         # terrain instead of hugging the border. Index 0=low, 1=mid, 2=high to match PHASE_GRADES: low &
-        # mid sit NEAR the plant; the high-grade phase sits FAR across the map — an undersized fleet
+        # mid sit NEAR the plant; the high-grade phase sits FAR across the map: an undersized fleet
         # starves it and the blend slips.
         def at(fx: float, fy: float) -> int:
             return int(round(fy * (g - 1))) * g + int(round(fx * (g - 1)))
@@ -139,7 +139,7 @@ class MineHaulScenario(Scenario):
         # A wall placed on the realized HIGH→plant haul road only (so it bites the rich phase, not the
         # near phases). The high phase (top-left) reaches the plant (bottom-right) down the left edge,
         # through the low-elevation valley around row 5, then up the right side. low→plant runs along the
-        # bottom row and mid→plant up the right edge — neither touches this corner. The wall is an L
+        # bottom row and mid→plant up the right edge: neither touches this corner. The wall is an L
         # (row 8 cols 0..6 seals the bottom-left escape; col 6 rows 2..8 seals the valley exit), forcing
         # the loaded high haul up and over higher ground (cost ~34.4 → ~36.9) while low/mid are unchanged.
         # Net effect: the rich phase's cycle lengthens, fewer high-grade loads land, the blend slips MORE.
@@ -186,7 +186,7 @@ class MineHaulScenario(Scenario):
                               "kind": "plant", "from_stock": s.get("is_stock", False), "done": 0.0})
         # stock-fill (build a buffer from the high-grade phase) + a dump flow (low-grade excess)
         stock_cap = 60.0
-        # build a buffer from the near mid phase — UNLESS the stock is already pre-built (then it only
+        # build a buffer from the near mid phase: UNLESS the stock is already pre-built (then it only
         # sources to the plant, showing the drain role cleanly).
         if stock_node is not None and init_stock < 0.4 * stock_cap:
             fill_target = min(stock_cap - init_stock, 0.5 * stock_cap)
@@ -195,7 +195,7 @@ class MineHaulScenario(Scenario):
                               "target": fill_target, "kind": "stock", "from_stock": False, "done": 0.0})
         # DUMP = the low-grade waste/excess. The low phase is mined at a roughly fixed production rate; the
         # share not pulled into the plant blend is wasted to the dump. So the dump target is the slack
-        # between a nominal production level and the plant demand — when plant demand is LOW the dump
+        # between a nominal production level and the plant demand: when plant demand is LOW the dump
         # target is LARGE (most production routes to the dump), when demand is high the dump shrinks to a
         # floor. nominal_production is a fixed reference (not demand) so dump_heavy genuinely dumps more.
         nominal_production = 80.0
@@ -253,7 +253,7 @@ class MineHaulScenario(Scenario):
             # PLANT trucks feed the plant first; once the plant plan is served they help the housekeeping
             # flows. AUX trucks own the housekeeping flows (dump + stock) and only backstop the plant once
             # those are done. Within the housekeeping tier an aux truck takes whichever flow is FURTHEST
-            # behind (lowest done/target ratio), so the dump and the stock both progress — the dump is
+            # behind (lowest done/target ratio), so the dump and the stock both progress: the dump is
             # always serviced (loads_dump > 0 everywhere) and a buffer-build still fills the stock.
             if duty == "plant":
                 tiers = (("plant",), ("dump", "stock"))
@@ -274,7 +274,7 @@ class MineHaulScenario(Scenario):
             """One truck's life-story as a real SimPy process: repeatedly pick a flow via the tiered
             pick_flow policy (plant trucks: the reachable-soonest plant flow; aux trucks: the most-behind
             housekeeping flow), drive empty to its source, queue for and hold that source's shared loader, haul the load
-            (graded) to the destination, tip, and re-decide — until no time is left to finish a load before
+            (graded) to the destination, tip, and re-decide, until no time is left to finish a load before
             the shift ``horizon``. The dispatch decision (``pick_flow``) and the claim of the flow's
             ``done`` happen the instant the truck becomes free (``env.now``), so a truck deciding later sees
             an up-to-date plan; the loader contention is a genuine shared ``simpy.Resource`` queued in
@@ -327,7 +327,7 @@ class MineHaulScenario(Scenario):
         for k in range(n_trucks):
             env.process(truck_proc(k))
         # drain all events (no `until`): each truck's own `horizon` guards stop it from STARTING a new
-        # load past the shift, but a cycle already begun is recorded in full — matching the original loop,
+        # load past the shift, but a cycle already begun is recorded in full: matching the original loop,
         # which processed any event dispatched before the horizon to completion.
         env.run()
 
@@ -366,7 +366,7 @@ class MineHaulScenario(Scenario):
                           "label_en": "stockpile", "label_es": "acopio", "color": "var(--color-magenta)",
                           "frames": stock_frames}]
         achieved = plant_grade_accum / plant_tons if plant_tons else 0.0
-        # plan_adherence measures the PLANT FEED PLAN — the real "plan" the LP committed to. Buffer
+        # plan_adherence measures the PLANT FEED PLAN: the real "plan" the LP committed to. Buffer
         # (stock) and waste (dump) flows are housekeeping, not the production plan, so they don't dilute
         # the metric (else a fully-served plant could still read low because the dump lagged).
         plan_total = sum(fl["target"] for fl in flows if fl["kind"] == "plant")

@@ -1,7 +1,7 @@
-"""S04 — Emergency department patient flow (multi-stage DES).
+"""S04, Emergency department patient flow (multi-stage DES).
 
 Patients arrive (non-stationary, with an optional daytime surge), are seen at TRIAGE (FCFS pool), then
-TREATMENT (a priority pool — urgent patients jump the queue), then a fixed discharge delay. The bottleneck
+TREATMENT (a priority pool, urgent patients jump the queue), then a fixed discharge delay. The bottleneck
 is treatment. Exercises multi-stage flow, priority, non-stationary arrivals, and length-of-stay by class.
 SimPy, seeded (all variates drawn up front) → reproducible flow trace.
 """
@@ -46,7 +46,7 @@ class EDScenario(Scenario):
         return [
             v("calm", "Calm shift", "Turno tranquilo", 1.2, 2, 3, 0, 0.25, "Light arrivals: short stays, little waiting.", "Pocas llegadas: estancias cortas, poca espera."),
             v("typical", "Typical shift", "Turno típico", 2.0, 2, 3, 0, 0.25, "Busy but stable; treatment is the bottleneck.", "Ocupado pero estable; tratamiento es el cuello de botella."),
-            v("busy", "Busy shift", "Turno ocupado", 2.3, 2, 3, 0, 0.25, "Treatment near capacity — queues build.", "Tratamiento cerca de capacidad — se forman colas."),
+            v("busy", "Busy shift", "Turno ocupado", 2.3, 2, 3, 0, 0.25, "Treatment near capacity, queues build.", "Tratamiento cerca de capacidad, se forman colas."),
             v("overloaded", "Overloaded", "Sobrecargado", 2.9, 2, 3, 0, 0.25, "Demand exceeds treatment capacity: the ED backs up.", "La demanda supera la capacidad de tratamiento: la urgencia se satura."),
             v("surge", "Daytime surge", "Surge diurno", 2.0, 2, 3, 1, 0.25, "A mid-shift arrival surge stresses the system transiently.", "Un surge de llegadas a media jornada estresa el sistema transitoriamente."),
             v("understaffed", "Understaffed treatment", "Tratamiento con poco personal", 2.0, 2, 2, 0, 0.25, "One fewer bay: the bottleneck tightens sharply.", "Una camilla menos: el cuello de botella se aprieta fuerte."),

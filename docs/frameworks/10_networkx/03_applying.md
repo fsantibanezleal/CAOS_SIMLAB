@@ -1,4 +1,4 @@
-# NetworkX — Applying it
+# NetworkX: Applying it
 
 This page is the "when and why" for NetworkX in CAOS_SIMLAB: how to *formalize* the kind of problem it
 solves, how to *solve* it with this tool, which scenarios use it, the honest trade-offs from the
@@ -8,7 +8,7 @@ see [`02_usage.md`](./02_usage.md).
 ## What NetworkX is *for* in this lab
 
 NetworkX is the **graph layer**: it holds the network (junctions + weighted road segments) and answers
-**shortest-path** questions on it — the cheapest route between two points, and the *k* cheapest
+**shortest-path** questions on it, the cheapest route between two points, and the *k* cheapest
 distinct alternatives. It is **not** a vehicle-routing optimizer (that is OR-Tools / PyVRP) and
 **not** a simulator (that is SimPy). It sits *upstream* of both: it produces the road geometry and the
 travel-time matrix that the optimizer consumes, and the route polylines that the simulator animates.
@@ -23,23 +23,23 @@ attribution are needed.
 **The shape of problem NetworkX solves.** You have a transport network you can model as a graph
 `G = (V, E)` where:
 
-- **V (nodes)** = decision points: junctions, stations, depots, customer stops — any hashable id.
+- **V (nodes)** = decision points: junctions, stations, depots, customer stops: any hashable id.
 - **E (edges)** = traversable segments between nodes, each carrying a non-negative **cost** `w(u, v)`
   (travel time, distance, or a composite like `grade × elevation gain`). Use `Graph` when the cost is
   symmetric, `DiGraph` when up- and down-direction differ.
 - **The question** = either *single-pair shortest path* (cheapest route `s → t`), *single-source*
-  (cheapest route from one origin to everything — the dispatch / coverage question), or *all-pairs*
+  (cheapest route from one origin to everything, the dispatch / coverage question), or *all-pairs*
   (the full N×N cost matrix an optimizer needs).
 
 **Map it to NetworkX in four moves:**
 
-1. **Encode the cost model into edge weights.** This is the modelling work — everything downstream is
+1. **Encode the cost model into edge weights.** This is the modelling work: everything downstream is
    mechanical. `g[u][v]["weight"] = your_cost(u, v)`. Keep weights ≥ 0 so Dijkstra is valid.
 2. **Pick the query to match the question.** Single pair → `nx.dijkstra_path` (+ `…_path_length`);
    big single pair → `nx.astar_path` with an admissible heuristic; one origin to all →
    `nx.single_source_dijkstra`; full matrix → `nx.all_pairs_dijkstra_path_length`.
 3. **Expose the alternatives.** `nx.shortest_simple_paths` (Yen's algorithm) yields the *k* cheapest
-   distinct routes in increasing order — the near-ties that become decision-relevant under
+   distinct routes in increasing order, the near-ties that become decision-relevant under
    uncertainty.
 4. **Make it replayable.** Seed any RNG used to build the graph and iterate node/edge sets in sorted
    order, so the committed trace reproduces byte-for-byte (see
@@ -49,8 +49,8 @@ attribution are needed.
 
 | Scenario | How NetworkX is used | Paired with |
 |---|---|---|
-| **S07 — Construction Haul Routing** | A **single grade-weighted `nx.dijkstra_path`** across a graded junction grid; the edge cost encodes **grade × elevation gain**, so the "cheapest" haul route bends around steep climbs (the empty return is a second, plain-distance Dijkstra). The critical grade `g*` at which the route "flips" from the direct climb to the longer-but-flatter detour is derived analytically by comparing **two separately-weighted Dijkstra runs** — one at grade 0 (direct reference) and one at a very high grade (forced detour). The route's optimum **cost is certified by an OR-Tools CP-SAT** min-cost-flow ILP. | **OR-Tools CP-SAT** (cost certificate) + a **deterministic** SimPy haul DES (fixed load/dump times, inert seed; 2D grade overlay) — *precompute lane* |
-| **S09 — Ambulance Dispatch** | Shortest path on a city junction grid to compute travel time from each station to each call, which drives the nearest-available-ambulance dispatch decision. Shortest-path lengths feed the response-time and coverage KPIs. | **SimPy** DES driven by **one seeded** Poisson call stream (variates drawn up front; not replicated) — *live lane*, no OR-Tools |
+| **S07, Construction Haul Routing** | A **single grade-weighted `nx.dijkstra_path`** across a graded junction grid; the edge cost encodes **grade × elevation gain**, so the "cheapest" haul route bends around steep climbs (the empty return is a second, plain-distance Dijkstra). The critical grade `g*` at which the route "flips" from the direct climb to the longer-but-flatter detour is derived analytically by comparing **two separately-weighted Dijkstra runs**, one at grade 0 (direct reference) and one at a very high grade (forced detour). The route's optimum **cost is certified by an OR-Tools CP-SAT** min-cost-flow ILP. | **OR-Tools CP-SAT** (cost certificate) + a **deterministic** SimPy haul DES (fixed load/dump times, inert seed; 2D grade overlay), *precompute lane* |
+| **S09, Ambulance Dispatch** | Shortest path on a city junction grid to compute travel time from each station to each call, which drives the nearest-available-ambulance dispatch decision. Shortest-path lengths feed the response-time and coverage KPIs. | **SimPy** DES driven by **one seeded** Poisson call stream (variates drawn up front; not replicated), *live lane*, no OR-Tools |
 
 Both scenarios live in the [Optimization & Routing problem type](../../problem-types/03_optimization-routing.md)
 (see its S07 / S09 rows and the NetworkX + OSMnx section).
@@ -58,7 +58,7 @@ Both scenarios live in the [Optimization & Routing problem type](../../problem-t
 > **Implementation note:** S07 and S09 build a real **NetworkX** graph over the shared graded `_geo`
 > grid and route with `nx.dijkstra_path` (S07, grade-weighted `DiGraph`) and
 > `nx.single_source_dijkstra` / `nx.dijkstra_path` (S09, distance-weighted `Graph`). The edge weights
-> mirror `_geo` exactly, so the NetworkX result matches the lab's grid Dijkstra byte-for-byte — the
+> mirror `_geo` exactly, so the NetworkX result matches the lab's grid Dijkstra byte-for-byte, the
 > seeded trace is reproducible. NetworkX gives the battle-tested, feature-complete implementation and
 > the OSMnx on-ramp to real OSM graphs (A\* on large networks, k-shortest alternatives, all-pairs
 > matrices) the moment you outgrow the toy grid.
@@ -71,22 +71,22 @@ pipeline:
 1. **Graph.** Build (or download via OSMnx) the road network as a weighted NetworkX graph.
 2. **Matrix / paths.** Run shortest paths (Dijkstra / A\* / all-pairs) to get the travel-time lengths and
    the drawable route geometry. *This is the NetworkX step.*
-3. **Optimize / decide.** Use the lengths to choose a plan — in S07 an OR-Tools CP-SAT cost certificate over
+3. **Optimize / decide.** Use the lengths to choose a plan: in S07 an OR-Tools CP-SAT cost certificate over
    the Dijkstra route; in S09 the nearest-available dispatch decision directly from the path lengths.
 4. **Simulate.** Replay in a **SimPy** DES. In the shipped scenarios these legs are **deterministic** (S07:
    fixed service times, inert seed; S09: one seeded call stream with variates drawn up front), so the gap they
    expose is **queueing at a shared finite resource** (the loader; the busy ambulances), not random-variate
    slippage. There are **no time windows in the repo**.
 
-The research states the bridge plainly: *"an optimum on paper is fragile under uncertainty"* — the
+The research states the bridge plainly: *"an optimum on paper is fragile under uncertainty"*, the
 optimizer proposes, the simulator disposes. NetworkX makes step 2 readable and inspectable. The
 **k-shortest paths** capability makes the fragility *visible* as a concept: when route #1 and route #2 are a
 near-tie (8.986 vs 9.029 in the [example](./example.py)), a tiny delay on one segment is enough to make the
-"second-best" route win — the principle the deterministic haul DES illustrates via loader contention.
+"second-best" route win, the principle the deterministic haul DES illustrates via loader contention.
 
 ## Honest trade-offs (grounded in the research)
 
-**Strengths — why NetworkX is the road layer:**
+**Strengths, why NetworkX is the road layer:**
 
 - **Highest didactic clarity in the routing dimension.** The research's framework table rates
   "OSMnx + NetworkX" as the **highest** for didactic clarity: *"Pure Python… readable, no server,
@@ -96,7 +96,7 @@ near-tie (8.986 vs 9.029 in the [example](./example.py)), a tiny delay on one se
 - **Permissive license (BSD-3).** Safe to vendor and ship in a public repo; pairs with MIT OSMnx.
 - **Zero hard dependencies.** The path algorithms run on the standard library alone.
 
-**Limits — when NetworkX stops being the right tool:**
+**Limits, when NetworkX stops being the right tool:**
 
 - **The matrix is the bottleneck, not the path query.** For *N* stops you need an *N×N* travel-time
   matrix; all-pairs shortest paths on a *large* OSM graph is **slow**. The research is explicit: keep
@@ -105,7 +105,7 @@ near-tie (8.986 vs 9.029 in the [example](./example.py)), a tiny delay on one se
   *live/light* path; it is not the high-throughput matrix engine.
 - **It finds paths, it does not route a fleet.** A single shortest path is not a CVRP/VRPTW solution.
   The moment the problem is "many vehicles, capacities, time windows", you move *up* to OR-Tools or
-  PyVRP — NetworkX only supplies their distance matrix.
+  PyVRP, NetworkX only supplies their distance matrix.
 - **Single-pair on huge graphs.** Plain Dijkstra explores too much; switch to **A\*** with a
   straight-line heuristic for big single-pair queries.
 
@@ -115,7 +115,7 @@ near-tie (8.986 vs 9.029 in the [example](./example.py)), a tiny delay on one se
 |---|---|---|
 | Shortest path / k-shortest paths on a small or medium graph, live and readable | **NetworkX** | Pure Python, inspectable, runs in Pyodide; highest didactic clarity |
 | The same, but on a *real* road network | **OSMnx → NetworkX** ([`../11_osmnx.md`](../11_osmnx.md)) | OSMnx downloads OSM into a NetworkX graph; same path API (mind ODbL attribution) |
-| A *fast all-pairs travel-time matrix* on a large geography | **OSRM** (`Table`, Docker, precompute) | NetworkX all-pairs does not scale; OSRM is the C++ matrix engine — commit JSON only |
+| A *fast all-pairs travel-time matrix* on a large geography | **OSRM** (`Table`, Docker, precompute) | NetworkX all-pairs does not scale; OSRM is the C++ matrix engine, commit JSON only |
 | Choosing routes for a *fleet* (CVRP / VRPTW / PDPTW) | **OR-Tools Routing** ([`../08_ortools.md`](../08_ortools.md)) / **PyVRP** ([`../09_pyvrp.md`](../09_pyvrp.md)) | These are vehicle-routing solvers; they *consume* the NetworkX/OSRM matrix |
 | Out-of-the-box VRP wrapping real matrices | **VROOM** (precompute, Docker) | Convenient black box; teaches less than OR-Tools/PyVRP |
 
@@ -123,7 +123,7 @@ near-tie (8.986 vs 9.029 in the [example](./example.py)), a tiny delay on one se
 OSRM to precompute big matrices; OR-Tools/PyVRP to optimize the fleet on top of that matrix; SimPy
 ([`../01_simpy.md`](../01_simpy.md)) to stress-test the resulting plan.*
 
-## Deprecated — do not use
+## Deprecated: do not use
 
 `AgentPy` and `desmod` show up in older tutorials but are **deprecated and excluded** from this lab.
 They are simulation wrappers, unrelated to graphs, and mentioned here only so any tutorial pairing them
@@ -142,5 +142,5 @@ Grounded in the CAOS_SIMLAB optimization & routing research dimension (report 03
 - Simheuristics / agile-optimization survey: <https://www.mdpi.com/2076-3417/13/1/101>
 - Sim-optimization for stochastic location-routing:
   <https://link.springer.com/article/10.1057/jos.2015.15>
-- OpenStreetMap data is **ODbL** — display "© OpenStreetMap contributors", commit rendered geometry
+- OpenStreetMap data is **ODbL**: display "© OpenStreetMap contributors", commit rendered geometry
   only (see the repo's [`../../../ATTRIBUTION.md`](../../../ATTRIBUTION.md)).

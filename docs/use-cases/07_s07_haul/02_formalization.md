@@ -1,6 +1,6 @@
 # 02 · Formalization
 
-The math behind S07, grounded in the **code** — the live SimPy replay in
+The math behind S07, grounded in the **code**, the live SimPy replay in
 [`simlab/scenarios/s07_haul.py`](../../../simlab/scenarios/s07_haul.py), the offline route-plan builder
 [`simlab/scenarios/_haul_plan.py`](../../../simlab/scenarios/_haul_plan.py) (NetworkX + the OR-Tools CP-SAT
 cost certificate), and the committed plans in
@@ -27,14 +27,14 @@ finite-source queue (the cycle).
 | `barrier` | `barrier ∈ {0,1}` | wall across the direct line |
 | `N` | `n_trucks` | number of trucks (the "machines"), `1–14` |
 | `c` | `n_loaders` | number of loaders (the repair server), `1–4` |
-| `t_L = 4` | `load_time` | load time (min) — the binding service |
+| `t_L = 4` | `load_time` | load time (min), the binding service |
 | `1` | `dump_time` | dump time (min) |
 | `H` | `horizon` | shift length (min) |
 | `elev(n)` | `net.elev` | deterministic ridge-with-pass field |
 
 ## Decision & state variables
 
-- **Decision variable (optimize step):** the **loaded route** — the node sequence from load to dump that
+- **Decision variable (optimize step):** the **loaded route**: the node sequence from load to dump that
   minimizes the graded cost (the empty return uses plain distance). In the OR-Tools certificate this is the
   binary arc selector `x[a,b] ∈ {0,1}`.
 - **State variables (simulate step):** the time each **loader becomes free**, and the **number of trucks
@@ -44,7 +44,7 @@ finite-source queue (the cycle).
 
 - **Optimize:** a single-commodity **shortest path** on a weighted directed graph (Dijkstra), equivalently a
   **min-cost single-unit-flow ILP** (the OR-Tools CP-SAT certificate).
-- **Simulate:** a **closed, finite-source discrete-event queue** — the machine-repair model — solved as a
+- **Simulate:** a **closed, finite-source discrete-event queue**: the machine-repair model, solved as a
   real SimPy DES, with the `M/M/1//N` (or `M/M/c//N`) queue as the analytic analogue.
 
 ## Objective & cost (the optimize step)
@@ -77,7 +77,7 @@ g* = (L_det − L_dir) / (C_dir − C_det) = ΔL / ΔC      (here g* ≈ 3.4)
 ```
 
 Below `g*` the direct climb wins; above `g*` the route flips to the pass. A **barrier** across the direct
-line reroutes to the pass independent of grade — and because the barrier itself bends the "direct" reference
+line reroutes to the pass independent of grade, and because the barrier itself bends the "direct" reference
 path onto a detour, the closed-form `g*` is ill-defined for barrier variants and is reported as **undefined
 (None)** there (the route flip is still correct; only the `g*` number is suppressed).
 
@@ -90,7 +90,7 @@ Each truck is a SimPy process repeating a four-phase cycle until a load would ov
 3. **Haul up** the planned loaded route, **dump** (`dump_time`), then **haul back** the empty route.
 4. **Re-enter** the queue.
 
-Because the loader is shared and finite, with one loader adding trucks only lengthens the queue — throughput
+Because the loader is shared and finite, with one loader adding trucks only lengthens the queue, throughput
 saturates at the loader rate. This is the **machine-repair / finite-source** queue: with `N` trucks, `c`
 loaders, load rate `μ = 1/t_L` and per-truck return rate `λ`, the state-dependent rates are
 

@@ -1,15 +1,15 @@
-"""NetworkX demo for CAOS_SIMLAB — shortest paths on a small weighted grid road graph.
+"""NetworkX demo for CAOS_SIMLAB, shortest paths on a small weighted grid road graph.
 
 This mirrors the road-graph layer behind scenarios S07 (construction haul routing) and
 S09 (ambulance dispatch): a junction grid with weighted edges, on which we run
 
   1. Dijkstra single-source-single-target shortest path (the cheapest route), and
-  2. k-shortest *simple* paths (the k cheapest distinct routes — alternative routes).
+  2. k-shortest *simple* paths (the k cheapest distinct routes: alternative routes).
 
 Everything is fully deterministic. NetworkX shortest-path algorithms are themselves
 deterministic on a fixed graph; we additionally seed Python's RNG and sort every node
 set we iterate so that graph construction is byte-for-byte reproducible across runs and
-platforms. No OSM download, no network access, no native code — pure Python, runs live.
+platforms. No OSM download, no network access, no native code, pure Python, runs live.
 
 Run (cwd = repo root):
     .venv/Scripts/python.exe docs/frameworks/10_networkx/example.py

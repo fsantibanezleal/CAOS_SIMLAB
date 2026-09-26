@@ -1,26 +1,26 @@
-"""S05 — Beer Game (supply-chain bullwhip effect), running on **Mesa 3**.
+"""S05, Beer Game (supply-chain bullwhip effect), running on **Mesa 3**.
 
 Four serial echelons (retailer → wholesaler → distributor → factory). Each forecasts the orders it
 receives (exponential smoothing) and uses an order-up-to base-stock rule with a shipping lead time. A
-change in customer demand is amplified into ever-larger order swings upstream — the *bullwhip effect*
+change in customer demand is amplified into ever-larger order swings upstream, the *bullwhip effect*
 (Lee, Padmanabhan & Whang 1997).
 
 This is **not** a grid model: the Beer Game is a tiny serial *network*, so there is no ``mesa.space``.
 Each echelon is a real :class:`mesa.Agent` holding its own forecast/order-position state; the
 :class:`mesa.Model` steps them once per simulated week through the model's ``AgentSet`` (``self.agents``),
-exactly the activation pattern the S02 Schelling template establishes — only the space is dropped. Within a
+exactly the activation pattern the S02 Schelling template establishes, only the space is dropped. Within a
 week the model activates the echelons **downstream → upstream**, so the order an agent places this tick is
 the demand its upstream neighbour sees this same tick; information ripples up the chain one activation at a
 time. Each stage's order at week *t* still depends only on its incoming order at week *t*. When this scenario
 was ported from its earlier whole-horizon NumPy implementation to this Mesa agent-step form, that property
 was used to verify the migration: the per-tick agent cascade was checked to reproduce the prior NumPy trace
-before the old code path was retired (a one-time equivalence check — only the Mesa model exists now).
+before the old code path was retired (a one-time equivalence check, only the Mesa model exists now).
 
 Determinism flows from Mesa's seeded RNG: ``Model(rng=int(seed))`` seeds ``self.rng`` (a NumPy Generator
 identical to ``np.random.default_rng(seed)``), the only source of randomness (the AR(1) noisy-demand
-pattern). Same (params, seed) → same trace — the lab's "replay = truth" contract. The emitted artifact is
+pattern). Same (params, seed) → same trace, the lab's "replay = truth" contract. The emitted artifact is
 the existing chart-trace format (the customer-demand series + the four per-echelon order series + KPIs; there
-is no inventory/backorder series — the model carries no on-hand stock, see the assumptions); nothing in the trace schema or
+is no inventory/backorder series, the model carries no on-hand stock, see the assumptions); nothing in the trace schema or
 the frontend contract changes.
 """
 from __future__ import annotations
@@ -35,8 +35,8 @@ STAGE_COLORS = ["var(--color-good)", "var(--color-accent)", "var(--color-warn)",
 STAGE_LABELS_ES = ["minorista", "mayorista", "distribuidor", "fábrica"]
 
 # The Mesa Agent/Model subclasses are built lazily (Mesa is a heavy dep the worker loads at runtime via
-# micropip — it IS in LIVE_WHEELS and runs live — not at module import).
-# Importing this module — the Scenario subclass + variants()/param_specs — therefore needs ZERO heavy deps
+# micropip: it IS in LIVE_WHEELS and runs live, not at module import).
+# Importing this module: the Scenario subclass + variants()/param_specs, therefore needs ZERO heavy deps
 # (numpy is allowed: it exists in the live worker). Mesa is imported only when ``run()`` calls ``_models()``
 # to build the classes (cached after the first build, so behaviour is identical to top-level definitions).
 _MODELS: tuple[type, type] | None = None
@@ -57,8 +57,8 @@ def _models() -> tuple[type, type]:
     class EchelonAgent(mesa.Agent):
         """One supply-chain echelon running an order-up-to base-stock policy.
 
-        The agent owns its own state — an exponentially-smoothed forecast of incoming demand and its
-        previous order-up-to level ``S`` — and exposes one local rule, :meth:`place_order`, which the model
+        The agent owns its own state, an exponentially-smoothed forecast of incoming demand and its
+        previous order-up-to level ``S``, and exposes one local rule, :meth:`place_order`, which the model
         calls each week with the order this echelon received from its downstream neighbour. The rule is the
         classic base-stock update: ``order_t = received_t + (S_t − S_{t−1})`` with ``S_t = (L+1)·forecast_t``,
         clamped at zero. Nothing here is global; the bullwhip *emerges* from four agents each following this.
@@ -82,11 +82,11 @@ def _models() -> tuple[type, type]:
             return order
 
     class BeerGameModel(mesa.Model):
-        """The Beer Game world: four serial echelons, no space — a plain Mesa model over an ``AgentSet``.
+        """The Beer Game world: four serial echelons, no space, a plain Mesa model over an ``AgentSet``.
 
         Built with Mesa 3. The customer-demand series is generated up front from the seeded ``self.rng`` (so
         the AR(1) noisy pattern is reproducible), then :meth:`step` is called once per week. Each step pushes
-        the customer demand into the retailer and lets each order cascade upstream through ``self.agents`` —
+        the customer demand into the retailer and lets each order cascade upstream through ``self.agents``, 
         the model's ``AgentSet``, ordered retailer → factory, which is the activation order the Beer Game
         needs (downstream places its order before its upstream neighbour acts on it).
         """
@@ -94,7 +94,7 @@ def _models() -> tuple[type, type]:
         def __init__(self, weeks: int, lead: int, theta: float, step: float, pattern: int, seed: int,
                      base: float = 8.0, warmup: int = 6) -> None:
             # Mesa 3: ``rng=`` seeds self.rng (NumPy Generator, identical to np.random.default_rng(seed))
-            # and self.random. Seeding here makes the whole run reproducible — the committed trace's truth.
+            # and self.random. Seeding here makes the whole run reproducible: the committed trace's truth.
             super().__init__(rng=int(seed))
             self.weeks = int(weeks)
             self.base = float(base)
@@ -113,7 +113,7 @@ def _models() -> tuple[type, type]:
                 demand[ws:] = base + step
             elif pattern == 1:  # spike
                 demand[ws] = base + step
-            else:  # AR(1) noise — draws flow through the seeded model RNG
+            else:  # AR(1) noise, draws flow through the seeded model RNG
                 e = 0.0
                 for t in range(w):
                     e = 0.6 * e + self.rng.normal(0, step / 2.0)
@@ -125,7 +125,7 @@ def _models() -> tuple[type, type]:
 
             ``self.agents`` is the model's AgentSet in creation order (retailer → factory). Activating in
             that order means each echelon places its order from the order its downstream neighbour just
-            placed this same tick — information ripples upstream one activation per stage.
+            placed this same tick, information ripples upstream one activation per stage.
             """
             incoming = float(self.demand[self.week])
             for agent in self.agents:

@@ -1,7 +1,7 @@
-# 02 · Formalization — S04 Emergency Department Patient Flow
+# 02 · Formalization: S04 Emergency Department Patient Flow
 
 The math, pulled from the scenario's verified Context block (`web/src/pages/Experiments.tsx`) and the
-implementation in [`simlab/scenarios/s04_ed.py`](../../../simlab/scenarios/s04_ed.py) — kept consistent
+implementation in [`simlab/scenarios/s04_ed.py`](../../../simlab/scenarios/s04_ed.py), kept consistent
 with the code, nothing invented. Background and scope: [01 · Assumptions](./01_assumptions.md). Up: [the
 S04 index](../04_s04_ed.md).
 
@@ -81,7 +81,7 @@ Each patient is urgent with probability pᵤ (Bernoulli); services are independe
 Sᵗᵢ ~ Exp(μₜ),     Sˣᵢ ~ Exp(μₓ),     discharge = d   (constant)
 ```
 
-All of these vectors — `prios`, `tri_svc`, `trt_svc` — are sampled before the event loop starts, so
+All of these vectors, `prios`, `tri_svc`, `trt_svc`, are sampled before the event loop starts, so
 determinism does not depend on the scheduler's interleaving.
 
 ### 3 · Flow through the stations
@@ -106,7 +106,7 @@ Each patient's stay is its total time in system,
 LOSᵢ = (waitᵗᵢ + Sᵗᵢ) + (waitˣᵢ + Sˣᵢ) + d
 ```
 
-and the bottleneck-load indicator is the offered utilization of treatment — the system is stable when
+and the bottleneck-load indicator is the offered utilization of treatment, the system is stable when
 `ρ < 1`:
 
 ```
@@ -122,20 +122,20 @@ Computed in `run` and stored on the trace's `kpis` (means are over the realized 
 | `mean_LOS` | LOS̄ | mean total length-of-stay over all patients |
 | `mean_LOS_urgent` | LOS̄ᵤ | mean LOS over urgent patients |
 | `mean_LOS_standard` | LOS̄ₛ | mean LOS over standard patients |
-| `mean_wait_treatment` | — | mean wait to enter treatment (`env.now − t_q`, captured at the moment the bay is granted) |
+| `mean_wait_treatment` | – | mean wait to enter treatment (`env.now − t_q`, captured at the moment the bay is granted) |
 | `rho_treatment` | ρ | offered treatment utilization `λ / (cₓ·μₓ)` |
 | `n_patients` | n | realized patient count (accepted arrivals) |
-| `urgent_frac` | — | realized fraction of urgent patients |
+| `urgent_frac` | – | realized fraction of urgent patients |
 
 > **Note on the modeled bottleneck.** Per the Context, treatment is *the* bottleneck: a single LOS picks
 > up both a triage wait and a treatment wait, but with μₜ = 3.0 ≫ μₓ = 0.8 (default) the treatment wait
-> dominates — and `ρ` is reported on treatment for exactly this reason. The `triage_bottleneck` variant
+> dominates, and `ρ` is reported on treatment for exactly this reason. The `triage_bottleneck` variant
 > (cₜ = 1) is the deliberate exception that moves contention upstream.
 
 ## Why simulation (no closed form)
 
 Poisson arrivals (via thinning) and exponential services make the *core* Markovian, but the **priority
-classes** and the **non-stationary intensity** push the model out of any simple closed form — so there is
+classes** and the **non-stationary intensity** push the model out of any simple closed form, so there is
 no Erlang-C-style analytic answer to overlay (unlike S01). The honest measure is therefore replicated
 simulation with a confidence interval, after a warm-up; the single seeded run shown live is one draw, not
 the answer. See the

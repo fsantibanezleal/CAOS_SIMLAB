@@ -13,12 +13,12 @@ a runnable example, and [`03_applying.md`](./03_applying.md) for how it slots in
 It is **not** in the core/live lane (`requirements.txt`). The live lane is the wheel closure that the
 browser (Pyodide) must download on cold start, and it is kept deliberately minimal (`numpy`, `simpy`).
 SciPy is a large native package (compiled Fortran/C/C++), so adding it to the core lane would inflate the
-browser cold-start for no live benefit — the CI math runs **offline** in the precompute pipeline, and only
+browser cold-start for no live benefit, the CI math runs **offline** in the precompute pipeline, and only
 the resulting numbers (mean, CI bounds) are committed into the trace and replayed. This matches the
 architecture's three-lane rule (live / precompute / host) in [`docs/architecture.md`](../../architecture.md).
 
 It is also **not** the GPU lane (`requirements-gpu.txt`); that lane is for CuPy / Numba CUDA, which
-accelerate *generating* thousands of replications. SciPy only *summarises* the resulting sample — it is
+accelerate *generating* thousands of replications. SciPy only *summarises* the resulting sample, it is
 CPU work measured in microseconds and never needs a GPU.
 
 ## Install line
@@ -42,7 +42,7 @@ pip install "scipy==1.18.0"
 | Package | `scipy` |
 | Version | **1.18.0** |
 | Imported as | `from scipy import stats` |
-| License | BSD-3-Clause (permissive — safe for a public repo) |
+| License | BSD-3-Clause (permissive, safe for a public repo) |
 | Verified on | Python 3.13.0, Windows 11 (10.0.26200) |
 
 These numbers were read from the project `.venv` with `pip show scipy` and
@@ -55,7 +55,7 @@ SciPy's only hard runtime dependency is **NumPy**:
 
 | Dependency | Role | Already present? |
 |---|---|---|
-| `numpy` (>= 1.26; **2.4.6** installed) | array backend; `scipy.stats` returns/consumes NumPy arrays and scalars | Yes — it is in the **core** `requirements.txt`, so SciPy adds no new transitive runtime dep beyond itself |
+| `numpy` (>= 1.26; **2.4.6** installed) | array backend; `scipy.stats` returns/consumes NumPy arrays and scalars | Yes, it is in the **core** `requirements.txt`, so SciPy adds no new transitive runtime dep beyond itself |
 
 SciPy is **required-by** several other precompute-lane packages already in the venv (`Mesa`,
 `scikit-learn`, `jax`/`jaxlib`, `libpysal`), so it is present in the environment regardless; but it is also
@@ -74,7 +74,7 @@ transitive resolution.
   separate, optional concern for *producing* large replication batches; the CI summary on top of them is
   still SciPy on the CPU. There are no CUDA notes because there is no CUDA path here.
 - **Determinism.** `scipy.stats.norm.ppf`, `t.ppf`, `*.interval`, and `sem` are deterministic pure
-  functions of their inputs — no internal randomness — so they introduce no reproducibility risk. All
+  functions of their inputs, no internal randomness, so they introduce no reproducibility risk. All
   randomness in CAOS_SIMLAB lives in the seeded NumPy `Generator` that produces the *sample*; SciPy only
   reduces that fixed sample to numbers.
 

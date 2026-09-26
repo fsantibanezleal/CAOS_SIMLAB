@@ -87,7 +87,7 @@ export function RouteViz({ trace, state, time }: { trace: RouteTrace; state: Rou
 
   return (
     <svg className="routeviz" viewBox={`0 0 ${W} ${H}`} role="img" aria-label={trace.title}>
-      {/* elevation field (terrain) behind everything — ridge reads warm, passes cool */}
+      {/* elevation field (terrain) behind everything, ridge reads warm, passes cool */}
       {field && (
         <image href={field.url} x={field.x} y={field.y} width={field.w} height={field.h}
           preserveAspectRatio="none" opacity={0.55} />
@@ -142,7 +142,7 @@ export function RouteViz({ trace, state, time }: { trace: RouteTrace; state: Rou
         );
       })}
 
-      {/* active incident markers (S09) — a bright spawn POP that settles to a gentle breathing pulse */}
+      {/* active incident markers (S09), a bright spawn POP that settles to a gentle breathing pulse */}
       {state.markers.map((m, i) => {
         const r = 9 + 11 * m.spawn + 2.2 * Math.abs(Math.sin(time * 2.6));
         return (
@@ -164,7 +164,7 @@ export function RouteViz({ trace, state, time }: { trace: RouteTrace; state: Rou
         </g>
       ))}
 
-      {/* stock fill bars (S11): a node that is sink-then-source — the level rises/falls over the shift */}
+      {/* stock fill bars (S11): a node that is sink-then-source, the level rises/falls over the shift */}
       {state.gauges.map((gg, i) => {
         const bx = px(gg.x) + 11;
         const bh = 46;
@@ -179,7 +179,7 @@ export function RouteViz({ trace, state, time }: { trace: RouteTrace; state: Rou
         );
       })}
 
-      {/* live HUD — counters pulse on change (F1) */}
+      {/* live HUD, counters pulse on change (F1) */}
       <text x={14} y={26} className="rv-hud">{"t = " + time.toFixed(1)}</text>
       <text x={14} y={45} className="rv-hud-sub">{(es ? "en ruta: " : "moving: ") + state.movingCount}</text>
       <text x={14} y={66} className="rv-hud-pulse" style={{ fontSize: `${13 + 6 * progress.flash}px` }}>

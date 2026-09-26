@@ -29,7 +29,7 @@ export function buildCustomers(trace: Trace): Customer[] {
 /**
  * Reconstruct which server each customer used. The trace doesn't record it, but a valid assignment is:
  * process customers in service-start order and give each the lowest-index server that is free by then.
- * This is deterministic and consistent — enough to animate "which server" the dots go to.
+ * This is deterministic and consistent: enough to animate "which server" the dots go to.
  */
 export function assignServers(customers: Customer[], c: number): void {
   const freeAt = new Array(c).fill(-Infinity); // slot -> time it becomes free

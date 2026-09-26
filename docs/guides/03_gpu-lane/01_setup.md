@@ -1,7 +1,7 @@
-# 01 · Setup — installing the GPU lane (CUDA machine only)
+# 01 · Setup: installing the GPU lane (CUDA machine only)
 
 The GPU lane is a **separate requirements set**, installed by hand on a CUDA machine. It is *not* part of
-`scripts/setup` — that only installs the live core, dev tools, and the CPU precompute engines (see the
+`scripts/setup`, that only installs the live core, dev tools, and the CPU precompute engines (see the
 [precompute pipeline guide](../01_precompute-pipeline.md)). On a GPU-less box you simply never run this step and
 every scenario still runs end-to-end on the CPU fallback.
 
@@ -43,13 +43,13 @@ jax==0.10.2
 jaxlib==0.10.2
 ```
 
-These are pinned because the GPU stack is brittle across CUDA/driver/Python combinations — see
+These are pinned because the GPU stack is brittle across CUDA/driver/Python combinations, see
 [04 · Gotchas](./04_gotchas.md) for the specific version-coupling traps. Treat the table above as the *verified
 combination*, not a floor.
 
 ## Confirm the lane is live (or correctly a no-op)
 
-The lane is designed so that a *failed* GPU detection is not an error — it just selects the CPU path. A quick
+The lane is designed so that a *failed* GPU detection is not an error, it just selects the CPU path. A quick
 device check:
 
 ```python
@@ -63,5 +63,5 @@ JIT compilation will not (see [04 · Gotchas](./04_gotchas.md), "headers require
 
 ## Next
 
-- [02 · Run](./02_run.md) — run the lane against S10 and see what it commits.
-- [03 · Internals](./03_internals.md) — the CUDA-detect-with-CPU-fallback pattern these wheels sit behind.
+- [02 · Run](./02_run.md): run the lane against S10 and see what it commits.
+- [03 · Internals](./03_internals.md): the CUDA-detect-with-CPU-fallback pattern these wheels sit behind.
